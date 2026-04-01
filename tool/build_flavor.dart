@@ -3,7 +3,7 @@ import 'dart:io';
 
 Future<void> main(List<String> args) async {
   if (args.isEmpty) {
-    print('❌ You must specify a flavor name (e.g.,)');
+    print('❌ You must specify a flavor name');
     exit(1);
   }
 
@@ -130,22 +130,23 @@ void _ensureAssetFolders(String flavor) {
     'assets/common/icons/',
     'assets/common/images/',
     'assets/common/fonts/',
+    'assets/common/translations/',
     'assets/$flavor/icons/',
     'assets/$flavor/images/',
     'assets/$flavor/fonts/',
-    'assets/$flavor/data_${flavor.replaceAll('_', '')}.json',
+    'assets/$flavor/data_$flavor.json',
   ];
 
   for (var path in requiredPaths) {
-    final file = File(path);
-    final dir = Directory(path);
     if (path.endsWith('.json')) {
+      final file = File(path);
       if (!file.existsSync()) {
         file.createSync(recursive: true);
-        file.writeAsStringSync('{}'); // empty JSON
+        file.writeAsStringSync('{}');
         print('⚡ Created missing file: $path');
       }
     } else {
+      final dir = Directory(path);
       if (!dir.existsSync()) {
         dir.createSync(recursive: true);
         print('⚡ Created missing folder: $path');
@@ -156,41 +157,60 @@ void _ensureAssetFolders(String flavor) {
 
 List<String> _updateYamlForFlavor(List<String> yamlLines, String flavor) {
   final result = <String>[];
-  bool inAssets = false;
+  bool skipping = false;
 
   for (var line in yamlLines) {
-    final trimmed = line.trim();
+    // If we hit a key with only 2 spaces (second-level key), check if it's one we manage
+    if (line.startsWith('  ') && !line.startsWith('    ')) {
+      final key = line.trim();
+      if (key == 'assets:' || key == 'fonts:') {
+        skipping = true;
+        result.add(line);
+        continue;
+      } else {
+        skipping = false;
+      }
+    } else if (line.isNotEmpty && !line.startsWith(' ')) {
+      // Top-level key
+      skipping = false;
+    }
 
-    if (trimmed.startsWith('assets:')) {
-      inAssets = true;
+    if (!skipping) {
       result.add(line);
-      continue;
     }
-
-    if (inAssets && !trimmed.startsWith('-') && trimmed.isNotEmpty) {
-      inAssets = false;
-    }
-
-    if (inAssets && trimmed.startsWith('-')) continue;
-
-    result.add(line);
   }
 
-  final assetLines = [
-    '    - assets/common/icons/',
-    '    - assets/common/images/',
-    '    - assets/common/fonts/',
-    '    - assets/$flavor/icons/',
-    '    - assets/$flavor/images/',
-    '    - assets/$flavor/fonts/',
-    '    - assets/$flavor/data_${flavor.replaceAll('_', '')}.json',
-  ];
+  // Inject New Assets
+  final assetsIndex = result.indexWhere((l) => l.trim() == 'assets:');
+  if (assetsIndex != -1) {
+    result.insertAll(assetsIndex + 1, [
+      '    - assets/common/icons/',
+      '    - assets/common/images/',
+      '    - assets/common/fonts/',
+      '    - assets/common/translations/',
+      '    - assets/$flavor/icons/',
+      '    - assets/$flavor/images/',
+      '    - assets/$flavor/fonts/',
+      '    - assets/$flavor/data_$flavor.json',
+    ]);
+  }
 
-  final insertionIndex = result.indexWhere((line) => line.trim().startsWith('fonts:'));
-  if (insertionIndex != -1) {
-    result.insertAll(insertionIndex, assetLines);
+  // Inject New Fonts
+  final fontsIndex = result.indexWhere((l) => l.trim() == 'fonts:');
+  final fontData = [
+    '    - family: store',
+    '      fonts:',
+    '        - asset: assets/$flavor/fonts/store-Regular.otf',
+  ];
+  
+  if (fontsIndex != -1) {
+    result.insertAll(fontsIndex + 1, fontData);
   } else {
-    result.addAll(assetLines);
+    final flutterIndex = result.indexWhere((l) => l.trim() == 'flutter:');
+    if (flutterIndex != -1) {
+      result.insert(flutterIndex + 1, '  fonts:');
+      result.insertAll(flutterIndex + 2, fontData);
+    }
   }
 
   return result;

@@ -1,0 +1,54 @@
+{
+    "appName": "WebStore ERP",
+    "appVersion": "1.0.0",
+    "bundleId": "com.moon.webstore",
+    "baseURL": "https://moon-erp.elbaset.com",
+    "selectedTheme": "light",
+    "initialScreen": "/home",
+    "enabledScreens": [
+        "auth",
+        "home",
+        "catalog",
+        "cart",
+        "profile",
+        "orders",
+        "checkout"
+    ],
+    "assets": {
+        "logo": "assets/images/logo.png",
+        "placeholder": "assets/images/placeholder.png"
+    },
+    "fireBaseConfig": {
+        "apiKey": "",
+        "appId": "",
+        "messagingSenderId": "",
+        "projectId": ""
+    },
+    "customSettings": {
+        "showOnboarding": true,
+        "enableNotifications": true,
+        "currency": "EGP"
+    },
+    "bottomNavItems": [
+        {
+            "icon": "home",
+            "label": "Home",
+            "route": "/home"
+        },
+        {
+            "icon": "shopping_bag",
+            "label": "Store",
+            "route": "/catalog"
+        },
+        {
+            "icon": "shopping_cart",
+            "label": "Cart",
+            "route": "/cart"
+        },
+        {
+            "icon": "person",
+            "label": "Profile",
+            "route": "/profile"
+        }
+    ]
+}
