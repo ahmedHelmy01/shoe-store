@@ -1,0 +1,43 @@
+{
+  "appName": "Accounting ERP",
+  "appVersion": "1.0.0",
+  "bundleId": "com.moon.accounting",
+  "baseURL": "https://moon-erp.elbaset.com",
+  "selectedTheme": "light",
+  "initialScreen": "/accounts_dashboard",
+  "enabledScreens": [
+    "auth",
+    "accounts_dashboard",
+    "journals",
+    "ledgers",
+    "balance_sheet",
+    "profit_loss"
+  ],
+  "assets": {
+    "logo": "assets/images/logo.png",
+    "placeholder": "assets/images/placeholder.png"
+  },
+  "fireBaseConfig": {
+    "apiKey": "",
+    "appId": "",
+    "messagingSenderId": "",
+    "projectId": ""
+  },
+  "customSettings": {
+    "showOnboarding": false,
+    "enableNotifications": true,
+    "currency": "EGP"
+  },
+  "bottomNavItems": [
+    {
+      "icon": "account_balance",
+      "label": "Accounting",
+      "route": "/accounts_dashboard"
+    },
+    {
+      "icon": "list_alt",
+      "label": "Journals",
+      "route": "/journals"
+    }
+  ]
+}

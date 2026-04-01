@@ -1,5 +1,6 @@
+import 'package:erp/app/erp_app_root.dart';
 import 'package:erp/core/config/app_flavor.dart';
-import 'main.dart';
 
-/// Entry point for Full ERP flavor (النظام الكامل)
-void main() => bootstrap(AppFlavor.full);
+Future<void> main() async {
+  await bootstrap(AppFlavor.full);
+}

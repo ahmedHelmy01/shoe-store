@@ -1,104 +1,52 @@
 {
-    "appName": "نظام ERP",
-    "appVersion": "1.0.0",
-    "bundleId": "com.example.erp",
-    "baseURL": "https://api.example.com",
-    "selectedTheme": "light",
-    "initialScreen": "/splash",
-    "enabledScreens": [
-        "/splash",
-        "/login",
-        "/dashboard",
-        "/representatives",
-        "/representative_details",
-        "/accounts",
-        "/account_details",
-        "/employees",
-        "/employee_details",
-        "/inventory",
-        "/products",
-        "/invoices",
-        "/invoice_details",
-        "/transactions",
-        "/attendance",
-        "/reports",
-        "/profile",
-        "/settings"
-    ],
-    "assets": {
-        "assetsBase": "assets/full/",
-        "appLogo": "assets/common/images/logo.png",
-        "splashLogo": "assets/common/images/splash_logo.png",
-        "appIcon": "assets/common/icons/app_icon.png",
-        "notificationIcon": "assets/common/icons/notification.png",
-        "splashBackground": "#FFFFFF",
-        "placeholderImage": "assets/common/images/placeholder.png",
-        "noDataImage": "assets/common/images/no_data.png",
-        "errorImage": "assets/common/images/error.png"
+  "appName": "Full ERP System",
+  "appVersion": "1.0.0",
+  "bundleId": "com.moon.erp",
+  "baseURL": "https://moon-erp.elbaset.com",
+  "selectedTheme": "dark",
+  "initialScreen": "/splash",
+  "enabledScreens": [
+    "auth",
+    "dashboard",
+    "webstore",
+    "sales",
+    "purchases",
+    "inventory",
+    "accounting",
+    "hrm",
+    "reports",
+    "settings"
+  ],
+  "assets": {
+    "logo": "assets/images/logo.png",
+    "placeholder": "assets/images/placeholder.png"
+  },
+  "fireBaseConfig": {
+    "apiKey": "",
+    "appId": "",
+    "messagingSenderId": "",
+    "projectId": ""
+  },
+  "customSettings": {
+    "showOnboarding": true,
+    "enableNotifications": true,
+    "currency": "EGP"
+  },
+  "bottomNavItems": [
+    {
+      "icon": "home",
+      "label": "Dashboard",
+      "route": "/dashboard"
     },
-    "customTheme": {
-        "primaryColor": "#3F51B5",
-        "primaryColorDark": "#303F9F",
-        "primaryColorLight": "#7986CB",
-        "secondaryColor": "#FF4081",
-        "backgroundColor": "#F5F5F5",
-        "surfaceColor": "#FFFFFF",
-        "errorColor": "#D32F2F",
-        "successColor": "#388E3C",
-        "warningColor": "#F57C00",
-        "textColor": "#212121",
-        "appBarTextColor": "#FFFFFF",
-        "bottomNavBackground": "#FFFFFF",
-        "bottomNavSelected": "#3F51B5",
-        "bottomNavUnselected": "#9E9E9E",
-        "linearGradientHome": "#3F51B5",
-        "borderRadius": 12.0,
-        "cardElevation": 2.0,
-        "buttonHeight": 48.0
+    {
+      "icon": "apps",
+      "label": "Modules",
+      "route": "/modules"
     },
-    "customSettings": {
-        "enableGradientBackground": false,
-        "extendBodyBehindAppBar": false,
-        "enableTransparentAppBar": false,
-        "roundedBottomNav": true,
-        "bottomNavRadius": 20.0,
-        "defaultLanguage": "ar",
-        "rtlSupport": true,
-        "enableShadows": true,
-        "contentPadding": 16.0
-    },
-    "bottomNavItems": [
-        {
-            "label": "الرئيسية",
-            "iconCode": "0xe318",
-            "route": "/dashboard"
-        },
-        {
-            "label": "المناديب",
-            "iconCode": "0xe491",
-            "route": "/representatives"
-        },
-        {
-            "label": "الحسابات",
-            "iconCode": "0xe84f",
-            "route": "/accounts"
-        },
-        {
-            "label": "المخازن",
-            "iconCode": "0xe899",
-            "route": "/inventory"
-        },
-        {
-            "label": "المزيد",
-            "iconCode": "0xe5d3",
-            "route": "/more"
-        }
-    ],
-    "fireBaseConfig": {
-        "apiKey": "",
-        "appId": "",
-        "messagingSenderId": "",
-        "projectId": "",
-        "storageBucket": ""
+    {
+      "icon": "settings",
+      "label": "Settings",
+      "route": "/settings"
     }
+  ]
 }

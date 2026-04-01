@@ -90,7 +90,7 @@ class _AppTextFieldState extends State<AppTextField> {
             boxShadow: widget.shadowColor != null
                 ? [
                     BoxShadow(
-                      color: widget.shadowColor!.withOpacity(0.1),
+                      color: widget.shadowColor!.withValues(alpha: 0.1),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
