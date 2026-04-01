@@ -1,0 +1,41 @@
+name: erp
+description: "ERP System - Sales, Purchases, Inventory, Reports, Invoices, and Accounts"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  provider: ^6.1.2
+  shared_preferences: ^2.5.3
+  auto_route: ^10.1.2
+  easy_localization: ^3.0.7
+  cached_network_image: ^3.4.1
+  flutter_svg: ^2.0.10+1
+  url_launcher: ^6.3.1
+  path_provider: ^2.1.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.15
+  auto_route_generator: ^10.0.1
+  easy_localization_generator: ^0.3.5
+  flutter_native_splash: ^2.4.0
+  flutter_launcher_icons: ^0.14.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/translations/
+    - assets/config/

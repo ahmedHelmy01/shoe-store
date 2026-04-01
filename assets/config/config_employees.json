@@ -1,0 +1,95 @@
+{
+    "appName": "نظام الموظفين",
+    "appVersion": "1.0.0",
+    "bundleId": "com.example.erp.employees",
+    "baseURL": "https://api.example.com",
+    "selectedTheme": "light",
+    "initialScreen": "/splash",
+    "enabledScreens": [
+        "/splash",
+        "/login",
+        "/dashboard",
+        "/employees",
+        "/employee_details",
+        "/attendance",
+        "/reports",
+        "/profile",
+        "/settings"
+    ],
+    "assets": {
+        "assetsBase": "assets/employees/",
+        "appLogo": "assets/common/images/logo.png",
+        "splashLogo": "assets/common/images/splash_logo.png",
+        "appIcon": "assets/common/icons/app_icon.png",
+        "notificationIcon": "assets/common/icons/notification.png",
+        "splashBackground": "#FFFFFF",
+        "placeholderImage": "assets/common/images/placeholder.png",
+        "noDataImage": "assets/common/images/no_data.png",
+        "errorImage": "assets/common/images/error.png"
+    },
+    "customTheme": {
+        "primaryColor": "#9C27B0",
+        "primaryColorDark": "#7B1FA2",
+        "primaryColorLight": "#BA68C8",
+        "secondaryColor": "#FF5722",
+        "backgroundColor": "#F5F5F5",
+        "surfaceColor": "#FFFFFF",
+        "errorColor": "#D32F2F",
+        "successColor": "#388E3C",
+        "warningColor": "#F57C00",
+        "textColor": "#212121",
+        "appBarTextColor": "#FFFFFF",
+        "bottomNavBackground": "#FFFFFF",
+        "bottomNavSelected": "#9C27B0",
+        "bottomNavUnselected": "#9E9E9E",
+        "linearGradientHome": "#9C27B0",
+        "borderRadius": 12.0,
+        "cardElevation": 2.0,
+        "buttonHeight": 48.0
+    },
+    "customSettings": {
+        "enableGradientBackground": false,
+        "extendBodyBehindAppBar": false,
+        "enableTransparentAppBar": false,
+        "roundedBottomNav": true,
+        "bottomNavRadius": 20.0,
+        "defaultLanguage": "ar",
+        "rtlSupport": true,
+        "enableShadows": true,
+        "contentPadding": 16.0
+    },
+    "bottomNavItems": [
+        {
+            "label": "الرئيسية",
+            "iconCode": "0xe318",
+            "route": "/dashboard"
+        },
+        {
+            "label": "الموظفين",
+            "iconCode": "0xe7ef",
+            "route": "/employees"
+        },
+        {
+            "label": "الحضور",
+            "iconCode": "0xe8df",
+            "route": "/attendance"
+        },
+        {
+            "label": "التقارير",
+            "iconCode": "0xe06d",
+            "route": "/reports"
+        },
+        {
+            "label": "حسابي",
+            "iconCode": "0xe491",
+            "route": "/profile"
+        }
+    ],
+    "fireBaseConfig": {
+        "apiKey": "",
+        "appId": "",
+        "messagingSenderId": "",
+        "projectId": "",
+        "storageBucket": ""
+    }
+}

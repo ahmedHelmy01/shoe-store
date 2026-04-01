@@ -1,0 +1,96 @@
+{
+    "appName": "نظام المناديب",
+    "appVersion": "1.0.0",
+    "bundleId": "com.example.erp.representatives",
+    "baseURL": "https://api.example.com",
+    "selectedTheme": "light",
+    "initialScreen": "/splash",
+    "enabledScreens": [
+        "/splash",
+        "/login",
+        "/dashboard",
+        "/representatives",
+        "/representative_details",
+        "/invoices",
+        "/invoice_details",
+        "/reports",
+        "/profile",
+        "/settings"
+    ],
+    "assets": {
+        "assetsBase": "assets/representatives/",
+        "appLogo": "assets/common/images/logo.png",
+        "splashLogo": "assets/common/images/splash_logo.png",
+        "appIcon": "assets/common/icons/app_icon.png",
+        "notificationIcon": "assets/common/icons/notification.png",
+        "splashBackground": "#FFFFFF",
+        "placeholderImage": "assets/common/images/placeholder.png",
+        "noDataImage": "assets/common/images/no_data.png",
+        "errorImage": "assets/common/images/error.png"
+    },
+    "customTheme": {
+        "primaryColor": "#1976D2",
+        "primaryColorDark": "#1565C0",
+        "primaryColorLight": "#42A5F5",
+        "secondaryColor": "#FF9800",
+        "backgroundColor": "#F5F5F5",
+        "surfaceColor": "#FFFFFF",
+        "errorColor": "#D32F2F",
+        "successColor": "#388E3C",
+        "warningColor": "#F57C00",
+        "textColor": "#212121",
+        "appBarTextColor": "#FFFFFF",
+        "bottomNavBackground": "#FFFFFF",
+        "bottomNavSelected": "#1976D2",
+        "bottomNavUnselected": "#9E9E9E",
+        "linearGradientHome": "#1976D2",
+        "borderRadius": 12.0,
+        "cardElevation": 2.0,
+        "buttonHeight": 48.0
+    },
+    "customSettings": {
+        "enableGradientBackground": false,
+        "extendBodyBehindAppBar": false,
+        "enableTransparentAppBar": false,
+        "roundedBottomNav": true,
+        "bottomNavRadius": 20.0,
+        "defaultLanguage": "ar",
+        "rtlSupport": true,
+        "enableShadows": true,
+        "contentPadding": 16.0
+    },
+    "bottomNavItems": [
+        {
+            "label": "الرئيسية",
+            "iconCode": "0xe318",
+            "route": "/dashboard"
+        },
+        {
+            "label": "المناديب",
+            "iconCode": "0xe491",
+            "route": "/representatives"
+        },
+        {
+            "label": "الفواتير",
+            "iconCode": "0xe554",
+            "route": "/invoices"
+        },
+        {
+            "label": "التقارير",
+            "iconCode": "0xe06d",
+            "route": "/reports"
+        },
+        {
+            "label": "حسابي",
+            "iconCode": "0xe491",
+            "route": "/profile"
+        }
+    ],
+    "fireBaseConfig": {
+        "apiKey": "",
+        "appId": "",
+        "messagingSenderId": "",
+        "projectId": "",
+        "storageBucket": ""
+    }
+}
