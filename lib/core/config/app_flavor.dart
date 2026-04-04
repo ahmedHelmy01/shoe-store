@@ -117,8 +117,6 @@ class FlavorConfig {
   static List<String> get enabledFeatures => appFlavor.enabledFeatures;
   static bool hasFeature(String feature) => appFlavor.hasFeature(feature);
 
-  static bool get isRepresentatives => appFlavor == AppFlavor.representatives;
-  static bool get isAccounts => appFlavor == AppFlavor.accounts;
-  static bool get isEmployees => appFlavor == AppFlavor.employees;
+  static bool get isWebStore => appFlavor == AppFlavor.webstore;
   static bool get isFull => appFlavor == AppFlavor.full;
 }

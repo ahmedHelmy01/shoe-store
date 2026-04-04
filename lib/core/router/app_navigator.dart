@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 class AppRouteNames {
   static const String splash = '/splash';
-
-  // TODO: Add project-specific routes here
+  static const String webstoreLogin = '/webstore/login';
+  static const String webstoreRegister = '/webstore/register';
+  static const String webstoreForgotPassword = '/webstore/forgot-password';
+  static const String webstoreOtp = '/webstore/otp';
+  static const String webstoreResetPassword = '/webstore/reset-password';
+  static const String webstoreMain = '/webstore/main';
 }
 
 class AppNavigator {

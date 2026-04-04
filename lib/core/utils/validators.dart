@@ -1,4 +1,4 @@
-import 'package:erp/core/localization/locale_keys.g.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class AppValidators {
@@ -16,9 +16,9 @@ class AppValidators {
   /// ✅ Validate Email
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
-      return LocaleKeys.emailRequired.tr(); //  Email is required
+      return LocaleKeys.common.emailRequired.tr(); //  Email is required
     } else if (!_emailRegExp.hasMatch(value)) {
-      return LocaleKeys.invalidEmail.tr(); // Invalid email
+      return LocaleKeys.common.invalidEmail.tr(); // Invalid email
     }
     return null;
   }
@@ -26,9 +26,9 @@ class AppValidators {
   /// ✅ Validate Password
   static String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
-      return LocaleKeys.passwordRequired.tr(); //  Password is required
+      return LocaleKeys.common.passwordRequired.tr(); //  Password is required
     } else if (!_passwordRegExp.hasMatch(value)) {
-      return LocaleKeys.passwordInvalid.tr();
+      return LocaleKeys.common.passwordInvalid.tr();
       // Password must contain uppercase, lowercase, number & special character
     }
     return null;
@@ -37,10 +37,10 @@ class AppValidators {
   /// ✅ Validate Confirm Password
   static String? validateConfirmPassword(String? value, String original) {
     if (value == null || value.isEmpty) {
-      return LocaleKeys.confirmPasswordRequired.tr();
+      return LocaleKeys.common.confirmPasswordRequired.tr();
       //  Confirm password is required
     } else if (value != original) {
-      return LocaleKeys.passwordsDoNotMatch.tr();
+      return LocaleKeys.common.passwordsDoNotMatch.tr();
       //  Passwords do not match
     }
     return null;
@@ -49,10 +49,10 @@ class AppValidators {
   /// ✅ Validate Phone
   static String? validatePhone(String? value) {
     if (value == null || value.isEmpty) {
-      return LocaleKeys.phoneRequired.tr();
+      return LocaleKeys.common.phoneRequired.tr();
       //  Please enter phone number
     } else if (!_phoneRegExp.hasMatch(value)) {
-      return LocaleKeys.invalidPhone.tr();
+      return LocaleKeys.common.invalidPhone.tr();
       //  Enter valid phone (at least 10 digits)
     }
     return null;
@@ -61,7 +61,7 @@ class AppValidators {
   /// ✅ Validate Name
   static String? validateName(String? value) {
     if (value == null || value.isEmpty) {
-      return LocaleKeys.nameRequired.tr(); //  Enter name
+      return LocaleKeys.common.nameRequired.tr(); //  Enter name
     }
     return null;
   }
@@ -69,7 +69,7 @@ class AppValidators {
   /// ✅ Validate description
   static String? validateDescription(String? value) {
     if (value == null || value.isEmpty) {
-      return LocaleKeys.enterDescription.tr(); //  Enter description
+      return LocaleKeys.common.enterDescription.tr(); //  Enter description
     }
     return null;
   }

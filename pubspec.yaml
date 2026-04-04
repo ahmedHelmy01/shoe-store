@@ -19,6 +19,8 @@ dependencies:
   flutter_staggered_grid_view: ^0.7.0
   smooth_page_indicator: ^2.0.1
   badges: ^3.1.2
+  flutter_html: ^3.0.0-alpha.3
+  flutter_screenutil: ^5.9.3
 
   # State Management
   flutter_riverpod: ^3.1.0
@@ -67,8 +69,11 @@ flutter:
     - assets/webstore/icons/
     - assets/webstore/images/
     - assets/webstore/fonts/
-    - assets/webstore/data_webstore.json
+    - assets/config/
   fonts:
     - family: store
       fonts:
         - asset: assets/webstore/fonts/store-Regular.otf
+    - family: Harmattan
+      fonts:
+        - asset: assets/common/fonts/Harmattan-Regular.ttf

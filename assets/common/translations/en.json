@@ -1,4 +1,5 @@
 {
+  "common": {
     "app_name": "ERP System",
     "welcome_message": "Welcome to ERP System",
     "home": "Home",
@@ -51,4 +52,51 @@
     "next": "Next",
     "back": "Back",
     "get_started": "Get Started"
+  },
+  "webstore": {
+    "auth": {
+      "login_title": "Login",
+      "login_subtitle": "Welcome back to our store",
+      "register_title": "Create New Account",
+      "register_subtitle": "Join us and enjoy a unique shopping experience",
+      "forgot_password_title": "Forgot Password?",
+      "forgot_password_subtitle": "Enter your phone number to send verification code",
+      "otp_title": "Verification Code",
+      "otp_subtitle": "Enter the code sent to your phone",
+      "reset_password_title": "Set Password",
+      "reset_password_subtitle": "Enter your new password",
+      "mobile_label": "Phone Number",
+      "password_label": "Password",
+      "confirm_password_label": "Confirm Password",
+      "name_label": "Full Name",
+      "login_button": "Login",
+      "register_button": "Register",
+      "send_code_button": "Send Code",
+      "verify_button": "Verify",
+      "save_password_button": "Save Password",
+      "no_account": "Don't have an account?",
+      "have_account": "Already have an account?",
+      "register_now": "Register Now",
+      "login_now": "Login Now",
+      "register_success": "Account created successfully"
+    },
+    "home": {
+      "search_hint": "Search for a product...",
+      "shop_now": "Shop Now",
+      "categories": "Categories",
+      "featured_products": "Featured Products ⭐",
+      "latest_products": "Latest Products",
+      "view_all": "View All"
+    },
+    "nav": {
+      "home": "Home",
+      "store": "Store",
+      "cart": "Cart",
+      "profile": "Profile"
+    },
+    "general": {
+      "exit_confirm": "Press again to exit",
+      "coming_soon": "Coming soon..."
+    }
+  }
 }

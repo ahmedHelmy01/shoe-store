@@ -1,41 +1,170 @@
+/// WebStore Auth Repository
+///
+/// Provides a clean interface for all WebStore authentication operations.
+/// Uses BaseRepository.safeApiCall for consistent error handling.
+library;
+
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/repository/base_repository.dart';
-import 'package:erp/modules/webstore/shared/data/datasource/webstore_remote_datasource.dart';
+import 'package:erp/modules/webstore/auth/data/datasource/webstore_auth_remote_datasource.dart';
+import 'package:erp/modules/webstore/auth/data/models/webstore_auth_response.dart';
 
-abstract class IAuthRepository {
-  Future<ApiResult<Map<String, dynamic>>> getProfile();
-  Future<ApiResult<Map<String, dynamic>>> updateProfile(Map<String, dynamic> data);
-  Future<ApiResult<Map<String, dynamic>>> getAddresses();
-  Future<ApiResult<Map<String, dynamic>>> createAddress(Map<String, dynamic> data);
-  Future<ApiResult<Map<String, dynamic>>> updateAddress(int id, Map<String, dynamic> data);
-  Future<ApiResult<Map<String, dynamic>>> deleteAddress(int id);
+// ─── Interface ────────────────────────────────────────
+
+abstract class IWebStoreAuthRepository {
+  Future<ApiResult<WebStoreAuthResponse>> register({
+    required String name,
+    required String email,
+    required String mobile,
+    required String password,
+    required String passwordConfirmation,
+  });
+
+  Future<ApiResult<WebStoreAuthResponse>> login({
+    required String loginName,
+    required String password,
+  });
+
+  Future<ApiResult<Map<String, dynamic>>> forgotPassword({
+    required String username,
+  });
+
+  Future<ApiResult<Map<String, dynamic>>> verifyCode({
+    required String identifier,
+    required String code,
+    required String type,
+  });
+
+  Future<ApiResult<Map<String, dynamic>>> resendCode({
+    required String identifier,
+    required String type,
+  });
+
+  Future<ApiResult<Map<String, dynamic>>> resetPassword({
+    required String identifier,
+    required String code,
+    required String password,
+    required String passwordConfirmation,
+  });
+
+  Future<ApiResult<WebStoreAuthResponse>> refreshToken();
 }
 
-class AuthRepository extends BaseRepository implements IAuthRepository {
-  final WebStoreRemoteDataSource _remoteDataSource;
-  AuthRepository(this._remoteDataSource);
+// ─── Implementation ──────────────────────────────────
+
+class WebStoreAuthRepository extends BaseRepository
+    implements IWebStoreAuthRepository {
+  final WebStoreAuthRemoteDataSource _dataSource;
+
+  WebStoreAuthRepository(this._dataSource);
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> getProfile() => 
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.getProfile());
+  Future<ApiResult<WebStoreAuthResponse>> register({
+    required String name,
+    required String email,
+    required String mobile,
+    required String password,
+    required String passwordConfirmation,
+  }) {
+    return safeApiCall<WebStoreAuthResponse>(() async {
+      final response = await _dataSource.register(
+        name: name,
+        email: email,
+        mobile: mobile,
+        password: password,
+        passwordConfirmation: passwordConfirmation,
+      );
+      return WebStoreAuthResponse.fromJson(response as Map<String, dynamic>);
+    });
+  }
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> updateProfile(Map<String, dynamic> data) =>
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.updateProfile(data));
+  Future<ApiResult<WebStoreAuthResponse>> login({
+    required String loginName,
+    required String password,
+  }) {
+    return safeApiCall<WebStoreAuthResponse>(() async {
+      final response = await _dataSource.login(
+        loginName: loginName,
+        password: password,
+      );
+      return WebStoreAuthResponse.fromJson(response as Map<String, dynamic>);
+    });
+  }
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> getAddresses() => 
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.getAddresses());
+  Future<ApiResult<Map<String, dynamic>>> forgotPassword({
+    required String username,
+  }) {
+    return safeApiCall<Map<String, dynamic>>(
+      () async {
+        final response = await _dataSource.forgotPassword(username: username);
+        return response as Map<String, dynamic>;
+      },
+    );
+  }
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> createAddress(Map<String, dynamic> data) =>
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.createAddress(data));
+  Future<ApiResult<Map<String, dynamic>>> verifyCode({
+    required String identifier,
+    required String code,
+    required String type,
+  }) {
+    return safeApiCall<Map<String, dynamic>>(
+      () async {
+        final response = await _dataSource.verifyCode(
+          identifier: identifier,
+          code: code,
+          type: type,
+        );
+        return response as Map<String, dynamic>;
+      },
+    );
+  }
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> updateAddress(int id, Map<String, dynamic> data) =>
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.updateAddress(id, data));
+  Future<ApiResult<Map<String, dynamic>>> resendCode({
+    required String identifier,
+    required String type,
+  }) {
+    return safeApiCall<Map<String, dynamic>>(
+      () async {
+        final response = await _dataSource.resendCode(
+          identifier: identifier,
+          type: type,
+        );
+        return response as Map<String, dynamic>;
+      },
+    );
+  }
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> deleteAddress(int id) =>
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.deleteAddress(id));
+  Future<ApiResult<Map<String, dynamic>>> resetPassword({
+    required String identifier,
+    required String code,
+    required String password,
+    required String passwordConfirmation,
+  }) {
+    return safeApiCall<Map<String, dynamic>>(
+      () async {
+        final response = await _dataSource.resetPassword(
+          identifier: identifier,
+          code: code,
+          password: password,
+          passwordConfirmation: passwordConfirmation,
+        );
+        return response as Map<String, dynamic>;
+      },
+    );
+  }
+
+  @override
+  Future<ApiResult<WebStoreAuthResponse>> refreshToken() {
+    return safeApiCall<WebStoreAuthResponse>(
+      () async {
+        final response = await _dataSource.refreshToken();
+        return WebStoreAuthResponse.fromJson(response as Map<String, dynamic>);
+      },
+    );
+  }
 }

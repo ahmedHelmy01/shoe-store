@@ -23,4 +23,15 @@ class AppSnackBar {
       ),
     );
   }
+
+  /// Show an error snack bar (convenience method)
+  static void showError(BuildContext context, String message) {
+    show(context, message: message, isError: true);
+  }
+
+  /// Show a success snack bar (convenience method)
+  static void showSuccess(BuildContext context, String message) {
+    show(context, message: message, isError: false);
+  }
 }
+

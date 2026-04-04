@@ -22,9 +22,16 @@ class WebStoreEndpoints {
 
 class _WebStoreAuth {
   const _WebStoreAuth();
-  final String login = '/api/webstore/auth/login';
-  final String register = '/api/webstore/auth/register';
-  final String logout = '/api/webstore/auth/logout';
+  final String register = '/api/store/auth/register';
+  final String login = '/api/store/auth/login';
+  final String forgotPassword = '/api/store/auth/forgot-password';
+  final String verifyCode = '/api/store/auth/verify-code';
+  final String resendCode = '/api/store/auth/resend-code';
+  final String socialLogin = '/api/store/auth/social-login';
+  final String resetPassword = '/api/store/auth/reset-password';
+  final String weekPoints = '/api/store/auth/week-points';
+  final String refreshToken = '/api/store/auth/refresh-token';
+  final String logout = '/api/store/auth/logout';
 }
 
 class _WebStoreCatalog {

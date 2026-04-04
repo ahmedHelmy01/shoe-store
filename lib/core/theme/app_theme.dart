@@ -47,8 +47,8 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
-        labelStyle: const TextStyle(color: AppColors.textSecondary),
-        hintStyle: const TextStyle(color: AppColors.textHint),
+        labelStyle: const TextStyle(color: AppColors.textSecondary, fontFamily: 'Harmattan'),
+        hintStyle: const TextStyle(color: AppColors.textHint, fontFamily: 'Harmattan'),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
