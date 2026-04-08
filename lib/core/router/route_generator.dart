@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/router/app_navigator.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/modules/webstore/auth/presentation/view/webstore_login_screen.dart';
 import 'package:erp/modules/webstore/auth/presentation/view/webstore_register_screen.dart';
 import 'package:erp/modules/webstore/auth/presentation/view/webstore_forgot_password_screen.dart';
@@ -34,23 +36,33 @@ class RouteGenerator {
       case AppRouteNames.webstoreMain:
         return MaterialPageRoute(builder: (_) => const WebStoreMainLayout());
       case AppRouteNames.webstoreCheckout:
-        return MaterialPageRoute(builder: (_) => const WebStoreCheckoutView());
+        return _guarded(const WebStoreCheckoutView());
       case AppRouteNames.webstoreOrderTrack:
-        return MaterialPageRoute(builder: (_) => const WebStoreOrderTrackView());
+        return _guarded(const WebStoreOrderTrackView());
       case AppRouteNames.webstoreRateOrder:
-        return MaterialPageRoute(builder: (_) => const WebStoreRateOrderView());
+        return _guarded(const WebStoreRateOrderView());
       case AppRouteNames.webstoreOrderList:
-        return MaterialPageRoute(builder: (_) => const WebStoreOrderListView());
+        return _guarded(const WebStoreOrderListView());
       case AppRouteNames.webstoreOrderDetails:
-        return MaterialPageRoute(builder: (_) => const WebStoreOrderDetailsView());
+        return _guarded(const WebStoreOrderDetailsView());
       case AppRouteNames.webstoreWishlist:
-        return MaterialPageRoute(builder: (_) => const WebStoreWishlistView());
+        return _guarded(const WebStoreWishlistView());
       case AppRouteNames.webstorePoints:
-        return MaterialPageRoute(builder: (_) => const WebStorePointsView());
+        return _guarded(const WebStorePointsView());
 
       default:
         return _errorRoute();
     }
+  }
+
+  static Route<dynamic> _guarded(Widget child) {
+    return MaterialPageRoute(
+      builder: (context) {
+        final auth = ProviderScope.containerOf(context).read(authStateProvider);
+        final isAuthed = auth.status == AuthStatus.authenticated;
+        return isAuthed ? child : const WebStoreLoginScreen();
+      },
+    );
   }
 
   static Route<dynamic> _errorRoute() {

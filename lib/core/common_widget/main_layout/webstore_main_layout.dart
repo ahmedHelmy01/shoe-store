@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/modules/webstore/home/presentation/view/webstore_home_screen.dart';
@@ -8,16 +9,18 @@ import 'package:erp/modules/webstore/catalog/presentation/view/webstore_categori
 import 'package:erp/modules/webstore/cart/presentation/view/webstore_cart_view.dart';
 import 'package:erp/modules/webstore/profile/presentation/view/webstore_profile_view.dart';
 import 'package:erp/modules/webstore/cms/presentation/view/webstore_more_view.dart';
+import 'package:erp/core/providers/core_providers.dart';
+import 'package:erp/core/router/app_navigator.dart';
 
-class WebStoreMainLayout extends StatefulWidget {
+class WebStoreMainLayout extends ConsumerStatefulWidget {
   final int initialIndex;
   const WebStoreMainLayout({super.key, this.initialIndex = 0});
 
   @override
-  State<WebStoreMainLayout> createState() => _WebStoreMainLayoutState();
+  ConsumerState<WebStoreMainLayout> createState() => _WebStoreMainLayoutState();
 }
 
-class _WebStoreMainLayoutState extends State<WebStoreMainLayout> {
+class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
   late int _currentIndex;
   DateTime? _lastPressed;
 
@@ -69,6 +72,7 @@ class _WebStoreMainLayoutState extends State<WebStoreMainLayout> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = ref.watch(authStateProvider);
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
@@ -103,14 +107,14 @@ class _WebStoreMainLayoutState extends State<WebStoreMainLayout> {
           index: _currentIndex,
           children: _pages,
         ),
-        bottomNavigationBar: _buildBottomNavBar(),
+        bottomNavigationBar: _buildBottomNavBar(auth),
       ),
     );
   }
 
   // ─── Bottom Nav Bar ────────────────────────────────
 
-  Widget _buildBottomNavBar() {
+  Widget _buildBottomNavBar(AuthState auth) {
     final theme = Theme.of(context);
     final tabs = _tabs(context);
     
@@ -137,7 +141,15 @@ class _WebStoreMainLayoutState extends State<WebStoreMainLayout> {
 
               return Expanded(
                 child: GestureDetector(
-                  onTap: () => setState(() => _currentIndex = index),
+                  onTap: () {
+                    final requiresAuth = index == 2 || index == 3; // Cart, Profile
+                    final isAuthed = auth.status == AuthStatus.authenticated;
+                    if (requiresAuth && !isAuthed) {
+                      AppNavigator.push(context, AppRouteNames.webstoreLogin);
+                      return;
+                    }
+                    setState(() => _currentIndex = index);
+                  },
                   behavior: HitTestBehavior.opaque,
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 250),
