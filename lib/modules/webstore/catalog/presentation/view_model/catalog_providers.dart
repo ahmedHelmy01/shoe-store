@@ -6,15 +6,15 @@ import 'package:erp/core/network/pagination/paginated_response.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/modules/webstore/catalog/data/models/category_model.dart';
 import 'package:erp/modules/webstore/catalog/data/repositories/catalog_repository.dart';
-import 'package:erp/modules/webstore/shared/data/datasource/webstore_remote_datasource.dart';
+import 'package:erp/modules/webstore/catalog/data/datasource/webstore_catalog_remote_datasource.dart';
 import 'package:erp/core/providers/core_providers.dart';
 
 // ═══════════════════════════════════════════════════════════════
 // 📦 DATA PROVIDERS
 // ═══════════════════════════════════════════════════════════════
 
-final catalogRemoteDataSourceProvider = Provider<WebStoreRemoteDataSource>((ref) {
-  return WebStoreRemoteDataSource(ref.watch(networkServiceProvider));
+final catalogRemoteDataSourceProvider = Provider<WebStoreCatalogRemoteDataSource>((ref) {
+  return WebStoreCatalogRemoteDataSource(ref.watch(networkServiceProvider));
 });
 
 final catalogRepositoryProvider = Provider<ICatalogRepository>((ref) {

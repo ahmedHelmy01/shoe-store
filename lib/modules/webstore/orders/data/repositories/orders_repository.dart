@@ -1,6 +1,6 @@
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/repository/base_repository.dart';
-import 'package:erp/modules/webstore/shared/data/datasource/webstore_remote_datasource.dart';
+import 'package:erp/modules/webstore/orders/data/datasource/webstore_orders_remote_datasource.dart';
 
 abstract class IOrdersRepository {
   Future<ApiResult<Map<String, dynamic>>> getOrders({Map<String, dynamic>? queryParams});
@@ -10,7 +10,7 @@ abstract class IOrdersRepository {
 }
 
 class OrdersRepository extends BaseRepository implements IOrdersRepository {
-  final WebStoreRemoteDataSource _remoteDataSource;
+  final WebStoreOrdersRemoteDataSource _remoteDataSource;
   OrdersRepository(this._remoteDataSource);
 
   @override

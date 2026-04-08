@@ -53,15 +53,15 @@ class OnboardingBottomControls extends StatelessWidget {
               );
             },
             child: currentPage == totalPages - 1
-                ? _buildStartButton()
-                : _buildNextButton(),
+                ? _buildStartButton(context)
+                : _buildNextButton(context),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildNextButton() {
+  Widget _buildNextButton(BuildContext context) {
     return SizedBox(
       key: const ValueKey('next'),
       width: double.infinity,
@@ -99,7 +99,7 @@ class OnboardingBottomControls extends StatelessWidget {
     );
   }
 
-  Widget _buildStartButton() {
+  Widget _buildStartButton(BuildContext context) {
     return Container(
       key: const ValueKey('start'),
       width: double.infinity,

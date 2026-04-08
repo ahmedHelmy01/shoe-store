@@ -78,7 +78,7 @@ class ProductResultBottomSheet extends ConsumerWidget {
               ),
             )
           else if (products.isEmpty)
-            _buildEmptyState(type)
+            _buildEmptyState(context, type)
           else
             Flexible(
               child: GridView.builder(
@@ -103,7 +103,7 @@ class ProductResultBottomSheet extends ConsumerWidget {
     );
   }
 
-  Widget _buildEmptyState(ProductSheetType type) {
+  Widget _buildEmptyState(BuildContext context, ProductSheetType type) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 60.h),
       child: Column(

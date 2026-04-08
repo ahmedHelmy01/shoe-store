@@ -1,6 +1,6 @@
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/repository/base_repository.dart';
-import 'package:erp/modules/webstore/shared/data/datasource/webstore_remote_datasource.dart';
+import 'package:erp/modules/webstore/catalog/data/datasource/webstore_catalog_remote_datasource.dart';
 
 abstract class ICatalogRepository {
   Future<ApiResult<Map<String, dynamic>>> getProducts({Map<String, dynamic>? queryParams});
@@ -11,7 +11,7 @@ abstract class ICatalogRepository {
 }
 
 class CatalogRepository extends BaseRepository implements ICatalogRepository {
-  final WebStoreRemoteDataSource _remoteDataSource;
+  final WebStoreCatalogRemoteDataSource _remoteDataSource;
 
   CatalogRepository(this._remoteDataSource);
 

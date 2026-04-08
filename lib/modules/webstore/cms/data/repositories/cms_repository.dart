@@ -1,6 +1,6 @@
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/repository/base_repository.dart';
-import 'package:erp/modules/webstore/shared/data/datasource/webstore_remote_datasource.dart';
+import 'package:erp/modules/webstore/cms/data/datasource/webstore_cms_remote_datasource.dart';
 import 'package:erp/modules/webstore/cms/data/models/branch_model.dart';
 import 'package:erp/modules/webstore/cms/data/models/store_settings_model.dart';
 import 'package:erp/modules/webstore/cms/data/models/contact_request_model.dart';
@@ -18,7 +18,7 @@ abstract class ICMSRepository {
 }
 
 class CMSRepository extends BaseRepository implements ICMSRepository {
-  final WebStoreRemoteDataSource _remoteDataSource;
+  final WebStoreCmsRemoteDataSource _remoteDataSource;
   CMSRepository(this._remoteDataSource);
 
   @override

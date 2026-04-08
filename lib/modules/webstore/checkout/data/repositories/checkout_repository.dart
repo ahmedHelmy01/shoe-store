@@ -1,6 +1,6 @@
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/repository/base_repository.dart';
-import 'package:erp/modules/webstore/shared/data/datasource/webstore_remote_datasource.dart';
+import 'package:erp/modules/webstore/checkout/data/datasource/webstore_checkout_remote_datasource.dart';
 
 abstract class ICheckoutRepository {
   Future<ApiResult<Map<String, dynamic>>> getCheckoutSummary();
@@ -8,7 +8,7 @@ abstract class ICheckoutRepository {
 }
 
 class CheckoutRepository extends BaseRepository implements ICheckoutRepository {
-  final WebStoreRemoteDataSource _remoteDataSource;
+  final WebStoreCheckoutRemoteDataSource _remoteDataSource;
   CheckoutRepository(this._remoteDataSource);
 
   @override

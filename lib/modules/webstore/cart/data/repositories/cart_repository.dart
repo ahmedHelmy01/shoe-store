@@ -1,6 +1,6 @@
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/repository/base_repository.dart';
-import 'package:erp/modules/webstore/shared/data/datasource/webstore_remote_datasource.dart';
+import 'package:erp/modules/webstore/cart/data/datasource/webstore_cart_remote_datasource.dart';
 
 abstract class ICartRepository {
   Future<ApiResult<Map<String, dynamic>>> getCart();
@@ -12,7 +12,7 @@ abstract class ICartRepository {
 }
 
 class CartRepository extends BaseRepository implements ICartRepository {
-  final WebStoreRemoteDataSource _remoteDataSource;
+  final WebStoreCartRemoteDataSource _remoteDataSource;
   CartRepository(this._remoteDataSource);
 
   @override
