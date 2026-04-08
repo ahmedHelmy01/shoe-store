@@ -104,7 +104,7 @@ class _WebStoreRegisterScreenState
               AppTextField(
                 controller: _nameController,
                 label: LocaleKeys.webstore.auth.name_label.tr(),
-                hint: 'أحمد محمد',
+                hint: LocaleKeys.common.name.tr(),
                 prefixIcon: const Icon(Icons.person_outline,
                     color: AppColors.textSecondary),
                 validator: (value) {

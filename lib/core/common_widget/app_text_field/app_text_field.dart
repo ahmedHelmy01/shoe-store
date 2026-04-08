@@ -114,7 +114,7 @@ class _AppTextFieldState extends State<AppTextField> {
               hintStyle:
                   widget.hintStyle ??
                   const TextStyle(color: AppColors.textHint),
-              fillColor: widget.fillColor ?? AppColors.surface,
+              fillColor: widget.fillColor ?? (Theme.of(context).brightness == Brightness.dark ? Theme.of(context).cardColor : AppColors.surface),
               filled: true,
               prefixIcon: widget.prefixIcon != null
                   ? Padding(
@@ -154,7 +154,9 @@ class _AppTextFieldState extends State<AppTextField> {
                 ),
                 borderSide: widget.borderColor != null
                     ? BorderSide(color: widget.borderColor!)
-                    : BorderSide.none,
+                    : (Theme.of(context).brightness == Brightness.dark 
+                        ? BorderSide(color: Colors.white.withValues(alpha: 0.1), width: 1)
+                        : BorderSide.none),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(

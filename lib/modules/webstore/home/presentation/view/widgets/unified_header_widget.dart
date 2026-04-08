@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
+import 'package:erp/core/utils/asset_manager.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/search_result_widget.dart';
+import 'package:erp/core/services/session_manager.dart';
 
 class UnifiedHomeHeader extends ConsumerStatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -31,6 +36,8 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
   @override
   Widget build(BuildContext context) {
     final locationState = ref.watch(locationProvider);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       padding: EdgeInsets.only(
@@ -40,10 +47,10 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
         right: 16.w,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
+        color: isDark ? theme.scaffoldBackgroundColor : Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -53,38 +60,41 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
         children: [
           // Row 1: Location & Action Icons
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               InkWell(
-                onTap: () {
-                  // Open location picker
-                },
+                onTap: () => _showBranchSelection(context, ref),
                 child: Row(
                   children: [
-                    const Icon(Icons.location_on_rounded, color: AppColors.primaryOrange, size: 18),
-                    4.horizontalSpace,
+                    const Icon(Icons.location_on_rounded, color: AppColors.primaryOrange, size: 20),
+                    6.horizontalSpace,
                     Text(
-                      locationState.selectedBranch ?? 'اختر الفرع',
+                      locationState.selectedBranch ?? LocaleKeys.webstore.home.select_branch.tr(),
                       style: TextStyle(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textColor,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.bold,
+                        color: theme.textTheme.bodyLarge?.color,
                       ),
                     ),
-                    const Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textColor, size: 18),
+                    Icon(Icons.keyboard_arrow_down_rounded, color: theme.hintColor, size: 18),
                   ],
                 ),
               ),
-              Row(
-                children: [
-                  _buildHeaderIcon(Icons.notifications_none_rounded, () {}),
-                  12.horizontalSpace,
-                  _buildHeaderIcon(Icons.shopping_bag_outlined, () {}),
-                ],
-              ),
+              const Spacer(),
+              _buildHeaderIcon(Icons.notifications_none_rounded, () {}, theme),
+              12.horizontalSpace,
+              _buildHeaderIcon(Icons.shopping_bag_outlined, () {}, theme),
             ],
           ),
-          12.verticalSpace,
+          10.verticalSpace,
+          // Tarshooby Logo
+          Center(
+            child: AppImage(
+              imagePath: AssetManager.logoElTarshopy,
+              height: 100.h,
+              fit: BoxFit.contain,
+            ),
+          ),
+      
           // Row 2: Search Bar
           Row(
             children: [
@@ -92,21 +102,22 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
                 child: Container(
                   height: 48.h,
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
+                    color: isDark ? theme.cardColor : Colors.grey[100],
                     borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: Colors.grey[200]!),
+                    border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey[200]!),
                   ),
                   child: TextField(
                     controller: _searchController,
                     onSubmitted: (_) => _onSearch(),
                     textInputAction: TextInputAction.search,
+                    style: TextStyle(color: theme.textTheme.bodyLarge?.color),
                     decoration: InputDecoration(
-                      hintText: 'ابحث عن دواء، مستلزمات طبية...',
+                      hintText: LocaleKeys.webstore.home.search_hint.tr(),
                       hintStyle: TextStyle(
                         fontSize: 14.sp,
-                        color: Colors.grey[500],
+                        color: theme.hintColor,
                       ),
-                      prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                      prefixIcon: Icon(Icons.search, color: theme.hintColor),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(vertical: 12.h),
                     ),
@@ -133,10 +144,103 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
     );
   }
 
-  Widget _buildHeaderIcon(IconData icon, VoidCallback onTap) {
+  void _showBranchSelection(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    
+    showModalBottomSheet(
+      backgroundColor: theme.cardColor,
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+      ),
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.all(24.w),
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.7,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                LocaleKeys.webstore.home.select_branch.tr(),
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  color: theme.textTheme.titleLarge?.color,
+                ),
+              ),
+              24.verticalSpace,
+              Flexible(
+                child: Consumer(
+                  builder: (context, ref, _) {
+                    final branchState = ref.watch(branchVmProvider);
+
+                    if (branchState is BranchLoading) {
+                      return const Center(child: CircularProgressIndicator(color: AppColors.primaryOrange));
+                    } else if (branchState is BranchLoaded) {
+                      final branches = branchState.branches;
+                      if (branches.isEmpty) {
+                        return Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20.h),
+                            child: Text(LocaleKeys.webstore.home.no_products.tr()),
+                          ),
+                        );
+                      }
+                      return ListView.separated(
+                        shrinkWrap: true,
+                        itemCount: branches.length,
+                        separatorBuilder: (_, __) => Divider(height: 32.h),
+                        itemBuilder: (context, index) {
+                          final branch = branches[index];
+                          final branchName = context.locale.languageCode == 'ar' ? branch.nameAr : branch.name;
+                          final isSelected = ref.read(locationProvider).selectedBranch == branchName;
+                          
+                          return ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(
+                              branchName,
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                color: isSelected ? AppColors.primaryOrange : theme.textTheme.bodyLarge?.color,
+                              ),
+                            ),
+                            trailing: isSelected ? const Icon(Icons.check_circle_rounded, color: AppColors.primaryOrange) : null,
+                            onTap: () async {
+                              await SessionManager.instance.setBranchId(branch.id);
+                              await SessionManager.instance.setBranchName(branchName);
+                              ref.read(locationProvider.notifier).updateSelectedBranch(branchName);
+                              await ref.read(branchVmProvider.notifier).updateBranch(branch.id.toString());
+                              ref.read(homeVmProvider.notifier).getLatestProducts();
+                              if (context.mounted) Navigator.pop(context);
+                            },
+                          );
+                        },
+                      );
+                    } else if (branchState is BranchError) {
+                      return Center(child: Text(branchState.message));
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                ),
+              ),
+              12.verticalSpace,
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHeaderIcon(IconData icon, VoidCallback onTap, ThemeData theme) {
     return InkWell(
       onTap: onTap,
-      child: Icon(icon, color: AppColors.textColor, size: 24),
+      child: Icon(icon, color: theme.iconTheme.color, size: 24),
     );
   }
 }

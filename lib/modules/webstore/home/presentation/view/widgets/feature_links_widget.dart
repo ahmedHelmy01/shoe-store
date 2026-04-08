@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/home/data/models/webstore_mock_data.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
 
@@ -29,7 +29,7 @@ class FeatureLinksWidget extends StatelessWidget {
             itemCount: features.length,
             itemBuilder: (context, index) {
               final feature = features[index];
-              return _buildFeatureItem(feature);
+              return _buildFeatureItem(context, feature);
             },
           ),
         ),
@@ -37,7 +37,10 @@ class FeatureLinksWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureItem(MockFeatureLink feature) {
+  Widget _buildFeatureItem(BuildContext context, MockFeatureLink feature) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return InkWell(
       onTap: () {
         // Navigation placeholder
@@ -50,11 +53,11 @@ class FeatureLinksWidget extends StatelessWidget {
             width: 72.w,
             height: 72.w,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDark ? theme.cardColor : Colors.white,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
+                  color: isDark ? Colors.black.withOpacity(0.2) : Colors.black.withOpacity(0.06),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -73,14 +76,14 @@ class FeatureLinksWidget extends StatelessWidget {
           ),
           8.verticalSpace,
           Text(
-            feature.title,
+            feature.title.tr(),
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 13.sp,
               fontWeight: FontWeight.w700,
-              color: AppColors.textColor,
+              color: theme.textTheme.bodyMedium?.color,
             ),
           ),
         ],

@@ -8,6 +8,13 @@ class AppRouteNames {
   static const String webstoreOtp = '/webstore/otp';
   static const String webstoreResetPassword = '/webstore/reset-password';
   static const String webstoreMain = '/webstore/main';
+  static const String webstoreCheckout = '/webstore/checkout';
+  static const String webstoreOrderTrack = '/webstore/order-track';
+  static const String webstoreRateOrder = '/webstore/rate-order';
+  static const String webstoreOrderList = '/webstore/order-list';
+  static const String webstoreWishlist = '/webstore/wishlist';
+  static const String webstorePoints = '/webstore/points';
+  static const String webstoreOrderDetails = '/webstore/order-details';
 }
 
 class AppNavigator {

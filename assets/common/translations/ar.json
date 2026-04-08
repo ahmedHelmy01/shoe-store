@@ -78,7 +78,11 @@
       "have_account": "لديك حساب بالفعل؟",
       "register_now": "سجل الآن",
       "login_now": "سجل دخولك",
-      "register_success": "تم إنشاء الحساب بنجاح"
+      "register_success": "تم إنشاء الحساب بنجاح",
+      "otp_sent": "تم إرسال كود التحقق",
+      "otp_verified": "تم التحقق بنجاح",
+      "otp_resent": "تم إعادة إرسال الكود",
+      "password_reset_success": "تم تغيير كلمة المرور بنجاح"
     },
     "home": {
       "search_hint": "ابحث عن منتج...",
@@ -86,17 +90,86 @@
       "categories": "التصنيفات",
       "featured_products": "منتجات مميزة ⭐",
       "latest_products": "أحدث المنتجات",
-      "view_all": "عرض الكل"
+      "view_all": "عرض الكل",
+      "medical_services": "خدماتنا الطبية السريعة",
+      "pharmacy_sections": "أقسام الصيدلية",
+      "most_ordered": "الأكثر طلباً حالياً 🔥",
+      "exclusive_offers": "عروض حصرية لك 🎁",
+      "trusted_brands": "الماركات الموثوقة",
+      "tarshooby_offers": "عروض الطرشوبي",
+      "vouchers_title": "قسائم الهدايا والمكافآت",
+      "use_voucher": "استخدم",
+      "select_branch": "اختر الفرع",
+      "no_products": "لا توجد منتجات حالياً",
+      "search_results": "نتائج البحث",
+      "filter_results": "الفلترة",
+      "no_search_results": "عذراً، لم نجد أي نتائج لبحثك",
+      "no_filter_results": "لا توجد منتجات تطابق هذه الفلاتر",
+      "my_points": "نقاطي",
+      "wallet": "المحفظة",
+      "coupons": "كوبونات",
+      "no_offers": "لا توجد عروض حالياً",
+      "wait_for_offers": "انتظرونا قريباً للحصول على أقوى التخفيضات والمفاجآت.",
+      "explore_now": "استكشف الآن",
+      "feature_products": "المنتجات",
+      "feature_categories": "الأقسام",
+      "feature_discounts": "الخصومات",
+      "feature_new_arrivals": "وصل حديثاً",
+      "feature_best_sellers": "الأكثر مبيعاً",
+      "feature_special_picks": "اختيارات مميزة"
     },
     "nav": {
       "home": "الرئيسية",
       "store": "المتجر",
       "cart": "السلة",
-      "profile": "حسابي"
+      "profile": "حسابي",
+      "more": "المزيد"
     },
     "general": {
       "exit_confirm": "اضغط مرة أخرى للخروج",
       "coming_soon": "قريباً..."
+    },
+    "orders": {
+      "title": "طلباتي",
+      "status_processing": "قيد المعالجة",
+      "status_shipped": "تم الشحن",
+      "status_delivered": "تم التوصيل",
+      "order_number": "رقم الطلب",
+      "total": "الإجمالي",
+      "date": "التاريخ",
+      "details": "تفاصيل الطلب",
+      "order_items": "عناصر الطلب",
+      "quantity": "الكمية:",
+      "payment_summary": "ملخص الدفع",
+      "subtotal": "المجموع الفرعي",
+      "delivery_fee": "رسوم التوصيل",
+      "reorder": "إعادة الطلب",
+      "rate_order": "تقييم الطلب",
+      "added_to_cart": "تم إضافة العناصر للسلة"
+    },
+    "wishlist": {
+      "title": "المفضلة",
+      "remove": "إزالة",
+      "empty": "المفضلة فارغة",
+      "add_to_cart": "إضافة للسلة"
+    },
+    "points": {
+      "title": "نقاطي",
+      "balance": "الرصيد الحالي",
+      "earned": "تم كسبها",
+      "spent": "تم استخدامها",
+      "point": "نقطة",
+      "history": "سجل النقاط"
+    },
+    "more": {
+      "appearance": "المظهر",
+      "dark_mode": "الوضع الليلي",
+      "language": "اللغة",
+      "arabic": "العربية",
+      "english": "English",
+      "wishlist": "المفضلة",
+      "my_orders": "طلباتي",
+      "my_points": "نقاطي"
     }
   }
 }

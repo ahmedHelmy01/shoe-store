@@ -7,6 +7,7 @@ import '../app_bar/common_app_bar.dart';
 class WebStoreBaseScaffold extends StatelessWidget {
   final Widget body;
   final Widget? title;
+  final String? titleText;
   final bool showBack;
   final Widget? leftIcon;
   final Widget? rightIcon;
@@ -25,6 +26,7 @@ class WebStoreBaseScaffold extends StatelessWidget {
     super.key,
     required this.body,
     this.title,
+    this.titleText,
     this.showBack = false,
     this.leftIcon,
     this.rightIcon,
@@ -42,28 +44,20 @@ class WebStoreBaseScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appConfig = AppConfigManager.instance;
-    final hasCustomTheme = appConfig.customTheme != null;
-
-    final scaffoldBg = backgroundColor ??
-        (appConfig.customSettings.enableGradientBackground
-            ? Colors.transparent
-            : hasCustomTheme
-                ? appConfig.customTheme!.backgroundColor
-                : Colors.white);
-
-    final isDarkMode =
-        hasCustomTheme ? appConfig.customTheme!.isDarkMode : false;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final scaffoldBg = backgroundColor ?? theme.scaffoldBackgroundColor;
 
     final scaffoldBody = Scaffold(
       key: scaffoldKey,
       drawer: drawer,
       backgroundColor: scaffoldBg,
-      extendBodyBehindAppBar: appConfig.customSettings.extendBodyBehindAppBar,
+      extendBodyBehindAppBar: false, // Standardizing to avoid overlap issues
       resizeToAvoidBottomInset: true,
       appBar: showAppBar
           ? CommonAppBar(
               title: title,
+              titleText: titleText,
               centerTitle: centerTitle,
               showBackButton: showBack,
               leading: leftIcon,
@@ -82,9 +76,11 @@ class WebStoreBaseScaffold extends StatelessWidget {
       ),
     );
 
+    // Keep gradient functionality but make it theme-aware
+    final appConfig = AppConfigManager.instance;
     if (appConfig.customSettings.enableGradientBackground &&
         backgroundColor == null &&
-        hasCustomTheme) {
+        appConfig.customTheme != null) {
       return Stack(
         children: [
           Container(
@@ -94,7 +90,7 @@ class WebStoreBaseScaffold extends StatelessWidget {
                 end: Alignment.bottomCenter,
                 colors: [
                   appConfig.customTheme!.linearGradientHome,
-                  isDarkMode ? Colors.grey[900]! : Colors.white,
+                  isDark ? theme.scaffoldBackgroundColor : Colors.white,
                 ],
                 stops: const [0.0, 0.5],
               ),

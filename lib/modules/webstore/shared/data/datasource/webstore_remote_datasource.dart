@@ -142,21 +142,37 @@ class WebStoreRemoteDataSource {
     return _networkService.delete(ApiEndpoints.withId(ApiEndpoints.webstore.profile.deleteAddress, id));
   }
 
-  // ─── CMS ───────────────────────────────────────────
+  // ─── CMS & Promotional ────────────────────────────
 
   Future<dynamic> getSliders() {
     return _networkService.get(ApiEndpoints.webstore.cms.sliders);
   }
 
-  Future<dynamic> getBanners() {
-    return _networkService.get(ApiEndpoints.webstore.cms.banners);
+  Future<dynamic> getAds() {
+    return _networkService.get(ApiEndpoints.webstore.cms.ads);
+  }
+
+  Future<dynamic> getBoardings() {
+    return _networkService.get(ApiEndpoints.webstore.cms.boardings);
   }
 
   Future<dynamic> getPages() {
     return _networkService.get(ApiEndpoints.webstore.cms.pages);
   }
 
-  Future<dynamic> getPageDetail(int id) {
-    return _networkService.get(ApiEndpoints.withId(ApiEndpoints.webstore.cms.pageDetail, id));
+  Future<dynamic> getPageBySlug(String slug) {
+    return _networkService.get(ApiEndpoints.withSlug(ApiEndpoints.webstore.cms.pageDetail, slug));
+  }
+
+  Future<dynamic> getSettings() {
+    return _networkService.get(ApiEndpoints.webstore.cms.settings);
+  }
+
+  Future<dynamic> getBranches() {
+    return _networkService.get(ApiEndpoints.webstore.cms.branches);
+  }
+
+  Future<dynamic> submitContact(Map<String, dynamic> data) {
+    return _networkService.post(ApiEndpoints.webstore.cms.contact, body: data);
   }
 }

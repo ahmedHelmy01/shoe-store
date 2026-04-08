@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/home/data/models/webstore_mock_data.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
+import 'package:erp/core/common_widget/app_card/app_card.dart';
+import 'package:erp/core/common_widget/app_price_text/app_price_text.dart';
 
 class ProductGridCard extends ConsumerWidget {
   final MockProduct product;
@@ -12,6 +14,9 @@ class ProductGridCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     final bool hasDiscount =
         product.oldPrice != null && product.oldPrice! > product.price;
     final int discountPct = hasDiscount
@@ -19,18 +24,8 @@ class ProductGridCard extends ConsumerWidget {
             .toInt()
         : 0;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+    return AppCard(
+      onTap: () {},
       child: Stack(
         children: [
           Column(
@@ -42,11 +37,12 @@ class ProductGridCard extends ConsumerWidget {
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Colors.grey[50],
+                    color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey[50],
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(16.r),
                       topRight: Radius.circular(16.r),
                     ),
+                    border: isDark ? Border.all(color: Colors.white.withValues(alpha: 0.05)) : null,
                   ),
                   padding: EdgeInsets.all(12.w),
                   child: AppImage(
@@ -74,7 +70,7 @@ class ProductGridCard extends ConsumerWidget {
                             style: TextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.textColor,
+                              color: theme.textTheme.bodyLarge?.color,
                               height: 1.2,
                             ),
                           ),
@@ -83,7 +79,7 @@ class ProductGridCard extends ConsumerWidget {
                             product.manufacturer,
                             style: TextStyle(
                               fontSize: 11.sp,
-                              color: Colors.grey[500],
+                              color: isDark ? Colors.white.withValues(alpha: 0.5) : theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                             ),
                           ),
                         ],
@@ -91,27 +87,9 @@ class ProductGridCard extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (hasDiscount)
-                                Text(
-                                  '${product.oldPrice} LE',
-                                  style: TextStyle(
-                                    fontSize: 11.sp,
-                                    color: Colors.grey[400],
-                                    decoration: TextDecoration.lineThrough,
-                                  ),
-                                ),
-                              Text(
-                                '${product.price} LE',
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w800,
-                                  color: AppColors.primaryOrange,
-                                ),
-                              ),
-                            ],
+                          AppPriceText(
+                            price: product.price,
+                            oldPrice: product.oldPrice,
                           ),
                           Container(
                             height: 32.h,

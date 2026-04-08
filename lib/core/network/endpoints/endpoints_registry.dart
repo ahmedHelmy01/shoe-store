@@ -23,6 +23,11 @@ class ApiEndpoints {
     return path.replaceAll('{id}', id.toString());
   }
 
+  /// Replace path parameter {slug} with actual value
+  static String withSlug(String path, String slug) {
+    return path.replaceAll('{slug}', slug);
+  }
+
   /// Replace multiple path parameters
   static String withParams(String path, Map<String, dynamic> params) {
     var result = path;

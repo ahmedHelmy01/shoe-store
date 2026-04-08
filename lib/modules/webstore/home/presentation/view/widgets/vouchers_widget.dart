@@ -1,93 +1,106 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/common_widget/app_section_header/app_section_header.dart';
+import 'package:erp/core/common_widget/app_card/app_card.dart';
+import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 
 class VouchersWidget extends StatelessWidget {
   const VouchersWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'قسائم الهدايا والمكافآت',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textColor,
-                ),
-              ),
-              Text(
-                'عرض الكل',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: AppColors.primaryOrange,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
+    return AppAnimation.fadeInUp(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AppSectionHeader(
+            title: LocaleKeys.webstore.home.vouchers_title.tr(),
+            onViewAllTap: () {},
           ),
-        ),
-        SizedBox(
-          height: 100.h,
-          child: ListView.separated(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            scrollDirection: Axis.horizontal,
-            itemCount: 4,
-            separatorBuilder: (_, __) => 12.horizontalSpace,
-            itemBuilder: (context, index) => _buildVoucherCard(index),
-          ),
-        ),
-      ],
-    );
-  }
+          SizedBox(
+            height: 110.h,
+            child: ListView.separated(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              scrollDirection: Axis.horizontal,
+              itemCount: 4,
+              separatorBuilder: (_, __) => 12.horizontalSpace,
+              itemBuilder: (context, index) {
+                final theme = Theme.of(context);
+                final isDark = theme.brightness == Brightness.dark;
 
-  Widget _buildVoucherCard(int index) {
-    final colors = [
-      [const Color(0xFF465CA7), const Color(0xFF6478BD)],
-      [const Color(0xFFFF6D00), const Color(0xFFF08320)],
-      [const Color(0xFF2E7D32), const Color(0xFF4CAF50)],
-      [const Color(0xFFD32F2F), const Color(0xFFEF5A56)],
-    ];
+                final lightColors = [
+                  const Color(0xFFE3F2FD), // Light Blue
+                  const Color(0xFFF1F8E9), // Light Green
+                  const Color(0xFFF3E5F5), // Light Purple
+                  const Color(0xFFFFF3E0), // Light Orange
+                ];
+                final darkColors = [
+                  const Color(0xFF1A237E).withValues(alpha: 0.3),
+                  const Color(0xFF1B5E20).withValues(alpha: 0.3),
+                  const Color(0xFF4A148C).withValues(alpha: 0.3),
+                  const Color(0xFFE65100).withValues(alpha: 0.3),
+                ];
 
-    return Container(
-      width: 220.w,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: colors[index % colors.length],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: colors[index % colors.length][0].withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+                final textColors = [
+                  isDark ? const Color(0xFF90CAF9) : const Color(0xFF1976D2),
+                  isDark ? const Color(0xFFA5D6A7) : const Color(0xFF388E3C),
+                  isDark ? const Color(0xFFCE93D8) : const Color(0xFF7B1FA2),
+                  isDark ? const Color(0xFFFFCC80) : const Color(0xFFF57C00),
+                ];
+                
+                return _buildVoucherCard(
+                  index == 0 ? "50 LE" : "20 LE",
+                  index == 0 ? 'على أول طلب لك' : 'على منتجات العناية بالبشرة',
+                  isDark ? darkColors[index % darkColors.length] : lightColors[index % lightColors.length],
+                  textColors[index % textColors.length],
+                );
+              },
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildVoucherCard(String discount, String description, Color bgColor, Color textColor) {
+    return AppCard(
+      width: 200.w,
+      backgroundColor: bgColor,
+      borderRadius: 20.r,
+      padding: EdgeInsets.zero,
+      onTap: () {},
       child: Stack(
         children: [
-          // Semi-circle cutouts (Voucher aesthetic)
+          // Background circles for premium design
+          Positioned(
+            right: -20,
+            top: -20,
+            child: Container(
+              width: 80.w,
+              height: 80.w,
+              decoration: BoxDecoration(
+                color: textColor.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
           Positioned(
             left: -10,
-            top: 35.h,
-            child: CircleAvatar(radius: 10, backgroundColor: AppColors.baseScaffold.withOpacity(0.5)),
+            bottom: -10,
+            child: Container(
+              width: 50.w,
+              height: 50.w,
+              decoration: BoxDecoration(
+                color: textColor.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+            ),
           ),
-          Positioned(
-            right: -10,
-            top: 35.h,
-            child: CircleAvatar(radius: 10, backgroundColor: AppColors.baseScaffold.withOpacity(0.5)),
-          ),
+          
           Padding(
-            padding: EdgeInsets.all(12.w),
+            padding: EdgeInsets.all(16.w),
             child: Row(
               children: [
                 Expanded(
@@ -96,38 +109,28 @@ class VouchersWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'خصم ${index == 0 ? "50" : "20"} LE',
+                        discount,
                         style: TextStyle(
-                          fontSize: 18.sp,
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.w900,
-                          color: Colors.white,
+                          color: textColor,
                         ),
                       ),
+                      4.verticalSpace,
                       Text(
-                        index == 0 ? 'على أول طلب لك' : 'على منتجات العناية بالبشرة',
+                        description,
                         style: TextStyle(
-                          fontSize: 10.sp,
-                          color: Colors.white.withOpacity(0.9),
+                          fontSize: 11.sp,
+                          fontWeight: FontWeight.w600,
+                          color: textColor.withValues(alpha: 0.8),
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20.r),
-                  ),
-                  child: Text(
-                    'استخدم',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.bold,
-                      color: colors[index % colors.length][0],
-                    ),
-                  ),
-                ),
+                Icon(Icons.card_giftcard_rounded, color: textColor.withValues(alpha: 0.3), size: 36),
               ],
             ),
           ),

@@ -5,15 +5,21 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/app/app_initializer.dart';
 import 'package:erp/core/config/app_flavor.dart';
 import 'package:erp/core/providers/core_providers.dart';
+import 'package:erp/core/providers/theme_provider.dart';
 import 'package:erp/core/theme/app_theme.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/router/app_navigator.dart';
-import 'package:erp/modules/webstore/auth/presentation/view/webstore_login_screen.dart';
-import 'package:erp/modules/webstore/auth/presentation/view/webstore_register_screen.dart';
-import 'package:erp/modules/webstore/auth/presentation/view/webstore_forgot_password_screen.dart';
-import 'package:erp/modules/webstore/auth/presentation/view/webstore_otp_screen.dart';
-import 'package:erp/modules/webstore/auth/presentation/view/webstore_reset_password_screen.dart';
 import 'package:erp/core/common_widget/main_layout/webstore_main_layout.dart';
+import 'package:erp/modules/webstore/onboarding/onboarding_view.dart';
+import 'package:erp/modules/webstore/splash/animated_splash_screen.dart';
+import 'package:erp/core/services/session_manager.dart';
+import 'package:erp/modules/webstore/checkout/presentation/view/webstore_checkout_view.dart';
+import 'package:erp/modules/webstore/orders/presentation/view/webstore_order_track_view.dart';
+import 'package:erp/modules/webstore/orders/presentation/view/webstore_rate_order_view.dart';
+import 'package:erp/modules/webstore/orders/presentation/view/webstore_order_list_view.dart';
+import 'package:erp/modules/webstore/orders/presentation/view/webstore_order_details_view.dart';
+import 'package:erp/modules/webstore/wishlist/presentation/view/webstore_wishlist_view.dart';
+import 'package:erp/modules/webstore/profile/presentation/view/webstore_points_view.dart';
 
 /// Central entry point for the ERP application
 class ErpAppRoot extends ConsumerWidget {
@@ -21,7 +27,6 @@ class ErpAppRoot extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch connectivity status globally
     ref.watch(isConnectedProvider);
 
     return EasyLocalization(
@@ -30,7 +35,7 @@ class ErpAppRoot extends ConsumerWidget {
       fallbackLocale: const Locale('ar'),
       startLocale: const Locale('ar'),
       child: ScreenUtilInit(
-        designSize: const Size(375, 812), // Standard design size
+        designSize: const Size(375, 812),
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context, child) {
@@ -39,50 +44,22 @@ class ErpAppRoot extends ConsumerWidget {
               return MaterialApp(
                 title: FlavorConfig.appName,
                 debugShowCheckedModeBanner: false,
-
-                // Localization
                 localizationsDelegates: context.localizationDelegates,
                 supportedLocales: context.supportedLocales,
                 locale: context.locale,
-
-                // Theme
                 theme: AppTheme.lightTheme,
-
-                // Initializing feature modules route guards and dashboard logic
-                home: const SplashOrAuthWrapper(),
-
-                // Named Routes
+                darkTheme: AppTheme.darkTheme,
+                themeMode: ref.watch(themeProvider),
+                home: const SplashRouter(),
                 routes: {
-                  AppRouteNames.webstoreLogin: (context) =>
-                      const WebStoreLoginScreen(),
-                  AppRouteNames.webstoreRegister: (context) =>
-                      const WebStoreRegisterScreen(),
-                  AppRouteNames.webstoreForgotPassword: (context) =>
-                      const WebStoreForgotPasswordScreen(),
-                  AppRouteNames.webstoreMain: (context) =>
-                      const WebStoreMainLayout(),
-                },
-
-                onGenerateRoute: (settings) {
-                  if (settings.name == AppRouteNames.webstoreOtp) {
-                    final args = settings.arguments as Map<String, dynamic>;
-                    return MaterialPageRoute(
-                      builder: (context) => WebStoreOtpScreen(
-                        identifier: args['identifier'],
-                        type: args['type'],
-                      ),
-                    );
-                  }
-                  if (settings.name == AppRouteNames.webstoreResetPassword) {
-                    final args = settings.arguments as Map<String, dynamic>;
-                    return MaterialPageRoute(
-                      builder: (context) => WebStoreResetPasswordScreen(
-                        identifier: args['identifier'],
-                        code: args['code'],
-                      ),
-                    );
-                  }
-                  return null;
+                  AppRouteNames.webstoreMain: (context) => const WebStoreMainLayout(),
+                  AppRouteNames.webstoreCheckout: (context) => const WebStoreCheckoutView(),
+                  AppRouteNames.webstoreOrderTrack: (context) => const WebStoreOrderTrackView(),
+                  AppRouteNames.webstoreRateOrder: (context) => const WebStoreRateOrderView(),
+                  AppRouteNames.webstoreOrderList: (context) => const WebStoreOrderListView(),
+                  AppRouteNames.webstoreOrderDetails: (context) => const WebStoreOrderDetailsView(),
+                  AppRouteNames.webstoreWishlist: (context) => const WebStoreWishlistView(),
+                  AppRouteNames.webstorePoints: (context) => const WebStorePointsView(),
                 },
               );
             },
@@ -93,23 +70,52 @@ class ErpAppRoot extends ConsumerWidget {
   }
 }
 
-/// A wrapper to decide the initial screen based on auth status
-class SplashOrAuthWrapper extends ConsumerWidget {
-  const SplashOrAuthWrapper({super.key});
+/// Splash → Onboarding (first time) → Main Layout
+class SplashRouter extends ConsumerStatefulWidget {
+  const SplashRouter({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateProvider);
+  ConsumerState<SplashRouter> createState() => _SplashRouterState();
+}
 
-    return switch (authState.status) {
-      AuthStatus.authenticated => const WebStoreMainLayout(),
-      AuthStatus.unauthenticated => FlavorConfig.isWebStore
-          ? const WebStoreMainLayout()
-          : const WebStoreLoginScreen(),
-      AuthStatus.initial => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
-    };
+class _SplashRouterState extends ConsumerState<SplashRouter> {
+  bool _splashDone = false;
+  bool? _isOnboardingDone;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkOnboardingStatus();
+  }
+
+  Future<void> _checkOnboardingStatus() async {
+    final status = await SessionManager.instance.hasSeenOnboarding();
+    if (mounted) {
+      setState(() => _isOnboardingDone = status);
+    }
+  }
+
+  void _onSplashComplete() {
+    if (!mounted) return;
+    setState(() => _splashDone = true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // ─── 1. Show Splash until animation is done ───────────
+    if (!_splashDone || _isOnboardingDone == null) {
+      return AnimatedSplashScreen(
+        key: const ValueKey('splash'), 
+        onComplete: _onSplashComplete,
+      );
+    }
+
+    // ─── 2. Route based on Onboarding status ──────────────
+    if (!(_isOnboardingDone!)) {
+      return const OnBoarding(key: ValueKey('onboarding'));
+    } else {
+      return const WebStoreMainLayout(key: ValueKey('main'));
+    }
   }
 }
 
@@ -120,7 +126,6 @@ Future<void> bootstrap(AppFlavor flavor) async {
   runApp(
     ProviderScope(
       overrides: [
-        // Injecting the initialized SharedPreferences instance
         sharedPreferencesProvider.overrideWithValue(prefs),
       ],
       child: const ErpAppRoot(),

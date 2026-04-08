@@ -1,16 +1,13 @@
-/// WebStore Main Layout
-///
-/// Bottom navigation shell for the WebStore module.
-/// Tabs: Home, Store (Catalog), Cart, Profile.
-/// Uses IndexedStack for page caching and smooth tab switching.
-library;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/modules/webstore/home/presentation/view/webstore_home_screen.dart';
+import 'package:erp/modules/webstore/catalog/presentation/view/webstore_categories_view.dart';
+import 'package:erp/modules/webstore/cart/presentation/view/webstore_cart_view.dart';
+import 'package:erp/modules/webstore/profile/presentation/view/webstore_profile_view.dart';
+import 'package:erp/modules/webstore/cms/presentation/view/webstore_more_view.dart';
 
 class WebStoreMainLayout extends StatefulWidget {
   final int initialIndex;
@@ -34,15 +31,10 @@ class _WebStoreMainLayoutState extends State<WebStoreMainLayout> {
 
   List<Widget> get _pages => [
         const WebStoreHomeScreen(),
-        _PlaceholderPage(
-            title: LocaleKeys.webstore.nav.store.tr(),
-            icon: Icons.grid_view_rounded),
-        _PlaceholderPage(
-            title: LocaleKeys.webstore.nav.cart.tr(),
-            icon: Icons.shopping_cart_rounded),
-        _PlaceholderPage(
-            title: LocaleKeys.webstore.nav.profile.tr(),
-            icon: Icons.person_rounded),
+        const WebStoreCategoriesView(),
+        const WebStoreCartView(),
+        WebStoreProfileView(key: ValueKey(_currentIndex == 3)),
+        const WebStoreMoreView(),
       ];
 
   // ─── Tab Config ────────────────────────────────────
@@ -64,6 +56,10 @@ class _WebStoreMainLayoutState extends State<WebStoreMainLayout> {
             icon: Icons.person_outline_rounded,
             activeIcon: Icons.person,
             label: LocaleKeys.webstore.nav.profile.tr()),
+        _TabItem(
+            icon: Icons.menu_rounded,
+            activeIcon: Icons.menu_open_rounded,
+            label: LocaleKeys.webstore.nav.more.tr()),
       ];
 
   @override
@@ -110,10 +106,12 @@ class _WebStoreMainLayoutState extends State<WebStoreMainLayout> {
   // ─── Bottom Nav Bar ────────────────────────────────
 
   Widget _buildBottomNavBar() {
+    final theme = Theme.of(context);
     final tabs = _tabs;
+    
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: theme.cardColor,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.06),
@@ -138,11 +136,10 @@ class _WebStoreMainLayoutState extends State<WebStoreMainLayout> {
                   behavior: HitTestBehavior.opaque,
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 250),
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
                     decoration: BoxDecoration(
                       color: isActive
-                          ? AppColors.primary.withValues(alpha: 0.08)
+                          ? AppColors.primary.withValues(alpha: 0.1)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(14),
                     ),
@@ -156,7 +153,7 @@ class _WebStoreMainLayoutState extends State<WebStoreMainLayout> {
                             key: ValueKey(isActive),
                             color: isActive
                                 ? AppColors.primary
-                                : AppColors.textHint,
+                                : theme.hintColor,
                             size: 24,
                           ),
                         ),
@@ -165,11 +162,11 @@ class _WebStoreMainLayoutState extends State<WebStoreMainLayout> {
                           tab.label,
                           style: TextStyle(
                             fontSize: 11,
-                            fontWeight:
-                                isActive ? FontWeight.w700 : FontWeight.w500,
+                            fontFamily: 'Harmattan',
+                            fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                             color: isActive
                                 ? AppColors.primary
-                                : AppColors.textHint,
+                                : theme.hintColor,
                           ),
                         ),
                       ],
@@ -196,51 +193,4 @@ class _TabItem {
     required this.activeIcon,
     required this.label,
   });
-}
-
-// ─── Placeholder Page ────────────────────────────────
-
-class _PlaceholderPage extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  const _PlaceholderPage({required this.title, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.08),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, size: 48, color: AppColors.primary),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textMain,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              LocaleKeys.webstore.general.coming_soon.tr(),
-              style: const TextStyle(
-                fontSize: 14,
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

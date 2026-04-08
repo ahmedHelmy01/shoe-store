@@ -29,7 +29,7 @@ class ProductCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -43,27 +43,28 @@ class ProductCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ─── Image Header ────────────────────────────────
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                  child: CachedNetworkImage(
-                    imageUrl: product.image ?? '',
-                    height: 160,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Shimmer.fromColors(
-                      baseColor: Colors.grey.shade200,
-                      highlightColor: Colors.grey.shade100,
-                      child: Container(color: Colors.white),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      height: 160,
-                      color: Colors.grey.shade100,
-                      child: const Icon(Icons.image_not_supported_outlined, color: Colors.grey),
+            Expanded(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                    child: CachedNetworkImage(
+                      imageUrl: product.image ?? '',
+                      width: double.infinity,
+                      height: double.infinity,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey.shade200,
+                        highlightColor: Colors.grey.shade100,
+                        child: Container(color: Colors.white),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        color: Theme.of(context).hintColor.withValues(alpha: 0.1),
+                        child: Icon(Icons.image_not_supported_outlined, color: Theme.of(context).hintColor),
+                      ),
                     ),
                   ),
-                ),
                 
                 // Discount Badge
                 if (product.hasDiscount)
@@ -101,6 +102,7 @@ class ProductCard extends StatelessWidget {
                 ),
               ],
             ),
+            ),
 
             // ─── Product Info ────────────────────────────────
             Padding(
@@ -121,8 +123,8 @@ class ProductCard extends StatelessWidget {
                     product.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: AppColors.textMain,
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                     ),
@@ -167,8 +169,8 @@ class ProductCard extends StatelessWidget {
                             ),
                           Text(
                             '${product.price} ${AppConstants.currency}',
-                            style: const TextStyle(
-                              color: AppColors.textMain,
+                            style: TextStyle(
+                              color: Theme.of(context).textTheme.bodyLarge?.color,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),

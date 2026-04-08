@@ -1,44 +1,26 @@
+/// Home Feature View Models
+///
+/// Contains all Riverpod Notifiers and Providers for the Home feature.
+/// State classes are in `state/home_state.dart`.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/modules/webstore/home/data/models/webstore_mock_data.dart';
+import 'package:erp/modules/webstore/home/presentation/state/home_state.dart';
+import 'package:erp/modules/webstore/home/presentation/state/slider_state.dart';
+import 'package:erp/modules/webstore/shared/data/providers/webstore_providers.dart';
+import 'package:erp/modules/webstore/cms/data/models/slider_model.dart';
+import 'package:erp/core/services/session_manager.dart';
+
+export 'package:erp/modules/webstore/home/presentation/state/home_state.dart';
+export 'package:erp/modules/webstore/cms/presentation/view_model/branch_view_model.dart';
+export 'package:erp/modules/webstore/cms/presentation/state/branch_state.dart';
 
 // ─── Home View Model ────────────────────────────────
-
-class HomeState {
-  final List<MockProduct> products;
-  final List<MockProduct> searchProducts;
-  final List<MockProduct> filteredProducts;
-  final List<MockCategory> categories;
-  final bool isLoading;
-
-  HomeState({
-    this.products = const [],
-    this.searchProducts = const [],
-    this.filteredProducts = const [],
-    this.categories = const [],
-    this.isLoading = false,
-  });
-
-  HomeState copyWith({
-    List<MockProduct>? products,
-    List<MockProduct>? searchProducts,
-    List<MockProduct>? filteredProducts,
-    List<MockCategory>? categories,
-    bool? isLoading,
-  }) {
-    return HomeState(
-      products: products ?? this.products,
-      searchProducts: searchProducts ?? this.searchProducts,
-      filteredProducts: filteredProducts ?? this.filteredProducts,
-      categories: categories ?? this.categories,
-      isLoading: isLoading ?? this.isLoading,
-    );
-  }
-}
 
 class HomeVm extends Notifier<HomeState> {
   @override
   HomeState build() {
-    // Initial fetch
     Future.microtask(() {
       getLatestProducts();
       getCategories();
@@ -77,7 +59,6 @@ class HomeVm extends Notifier<HomeState> {
   }) async {
     state = state.copyWith(isLoading: true);
     await Future.delayed(const Duration(milliseconds: 500));
-    // Simple mock filter
     state = state.copyWith(filteredProducts: WebStoreMockData.featuredProducts, isLoading: false);
   }
 }
@@ -86,20 +67,31 @@ final homeVmProvider = NotifierProvider<HomeVm, HomeState>(HomeVm.new);
 
 // ─── Slider View Model ──────────────────────────────
 
-class SliderVm extends Notifier<List<MockBanner>> {
+class SliderVm extends Notifier<SliderState> {
   @override
-  List<MockBanner> build() {
-    Future.microtask(() => getSliders());
-    return [];
+  SliderState build() {
+    return SliderInitial();
   }
 
   Future<void> getSliders() async {
-    await Future.delayed(const Duration(milliseconds: 400));
-    state = WebStoreMockData.banners;
+    state = SliderLoading();
+    
+    final result = await ref.read(cmsRepositoryProvider).getSliders();
+    
+    result.when(
+      success: (data) {
+        final List<dynamic> sliderJson = data['data'] ?? [];
+        final sliders = sliderJson.map((j) => SliderModel.fromJson(j)).toList();
+        state = SliderSuccess(sliders);
+      },
+      failure: (error) {
+        state = SliderError(error.message);
+      },
+    );
   }
 }
 
-final sliderVmProvider = NotifierProvider<SliderVm, List<MockBanner>>(SliderVm.new);
+final sliderVmProvider = NotifierProvider<SliderVm, SliderState>(SliderVm.new);
 
 // Ads have been moved to their dedicated domain provider in ads_view_model.dart.
 
@@ -121,19 +113,25 @@ class CompanyProducesVm extends Notifier<List<MockCompany>> {
 final companyProducesVmProvider =
     NotifierProvider<CompanyProducesVm, List<MockCompany>>(CompanyProducesVm.new);
 
-// ─── Location Provider ─────────────────────────────
-
-class LocationState {
-  final String? selectedBranch;
-  LocationState({this.selectedBranch});
-}
+// ─── Location View Model ────────────────────────────
 
 class LocationVm extends Notifier<LocationState> {
   @override
-  LocationState build() => LocationState(selectedBranch: 'فرع القاهرة الرئيسي');
+  LocationState build() {
+    _initLocation();
+    return LocationState(selectedBranch: 'الفرع الرئيسي');
+  }
 
-  void updateSelectedBranch(String branch) {
+  Future<void> _initLocation() async {
+    final branch = await SessionManager.instance.getBranchName();
+    if (branch != null) {
+      state = LocationState(selectedBranch: branch);
+    }
+  }
+
+  void updateSelectedBranch(String branch) async {
     state = LocationState(selectedBranch: branch);
+    await SessionManager.instance.setBranchName(branch);
   }
 }
 

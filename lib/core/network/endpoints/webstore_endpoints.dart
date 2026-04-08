@@ -85,11 +85,14 @@ class _WebStoreProfile {
 
 class _WebStoreCms {
   const _WebStoreCms();
-  final String sliders = '/api/webstore/cms/sliders';
-  final String banners = '/api/webstore/cms/banners';
-  final String ads = '/api/webstore/cms/ads';
-  final String pages = '/api/webstore/cms/pages';
-  final String pageDetail = '/api/webstore/cms/pages/{id}';
+  final String sliders = '/api/store/sliders';
+  final String ads = '/api/store/ads';
+  final String boardings = '/api/store/boardings';
+  final String pages = '/api/store/pages';
+  final String pageDetail = '/api/store/pages/{slug}';
+  final String settings = '/api/store/settings';
+  final String branches = '/api/store/branches';
+  final String contact = '/api/store/contact';
 }
 
 class _WebStoreWishlist {

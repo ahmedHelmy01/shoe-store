@@ -65,6 +65,10 @@ class _WebStore {
   final home = const _WebStoreHome();
   final nav = const _WebStoreNav();
   final general = const _WebStoreGeneral();
+  final orders = const _WebStoreOrders();
+  final wishlist = const _WebStoreWishlist();
+  final points = const _WebStorePoints();
+  final more = const _WebStoreMore();
 }
 
 class _WebStoreAuth {
@@ -93,6 +97,10 @@ class _WebStoreAuth {
   final register_now = 'webstore.auth.register_now';
   final login_now = 'webstore.auth.login_now';
   final register_success = 'webstore.auth.register_success';
+  final otp_sent = 'webstore.auth.otp_sent';
+  final otp_verified = 'webstore.auth.otp_verified';
+  final otp_resent = 'webstore.auth.otp_resent';
+  final password_reset_success = 'webstore.auth.password_reset_success';
 }
 
 class _WebStoreHome {
@@ -103,6 +111,32 @@ class _WebStoreHome {
   final featured_products = 'webstore.home.featured_products';
   final latest_products = 'webstore.home.latest_products';
   final view_all = 'webstore.home.view_all';
+  final medical_services = 'webstore.home.medical_services';
+  final pharmacy_sections = 'webstore.home.pharmacy_sections';
+  final most_ordered = 'webstore.home.most_ordered';
+  final exclusive_offers = 'webstore.home.exclusive_offers';
+  final trusted_brands = 'webstore.home.trusted_brands';
+  final tarshooby_offers = 'webstore.home.tarshooby_offers';
+  final vouchers_title = 'webstore.home.vouchers_title';
+  final use_voucher = 'webstore.home.use_voucher';
+  final select_branch = 'webstore.home.select_branch';
+  final no_products = 'webstore.home.no_products';
+  final search_results = 'webstore.home.search_results';
+  final filter_results = 'webstore.home.filter_results';
+  final no_search_results = 'webstore.home.no_search_results';
+  final no_filter_results = 'webstore.home.no_filter_results';
+  final my_points = 'webstore.home.my_points';
+  final wallet = 'webstore.home.wallet';
+  final coupons = 'webstore.home.coupons';
+  final no_offers = 'webstore.home.no_offers';
+  final wait_for_offers = 'webstore.home.wait_for_offers';
+  final explore_now = 'webstore.home.explore_now';
+  final feature_products = 'webstore.home.feature_products';
+  final feature_categories = 'webstore.home.feature_categories';
+  final feature_discounts = 'webstore.home.feature_discounts';
+  final feature_new_arrivals = 'webstore.home.feature_new_arrivals';
+  final feature_best_sellers = 'webstore.home.feature_best_sellers';
+  final feature_special_picks = 'webstore.home.feature_special_picks';
 }
 
 class _WebStoreNav {
@@ -111,10 +145,61 @@ class _WebStoreNav {
   final store = 'webstore.nav.store';
   final cart = 'webstore.nav.cart';
   final profile = 'webstore.nav.profile';
+  final more = 'webstore.nav.more';
 }
 
 class _WebStoreGeneral {
   const _WebStoreGeneral();
   final exit_confirm = 'webstore.general.exit_confirm';
   final coming_soon = 'webstore.general.coming_soon';
+}
+
+class _WebStoreOrders {
+  const _WebStoreOrders();
+  final title = 'webstore.orders.title';
+  final status_processing = 'webstore.orders.status_processing';
+  final status_shipped = 'webstore.orders.status_shipped';
+  final status_delivered = 'webstore.orders.status_delivered';
+  final order_number = 'webstore.orders.order_number';
+  final total = 'webstore.orders.total';
+  final date = 'webstore.orders.date';
+  final details = 'webstore.orders.details';
+  final order_items = 'webstore.orders.order_items';
+  final quantity = 'webstore.orders.quantity';
+  final payment_summary = 'webstore.orders.payment_summary';
+  final subtotal = 'webstore.orders.subtotal';
+  final delivery_fee = 'webstore.orders.delivery_fee';
+  final reorder = 'webstore.orders.reorder';
+  final rate_order = 'webstore.orders.rate_order';
+  final added_to_cart = 'webstore.orders.added_to_cart';
+}
+
+class _WebStoreWishlist {
+  const _WebStoreWishlist();
+  final title = 'webstore.wishlist.title';
+  final remove = 'webstore.wishlist.remove';
+  final empty = 'webstore.wishlist.empty';
+  final add_to_cart = 'webstore.wishlist.add_to_cart';
+}
+
+class _WebStorePoints {
+  const _WebStorePoints();
+  final title = 'webstore.points.title';
+  final balance = 'webstore.points.balance';
+  final earned = 'webstore.points.earned';
+  final spent = 'webstore.points.spent';
+  final point = 'webstore.points.point';
+  final history = 'webstore.points.history';
+}
+
+class _WebStoreMore {
+  const _WebStoreMore();
+  final appearance = 'webstore.more.appearance';
+  final dark_mode = 'webstore.more.dark_mode';
+  final language = 'webstore.more.language';
+  final arabic = 'webstore.more.arabic';
+  final english = 'webstore.more.english';
+  final wishlist = 'webstore.more.wishlist';
+  final my_orders = 'webstore.more.my_orders';
+  final my_points = 'webstore.more.my_points';
 }

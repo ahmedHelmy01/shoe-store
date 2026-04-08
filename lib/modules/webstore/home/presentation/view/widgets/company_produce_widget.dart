@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
-import 'package:erp/core/common_widget/app_image/app_image.dart';
+import 'package:erp/modules/webstore/home/data/models/webstore_mock_data.dart';
+import 'package:erp/core/common_widget/app_card/app_card.dart';
+import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
+import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 
 class CompanyProduceWidget extends ConsumerWidget {
   const CompanyProduceWidget({super.key});
@@ -13,43 +16,39 @@ class CompanyProduceWidget extends ConsumerWidget {
     final companies = ref.watch(companyProducesVmProvider);
 
     if (companies.isEmpty) {
-      return _buildLoading();
+      return AppShimmer.list(height: 120.h, width: 140.w);
     }
 
+    return AppAnimation.fadeInUp(
+      child: _buildBrandsList(companies),
+    );
+  }
+
+  Widget _buildBrandsList(List<MockCompany> brands) {
     return SizedBox(
       height: 120.h,
       child: ListView.separated(
         physics: const BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-        itemCount: companies.length,
+        itemCount: brands.length,
         separatorBuilder: (_, __) => SizedBox(width: 16.w),
         itemBuilder: (context, index) {
-          final item = companies[index];
-          return _buildAdvancedBrandCard(item);
+          final item = brands[index];
+          return _buildAdvancedBrandCard(context, item);
         },
       ),
     );
   }
 
-  Widget _buildAdvancedBrandCard(dynamic item) {
-    return Container(
+  Widget _buildAdvancedBrandCard(BuildContext context, dynamic item) {
+    return AppCard(
       width: 140.w,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 15,
-            offset: const Offset(0, 6),
-          ),
-        ],
-        border: Border.all(
-          color: AppColors.primaryOrange.withOpacity(0.08),
-          width: 1.5,
-        ),
+      border: Border.all(
+        color: AppColors.primaryOrange.withOpacity(0.08),
+        width: 1.5,
       ),
+      onTap: () {},
       child: Stack(
         children: [
           // Subtle background decoration
@@ -71,9 +70,25 @@ class CompanyProduceWidget extends ConsumerWidget {
                 height: 55.h,
                 width: 90.w,
                 padding: EdgeInsets.all(8.w),
-                child: AppImage(
-                  imagePath: item.logo,
+                child: Image.network(
+                  item.logo,
                   fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryOrange.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Center(
+                      child: Text(
+                        item.name.isNotEmpty ? item.name[0].toUpperCase() : '?',
+                        style: TextStyle(
+                          fontSize: 26.sp,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.primaryOrange,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
               
@@ -89,7 +104,7 @@ class CompanyProduceWidget extends ConsumerWidget {
                       style: TextStyle(
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w900,
-                        color: AppColors.textColor,
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
                         fontFamily: 'Harmattan',
                         letterSpacing: -0.5,
                       ),
@@ -108,24 +123,6 @@ class CompanyProduceWidget extends ConsumerWidget {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildLoading() {
-    return ListView.separated(
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      itemCount: 4,
-      separatorBuilder: (_, __) => SizedBox(width: 16.w),
-      itemBuilder: (_, __) => Container(
-        height: 100.h,
-        width: 140.w,
-        decoration: BoxDecoration(
-          color: Colors.grey[50],
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        child: const Center(child: CircularProgressIndicator()),
       ),
     );
   }

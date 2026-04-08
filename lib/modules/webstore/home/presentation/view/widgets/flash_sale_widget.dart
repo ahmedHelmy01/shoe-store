@@ -2,11 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/product_card_widget.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/utils/asset_manager.dart';
+import 'package:erp/core/common_widget/app_section_header/app_section_header.dart';
 
 class FlashSaleWidget extends StatefulWidget {
   const FlashSaleWidget({super.key});
@@ -47,52 +49,32 @@ class _FlashSaleWidgetState extends State<FlashSaleWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Column(
       children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
+        AppSectionHeader(
+          title: LocaleKeys.webstore.home.tarshooby_offers.tr(),
+          onViewAllTap: () {},
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                   AppImage(imagePath: AssetManager.bestSale, height: 24.h),
-                  8.horizontalSpace,
-                  Text(
-                    'عروض فلاش',
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textColor,
-                    ),
-                  ),
-                  12.horizontalSpace,
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(4.r),
-                    ),
-                    child: Text(
-                      _formatDuration(_duration),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'monospace',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              TextButton(
-                onPressed: () {},
+              AppImage(imagePath: AssetManager.bestSale, height: 24.h),
+              12.horizontalSpace,
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: isDark ? theme.cardColor : Colors.black,
+                  borderRadius: BorderRadius.circular(4.r),
+                  border: isDark ? Border.all(color: Colors.white.withValues(alpha: 0.1)) : null,
+                ),
                 child: Text(
-                  'عرض الكل',
+                  _formatDuration(_duration),
                   style: TextStyle(
-                    color: AppColors.primaryOrange,
+                    color: isDark ? theme.textTheme.bodyMedium?.color : Colors.white,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.bold,
-                    fontSize: 14.sp,
+                    fontFamily: 'monospace',
                   ),
                 ),
               ),

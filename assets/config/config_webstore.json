@@ -15,7 +15,7 @@
   ],
   "assets": {
     "logo": "assets/common/images/app_icon.png",
-    "placeholder": "assets/common/images/no-data.png"
+    "placeholder": "assets/webstore/images/no-data-6.png"
   },
   "fireBaseConfig": {
     "apiKey": "",

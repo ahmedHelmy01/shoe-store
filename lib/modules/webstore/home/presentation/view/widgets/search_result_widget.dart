@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/product_card_widget.dart';
 
@@ -52,7 +54,7 @@ class ProductResultBottomSheet extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                type == ProductSheetType.search ? 'نتائج البحث' : 'الفلترة',
+                type == ProductSheetType.search ? LocaleKeys.webstore.home.search_results.tr() : LocaleKeys.webstore.home.filter_results.tr(),
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
@@ -108,8 +110,8 @@ class ProductResultBottomSheet extends ConsumerWidget {
           16.verticalSpace,
           Text(
             type == ProductSheetType.search
-                ? 'عذراً، لم نجد أي نتائج لبحثك'
-                : 'لا توجد منتجات تطابق هذه الفلاتر',
+                ? LocaleKeys.webstore.home.no_search_results.tr()
+                : LocaleKeys.webstore.home.no_filter_results.tr(),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14.sp,

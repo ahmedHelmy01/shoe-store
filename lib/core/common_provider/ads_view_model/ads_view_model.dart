@@ -1,12 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_model/content_management_model.dart';
 import 'package:erp/core/common_provider/ads_view_model/ads_state.dart';
-import 'package:erp/modules/webstore/home/data/models/webstore_mock_data.dart';
-
-/// Ads View Model
-///
-/// Fetches and manages Advertisements and Promotion content from CMS.
-/// Currently uses Mock data provided in WebStoreMockData.
+import 'package:erp/modules/webstore/shared/data/providers/webstore_providers.dart';
+import 'package:erp/modules/webstore/cms/data/models/ad_model.dart';
 
 class AdsVm extends Notifier<AdsState> {
   @override
@@ -16,32 +12,30 @@ class AdsVm extends Notifier<AdsState> {
 
   Future<void> getAds() async {
     state = AdsLoading();
-    await Future.delayed(const Duration(milliseconds: 600));
+    
+    final result = await ref.read(cmsRepositoryProvider).getAds();
 
-    try {
-      // Mapping mock ads to the new CMS model for the Vertical Carousel
-      final mockData = ContentManagementModel(
-        items: WebStoreMockData.ads.map((ad) {
-          String content = "عرض خاص";
-          if (ad.id == 1) {
-            content = "<p style='color:white; font-weight:bold;'>خصم 50% على<br/>منتجات العناية بالبشرة</p>";
-          } else if (ad.id == 2) {
-            content = "<p style='color:white; font-weight:bold;'>توصيل مجاني<p/><span style='color:#FF6D00; font-size:12px;'>على أول طلب لك</span>";
-          }
-          
-          return ContentManagementItem(
+    result.when(
+      success: (data) {
+        final List<dynamic> adsJson = data['data'] ?? [];
+        final ads = adsJson.map((j) => AdModel.fromJson(j)).toList();
+        
+        // Mapping to ContentManagementModel to avoid breaking AdsSection UI
+        final mappedData = ContentManagementModel(
+          items: ads.map((ad) => ContentManagementItem(
             id: ad.id,
-            title: "إعلان",
+            title: ad.titleAr, // Use Arabic title as default for this project
             image: ad.image,
-            content: content,
-          );
-        }).toList(),
-      );
+            content: ad.title, // Or some other field if available
+          )).toList(),
+        );
 
-      state = AdsSuccess(mockData);
-    } catch (e) {
-      state = AdsError(e.toString());
-    }
+        state = AdsSuccess(mappedData);
+      },
+      failure: (error) {
+        state = AdsError(error.message);
+      },
+    );
   }
 }
 

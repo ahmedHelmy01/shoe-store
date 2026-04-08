@@ -1,39 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/common_widget/app_card/app_card.dart';
 
 class UserLoyaltyWidget extends StatelessWidget {
   const UserLoyaltyWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return AppCard(
       margin: EdgeInsets.symmetric(horizontal: 16.w),
       padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-      decoration: BoxDecoration(
-        color: AppColors.lightOrange,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: AppColors.primaryOrange.withOpacity(0.2)),
+      backgroundColor: isDark ? theme.cardColor : AppColors.lightOrange,
+      borderRadius: 16.r,
+      border: Border.all(
+        color: isDark ? Colors.white.withValues(alpha: 0.1) : AppColors.primaryOrange.withValues(alpha: 0.2),
       ),
       child: Row(
         children: [
           Expanded(
-            child: _buildLoyaltyItem('نقاطي', '1,250', Icons.stars_rounded),
+            child: _buildLoyaltyItem(LocaleKeys.webstore.home.my_points.tr(), '1,250', Icons.stars_rounded, theme),
           ),
-          _buildDivider(),
+          _buildDivider(isDark, theme),
           Expanded(
-            child: _buildLoyaltyItem('المحفظة', '450.5 LE', Icons.account_balance_wallet_rounded),
+            child: _buildLoyaltyItem(LocaleKeys.webstore.home.wallet.tr(), '450.5 LE', Icons.account_balance_wallet_rounded, theme),
           ),
-          _buildDivider(),
+          _buildDivider(isDark, theme),
           Expanded(
-            child: _buildLoyaltyItem('كوبونات', '3', Icons.confirmation_number_rounded),
+            child: _buildLoyaltyItem(LocaleKeys.webstore.home.coupons.tr(), '3', Icons.confirmation_number_rounded, theme),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildLoyaltyItem(String title, String value, IconData icon) {
+  Widget _buildLoyaltyItem(String title, String value, IconData icon, ThemeData theme) {
     return Column(
       children: [
         Row(
@@ -41,12 +47,16 @@ class UserLoyaltyWidget extends StatelessWidget {
           children: [
             Icon(icon, size: 16.sp, color: AppColors.primaryOrange),
             4.horizontalSpace,
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: AppColors.primaryOrange,
-                fontWeight: FontWeight.w600,
+            Flexible(
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 11.sp,
+                  color: AppColors.primaryOrange,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],
@@ -55,7 +65,7 @@ class UserLoyaltyWidget extends StatelessWidget {
           value,
           style: TextStyle(
             fontSize: 14.sp,
-            color: AppColors.textColor,
+            color: theme.textTheme.bodyLarge?.color,
             fontWeight: FontWeight.w900,
           ),
         ),
@@ -63,11 +73,11 @@ class UserLoyaltyWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildDivider() {
+  Widget _buildDivider(bool isDark, ThemeData theme) {
     return Container(
       height: 24.h,
       width: 1.w,
-      color: AppColors.primaryOrange.withOpacity(0.1),
+      color: isDark ? Colors.white.withValues(alpha: 0.1) : AppColors.primaryOrange.withValues(alpha: 0.1),
     );
   }
 }

@@ -5,13 +5,10 @@ import 'package:http/http.dart' as http;
 import 'package:erp/core/config/env_config.dart';
 import 'package:erp/core/network/network_service.dart';
 import 'package:erp/core/storage/secure_storage.dart';
-import 'package:erp/core/storage/preferences_helper.dart';
 import 'package:erp/core/network/network_check_internet.dart';
+// ... existing imports ...
 
-// ═══════════════════════════════════════════════════════════════
-// 🔧 STORAGE PROVIDERS
-// ═══════════════════════════════════════════════════════════════
-
+// ... storage providers ...
 /// SharedPreferences instance - must be initialized before app starts
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   throw UnimplementedError(
@@ -19,12 +16,8 @@ final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   );
 });
 
-/// Preferences Helper - non-sensitive settings
-final preferencesHelperProvider = Provider<PreferencesHelper>((ref) {
-  return PreferencesHelper(ref.watch(sharedPreferencesProvider));
-});
-
 /// Secure Storage - tokens and sensitive data
+// ... next provider ...
 final secureStorageProvider = Provider<SecureStorage>((ref) {
   return SecureStorage(baseUrl: EnvConfig.baseUrl);
 });

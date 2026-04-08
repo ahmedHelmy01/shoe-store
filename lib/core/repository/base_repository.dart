@@ -3,7 +3,6 @@ import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/network/network_exceptions.dart';
 
 /// Base Repository
-///
 /// Provides a safety wrapper for API calls to convert exceptions to ApiResult.
 abstract class BaseRepository {
   /// Wraps an API call and maps exceptions to the standard ApiResult type.
@@ -13,10 +12,12 @@ abstract class BaseRepository {
       return ApiSuccess<T>(response as T);
     } catch (e) {
       if (e is NoInternetException) {
-        return const ApiFailure(ApiException(
-          message: 'لا يوجد اتصال بالإنترنت',
-          type: ApiErrorType.network,
-        ));
+        return const ApiFailure(
+          ApiException(
+            message: 'لا يوجد اتصال بالإنترنت',
+            type: ApiErrorType.network,
+          ),
+        );
       }
       return ApiFailure<T>(_mapExceptionToApiException(e));
     }
@@ -66,15 +67,13 @@ abstract class BaseRepository {
       );
     }
 
-    return ApiException(
-      message: e.toString(),
-      type: ApiErrorType.unknown,
-    );
+    return ApiException(message: e.toString(), type: ApiErrorType.unknown);
   }
 
   ApiErrorType _mapStatusCodeToErrorType(int? statusCode) {
     if (statusCode == null) return ApiErrorType.unknown;
-    if (statusCode == 401 || statusCode == 403) return ApiErrorType.unauthorized;
+    if (statusCode == 401 || statusCode == 403)
+      return ApiErrorType.unauthorized;
     if (statusCode == 404) return ApiErrorType.notFound;
     if (statusCode >= 400 && statusCode < 500) return ApiErrorType.client;
     if (statusCode >= 500) return ApiErrorType.server;

@@ -86,17 +86,80 @@
       "categories": "Categories",
       "featured_products": "Featured Products ⭐",
       "latest_products": "Latest Products",
-      "view_all": "View All"
+      "view_all": "View All",
+      "tarshooby_offers": "Tarshooby Offers",
+      "vouchers_title": "Vouchers",
+      "medical_services": "Medical Services",
+      "pharmacy_sections": "Pharmacy Sections",
+      "most_ordered": "Most Ordered",
+      "exclusive_offers": "Exclusive Offers",
+      "trusted_brands": "Trusted Brands",
+      "my_points": "My Points",
+      "wallet": "Wallet",
+      "coupons": "Coupons",
+      "select_branch": "Select Branch",
+      "no_offers": "No offers currently",
+      "wait_for_offers": "Stay tuned for the strongest discounts and surprises.",
+      "explore_now": "Explore Now",
+      "feature_products": "Products",
+      "feature_categories": "Categories",
+      "feature_discounts": "Discounts",
+      "feature_new_arrivals": "New Arrivals",
+      "feature_best_sellers": "Best Sellers",
+      "feature_special_picks": "Special Picks"
     },
     "nav": {
       "home": "Home",
       "store": "Store",
       "cart": "Cart",
-      "profile": "Profile"
+      "profile": "Profile",
+      "more": "More"
     },
     "general": {
       "exit_confirm": "Press again to exit",
       "coming_soon": "Coming soon..."
+    },
+    "orders": {
+      "title": "My Orders",
+      "status_processing": "Processing",
+      "status_shipped": "Shipped",
+      "status_delivered": "Delivered",
+      "order_number": "Order #",
+      "total": "Total",
+      "date": "Date",
+      "details": "Order Details",
+      "order_items": "Order Items",
+      "quantity": "Qty:",
+      "payment_summary": "Payment Summary",
+      "subtotal": "Subtotal",
+      "delivery_fee": "Delivery Fee",
+      "reorder": "Reorder",
+      "rate_order": "Rate Order",
+      "added_to_cart": "Items added to cart successfully"
+    },
+    "wishlist": {
+      "title": "Wishlist",
+      "remove": "Remove",
+      "empty": "Your wishlist is empty",
+      "add_to_cart": "Add to Cart"
+    },
+    "points": {
+      "title": "My Points",
+      "balance": "Current Balance",
+      "earned": "Earned",
+      "spent": "Spent",
+      "point": "pt",
+      "history": "Points History"
+    },
+    "more": {
+      "appearance": "Appearance",
+      "dark_mode": "Dark Mode",
+      "language": "Language",
+      "arabic": "العربية",
+      "english": "English",
+      "wishlist": "Wishlist",
+      "my_orders": "My Orders",
+      "my_points": "My Points"
     }
   }
 }

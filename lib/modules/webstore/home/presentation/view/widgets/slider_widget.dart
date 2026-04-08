@@ -2,8 +2,16 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
+import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
+import 'package:erp/core/common_widget/app_animation/app_animation.dart';
+import 'package:erp/modules/webstore/home/presentation/state/slider_state.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
+import 'package:erp/modules/webstore/cms/data/models/slider_model.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/common_widget/app_empty_widget/app_empty_widget.dart';
 
 class SliderSection extends ConsumerStatefulWidget {
   const SliderSection({super.key});
@@ -20,24 +28,30 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
   @override
   void initState() {
     super.initState();
+    Future.microtask(() {
+      ref.read(sliderVmProvider.notifier).getSliders();
+    });
     _startAutoPlay();
   }
 
   void _startAutoPlay() {
-    _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
-      final sliders = ref.read(sliderVmProvider);
-      if (sliders.isNotEmpty) {
-        if (_currentPage < sliders.length - 1) {
-          _currentPage++;
-        } else {
-          _currentPage = 0;
-        }
-        if (_pageController.hasClients) {
-          _pageController.animateToPage(
-            _currentPage,
-            duration: const Duration(milliseconds: 600),
-            curve: Curves.fastOutSlowIn,
-          );
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      final state = ref.read(sliderVmProvider);
+      if (state is SliderSuccess) {
+        final sliders = state.sliders;
+        if (sliders.isNotEmpty) {
+          if (_currentPage < sliders.length - 1) {
+            _currentPage++;
+          } else {
+            _currentPage = 0;
+          }
+          if (_pageController.hasClients) {
+            _pageController.animateToPage(
+              _currentPage,
+              duration: const Duration(milliseconds: 800),
+              curve: Curves.fastOutSlowIn,
+            );
+          }
         }
       }
     });
@@ -52,184 +66,158 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
 
   @override
   Widget build(BuildContext context) {
-    final sliders = ref.watch(sliderVmProvider);
+    final state = ref.watch(sliderVmProvider);
 
+    return switch (state) {
+      SliderLoading() || SliderInitial() => AppShimmer.slider(),
+      SliderError(:final message) => Center(child: Text(message)),
+      SliderSuccess(:final sliders) => _buildSlider(sliders),
+    };
+  }
+
+  Widget _buildSlider(List<SliderModel> sliders) {
     if (sliders.isEmpty) {
-      return Container(
-        height: 200.h,
-        margin: EdgeInsets.symmetric(horizontal: 16.w),
-        decoration: BoxDecoration(
-          color: Colors.grey[100],
-          borderRadius: BorderRadius.circular(16.r),
+      // ─── Unified Empty State ──────────────────────────
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 24.h),
+        child: AppEmptyWidget(
+          message: LocaleKeys.webstore.home.no_offers.tr(),
+          subtitle: LocaleKeys.webstore.home.wait_for_offers.tr(),
+          showGlassBackground: false,
         ),
-        child: const Center(child: CircularProgressIndicator()),
       );
     }
 
-    return Column(
-      children: [
-        SizedBox(
-          height: 200.h,
-          child: PageView.builder(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentPage = index;
-              });
-            },
-            itemCount: sliders.length,
-            itemBuilder: (context, index) {
-              final data = sliders[index];
-              return Container(
-                margin: EdgeInsets.symmetric(horizontal: 12.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.r),
-                  child: Stack(
-                    children: [
-                      // Gradient Background
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColors.primaryBlue.withOpacity(0.9),
-                              AppColors.primaryBlue.withOpacity(0.6),
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                        ),
-                      ),
-                      // Content
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.w),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 8.w,
-                                      vertical: 4.h,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primaryOrange,
-                                      borderRadius: BorderRadius.circular(4.r),
-                                    ),
-                                    child: Text(
-                                      'HOT DEAL',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  8.verticalSpace,
-                                  Text(
-                                    data.title,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 22.sp,
-                                      height: 1.1,
-                                    ),
-                                  ),
-                                  6.verticalSpace,
-                                  Text(
-                                    data.subtitle,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 13.sp,
-                                      color: Colors.white.withOpacity(0.9),
-                                      height: 1.3,
-                                    ),
-                                  ),
-                                  12.verticalSpace,
-                                  // Button
-                                  ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      foregroundColor: AppColors.primaryBlue,
-                                      elevation: 0,
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 16.w,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          20.r,
-                                        ),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      'Shop Now',
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                padding: EdgeInsets.all(10.w),
-                                child: Center(
-                                  child: Text(
-                                    data.icon, // Emoji placeholder for now
-                                    style: TextStyle(fontSize: 60.sp),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        10.verticalSpace,
-        // Indicators
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            sliders.length,
-            (index) => AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              margin: EdgeInsets.symmetric(horizontal: 4.w),
-              height: 6.h,
-              width: _currentPage == index ? 20.w : 6.w,
-              decoration: BoxDecoration(
-                color: _currentPage == index
-                    ? AppColors.primaryOrange
-                    : Colors.grey[300],
-                borderRadius: BorderRadius.circular(3.r),
+    return AppAnimation.fadeInUp(
+      duration: const Duration(milliseconds: 600),
+      child: Column(
+        children: [
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 200.h,
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) => setState(() => _currentPage = index),
+                itemCount: sliders.length,
+                itemBuilder: (context, index) {
+                  final data = sliders[index];
+                  return _buildSliderItem(
+                    image: data.image,
+                    title: context.locale.languageCode == 'ar' ? data.titleAr : data.title,
+                  );
+                },
               ),
             ),
           ),
+          12.verticalSpace,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              sliders.length,
+              (index) => _buildIndicator(index),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSliderItem({required String image, required String title, bool isDefault = false}) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 12.w),
+      height: 200.h,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16.r),
+        child: Stack(
+          children: [
+            AppImage(
+              imagePath: image,
+              width: double.infinity,
+              height: double.infinity,
+              fit: isDefault? BoxFit.contain : BoxFit.cover,
+              color: isDefault ? Colors.white.withOpacity(0.9) : null,
+            ),
+            
+            if (isDefault)
+              Container(color: AppColors.primary.withOpacity(0.02)),
+
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.black.withOpacity(0.7),
+                      Colors.transparent,
+                    ],
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(20.w),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22.sp,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withOpacity(0.5),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                  ),
+                  12.verticalSpace,
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryOrange,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                    ),
+                    child: Text(isDefault ? LocaleKeys.webstore.home.explore_now.tr() : LocaleKeys.webstore.home.view_all.tr()),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
+    );
+  }
+
+  Widget _buildIndicator(int index) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      margin: EdgeInsets.symmetric(horizontal: 4.w),
+      height: 6.h,
+      width: _currentPage == index ? 20.w : 6.w,
+      decoration: BoxDecoration(
+        color: _currentPage == index ? AppColors.primaryOrange : Colors.grey[300],
+        borderRadius: BorderRadius.circular(3.r),
+      ),
     );
   }
 }

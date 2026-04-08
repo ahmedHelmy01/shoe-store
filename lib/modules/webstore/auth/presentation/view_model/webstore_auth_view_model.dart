@@ -10,6 +10,8 @@ import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/modules/webstore/auth/data/repositories/auth_repository.dart';
 import 'package:erp/modules/webstore/auth/presentation/state/webstore_auth_state.dart';
 import 'package:erp/modules/webstore/auth/presentation/view_model/webstore_auth_providers.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
   @override
@@ -109,7 +111,7 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
 
     result.when(
       success: (data) {
-        final message = data['message'] as String? ?? 'تم إرسال كود التحقق';
+        final message = data['message'] as String? ?? LocaleKeys.webstore.auth.otp_sent.tr();
         state = WebStoreOtpSent(
           message: message,
           identifier: username,
@@ -139,7 +141,7 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
 
     result.when(
       success: (data) {
-        final message = data['message'] as String? ?? 'تم التحقق بنجاح';
+        final message = data['message'] as String? ?? LocaleKeys.webstore.auth.otp_verified.tr();
         state = WebStoreOtpVerified(message);
       },
       failure: (exception) {
@@ -163,7 +165,7 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
 
     result.when(
       success: (data) {
-        final message = data['message'] as String? ?? 'تم إعادة إرسال الكود';
+        final message = data['message'] as String? ?? LocaleKeys.webstore.auth.otp_resent.tr();
         state = WebStoreOtpResent(message);
       },
       failure: (exception) {
@@ -191,7 +193,7 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
 
     result.when(
       success: (data) {
-        final message = data['message'] as String? ?? 'تم تغيير كلمة المرور بنجاح';
+        final message = data['message'] as String? ?? LocaleKeys.webstore.auth.password_reset_success.tr();
         state = WebStoreAuthPasswordResetSuccess(message);
       },
       failure: (exception) {
