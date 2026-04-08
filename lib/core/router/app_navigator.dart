@@ -15,6 +15,18 @@ class AppRouteNames {
   static const String webstoreWishlist = '/webstore/wishlist';
   static const String webstorePoints = '/webstore/points';
   static const String webstoreOrderDetails = '/webstore/order-details';
+
+  // ─── WebStore Admin ───────────────────────────────
+  static const String webstoreAdmin = '/webstore/admin';
+  static const String webstoreAdminDashboard = '/webstore/admin/dashboard';
+  static const String webstoreAdminUsers = '/webstore/admin/users';
+  static const String webstoreAdminProducts = '/webstore/admin/products';
+  static const String webstoreAdminCategories = '/webstore/admin/categories';
+  static const String webstoreAdminCompanies = '/webstore/admin/companies';
+  static const String webstoreAdminFilters = '/webstore/admin/filters';
+  static const String webstoreAdminOrders = '/webstore/admin/orders';
+  static const String webstoreAdminOrderCreate = '/webstore/admin/orders/new';
+  static const String webstoreAdminSettings = '/webstore/admin/settings';
 }
 
 class AppNavigator {

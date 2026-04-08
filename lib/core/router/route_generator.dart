@@ -17,6 +17,8 @@ import 'package:erp/modules/webstore/orders/presentation/view/webstore_order_lis
 import 'package:erp/modules/webstore/orders/presentation/view/webstore_order_details_view.dart';
 import 'package:erp/modules/webstore/wishlist/presentation/view/webstore_wishlist_view.dart';
 import 'package:erp/modules/webstore/profile/presentation/view/webstore_points_view.dart';
+import 'package:erp/modules/webstore/admin/presentation/admin_shell.dart';
+import 'package:erp/modules/webstore/admin/presentation/admin_routes.dart';
 
 // Models for type casting in arguments
 
@@ -61,6 +63,23 @@ class RouteGenerator {
         return _guarded(const WebStoreWishlistView());
       case AppRouteNames.webstorePoints:
         return _guarded(const WebStorePointsView());
+
+      // ─── WebStore Admin ─────────────────────────────
+      case AppRouteNames.webstoreAdmin:
+      case AppRouteNames.webstoreAdminDashboard:
+      case AppRouteNames.webstoreAdminUsers:
+      case AppRouteNames.webstoreAdminProducts:
+      case AppRouteNames.webstoreAdminCategories:
+      case AppRouteNames.webstoreAdminCompanies:
+      case AppRouteNames.webstoreAdminFilters:
+      case AppRouteNames.webstoreAdminOrders:
+      case AppRouteNames.webstoreAdminOrderCreate:
+      case AppRouteNames.webstoreAdminSettings:
+        final id = AdminRoutes.fromRouteName(settings.name);
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => AdminShell(initial: id),
+        );
 
       default:
         return _errorRoute();

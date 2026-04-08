@@ -5,6 +5,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -19,7 +20,9 @@ class AppInitializer {
     final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
     
     // 2. Preserve splash screen until initialization is complete
-    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+    if (!kIsWeb) {
+      FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+    }
 
     // 3. Easy Localization init
     await EasyLocalization.ensureInitialized();
@@ -34,7 +37,9 @@ class AppInitializer {
     final prefs = await SharedPreferences.getInstance();
 
     // 7. Cleanup splash (will be manually removed later)
-    FlutterNativeSplash.remove();
+    if (!kIsWeb) {
+      FlutterNativeSplash.remove();
+    }
 
     return prefs;
   }
