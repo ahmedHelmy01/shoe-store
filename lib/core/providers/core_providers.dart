@@ -2,10 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:erp/core/config/env_config.dart';
 import 'package:erp/core/network/network_service.dart';
-import 'package:erp/core/storage/secure_storage.dart';
 import 'package:erp/core/network/network_check_internet.dart';
+import 'package:erp/core/services/session_manager.dart';
 // ... existing imports ...
 
 // ... storage providers ...
@@ -16,11 +15,7 @@ final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   );
 });
 
-/// Secure Storage - tokens and sensitive data
-// ... next provider ...
-final secureStorageProvider = Provider<SecureStorage>((ref) {
-  return SecureStorage(baseUrl: EnvConfig.baseUrl);
-});
+// Secure storage removed by request. Tokens are stored via `SessionManager`.
 
 // ═══════════════════════════════════════════════════════════════
 // 🌐 NETWORK PROVIDERS
@@ -35,7 +30,7 @@ final httpClientProvider = Provider<http.Client>((ref) {
 final networkServiceProvider = Provider<NetworkService>((ref) {
   return NetworkService(
     ref.watch(httpClientProvider),
-    ref.watch(secureStorageProvider),
+    ref.watch(sessionManagerProvider),
   );
 });
 
@@ -85,6 +80,13 @@ final authStateProvider = NotifierProvider<AuthNotifier, AuthState>(() {
   return AuthNotifier();
 });
 
+/// Single SessionManager service (DI-friendly).
+final sessionManagerProvider = Provider<SessionManager>((ref) {
+  return SessionManager(
+    prefs: ref.watch(sharedPreferencesProvider),
+  );
+});
+
 class AuthNotifier extends Notifier<AuthState> {
   @override
   AuthState build() {
@@ -93,11 +95,11 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   Future<void> _init() async {
-    final secureStorage = ref.read(secureStorageProvider);
-    final token = await secureStorage.getAccessToken();
+    final session = ref.read(sessionManagerProvider);
+    final token = await session.getAccessToken();
     
     if (token != null && token.isNotEmpty) {
-      final userId = await secureStorage.getUserId();
+      final userId = await session.getUserId();
       state = AuthState(
         status: AuthStatus.authenticated,
         token: token,
@@ -113,12 +115,12 @@ class AuthNotifier extends Notifier<AuthState> {
     required String userId,
     String? refreshToken,
   }) async {
-    final secureStorage = ref.read(secureStorageProvider);
-    await secureStorage.saveTokens(
+    final session = ref.read(sessionManagerProvider);
+    await session.saveTokens(
       accessToken: token,
       refreshToken: refreshToken,
     );
-    await secureStorage.saveUserId(userId);
+    await session.saveUserId(userId);
     
     state = AuthState(
       status: AuthStatus.authenticated,
@@ -128,8 +130,8 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   Future<void> setUnauthenticated() async {
-    final secureStorage = ref.read(secureStorageProvider);
-    await secureStorage.clearAll();
+    final session = ref.read(sessionManagerProvider);
+    await session.clearAuth();
     state = const AuthState(status: AuthStatus.unauthenticated);
   }
 }

@@ -14,19 +14,19 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
-import 'package:erp/core/storage/secure_storage.dart';
+import 'package:erp/core/services/session_manager.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'network_exceptions.dart';
 import 'network_url.dart';
 
 class NetworkService {
   final http.Client _client;
-  final SecureStorage _secureStorage;
+  final SessionManager _session;
   final Logger _logger = Logger(
     printer: PrettyPrinter(methodCount: 0, printEmojis: true),
   );
 
-  NetworkService(this._client, this._secureStorage);
+  NetworkService(this._client, this._session);
 
   // ─── Core HTTP Methods ──────────────────────────────
 
@@ -118,7 +118,7 @@ class NetworkService {
       ...?extraHeaders,
     };
 
-    final token = await _secureStorage.getAccessToken();
+    final token = await _session.getAccessToken();
     if (token != null && token.isNotEmpty) {
       headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
     }

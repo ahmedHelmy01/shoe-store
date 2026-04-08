@@ -9,7 +9,6 @@ class AppImage extends StatelessWidget {
   final double? width;
   final Color? color;
   final BoxFit fit;
-  final Widget content;
 
   AppImage({
     super.key,
@@ -18,17 +17,17 @@ class AppImage extends StatelessWidget {
     this.width,
     this.color,
     this.fit = BoxFit.cover,
-  }) : content = ImageRenderer.rendererImage(
-          imagePath: imagePath,
-          height: height,
-          width: width,
-          fit: fit,
-          color: color,
-          placeHolderText: LocaleKeys.common.noImage.tr(),
-        );
+  });
 
   @override
   Widget build(BuildContext context) {
-    return content;
+    return ImageRenderer.rendererImage(
+      imagePath: imagePath,
+      height: height,
+      width: width,
+      fit: fit,
+      color: color,
+      placeHolderText: LocaleKeys.common.noImage.tr(context: context),
+    );
   }
 }

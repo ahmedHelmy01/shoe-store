@@ -55,7 +55,7 @@ class _FlashSaleWidgetState extends State<FlashSaleWidget> {
     return Column(
       children: [
         AppSectionHeader(
-          title: LocaleKeys.webstore.home.tarshooby_offers.tr(),
+          title: LocaleKeys.webstore.home.tarshooby_offers.tr(context: context),
           onViewAllTap: () {},
           child: Row(
             children: [

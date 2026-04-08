@@ -17,7 +17,7 @@ import 'package:erp/modules/webstore/home/presentation/view/widgets/company_prod
 import 'package:erp/modules/webstore/home/presentation/view/widgets/slider_widget.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/flash_sale_widget.dart';
 import 'package:erp/core/common_widget/app_section_header/app_section_header.dart';
-import 'package:erp/core/common_provider/ads_view_model/ads_view_model.dart';
+import 'package:erp/modules/webstore/home/presentation/view_model/ads/ads_view_model.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
 
@@ -111,7 +111,7 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                     delay: const Duration(milliseconds: 300),
                     child: Column(
                       children: [
-                        AppSectionHeader(title: LocaleKeys.webstore.home.medical_services.tr()),
+                        AppSectionHeader(title: LocaleKeys.webstore.home.medical_services.tr(context: context)),
                         isLoading ? AppShimmer.featureLinksGrid() : const FeatureLinksWidget(),
                       ],
                     ),
@@ -123,7 +123,7 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                     delay: const Duration(milliseconds: 400),
                     child: Column(
                       children: [
-                        AppSectionHeader(title: LocaleKeys.webstore.home.pharmacy_sections.tr()),
+                        AppSectionHeader(title: LocaleKeys.webstore.home.pharmacy_sections.tr(context: context)),
                         const CategorySection(),
                       ],
                     ),
@@ -149,7 +149,7 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                     delay: const Duration(milliseconds: 700),
                     child: Column(
                       children: [
-                        AppSectionHeader(title: LocaleKeys.webstore.home.most_ordered.tr(), onViewAllTap: () {}),
+                        AppSectionHeader(title: LocaleKeys.webstore.home.most_ordered.tr(context: context), onViewAllTap: () {}),
                         12.verticalSpace,
                         const ProductGridSection(),
                       ],
@@ -169,7 +169,7 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                     delay: const Duration(milliseconds: 900),
                     child: Column(
                       children: [
-                        AppSectionHeader(title: LocaleKeys.webstore.home.trusted_brands.tr()),
+                        AppSectionHeader(title: LocaleKeys.webstore.home.trusted_brands.tr(context: context)),
                         12.verticalSpace,
                         const CompanyProduceWidget(),
                       ],

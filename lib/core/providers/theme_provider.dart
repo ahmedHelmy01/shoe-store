@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:erp/core/services/session_manager.dart';
+import 'package:erp/core/providers/core_providers.dart';
 
 /// Global Theme Provider using modern Riverpod Notifier
 final themeProvider = NotifierProvider<ThemeNotifier, ThemeMode>(() {
@@ -15,17 +15,17 @@ class ThemeNotifier extends Notifier<ThemeMode> {
   }
 
   Future<void> _loadTheme() async {
-    final isDark = await SessionManager.instance.isDarkMode();
+    final isDark = await ref.read(sessionManagerProvider).isDarkMode();
     state = isDark ? ThemeMode.dark : ThemeMode.light;
   }
 
   Future<void> toggleTheme() async {
     if (state == ThemeMode.light) {
       state = ThemeMode.dark;
-      await SessionManager.instance.setDarkMode(true);
+      await ref.read(sessionManagerProvider).setDarkMode(true);
     } else {
       state = ThemeMode.light;
-      await SessionManager.instance.setDarkMode(false);
+      await ref.read(sessionManagerProvider).setDarkMode(false);
     }
   }
 

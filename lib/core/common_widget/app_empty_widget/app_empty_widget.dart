@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 
 class AppEmptyWidget extends StatelessWidget {
   final String? message;
@@ -85,7 +87,7 @@ class AppEmptyWidget extends StatelessWidget {
 
             // ─── Message ─────────────────────────────────────
             Text(
-              message ?? 'لا توجد بيانات حالياً',
+              (message ?? LocaleKeys.common.no_data).tr(context: context),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20.sp,
@@ -97,7 +99,7 @@ class AppEmptyWidget extends StatelessWidget {
             if (subtitle != null) ...[
               12.verticalSpace,
               Text(
-                subtitle!,
+                subtitle!.tr(context: context),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14.sp,
@@ -123,7 +125,7 @@ class AppEmptyWidget extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    actionText!,
+                    actionText!.tr(context: context),
                     style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -139,26 +141,26 @@ class AppEmptyWidget extends StatelessWidget {
   
   factory AppEmptyWidget.cart({VoidCallback? onAction}) {
     return AppEmptyWidget(
-      message: 'سلة المشتريات فارغة',
-      subtitle: 'لم تقم بإضافة أي منتجات إلى السلة بعد. ابدأ بالتسوق الآن!',
+      message: LocaleKeys.common.cart_empty,
+      subtitle: LocaleKeys.common.cart_empty_subtitle,
       imagePath: AssetManager.shopping,
-      actionText: 'تصفح المنتجات',
+      actionText: LocaleKeys.common.browse_products,
       onAction: onAction,
     );
   }
 
   factory AppEmptyWidget.orders() {
     return AppEmptyWidget(
-      message: 'لا توجد طلبات حتى الآن',
-      subtitle: 'ستظهر طلباتك هنا بمجرد قيامك بعملية شراء.',
+      message: LocaleKeys.common.no_orders_yet,
+      subtitle: LocaleKeys.common.no_orders_yet_subtitle,
       imagePath: AssetManager.noData,
     );
   }
 
   factory AppEmptyWidget.search() {
     return AppEmptyWidget(
-      message: 'لم يتم العثور على نتائج',
-      subtitle: 'حاول البحث بكلمات مختلفة أو تحقق من التصنيفات.',
+      message: LocaleKeys.common.no_results,
+      subtitle: LocaleKeys.common.no_results_subtitle,
       icon: Icons.search_off_rounded,
     );
   }

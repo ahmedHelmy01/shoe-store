@@ -10,7 +10,7 @@ import 'package:erp/modules/webstore/home/presentation/state/home_state.dart';
 import 'package:erp/modules/webstore/home/presentation/state/slider_state.dart';
 import 'package:erp/modules/webstore/shared/data/providers/webstore_providers.dart';
 import 'package:erp/modules/webstore/cms/data/models/slider_model.dart';
-import 'package:erp/core/services/session_manager.dart';
+import 'package:erp/core/providers/core_providers.dart';
 
 export 'package:erp/modules/webstore/home/presentation/state/home_state.dart';
 export 'package:erp/modules/webstore/cms/presentation/view_model/branch_view_model.dart';
@@ -123,7 +123,7 @@ class LocationVm extends Notifier<LocationState> {
   }
 
   Future<void> _initLocation() async {
-    final branch = await SessionManager.instance.getBranchName();
+    final branch = await ref.read(sessionManagerProvider).getBranchName();
     if (branch != null) {
       state = LocationState(selectedBranch: branch);
     }
@@ -131,7 +131,7 @@ class LocationVm extends Notifier<LocationState> {
 
   void updateSelectedBranch(String branch) async {
     state = LocationState(selectedBranch: branch);
-    await SessionManager.instance.setBranchName(branch);
+    await ref.read(sessionManagerProvider).setBranchName(branch);
   }
 }
 

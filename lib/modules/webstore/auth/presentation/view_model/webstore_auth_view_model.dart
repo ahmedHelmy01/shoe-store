@@ -41,11 +41,11 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
 
     result.when(
       success: (authResponse) async {
-        // Save token to secure storage
-        await ref.read(secureStorageProvider).saveTokens(
+        // Save token to session storage
+        await ref.read(sessionManagerProvider).saveTokens(
               accessToken: authResponse.token,
             );
-        await ref.read(secureStorageProvider).saveUserId(
+        await ref.read(sessionManagerProvider).saveUserId(
               authResponse.user.id.toString(),
             );
 
@@ -78,11 +78,11 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
 
     result.when(
       success: (authResponse) async {
-        // Save token to secure storage
-        await ref.read(secureStorageProvider).saveTokens(
+        // Save token to session storage
+        await ref.read(sessionManagerProvider).saveTokens(
               accessToken: authResponse.token,
             );
-        await ref.read(secureStorageProvider).saveUserId(
+        await ref.read(sessionManagerProvider).saveUserId(
               authResponse.user.id.toString(),
             );
 
@@ -209,7 +209,7 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
 
     result.when(
       success: (authResponse) async {
-        await ref.read(secureStorageProvider).saveTokens(
+        await ref.read(sessionManagerProvider).saveTokens(
               accessToken: authResponse.token,
             );
         state = WebStoreAuthSuccess(authResponse);

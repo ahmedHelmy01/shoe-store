@@ -51,7 +51,50 @@
     "register_now": "سجل الآن",
     "next": "التالي",
     "back": "رجوع",
-    "get_started": "ابدأ الآن"
+    "get_started": "ابدأ الآن",
+    "try_again": "حاول مرة أخرى",
+    "error": "خطأ",
+    "page_not_found": "الصفحة غير موجودة",
+    "home_address": "عنوان المنزل"
+    ,
+    "subject": "الموضوع",
+    "your_message": "رسالتك",
+    "send_message": "إرسال الرسالة",
+    "field_required": "هذا الحقل مطلوب",
+    "sent_successfully": "تم الإرسال بنجاح",
+    "contact_thanks": "شكراً لتواصلك معنا. سيقوم فريق الدعم بالرد عليك في أقرب وقت ممكن.",
+    "ok": "حسناً"
+    ,
+    "no_data": "لا توجد بيانات حالياً",
+    "retry": "إعادة المحاولة",
+    "unexpected_error": "حدث خطأ غير متوقع",
+    "check_internet": "تأكد من اتصالك بالإنترنت وحاول مرة أخرى",
+    "server_not_responding": "السيرفر لا يستجيب، حاول مرة أخرى لاحقاً",
+    "cart_empty": "سلة المشتريات فارغة",
+    "cart_empty_subtitle": "لم تقم بإضافة أي منتجات إلى السلة بعد. ابدأ بالتسوق الآن!",
+    "browse_products": "تصفح المنتجات",
+    "no_orders_yet": "لا توجد طلبات حتى الآن",
+    "no_orders_yet_subtitle": "ستظهر طلباتك هنا بمجرد قيامك بعملية شراء.",
+    "no_results": "لم يتم العثور على نتائج",
+    "no_results_subtitle": "حاول البحث بكلمات مختلفة أو تحقق من التصنيفات."
+    ,
+    "no_internet": "لا يوجد اتصال بالإنترنت",
+    "timeout": "انتهت مهلة الاتصال",
+    "login_again": "يرجى تسجيل الدخول مرة أخرى",
+    "cache_error": "خطأ في البيانات المحلية",
+    "item_not_found": "العنصر غير موجود"
+    ,
+    "timeout_server": "انتهت مهلة الاتصال بالخادم",
+    "unauthorized": "غير مصرح لك، يرجى تسجيل الدخول",
+    "forbidden": "ليس لديك صلاحية للوصول",
+    "not_found_requested": "العنصر المطلوب غير موجود",
+    "conflict": "حدث خطأ في البيانات المرسلة",
+    "server_error_try_later": "حدث خطأ في الخادم، حاول لاحقاً"
+    ,
+    "request_cancelled": "تم إلغاء الطلب",
+    "session_expired_login_again": "جلستك انتهت، يرجى تسجيل الدخول مرة أخرى",
+    "cache_load_error": "خطأ في تحميل البيانات المحلية",
+    "unexpected_error_retry": "حدث خطأ غير متوقع، حاول مرة أخرى"
   },
   "webstore": {
     "auth": {
@@ -98,6 +141,8 @@
       "trusted_brands": "الماركات الموثوقة",
       "tarshooby_offers": "عروض الطرشوبي",
       "vouchers_title": "قسائم الهدايا والمكافآت",
+      "voucher_first_order": "على أول طلب لك",
+      "voucher_skincare": "على منتجات العناية بالبشرة",
       "use_voucher": "استخدم",
       "select_branch": "اختر الفرع",
       "no_products": "لا توجد منتجات حالياً",
@@ -117,6 +162,9 @@
       "feature_new_arrivals": "وصل حديثاً",
       "feature_best_sellers": "الأكثر مبيعاً",
       "feature_special_picks": "اختيارات مميزة"
+      ,
+      "no_exclusive_offers": "لا توجد عروض حصرية حالياً",
+      "no_exclusive_offers_subtitle": "تحقق مرة أخرى قريباً لمتابعة أحدث الخصومات والمكافآت."
     },
     "nav": {
       "home": "الرئيسية",
@@ -170,6 +218,22 @@
       "wishlist": "المفضلة",
       "my_orders": "طلباتي",
       "my_points": "نقاطي"
+    },
+    "checkout": {
+      "title": "الدفع",
+      "delivery_address": "عنوان التوصيل",
+      "payment_method": "طريقة الدفع",
+      "promo_code": "كود الخصم",
+      "enter_promo_code": "أدخل كود الخصم",
+      "apply": "تطبيق",
+      "order_amount": "قيمة الطلب",
+      "delivery_fee": "رسوم التوصيل",
+      "free": "مجاني",
+      "total_amount": "الإجمالي",
+      "place_order": "تأكيد الطلب",
+      "visa_mastercard": "فيزا / ماستر كارد",
+      "instapay": "إنستاباي",
+      "cash_on_delivery": "الدفع عند الاستلام"
     }
   }
 }

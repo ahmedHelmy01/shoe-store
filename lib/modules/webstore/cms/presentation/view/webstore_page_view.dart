@@ -6,6 +6,8 @@ import 'package:erp/modules/webstore/shared/data/providers/webstore_providers.da
 import 'package:erp/modules/webstore/cms/data/models/cms_page_model.dart';
 import 'package:erp/core/common_widget/main_layout/webstore_base_scaffold.dart';
 import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 
 class WebStorePageView extends ConsumerStatefulWidget {
   final String slug;
@@ -42,7 +44,7 @@ class _WebStorePageViewState extends ConsumerState<WebStorePageView> {
           if (pageData != null) {
             setState(() => _pageState = AsyncValue.data(CmsPageModel.fromJson(pageData)));
           } else {
-            setState(() => _pageState = AsyncValue.error('Page not found', StackTrace.current));
+            setState(() => _pageState = AsyncValue.error(LocaleKeys.common.page_not_found, StackTrace.current));
           }
         },
         failure: (error) {
@@ -121,7 +123,7 @@ class _WebStorePageViewState extends ConsumerState<WebStorePageView> {
                   16.verticalSpace,
                   ElevatedButton(
                     onPressed: _fetchPage,
-                    child: const Text('Try Again'),
+                    child: Text(LocaleKeys.common.try_again.tr(context: context)),
                   ),
                 ],
               ),

@@ -1,5 +1,5 @@
-import 'package:erp/core/common_provider/ads_view_model/ads_state.dart';
-import 'package:erp/core/common_provider/ads_view_model/ads_view_model.dart';
+import 'package:erp/modules/webstore/home/presentation/view_model/ads/ads_state.dart';
+import 'package:erp/modules/webstore/home/presentation/view_model/ads/ads_view_model.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/common_model/content_management_model.dart';
 import 'package:flutter/material.dart';
@@ -61,9 +61,9 @@ class _AdsSectionState extends ConsumerState<AdsSection> {
     final items = data.items ?? [];
 
     if (items.isEmpty) {
-      return const AppEmptyWidget(
-        message: 'لا توجد عروض حصرية حالياً',
-        subtitle: 'تحقق مرة أخرى قريباً لمتابعة أحدث الخصومات والمكافآت.',
+      return AppEmptyWidget(
+        message: LocaleKeys.webstore.home.no_exclusive_offers.tr(context: context),
+        subtitle: LocaleKeys.webstore.home.no_exclusive_offers_subtitle.tr(context: context),
         showGlassBackground: false,
       );
     }
@@ -71,7 +71,7 @@ class _AdsSectionState extends ConsumerState<AdsSection> {
     return AppAnimation.fadeInUp(
       child: Column(
         children: [
-          AppSectionHeader(title: LocaleKeys.webstore.home.exclusive_offers.tr()),
+          AppSectionHeader(title: LocaleKeys.webstore.home.exclusive_offers.tr(context: context)),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Column(

@@ -22,7 +22,7 @@ class WebStorePointsView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: CommonAppBar(titleText: 'webstore.points.title'.tr()),
+      appBar: CommonAppBar(titleText: 'webstore.points.title'.tr(context: context)),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20.w),
         child: Column(
@@ -47,7 +47,7 @@ class WebStorePointsView extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      'webstore.points.balance'.tr(),
+                      'webstore.points.balance'.tr(context: context),
                       style: TextStyle(fontSize: 16.sp, color: Colors.white.withValues(alpha: 0.8)),
                     ),
                     8.verticalSpace,
@@ -63,7 +63,7 @@ class WebStorePointsView extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.only(bottom: 6.h),
                           child: Text(
-                            'webstore.points.point'.tr(),
+                            'webstore.points.point'.tr(context: context),
                             style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: Colors.white),
                           ),
                         ),
@@ -78,7 +78,7 @@ class WebStorePointsView extends StatelessWidget {
 
             // History Title
             Text(
-              'webstore.points.history'.tr(),
+              'webstore.points.history'.tr(context: context),
               style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w800),
             ),
             16.verticalSpace,

@@ -54,7 +54,9 @@ class ProductResultBottomSheet extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                type == ProductSheetType.search ? LocaleKeys.webstore.home.search_results.tr() : LocaleKeys.webstore.home.filter_results.tr(),
+                type == ProductSheetType.search
+                    ? LocaleKeys.webstore.home.search_results.tr(context: context)
+                    : LocaleKeys.webstore.home.filter_results.tr(context: context),
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
@@ -110,8 +112,8 @@ class ProductResultBottomSheet extends ConsumerWidget {
           16.verticalSpace,
           Text(
             type == ProductSheetType.search
-                ? LocaleKeys.webstore.home.no_search_results.tr()
-                : LocaleKeys.webstore.home.no_filter_results.tr(),
+                ? LocaleKeys.webstore.home.no_search_results.tr(context: context)
+                : LocaleKeys.webstore.home.no_filter_results.tr(context: context),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14.sp,

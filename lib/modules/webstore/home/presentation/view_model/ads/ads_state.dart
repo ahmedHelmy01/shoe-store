@@ -22,3 +22,4 @@ class AdsSuccess extends AdsState {
   final ContentManagementModel data;
   const AdsSuccess(this.data);
 }
+

@@ -12,7 +12,6 @@ import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/common_widget/main_layout/webstore_main_layout.dart';
 import 'package:erp/modules/webstore/onboarding/onboarding_view.dart';
 import 'package:erp/modules/webstore/splash/animated_splash_screen.dart';
-import 'package:erp/core/services/session_manager.dart';
 import 'package:erp/modules/webstore/checkout/presentation/view/webstore_checkout_view.dart';
 import 'package:erp/modules/webstore/orders/presentation/view/webstore_order_track_view.dart';
 import 'package:erp/modules/webstore/orders/presentation/view/webstore_rate_order_view.dart';
@@ -22,18 +21,43 @@ import 'package:erp/modules/webstore/wishlist/presentation/view/webstore_wishlis
 import 'package:erp/modules/webstore/profile/presentation/view/webstore_points_view.dart';
 
 /// Central entry point for the ERP application
-class ErpAppRoot extends ConsumerWidget {
+class ErpAppRoot extends ConsumerStatefulWidget {
   const ErpAppRoot({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ErpAppRoot> createState() => _ErpAppRootState();
+}
+
+class _ErpAppRootState extends ConsumerState<ErpAppRoot> {
+  Locale? _startLocale;
+
+  @override
+  void initState() {  
+    super.initState();
+    _loadStartLocale();
+  }
+
+  Future<void> _loadStartLocale() async {
+    final code = await ref.read(sessionManagerProvider).getLocale();
+    if (!mounted) return;
+    setState(() => _startLocale = Locale(code));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     ref.watch(isConnectedProvider);
+
+    // Avoid building the app with the wrong locale for 1 frame.
+    if (_startLocale == null) {
+      return const SizedBox.shrink();
+    }
 
     return EasyLocalization(
       supportedLocales: const [Locale('ar'), Locale('en')],
       path: AppConstants.translationPath,
       fallbackLocale: const Locale('ar'),
-      startLocale: const Locale('ar'),
+      startLocale: _startLocale,
+      saveLocale: true,
       child: ScreenUtilInit(
         designSize: const Size(375, 812),
         minTextAdapt: true,
@@ -89,7 +113,7 @@ class _SplashRouterState extends ConsumerState<SplashRouter> {
   }
 
   Future<void> _checkOnboardingStatus() async {
-    final status = await SessionManager.instance.hasSeenOnboarding();
+    final status = await ref.read(sessionManagerProvider).hasSeenOnboarding();
     if (mounted) {
       setState(() => _isOnboardingDone = status);
     }

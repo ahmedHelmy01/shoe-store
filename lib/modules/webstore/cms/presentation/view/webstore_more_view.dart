@@ -8,6 +8,7 @@ import 'package:erp/core/common_widget/main_layout/webstore_base_scaffold.dart';
 import 'package:erp/modules/webstore/cms/presentation/view/contact_us_view.dart';
 import 'package:erp/core/providers/theme_provider.dart';
 import 'package:erp/core/router/app_navigator.dart';
+import 'package:erp/core/providers/core_providers.dart';
 
 class WebStoreMoreView extends ConsumerWidget {
   const WebStoreMoreView({super.key});
@@ -15,7 +16,7 @@ class WebStoreMoreView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return WebStoreBaseScaffold(
-      titleText: LocaleKeys.webstore.nav.more.tr(),
+      titleText: LocaleKeys.webstore.nav.more.tr(context: context),
       showAppBar: true,
       body: SingleChildScrollView(
         child: Column(
@@ -25,7 +26,7 @@ class WebStoreMoreView extends ConsumerWidget {
             30.verticalSpace,
             _buildSection(
               context: context,
-              title: 'webstore.more.appearance'.tr(),
+              title: 'webstore.more.appearance'.tr(context: context),
               items: [
                 SwitchListTile(
                   secondary: Icon(
@@ -35,7 +36,7 @@ class WebStoreMoreView extends ConsumerWidget {
                     color: AppColors.primaryBlue,
                   ),
                   title: Text(
-                    'webstore.more.dark_mode'.tr(),
+                    'webstore.more.dark_mode'.tr(context: context),
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w500,
@@ -52,43 +53,46 @@ class WebStoreMoreView extends ConsumerWidget {
             20.verticalSpace,
             _buildSection(
               context: context,
-              title: LocaleKeys.common.settings.tr(),
+              title: LocaleKeys.common.settings.tr(context: context),
               items: [
                 _MoreItem(
                   icon: Icons.receipt_long_rounded,
-                  title: 'webstore.more.my_orders'.tr(),
+                  title: 'webstore.more.my_orders'.tr(context: context),
                   onTap: () {
                     AppNavigator.push(context, AppRouteNames.webstoreOrderList);
                   },
                 ),
                 _MoreItem(
                   icon: Icons.favorite_outline_rounded,
-                  title: 'webstore.more.wishlist'.tr(),
+                  title: 'webstore.more.wishlist'.tr(context: context),
                   onTap: () {
                     AppNavigator.push(context, AppRouteNames.webstoreWishlist);
                   },
                 ),
                 _MoreItem(
                   icon: Icons.stars_rounded,
-                  title: 'webstore.more.my_points'.tr(),
+                  title: 'webstore.more.my_points'.tr(context: context),
                   onTap: () {
                     AppNavigator.push(context, AppRouteNames.webstorePoints);
                   },
                 ),
                 _MoreItem(
                   icon: Icons.language_rounded,
-                  title: context.locale.languageCode == 'ar' ? 'English' : 'العربية',
-                  onTap: () {
-                    if (context.locale.languageCode == 'ar') {
-                      context.setLocale(const Locale('en'));
-                    } else {
-                      context.setLocale(const Locale('ar'));
+                  title: (context.locale.languageCode == 'ar'
+                          ? LocaleKeys.common.english
+                          : LocaleKeys.common.arabic)
+                      .tr(context: context),
+                  onTap: () async {
+                    final next = context.locale.languageCode == 'ar' ? const Locale('en') : const Locale('ar');
+                    await ref.read(sessionManagerProvider).setLocale(next.languageCode);
+                    if (context.mounted) {
+                      await context.setLocale(next);
                     }
                   },
                 ),
                 _MoreItem(
                   icon: Icons.notifications_none_rounded,
-                  title: LocaleKeys.common.notifications.tr(),
+                  title: LocaleKeys.common.notifications.tr(context: context),
                   onTap: () {},
                 ),
               ],
@@ -100,14 +104,14 @@ class WebStoreMoreView extends ConsumerWidget {
               items: [
                 _MoreItem(
                   icon: Icons.info_outline_rounded,
-                  title: LocaleKeys.common.about_us.tr(),
+                  title: LocaleKeys.common.about_us.tr(context: context),
                   onTap: () {
                     // Navigate to about us slug
                   },
                 ),
                 _MoreItem(
                   icon: Icons.contact_support_outlined,
-                  title: LocaleKeys.common.contact_us.tr(),
+                  title: LocaleKeys.common.contact_us.tr(context: context),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -120,7 +124,7 @@ class WebStoreMoreView extends ConsumerWidget {
             30.verticalSpace,
             _MoreItem(
               icon: Icons.logout_rounded,
-              title: LocaleKeys.common.logout.tr(),
+              title: LocaleKeys.common.logout.tr(context: context),
               color: AppColors.error,
               showChevron: false,
               onTap: () {},

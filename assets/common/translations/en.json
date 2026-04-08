@@ -51,7 +51,50 @@
     "register_now": "Register now",
     "next": "Next",
     "back": "Back",
-    "get_started": "Get Started"
+    "get_started": "Get Started",
+    "try_again": "Try Again",
+    "error": "Error",
+    "page_not_found": "Page not found",
+    "home_address": "Home Address"
+    ,
+    "subject": "Subject",
+    "your_message": "Your message",
+    "send_message": "Send message",
+    "field_required": "This field is required",
+    "sent_successfully": "Sent successfully",
+    "contact_thanks": "Thanks for reaching out. Our support team will reply as soon as possible.",
+    "ok": "OK"
+    ,
+    "no_data": "No data available right now",
+    "retry": "Try again",
+    "unexpected_error": "An unexpected error occurred",
+    "check_internet": "Check your internet connection and try again",
+    "server_not_responding": "The server is not responding. Please try again later",
+    "cart_empty": "Your cart is empty",
+    "cart_empty_subtitle": "You haven't added any products yet. Start shopping now!",
+    "browse_products": "Browse products",
+    "no_orders_yet": "No orders yet",
+    "no_orders_yet_subtitle": "Your orders will appear here after you make a purchase.",
+    "no_results": "No results found",
+    "no_results_subtitle": "Try searching with different words or check categories."
+    ,
+    "no_internet": "No internet connection",
+    "timeout": "Connection timed out",
+    "login_again": "Please log in again",
+    "cache_error": "Local data error",
+    "item_not_found": "Item not found"
+    ,
+    "timeout_server": "Server connection timed out",
+    "unauthorized": "Unauthorized, please log in",
+    "forbidden": "You don't have permission to access this resource",
+    "not_found_requested": "The requested item was not found",
+    "conflict": "There is an issue with the submitted data",
+    "server_error_try_later": "A server error occurred. Please try again later"
+    ,
+    "request_cancelled": "Request cancelled",
+    "session_expired_login_again": "Your session has expired. Please log in again",
+    "cache_load_error": "Error loading local data",
+    "unexpected_error_retry": "An unexpected error occurred. Please try again"
   },
   "webstore": {
     "auth": {
@@ -89,6 +132,8 @@
       "view_all": "View All",
       "tarshooby_offers": "Tarshooby Offers",
       "vouchers_title": "Vouchers",
+      "voucher_first_order": "On your first order",
+      "voucher_skincare": "On skincare products",
       "medical_services": "Medical Services",
       "pharmacy_sections": "Pharmacy Sections",
       "most_ordered": "Most Ordered",
@@ -107,6 +152,9 @@
       "feature_new_arrivals": "New Arrivals",
       "feature_best_sellers": "Best Sellers",
       "feature_special_picks": "Special Picks"
+      ,
+      "no_exclusive_offers": "No exclusive offers right now",
+      "no_exclusive_offers_subtitle": "Check back soon for the latest discounts and rewards."
     },
     "nav": {
       "home": "Home",
@@ -160,6 +208,22 @@
       "wishlist": "Wishlist",
       "my_orders": "My Orders",
       "my_points": "My Points"
+    },
+    "checkout": {
+      "title": "Checkout",
+      "delivery_address": "Delivery Address",
+      "payment_method": "Payment Method",
+      "promo_code": "Promo Code",
+      "enter_promo_code": "Enter promo code",
+      "apply": "Apply",
+      "order_amount": "Order Amount",
+      "delivery_fee": "Delivery Fee",
+      "free": "Free",
+      "total_amount": "Total Amount",
+      "place_order": "Place Order",
+      "visa_mastercard": "Visa / Mastercard",
+      "instapay": "InstaPay",
+      "cash_on_delivery": "Cash on Delivery"
     }
   }
 }

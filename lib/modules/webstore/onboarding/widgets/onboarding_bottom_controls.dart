@@ -83,7 +83,7 @@ class OnboardingBottomControls extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                LocaleKeys.common.next.tr(),
+                LocaleKeys.common.next.tr(context: context),
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -128,7 +128,7 @@ class OnboardingBottomControls extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              LocaleKeys.common.get_started.tr(),
+              LocaleKeys.common.get_started.tr(context: context),
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w900,

@@ -29,13 +29,13 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      surfaceTintColor: Colors.transparent,
       backgroundColor: backgroundColor ?? Colors.transparent,
       elevation: 0,
       centerTitle: centerTitle,
       automaticallyImplyLeading: false,
       title: title ?? (titleText != null ? Text(titleText!) : null),
-      leading: leading ??
+      leading:
+          leading ??
           (showBackButton
               ? IconButton(
                   icon: const Icon(Icons.arrow_back),
@@ -44,6 +44,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
               : null),
       actions: actions ?? (trailing != null ? [trailing!] : null),
       bottom: bottom,
+      surfaceTintColor: Colors.transparent,
     );
   }
 

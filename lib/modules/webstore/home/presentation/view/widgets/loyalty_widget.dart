@@ -24,15 +24,15 @@ class UserLoyaltyWidget extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: _buildLoyaltyItem(LocaleKeys.webstore.home.my_points.tr(), '1,250', Icons.stars_rounded, theme),
+            child: _buildLoyaltyItem(LocaleKeys.webstore.home.my_points.tr(context: context), '1,250', Icons.stars_rounded, theme),
           ),
           _buildDivider(isDark, theme),
           Expanded(
-            child: _buildLoyaltyItem(LocaleKeys.webstore.home.wallet.tr(), '450.5 LE', Icons.account_balance_wallet_rounded, theme),
+            child: _buildLoyaltyItem(LocaleKeys.webstore.home.wallet.tr(context: context), '450.5 LE', Icons.account_balance_wallet_rounded, theme),
           ),
           _buildDivider(isDark, theme),
           Expanded(
-            child: _buildLoyaltyItem(LocaleKeys.webstore.home.coupons.tr(), '3', Icons.confirmation_number_rounded, theme),
+            child: _buildLoyaltyItem(LocaleKeys.webstore.home.coupons.tr(context: context), '3', Icons.confirmation_number_rounded, theme),
           ),
         ],
       ),

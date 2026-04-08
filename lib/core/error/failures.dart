@@ -26,17 +26,17 @@ class ServerFailure extends Failure {
 
 /// No internet connection or network error
 class NetworkFailure extends Failure {
-  const NetworkFailure({super.message = 'لا يوجد اتصال بالإنترنت'});
+  const NetworkFailure({super.message = 'common.no_internet'});
 }
 
 /// Request timed out
 class TimeoutFailure extends Failure {
-  const TimeoutFailure({super.message = 'انتهت مهلة الاتصال'});
+  const TimeoutFailure({super.message = 'common.timeout'});
 }
 
 /// Authentication or authorization error
 class AuthFailure extends Failure {
-  const AuthFailure({super.message = 'يرجى تسجيل الدخول مرة أخرى', super.statusCode});
+  const AuthFailure({super.message = 'common.login_again', super.statusCode});
 }
 
 /// Validation error (form data, input)
@@ -52,15 +52,15 @@ class ValidationFailure extends Failure {
 
 /// Cache/Local storage error
 class CacheFailure extends Failure {
-  const CacheFailure({super.message = 'خطأ في البيانات المحلية'});
+  const CacheFailure({super.message = 'common.cache_error'});
 }
 
 /// Resource not found
 class NotFoundFailure extends Failure {
-  const NotFoundFailure({super.message = 'العنصر غير موجود', super.statusCode = 404});
+  const NotFoundFailure({super.message = 'common.item_not_found', super.statusCode = 404});
 }
 
 /// Unknown/unexpected error
 class UnexpectedFailure extends Failure {
-  const UnexpectedFailure({super.message = 'حدث خطأ غير متوقع', super.originalError});
+  const UnexpectedFailure({super.message = 'common.unexpected_error', super.originalError});
 }

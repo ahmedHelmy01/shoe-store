@@ -5,6 +5,7 @@
 library;
 
 import 'package:erp/core/network/api_result.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'failures.dart';
 
 class ErrorHandler {
@@ -32,7 +33,7 @@ class ErrorHandler {
           statusCode: exception.statusCode,
         ),
       ApiErrorType.cancelled => ServerFailure(
-          message: 'تم إلغاء الطلب',
+          message: LocaleKeys.common.request_cancelled,
           statusCode: exception.statusCode,
         ),
       ApiErrorType.client => ServerFailure(
@@ -49,14 +50,14 @@ class ErrorHandler {
   /// Get user-friendly error message from a Failure
   static String getUserMessage(Failure failure) {
     return switch (failure) {
-      NetworkFailure() => 'تأكد من اتصالك بالإنترنت وحاول مرة أخرى',
-      TimeoutFailure() => 'السيرفر لا يستجيب، حاول مرة أخرى',
-      AuthFailure() => 'جلستك انتهت، يرجى تسجيل الدخول مرة أخرى',
+      NetworkFailure() => LocaleKeys.common.check_internet,
+      TimeoutFailure() => LocaleKeys.common.server_not_responding,
+      AuthFailure() => LocaleKeys.common.session_expired_login_again,
       ValidationFailure(message: final msg) => msg,
       ServerFailure(message: final msg) => msg,
-      NotFoundFailure() => 'العنصر المطلوب غير موجود',
-      CacheFailure() => 'خطأ في تحميل البيانات المحلية',
-      UnexpectedFailure() => 'حدث خطأ غير متوقع، حاول مرة أخرى',
+      NotFoundFailure() => LocaleKeys.common.not_found_requested,
+      CacheFailure() => LocaleKeys.common.cache_load_error,
+      UnexpectedFailure() => LocaleKeys.common.unexpected_error_retry,
     };
   }
 }

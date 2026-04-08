@@ -3,9 +3,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// A centralized session manager to store and retrieve session-related data.
 /// Standardized for unified storage across the application.
 class SessionManager {
-  SessionManager._();
+  final SharedPreferences _prefs;
 
-  static final SessionManager instance = SessionManager._();
+  /// Single session service (injectable via providers).
+  ///
+  /// - `SharedPreferences`: non-sensitive session/preferences
+  const SessionManager({
+    required SharedPreferences prefs,
+  }) : _prefs = prefs;
 
   // ─── Constants ───────────────────────────────────────
   static const String _userDataKey = 'user_data';
@@ -21,127 +26,155 @@ class SessionManager {
   static const String _selectedBranchNameKey = 'selected_branch_name';
   static const String _selectedWarehouseKey = 'selected_warehouse';
 
+  // Auth/Sensitive (now stored in SharedPreferences by request)
+  static const String _accessTokenKey = 'erp_access_token';
+  static const String _refreshTokenKey = 'erp_refresh_token';
+  static const String _userIdKey = 'erp_user_id';
+  static const String _tenantIdKey = 'erp_tenant_id';
+
   // ─── User Data & Auth ────────────────────────────────
 
   Future<String?> getUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_userDataKey);
+    return _prefs.getString(_userDataKey);
   }
 
   Future<void> setUserData(String userData) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_userDataKey, userData);
+    await _prefs.setString(_userDataKey, userData);
   }
 
   Future<void> clearUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_userDataKey);
+    await _prefs.remove(_userDataKey);
   }
 
   Future<bool> isLoggedIn() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_isLoggedInKey) ?? false;
+    return _prefs.getBool(_isLoggedInKey) ?? false;
   }
 
   Future<void> setLoggedIn(bool isLoggedIn) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_isLoggedInKey, isLoggedIn);
+    await _prefs.setBool(_isLoggedInKey, isLoggedIn);
   }
 
   Future<void> clearSession() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_isLoggedInKey, false);
-    await prefs.remove(_userDataKey);
+    await _prefs.setBool(_isLoggedInKey, false);
+    await _prefs.remove(_userDataKey);
+    await clearAuth();
+  }
+
+  // ─── Auth (stored in SharedPreferences) ─────────────
+
+  Future<void> saveTokens({
+    required String accessToken,
+    String? refreshToken,
+  }) async {
+    await _prefs.setString(_accessTokenKey, accessToken);
+    if (refreshToken != null) {
+      await _prefs.setString(_refreshTokenKey, refreshToken);
+    }
+  }
+
+  Future<String?> getAccessToken() async {
+    return _prefs.getString(_accessTokenKey);
+  }
+
+  Future<String?> getRefreshToken() async {
+    return _prefs.getString(_refreshTokenKey);
+  }
+
+  Future<void> saveUserId(String userId) async {
+    await _prefs.setString(_userIdKey, userId);
+  }
+
+  Future<String?> getUserId() async {
+    return _prefs.getString(_userIdKey);
+  }
+
+  Future<void> saveTenantId(String tenantId) async {
+    await _prefs.setString(_tenantIdKey, tenantId);
+  }
+
+  Future<String?> getTenantId() async {
+    return _prefs.getString(_tenantIdKey);
+  }
+
+  Future<void> clearAuth() async {
+    await _prefs.remove(_accessTokenKey);
+    await _prefs.remove(_refreshTokenKey);
+    await _prefs.remove(_userIdKey);
+    await _prefs.remove(_tenantIdKey);
   }
 
   // ─── Onboarding ─────────────────────────────────────
 
   Future<bool> hasSeenOnboarding() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_hasSeenOnboardingKey) ?? false;
+    return _prefs.getBool(_hasSeenOnboardingKey) ?? false;
   }
 
   Future<void> setHasSeenOnboarding(bool seen) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_hasSeenOnboardingKey, seen);
+    await _prefs.setBool(_hasSeenOnboardingKey, seen);
   }
 
   // ─── Appearance & Locale ────────────────────────────
 
   Future<bool> isDarkMode() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_isDarkModeKey) ?? false;
+    return _prefs.getBool(_isDarkModeKey) ?? false;
   }
 
   Future<void> setDarkMode(bool isDark) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_isDarkModeKey, isDark);
+    await _prefs.setBool(_isDarkModeKey, isDark);
   }
 
   Future<String> getLocale() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_localeKey) ?? 'ar';
+    return _prefs.getString(_localeKey) ?? 'ar';
   }
 
   Future<void> setLocale(String locale) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_localeKey, locale);
+    await _prefs.setString(_localeKey, locale);
   }
 
   // ─── System Settings & Branch Selection ───────────────
 
   Future<DateTime?> getLastSync() async {
-    final prefs = await SharedPreferences.getInstance();
-    final ms = prefs.getInt(_lastSyncKey);
+    final ms = _prefs.getInt(_lastSyncKey);
     return ms != null ? DateTime.fromMillisecondsSinceEpoch(ms) : null;
   }
 
   Future<void> setLastSync(DateTime time) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_lastSyncKey, time.millisecondsSinceEpoch);
+    await _prefs.setInt(_lastSyncKey, time.millisecondsSinceEpoch);
   }
 
   Future<bool> isNotificationsEnabled() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_notificationsKey) ?? true;
+    return _prefs.getBool(_notificationsKey) ?? true;
   }
 
   Future<void> setNotificationsEnabled(bool enabled) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_notificationsKey, enabled);
+    await _prefs.setBool(_notificationsKey, enabled);
   }
 
   // ─── Branch Selection Methods ───────────────────────
 
   Future<int?> getBranchId() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt(_selectedBranchIdKey);
+    return _prefs.getInt(_selectedBranchIdKey);
   }
 
   Future<void> setBranchId(int id) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_selectedBranchIdKey, id);
+    await _prefs.setInt(_selectedBranchIdKey, id);
   }
 
   Future<String?> getBranchName() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_selectedBranchNameKey);
+    return _prefs.getString(_selectedBranchNameKey);
   }
 
   Future<void> setBranchName(String name) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_selectedBranchNameKey, name);
+    await _prefs.setString(_selectedBranchNameKey, name);
   }
 
   // ─── Warehouse Selection Methods ────────────────────
 
   Future<String?> getSelectedWarehouse() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_selectedWarehouseKey);
+    return _prefs.getString(_selectedWarehouseKey);
   }
 
   Future<void> setSelectedWarehouse(String warehouseId) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_selectedWarehouseKey, warehouseId);
+    await _prefs.setString(_selectedWarehouseKey, warehouseId);
   }
 }

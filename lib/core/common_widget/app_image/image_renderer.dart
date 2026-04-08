@@ -18,8 +18,7 @@ class ImageRenderer {
     String? placeHolderImage,
     String? placeHolderText,
   }) {
-    final String fallbackText =
-        placeHolderText ?? LocaleKeys.common.noImage.tr();
+    final String fallbackText = placeHolderText ?? LocaleKeys.common.noImage;
 
     if (imagePath.isEmpty) {
       return _buildPlaceholder(fallbackText, height, width, fit);
@@ -36,8 +35,12 @@ class ImageRenderer {
           placeholder: (context, url) => Center(
             child: SizedBox(height: 20, width: 20, child: AppLoader(size: 20)),
           ),
-          errorWidget: (context, url, error) =>
-              _buildPlaceholder(fallbackText, height, width, fit),
+          errorWidget: (context, url, error) => _buildPlaceholder(
+            (fallbackText).tr(context: context),
+            height,
+            width,
+            fit,
+          ),
         );
       case ImageType.file:
         return Image.file(
@@ -47,7 +50,12 @@ class ImageRenderer {
           fit: fit,
           color: color,
           errorBuilder: (context, error, stackTrace) {
-            return _buildPlaceholder(fallbackText, height, width, fit);
+            return _buildPlaceholder(
+              (fallbackText).tr(context: context),
+              height,
+              width,
+              fit,
+            );
           },
         );
       case ImageType.svg:
@@ -67,7 +75,12 @@ class ImageRenderer {
           fit: fit,
           color: color,
           errorBuilder: (context, error, stackTrace) {
-            return _buildPlaceholder(fallbackText, height, width, fit);
+            return _buildPlaceholder(
+              (fallbackText).tr(context: context),
+              height,
+              width,
+              fit,
+            );
           },
         );
     }

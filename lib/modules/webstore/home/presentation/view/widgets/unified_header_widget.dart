@@ -8,7 +8,7 @@ import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/search_result_widget.dart';
-import 'package:erp/core/services/session_manager.dart';
+import 'package:erp/core/providers/core_providers.dart';
 
 class UnifiedHomeHeader extends ConsumerStatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -68,7 +68,7 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
                     const Icon(Icons.location_on_rounded, color: AppColors.primaryOrange, size: 20),
                     6.horizontalSpace,
                     Text(
-                      locationState.selectedBranch ?? LocaleKeys.webstore.home.select_branch.tr(),
+                      locationState.selectedBranch ?? LocaleKeys.webstore.home.select_branch.tr(context: context),
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.bold,
@@ -112,7 +112,7 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
                     textInputAction: TextInputAction.search,
                     style: TextStyle(color: theme.textTheme.bodyLarge?.color),
                     decoration: InputDecoration(
-                      hintText: LocaleKeys.webstore.home.search_hint.tr(),
+                      hintText: LocaleKeys.webstore.home.search_hint.tr(context: context),
                       hintStyle: TextStyle(
                         fontSize: 14.sp,
                         color: theme.hintColor,
@@ -165,7 +165,7 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                LocaleKeys.webstore.home.select_branch.tr(),
+                LocaleKeys.webstore.home.select_branch.tr(context: context),
                 style: TextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
@@ -186,7 +186,7 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
                         return Center(
                           child: Padding(
                             padding: EdgeInsets.symmetric(vertical: 20.h),
-                            child: Text(LocaleKeys.webstore.home.no_products.tr()),
+                            child: Text(LocaleKeys.webstore.home.no_products.tr(context: context)),
                           ),
                         );
                       }
@@ -211,8 +211,8 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
                             ),
                             trailing: isSelected ? const Icon(Icons.check_circle_rounded, color: AppColors.primaryOrange) : null,
                             onTap: () async {
-                              await SessionManager.instance.setBranchId(branch.id);
-                              await SessionManager.instance.setBranchName(branchName);
+                              await ref.read(sessionManagerProvider).setBranchId(branch.id);
+                              await ref.read(sessionManagerProvider).setBranchName(branchName);
                               ref.read(locationProvider.notifier).updateSelectedBranch(branchName);
                               await ref.read(branchVmProvider.notifier).updateBranch(branch.id.toString());
                               ref.read(homeVmProvider.notifier).getLatestProducts();

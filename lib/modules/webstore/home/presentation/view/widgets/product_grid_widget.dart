@@ -34,7 +34,7 @@ class ProductGridSection extends ConsumerWidget {
         padding: EdgeInsets.only(top: 20.h),
         child: Center(
           child: Text(
-            LocaleKeys.webstore.home.no_products.tr(),
+            LocaleKeys.webstore.home.no_products.tr(context: context),
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w600,

@@ -76,7 +76,7 @@ class FeatureLinksWidget extends StatelessWidget {
           ),
           8.verticalSpace,
           Text(
-            feature.title.tr(),
+            feature.title.tr(context: context),
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

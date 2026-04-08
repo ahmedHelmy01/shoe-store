@@ -57,7 +57,7 @@ class WebStoreOrderListView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: CommonAppBar(titleText: 'webstore.orders.title'.tr()),
+      appBar: CommonAppBar(titleText: 'webstore.orders.title'.tr(context: context)),
       body: ListView.separated(
         padding: EdgeInsets.all(20.w),
         itemCount: orders.length,
@@ -108,7 +108,7 @@ class WebStoreOrderListView extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20.r),
                         ),
                         child: Text(
-                          (order['status'] as String).tr(),
+                          (order['status'] as String).tr(context: context),
                           style: TextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.bold,

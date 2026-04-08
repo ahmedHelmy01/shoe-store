@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/network/network_exceptions.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 
 /// Base Repository
 /// Provides a safety wrapper for API calls to convert exceptions to ApiResult.
@@ -14,7 +15,7 @@ abstract class BaseRepository {
       if (e is NoInternetException) {
         return const ApiFailure(
           ApiException(
-            message: 'لا يوجد اتصال بالإنترنت',
+            message: LocaleKeys.common.no_internet,
             type: ApiErrorType.network,
           ),
         );
@@ -26,7 +27,7 @@ abstract class BaseRepository {
   ApiException _mapExceptionToApiException(dynamic e) {
     if (e is TimeoutException || e is DeadlineExceededException) {
       return const ApiException(
-        message: 'انتهت مهلة الاتصال بالخادم',
+        message: LocaleKeys.common.timeout_server,
         type: ApiErrorType.timeout,
       );
     }

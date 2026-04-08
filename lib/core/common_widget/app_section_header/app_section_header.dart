@@ -61,7 +61,7 @@ class AppSectionHeader extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    LocaleKeys.webstore.home.view_all.tr(),
+                    LocaleKeys.webstore.home.view_all.tr(context: context),
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.bold,

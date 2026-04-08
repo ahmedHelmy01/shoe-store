@@ -6,6 +6,8 @@ import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 
 class WebStoreCheckoutView extends StatefulWidget {
   const WebStoreCheckoutView({super.key});
@@ -24,14 +26,14 @@ class _WebStoreCheckoutViewState extends State<WebStoreCheckoutView> {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: const CommonAppBar(titleText: 'Checkout'),
+      appBar: CommonAppBar(titleText: LocaleKeys.webstore.checkout.title.tr(context: context)),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ─── 1. Delivery Address ─────────────────────
-            _sectionHeader('Delivery Address', onAction: () {}),
+            _sectionHeader(LocaleKeys.webstore.checkout.delivery_address.tr(context: context), onAction: () {}),
             12.verticalSpace,
             AppCard(
               padding: EdgeInsets.all(16.w),
@@ -50,7 +52,7 @@ class _WebStoreCheckoutViewState extends State<WebStoreCheckoutView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Home Address', style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w700)),
+                        Text(LocaleKeys.common.home_address.tr(context: context), style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w700)),
                         4.verticalSpace,
                         Text(
                           '123 El-Nasr St, Maadi, Cairo, Egypt',
@@ -67,18 +69,18 @@ class _WebStoreCheckoutViewState extends State<WebStoreCheckoutView> {
             24.verticalSpace,
 
             // ─── 2. Payment Method ───────────────────────
-            _sectionHeader('Payment Method'),
+            _sectionHeader(LocaleKeys.webstore.checkout.payment_method.tr(context: context)),
             12.verticalSpace,
-            _buildPaymentOption('visa', 'Visa / Mastercard', AssetManager.visa),
+            _buildPaymentOption('visa', LocaleKeys.webstore.checkout.visa_mastercard.tr(context: context), AssetManager.visa),
             12.verticalSpace,
-            _buildPaymentOption('instapay', 'InstaPay', AssetManager.instapay),
+            _buildPaymentOption('instapay', LocaleKeys.webstore.checkout.instapay.tr(context: context), AssetManager.instapay),
             12.verticalSpace,
-            _buildPaymentOption('cash', 'Cash on Delivery', AssetManager.car, isAsset: true),
+            _buildPaymentOption('cash', LocaleKeys.webstore.checkout.cash_on_delivery.tr(context: context), AssetManager.car, isAsset: true),
 
             24.verticalSpace,
 
             // ─── 3. Promo Code ──────────────────────────
-            _sectionHeader('Promo Code'),
+            _sectionHeader(LocaleKeys.webstore.checkout.promo_code.tr(context: context)),
             12.verticalSpace,
             Container(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
@@ -105,7 +107,7 @@ class _WebStoreCheckoutViewState extends State<WebStoreCheckoutView> {
                   Expanded(
                     child: TextField(
                       decoration: InputDecoration(
-                        hintText: 'Enter promo code',
+                        hintText: LocaleKeys.webstore.checkout.enter_promo_code.tr(context: context),
                         border: InputBorder.none,
                         isDense: true,
                         hintStyle: TextStyle(fontSize: 14.sp, color: theme.hintColor),
@@ -122,7 +124,7 @@ class _WebStoreCheckoutViewState extends State<WebStoreCheckoutView> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
                     ),
                     child: Text(
-                      'Apply',
+                      LocaleKeys.webstore.checkout.apply.tr(context: context),
                       style: TextStyle(
                         fontSize: 14.sp, 
                         fontWeight: FontWeight.w900, 
@@ -143,13 +145,13 @@ class _WebStoreCheckoutViewState extends State<WebStoreCheckoutView> {
               backgroundColor: isDark ? theme.cardColor : Colors.grey[50],
               child: Column(
                 children: [
-                   _summaryRow('Order Amount', '\$423.00'),
+                   _summaryRow(LocaleKeys.webstore.checkout.order_amount.tr(context: context), '\$423.00'),
                    12.verticalSpace,
-                   _summaryRow('Delivery Fee', 'Free', isGreen: true),
+                   _summaryRow(LocaleKeys.webstore.checkout.delivery_fee.tr(context: context), LocaleKeys.webstore.checkout.free.tr(context: context), isGreen: true),
                    20.verticalSpace,
                    const Divider(),
                    20.verticalSpace,
-                   _summaryRow('Total Amount', '\$423.00', isTotal: true),
+                   _summaryRow(LocaleKeys.webstore.checkout.total_amount.tr(context: context), '\$423.00', isTotal: true),
                 ],
               ),
             ),
@@ -161,7 +163,7 @@ class _WebStoreCheckoutViewState extends State<WebStoreCheckoutView> {
               onPressed: () => AppNavigator.replace(context, AppRouteNames.webstoreOrderTrack),
               isGradient: true,
               child: Text(
-                'Place Order',
+                LocaleKeys.webstore.checkout.place_order.tr(context: context),
                 style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: Colors.white),
               ),
             ),
@@ -183,7 +185,7 @@ class _WebStoreCheckoutViewState extends State<WebStoreCheckoutView> {
         if (onAction != null)
           TextButton(
             onPressed: onAction,
-            child: Text('Edit', style: TextStyle(color: AppColors.primaryOrange, fontWeight: FontWeight.bold)),
+            child: Text(LocaleKeys.common.edit.tr(context: context), style: TextStyle(color: AppColors.primaryOrange, fontWeight: FontWeight.bold)),
           ),
       ],
     );

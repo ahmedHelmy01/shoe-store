@@ -54,7 +54,7 @@ class _WebStoreWishlistViewState extends State<WebStoreWishlistView> {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: CommonAppBar(titleText: 'webstore.more.wishlist'.tr()),
+      appBar: CommonAppBar(titleText: 'webstore.more.wishlist'.tr(context: context)),
       body: wishlistItems.isEmpty
           ? Center(
               child: Column(
@@ -63,7 +63,7 @@ class _WebStoreWishlistViewState extends State<WebStoreWishlistView> {
                   Icon(Icons.favorite_border_rounded, size: 80.sp, color: theme.hintColor.withValues(alpha: 0.3)),
                   16.verticalSpace,
                   Text(
-                    'webstore.wishlist.empty'.tr(),
+                    'webstore.wishlist.empty'.tr(context: context),
                     style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: theme.hintColor),
                   ),
                 ],

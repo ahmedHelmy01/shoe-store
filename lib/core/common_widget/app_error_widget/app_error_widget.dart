@@ -5,6 +5,8 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 
 class AppErrorWidget extends StatelessWidget {
   final String? message;
@@ -35,7 +37,7 @@ class AppErrorWidget extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              message ?? 'حدث خطأ غير متوقع',
+              (message ?? LocaleKeys.common.unexpected_error).tr(context: context),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
@@ -48,7 +50,7 @@ class AppErrorWidget extends StatelessWidget {
               ElevatedButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh_rounded),
-                label: Text(actionText ?? 'إعادة المحاولة'),
+                label: Text((actionText ?? LocaleKeys.common.retry).tr(context: context)),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,
@@ -66,7 +68,7 @@ class AppErrorWidget extends StatelessWidget {
   /// Network error variant
   factory AppErrorWidget.network({VoidCallback? onRetry}) {
     return AppErrorWidget(
-      message: 'تأكد من اتصالك بالإنترنت وحاول مرة أخرى',
+      message: LocaleKeys.common.check_internet,
       icon: Icons.wifi_off_rounded,
       onRetry: onRetry,
     );
@@ -75,7 +77,7 @@ class AppErrorWidget extends StatelessWidget {
   /// Server error variant
   factory AppErrorWidget.server({VoidCallback? onRetry}) {
     return AppErrorWidget(
-      message: 'السيرفر لا يستجيب، حاول مرة أخرى لاحقاً',
+      message: LocaleKeys.common.server_not_responding,
       icon: Icons.cloud_off_rounded,
       onRetry: onRetry,
     );

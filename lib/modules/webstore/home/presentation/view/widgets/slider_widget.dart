@@ -81,8 +81,8 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
       return Padding(
         padding: EdgeInsets.symmetric(vertical: 24.h),
         child: AppEmptyWidget(
-          message: LocaleKeys.webstore.home.no_offers.tr(),
-          subtitle: LocaleKeys.webstore.home.wait_for_offers.tr(),
+          message: LocaleKeys.webstore.home.no_offers.tr(context: context),
+          subtitle: LocaleKeys.webstore.home.wait_for_offers.tr(context: context),
           showGlassBackground: false,
         ),
       );
@@ -197,7 +197,11 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
                         borderRadius: BorderRadius.circular(20.r),
                       ),
                     ),
-                    child: Text(isDefault ? LocaleKeys.webstore.home.explore_now.tr() : LocaleKeys.webstore.home.view_all.tr()),
+                    child: Text(
+                      isDefault
+                          ? LocaleKeys.webstore.home.explore_now.tr(context: context)
+                          : LocaleKeys.webstore.home.view_all.tr(context: context),
+                    ),
                   ),
                 ],
               ),

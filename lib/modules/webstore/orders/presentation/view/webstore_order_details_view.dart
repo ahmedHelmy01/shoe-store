@@ -19,7 +19,7 @@ class WebStoreOrderDetailsView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: CommonAppBar(titleText: LocaleKeys.webstore.orders.details.tr()),
+      appBar: CommonAppBar(titleText: LocaleKeys.webstore.orders.details.tr(context: context)),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20.w),
         child: Column(
@@ -35,7 +35,7 @@ class WebStoreOrderDetailsView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${LocaleKeys.webstore.orders.order_number.tr()}: #ORD-12345',
+                          '${LocaleKeys.webstore.orders.order_number.tr(context: context)}: #ORD-12345',
                           style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
                         ),
                         Container(
@@ -45,7 +45,7 @@ class WebStoreOrderDetailsView extends StatelessWidget {
                             borderRadius: BorderRadius.circular(20.r),
                           ),
                           child: Text(
-                            LocaleKeys.webstore.orders.status_delivered.tr(),
+                          LocaleKeys.webstore.orders.status_delivered.tr(context: context),
                             style: TextStyle(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.bold,
@@ -59,7 +59,7 @@ class WebStoreOrderDetailsView extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${LocaleKeys.webstore.orders.date.tr()}:', style: TextStyle(color: theme.hintColor, fontSize: 14.sp)),
+                        Text('${LocaleKeys.webstore.orders.date.tr(context: context)}:', style: TextStyle(color: theme.hintColor, fontSize: 14.sp)),
                         Text('Oct 15, 2023', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp)),
                       ],
                     ),
@@ -72,7 +72,7 @@ class WebStoreOrderDetailsView extends StatelessWidget {
 
             // Order Items
             Text(
-              LocaleKeys.webstore.orders.order_items.tr(),
+              LocaleKeys.webstore.orders.order_items.tr(context: context),
               style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
             ),
             12.verticalSpace,
@@ -108,7 +108,7 @@ class WebStoreOrderDetailsView extends StatelessWidget {
 
             // Order Summary
             Text(
-              LocaleKeys.webstore.orders.payment_summary.tr(),
+              LocaleKeys.webstore.orders.payment_summary.tr(context: context),
               style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
             ),
             12.verticalSpace,
@@ -118,16 +118,16 @@ class WebStoreOrderDetailsView extends StatelessWidget {
                 padding: EdgeInsets.all(16.w),
                 child: Column(
                   children: [
-                    _buildSummaryRow(theme, LocaleKeys.webstore.orders.subtotal.tr(), '890.00'),
+                    _buildSummaryRow(theme, LocaleKeys.webstore.orders.subtotal.tr(context: context), '890.00'),
                     8.verticalSpace,
-                    _buildSummaryRow(theme, LocaleKeys.webstore.orders.delivery_fee.tr(), '0.00'),
+                    _buildSummaryRow(theme, LocaleKeys.webstore.orders.delivery_fee.tr(context: context), '0.00'),
                     8.verticalSpace,
                     Divider(color: theme.dividerColor.withValues(alpha: 0.5)),
                     8.verticalSpace,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(LocaleKeys.webstore.orders.total.tr(), style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
+                        Text(LocaleKeys.webstore.orders.total.tr(context: context), style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
                         Text('890.00 ${AppConstants.currency}', style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w900, color: AppColors.primaryOrange)),
                       ],
                     ),
@@ -160,11 +160,11 @@ class WebStoreOrderDetailsView extends StatelessWidget {
                   type: ButtonType.secondary,
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(LocaleKeys.webstore.orders.added_to_cart.tr())),
+                      SnackBar(content: Text(LocaleKeys.webstore.orders.added_to_cart.tr(context: context))),
                     );
                     AppNavigator.pushAndRemoveUntil(context, AppRouteNames.webstoreMain);
                   },
-                  child: Text(LocaleKeys.webstore.orders.reorder.tr()),
+                  child: Text(LocaleKeys.webstore.orders.reorder.tr(context: context)),
                 ),
               ),
               16.horizontalSpace,
@@ -174,7 +174,7 @@ class WebStoreOrderDetailsView extends StatelessWidget {
                     AppNavigator.push(context, AppRouteNames.webstoreRateOrder);
                   },
                   isGradient: true,
-                  child: Text(LocaleKeys.webstore.orders.rate_order.tr(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  child: Text(LocaleKeys.webstore.orders.rate_order.tr(context: context), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -211,7 +211,7 @@ class WebStoreOrderDetailsView extends StatelessWidget {
                 ),
                 4.verticalSpace,
                 Text(
-                  '${LocaleKeys.webstore.orders.quantity.tr()} $qty',
+                  '${LocaleKeys.webstore.orders.quantity.tr(context: context)} $qty',
                   style: TextStyle(fontSize: 12.sp, color: Theme.of(context).hintColor),
                 ),
               ],

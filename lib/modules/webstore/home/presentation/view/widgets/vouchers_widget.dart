@@ -16,7 +16,7 @@ class VouchersWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppSectionHeader(
-            title: LocaleKeys.webstore.home.vouchers_title.tr(),
+            title: LocaleKeys.webstore.home.vouchers_title.tr(context: context),
             onViewAllTap: () {},
           ),
           SizedBox(
@@ -52,7 +52,9 @@ class VouchersWidget extends StatelessWidget {
                 
                 return _buildVoucherCard(
                   index == 0 ? "50 LE" : "20 LE",
-                  index == 0 ? 'على أول طلب لك' : 'على منتجات العناية بالبشرة',
+                  index == 0
+                      ? LocaleKeys.webstore.home.voucher_first_order.tr(context: context)
+                      : LocaleKeys.webstore.home.voucher_skincare.tr(context: context),
                   isDark ? darkColors[index % darkColors.length] : lightColors[index % lightColors.length],
                   textColors[index % textColors.length],
                 );

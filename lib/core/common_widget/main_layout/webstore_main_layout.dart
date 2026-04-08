@@ -39,27 +39,32 @@ class _WebStoreMainLayoutState extends State<WebStoreMainLayout> {
 
   // ─── Tab Config ────────────────────────────────────
 
-  List<_TabItem> get _tabs => [
+  List<_TabItem> _tabs(BuildContext context) => [
         _TabItem(
-            icon: Icons.home_rounded,
-            activeIcon: Icons.home,
-            label: LocaleKeys.webstore.nav.home.tr()),
+          icon: Icons.home_rounded,
+          activeIcon: Icons.home,
+          label: LocaleKeys.webstore.nav.home.tr(context: context),
+        ),
         _TabItem(
-            icon: Icons.grid_view_rounded,
-            activeIcon: Icons.grid_view,
-            label: LocaleKeys.webstore.nav.store.tr()),
+          icon: Icons.grid_view_rounded,
+          activeIcon: Icons.grid_view,
+          label: LocaleKeys.webstore.nav.store.tr(context: context),
+        ),
         _TabItem(
-            icon: Icons.shopping_cart_outlined,
-            activeIcon: Icons.shopping_cart,
-            label: LocaleKeys.webstore.nav.cart.tr()),
+          icon: Icons.shopping_cart_outlined,
+          activeIcon: Icons.shopping_cart,
+          label: LocaleKeys.webstore.nav.cart.tr(context: context),
+        ),
         _TabItem(
-            icon: Icons.person_outline_rounded,
-            activeIcon: Icons.person,
-            label: LocaleKeys.webstore.nav.profile.tr()),
+          icon: Icons.person_outline_rounded,
+          activeIcon: Icons.person,
+          label: LocaleKeys.webstore.nav.profile.tr(context: context),
+        ),
         _TabItem(
-            icon: Icons.menu_rounded,
-            activeIcon: Icons.menu_open_rounded,
-            label: LocaleKeys.webstore.nav.more.tr()),
+          icon: Icons.menu_rounded,
+          activeIcon: Icons.menu_open_rounded,
+          label: LocaleKeys.webstore.nav.more.tr(context: context),
+        ),
       ];
 
   @override
@@ -82,7 +87,7 @@ class _WebStoreMainLayoutState extends State<WebStoreMainLayout> {
           _lastPressed = now;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(LocaleKeys.webstore.general.exit_confirm.tr()),
+              content: Text(LocaleKeys.webstore.general.exit_confirm.tr(context: context)),
               duration: const Duration(seconds: 2),
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
@@ -107,7 +112,7 @@ class _WebStoreMainLayoutState extends State<WebStoreMainLayout> {
 
   Widget _buildBottomNavBar() {
     final theme = Theme.of(context);
-    final tabs = _tabs;
+    final tabs = _tabs(context);
     
     return Container(
       decoration: BoxDecoration(

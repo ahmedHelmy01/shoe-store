@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 
 // Models for type casting in arguments
 
@@ -12,10 +14,10 @@ class RouteGenerator {
 
   static Route<dynamic> _errorRoute() {
     return MaterialPageRoute(
-      builder: (_) {
+      builder: (context) {
         return Scaffold(
-          appBar: AppBar(title: const Text('Error')),
-          body: const Center(child: Text('Page not found')),
+          appBar: AppBar(title: Text(LocaleKeys.common.error.tr(context: context))),
+          body: Center(child: Text(LocaleKeys.common.page_not_found.tr(context: context))),
         );
       },
     );

@@ -57,6 +57,44 @@ class _Common {
   final next = 'common.next';
   final back = 'common.back';
   final get_started = 'common.get_started';
+  final try_again = 'common.try_again';
+  final error = 'common.error';
+  final page_not_found = 'common.page_not_found';
+  final home_address = 'common.home_address';
+  final subject = 'common.subject';
+  final your_message = 'common.your_message';
+  final send_message = 'common.send_message';
+  final field_required = 'common.field_required';
+  final sent_successfully = 'common.sent_successfully';
+  final contact_thanks = 'common.contact_thanks';
+  final ok = 'common.ok';
+  final no_data = 'common.no_data';
+  final retry = 'common.retry';
+  final unexpected_error = 'common.unexpected_error';
+  final check_internet = 'common.check_internet';
+  final server_not_responding = 'common.server_not_responding';
+  final cart_empty = 'common.cart_empty';
+  final cart_empty_subtitle = 'common.cart_empty_subtitle';
+  final browse_products = 'common.browse_products';
+  final no_orders_yet = 'common.no_orders_yet';
+  final no_orders_yet_subtitle = 'common.no_orders_yet_subtitle';
+  final no_results = 'common.no_results';
+  final no_results_subtitle = 'common.no_results_subtitle';
+  final no_internet = 'common.no_internet';
+  final timeout = 'common.timeout';
+  final login_again = 'common.login_again';
+  final cache_error = 'common.cache_error';
+  final item_not_found = 'common.item_not_found';
+  final timeout_server = 'common.timeout_server';
+  final unauthorized = 'common.unauthorized';
+  final forbidden = 'common.forbidden';
+  final not_found_requested = 'common.not_found_requested';
+  final conflict = 'common.conflict';
+  final server_error_try_later = 'common.server_error_try_later';
+  final request_cancelled = 'common.request_cancelled';
+  final session_expired_login_again = 'common.session_expired_login_again';
+  final cache_load_error = 'common.cache_load_error';
+  final unexpected_error_retry = 'common.unexpected_error_retry';
 }
 
 class _WebStore {
@@ -69,6 +107,7 @@ class _WebStore {
   final wishlist = const _WebStoreWishlist();
   final points = const _WebStorePoints();
   final more = const _WebStoreMore();
+  final checkout = const _WebStoreCheckout();
 }
 
 class _WebStoreAuth {
@@ -118,6 +157,8 @@ class _WebStoreHome {
   final trusted_brands = 'webstore.home.trusted_brands';
   final tarshooby_offers = 'webstore.home.tarshooby_offers';
   final vouchers_title = 'webstore.home.vouchers_title';
+  final voucher_first_order = 'webstore.home.voucher_first_order';
+  final voucher_skincare = 'webstore.home.voucher_skincare';
   final use_voucher = 'webstore.home.use_voucher';
   final select_branch = 'webstore.home.select_branch';
   final no_products = 'webstore.home.no_products';
@@ -137,6 +178,8 @@ class _WebStoreHome {
   final feature_new_arrivals = 'webstore.home.feature_new_arrivals';
   final feature_best_sellers = 'webstore.home.feature_best_sellers';
   final feature_special_picks = 'webstore.home.feature_special_picks';
+  final no_exclusive_offers = 'webstore.home.no_exclusive_offers';
+  final no_exclusive_offers_subtitle = 'webstore.home.no_exclusive_offers_subtitle';
 }
 
 class _WebStoreNav {
@@ -202,4 +245,22 @@ class _WebStoreMore {
   final wishlist = 'webstore.more.wishlist';
   final my_orders = 'webstore.more.my_orders';
   final my_points = 'webstore.more.my_points';
+}
+
+class _WebStoreCheckout {
+  const _WebStoreCheckout();
+  final title = 'webstore.checkout.title';
+  final delivery_address = 'webstore.checkout.delivery_address';
+  final payment_method = 'webstore.checkout.payment_method';
+  final promo_code = 'webstore.checkout.promo_code';
+  final enter_promo_code = 'webstore.checkout.enter_promo_code';
+  final apply = 'webstore.checkout.apply';
+  final order_amount = 'webstore.checkout.order_amount';
+  final delivery_fee = 'webstore.checkout.delivery_fee';
+  final free = 'webstore.checkout.free';
+  final total_amount = 'webstore.checkout.total_amount';
+  final place_order = 'webstore.checkout.place_order';
+  final visa_mastercard = 'webstore.checkout.visa_mastercard';
+  final instapay = 'webstore.checkout.instapay';
+  final cash_on_delivery = 'webstore.checkout.cash_on_delivery';
 }

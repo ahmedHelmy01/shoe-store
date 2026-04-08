@@ -1,5 +1,6 @@
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/widgets.dart';
 
 class AppValidators {
   // 📧 Email regex
@@ -14,62 +15,62 @@ class AppValidators {
   static final RegExp _phoneRegExp = RegExp(r'^\d{10,}$');
 
   /// ✅ Validate Email
-  static String? validateEmail(String? value) {
+  static String? validateEmail(BuildContext context, String? value) {
     if (value == null || value.isEmpty) {
-      return LocaleKeys.common.emailRequired.tr(); //  Email is required
+      return LocaleKeys.common.emailRequired.tr(context: context); //  Email is required
     } else if (!_emailRegExp.hasMatch(value)) {
-      return LocaleKeys.common.invalidEmail.tr(); // Invalid email
+      return LocaleKeys.common.invalidEmail.tr(context: context); // Invalid email
     }
     return null;
   }
 
   /// ✅ Validate Password
-  static String? validatePassword(String? value) {
+  static String? validatePassword(BuildContext context, String? value) {
     if (value == null || value.isEmpty) {
-      return LocaleKeys.common.passwordRequired.tr(); //  Password is required
+      return LocaleKeys.common.passwordRequired.tr(context: context); //  Password is required
     } else if (!_passwordRegExp.hasMatch(value)) {
-      return LocaleKeys.common.passwordInvalid.tr();
+      return LocaleKeys.common.passwordInvalid.tr(context: context);
       // Password must contain uppercase, lowercase, number & special character
     }
     return null;
   }
 
   /// ✅ Validate Confirm Password
-  static String? validateConfirmPassword(String? value, String original) {
+  static String? validateConfirmPassword(BuildContext context, String? value, String original) {
     if (value == null || value.isEmpty) {
-      return LocaleKeys.common.confirmPasswordRequired.tr();
+      return LocaleKeys.common.confirmPasswordRequired.tr(context: context);
       //  Confirm password is required
     } else if (value != original) {
-      return LocaleKeys.common.passwordsDoNotMatch.tr();
+      return LocaleKeys.common.passwordsDoNotMatch.tr(context: context);
       //  Passwords do not match
     }
     return null;
   }
 
   /// ✅ Validate Phone
-  static String? validatePhone(String? value) {
+  static String? validatePhone(BuildContext context, String? value) {
     if (value == null || value.isEmpty) {
-      return LocaleKeys.common.phoneRequired.tr();
+      return LocaleKeys.common.phoneRequired.tr(context: context);
       //  Please enter phone number
     } else if (!_phoneRegExp.hasMatch(value)) {
-      return LocaleKeys.common.invalidPhone.tr();
+      return LocaleKeys.common.invalidPhone.tr(context: context);
       //  Enter valid phone (at least 10 digits)
     }
     return null;
   }
 
   /// ✅ Validate Name
-  static String? validateName(String? value) {
+  static String? validateName(BuildContext context, String? value) {
     if (value == null || value.isEmpty) {
-      return LocaleKeys.common.nameRequired.tr(); //  Enter name
+      return LocaleKeys.common.nameRequired.tr(context: context); //  Enter name
     }
     return null;
   }
 
   /// ✅ Validate description
-  static String? validateDescription(String? value) {
+  static String? validateDescription(BuildContext context, String? value) {
     if (value == null || value.isEmpty) {
-      return LocaleKeys.common.enterDescription.tr(); //  Enter description
+      return LocaleKeys.common.enterDescription.tr(context: context); //  Enter description
     }
     return null;
   }

@@ -60,14 +60,14 @@ class _ContactUsViewState extends ConsumerState<ContactUsView> {
         _showSuccessDialog();
       } else if (next.status == ContactUsStatus.error) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.errorMessage ?? 'Error')),
+          SnackBar(content: Text(next.errorMessage ?? LocaleKeys.common.error.tr(context: context))),
         );
       }
     });
 
     return Scaffold(
       appBar: CommonAppBar(
-        titleText: LocaleKeys.common.contact_us.tr(),
+        titleText: LocaleKeys.common.contact_us.tr(context: context),
         showBackButton: true,
         onPressBack: () => Navigator.pop(context),
       ),
@@ -128,23 +128,23 @@ class _ContactUsViewState extends ConsumerState<ContactUsView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildLabel(LocaleKeys.common.name.tr(), theme),
+            _buildLabel(LocaleKeys.common.name.tr(context: context), theme),
             _buildTextField(_nameController, Icons.person_outline, theme, isDark),
             20.verticalSpace,
             
-            _buildLabel(LocaleKeys.common.email.tr(), theme),
+            _buildLabel(LocaleKeys.common.email.tr(context: context), theme),
             _buildTextField(_emailController, Icons.email_outlined, theme, isDark, keyboardType: TextInputType.emailAddress),
             20.verticalSpace,
             
-            _buildLabel(LocaleKeys.common.phone.tr(), theme),
+            _buildLabel(LocaleKeys.common.phone.tr(context: context), theme),
             _buildTextField(_phoneController, Icons.phone_android_outlined, theme, isDark, keyboardType: TextInputType.phone),
             20.verticalSpace,
             
-            _buildLabel('الموضوع', theme),
+            _buildLabel(LocaleKeys.common.subject.tr(context: context), theme),
             _buildTextField(_subjectController, Icons.subject_rounded, theme, isDark),
             20.verticalSpace,
             
-            _buildLabel('رسالتك', theme),
+            _buildLabel(LocaleKeys.common.your_message.tr(context: context), theme),
             _buildTextField(_messageController, Icons.chat_bubble_outline, theme, isDark, maxLines: 4),
             40.verticalSpace,
             
@@ -162,7 +162,7 @@ class _ContactUsViewState extends ConsumerState<ContactUsView> {
                 child: state.status == ContactUsStatus.loading
                     ? const CircularProgressIndicator(color: Colors.white)
                     : Text(
-                        'إرسال الرسالة',
+                        LocaleKeys.common.send_message.tr(context: context),
                         style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
                       ),
               ),
@@ -200,7 +200,7 @@ class _ContactUsViewState extends ConsumerState<ContactUsView> {
       maxLines: maxLines,
       keyboardType: keyboardType,
       style: TextStyle(color: theme.textTheme.bodyLarge?.color),
-      validator: (v) => v == null || v.isEmpty ? 'هذا الحقل مطلوب' : null,
+      validator: (v) => v == null || v.isEmpty ? LocaleKeys.common.field_required.tr(context: context) : null,
       decoration: InputDecoration(
         prefixIcon: Icon(icon, color: AppColors.primaryOrange.withValues(alpha: 0.7), size: 20),
         filled: true,
@@ -246,7 +246,7 @@ class _ContactUsViewState extends ConsumerState<ContactUsView> {
                   const Icon(Icons.check_circle_outline_rounded, color: Colors.greenAccent, size: 80),
                   24.verticalSpace,
                   Text(
-                    'تم الإرسال بنجاح',
+                    LocaleKeys.common.sent_successfully.tr(context: context),
                     style: TextStyle(
                       color: theme.textTheme.titleLarge?.color, 
                       fontSize: 20.sp, 
@@ -255,7 +255,7 @@ class _ContactUsViewState extends ConsumerState<ContactUsView> {
                   ),
                   12.verticalSpace,
                   Text(
-                    'شكراً لتواصلك معنا. سيقوم فريق الدعم بالرد عليك في أقرب وقت ممكن.',
+                    LocaleKeys.common.contact_thanks.tr(context: context),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7), 
@@ -276,7 +276,7 @@ class _ContactUsViewState extends ConsumerState<ContactUsView> {
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
                       ),
-                      child: const Text('حسناً'),
+                      child: Text(LocaleKeys.common.ok.tr(context: context)),
                     ),
                   ),
                 ],

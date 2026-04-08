@@ -10,8 +10,11 @@ import 'package:erp/modules/webstore/onboarding/widgets/floating_particles.dart'
 import 'package:erp/modules/webstore/onboarding/widgets/skip_button.dart';
 import 'package:erp/modules/webstore/onboarding/widgets/onboarding_bottom_controls.dart';
 import 'package:erp/modules/webstore/onboarding/widgets/onboarding_page_content.dart';
-import 'package:erp/core/services/session_manager.dart';
+// Session handled via `sessionManagerProvider`
 import 'package:erp/modules/webstore/onboarding/data/models/boarding_model.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+import 'package:erp/core/providers/core_providers.dart';
 
 class OnBoarding extends ConsumerStatefulWidget {
   const OnBoarding({super.key});
@@ -112,7 +115,7 @@ class _OnBoardingState extends ConsumerState<OnBoarding>
 
   void _navigateToHome() async {
     // ─── Standardized Session Management ────────────────────────
-    await SessionManager.instance.setHasSeenOnboarding(true);
+    await ref.read(sessionManagerProvider).setHasSeenOnboarding(true);
 
     if (!mounted) return;
 
@@ -169,7 +172,7 @@ class _OnBoardingState extends ConsumerState<OnBoarding>
               style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryOrange),
               onPressed: () =>
                   ref.read(onboardingVmProvider.notifier).getOnboardingData(),
-              child: const Text('Try Again'),
+              child: Text(LocaleKeys.common.try_again.tr(context: context)),
             ),
           ],
         ),
