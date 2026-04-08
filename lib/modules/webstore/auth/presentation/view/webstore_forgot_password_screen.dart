@@ -11,10 +11,11 @@ import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
 import 'package:erp/core/router/app_navigator.dart';
-import 'package:erp/core/common_widget/main_layout/webstore_base_scaffold.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/modules/webstore/auth/presentation/state/webstore_auth_state.dart';
 import 'package:erp/modules/webstore/auth/presentation/view_model/webstore_auth_providers.dart';
+import 'package:erp/modules/webstore/auth/presentation/widgets/webstore_auth_scaffold.dart';
+import 'package:erp/modules/webstore/auth/presentation/widgets/auth_glass_card.dart';
 
 class WebStoreForgotPasswordScreen extends ConsumerStatefulWidget {
   const WebStoreForgotPasswordScreen({super.key});
@@ -64,35 +65,18 @@ class _WebStoreForgotPasswordScreenState
       }
     });
 
-    return WebStoreBaseScaffold(
-      showBack: true,
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // ─── Icon ──────────────────────────
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: AppColors.warning.withValues(alpha: 0.12),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.lock_reset_rounded,
-                    size: 56,
-                    color: AppColors.warning,
-                  ),
-                ),
-                const SizedBox(height: 24),
-
+    return WebStoreAuthScaffold(
+      child: Form(
+        key: _formKey,
+        child: AuthGlassCard(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
                 // ─── Header ────────────────────────
                 Text(
-                  LocaleKeys.webstore.auth.forgot_password_title.tr(),
+                  LocaleKeys.webstore.auth.forgot_password_title.tr(context: context),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 24,
@@ -102,7 +86,7 @@ class _WebStoreForgotPasswordScreenState
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  LocaleKeys.webstore.auth.forgot_password_subtitle.tr(),
+                  LocaleKeys.webstore.auth.forgot_password_subtitle.tr(context: context),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 14,
@@ -115,14 +99,14 @@ class _WebStoreForgotPasswordScreenState
                 // ─── Username Field ────────────────
                 AppTextField(
                   controller: _usernameController,
-                  label: LocaleKeys.webstore.auth.mobile_label.tr(),
+                  label: LocaleKeys.webstore.auth.mobile_label.tr(context: context),
                   hint: '01xxxxxxxxx',
                   prefixIcon: const Icon(Icons.phone_android_outlined,
                       color: AppColors.textSecondary),
                   keyboardType: TextInputType.phone,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return LocaleKeys.common.phoneRequired.tr();
+                      return LocaleKeys.common.phoneRequired.tr(context: context);
                     }
                     return null;
                   },
@@ -136,7 +120,7 @@ class _WebStoreForgotPasswordScreenState
                   isLoading: isLoading,
                   isGradient: true,
                   child: Text(
-                    LocaleKeys.webstore.auth.send_code_button.tr(),
+                    LocaleKeys.webstore.auth.send_code_button.tr(context: context),
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -145,8 +129,7 @@ class _WebStoreForgotPasswordScreenState
                   ),
                 ),
                 const SizedBox(height: 20),
-              ],
-            ),
+            ],
           ),
         ),
       ),

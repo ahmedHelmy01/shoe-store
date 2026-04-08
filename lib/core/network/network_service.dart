@@ -100,9 +100,9 @@ class NetworkService {
       _logResponse(response);
       return _processResponse(response);
     } on SocketException {
-      throw const NoInternetException();
+      throw NoInternetException();
     } on TimeoutException {
-      throw const DeadlineExceededException();
+      throw DeadlineExceededException();
     } catch (e) {
       if (e is NetworkException) rethrow;
       throw NetworkException(message: e.toString());

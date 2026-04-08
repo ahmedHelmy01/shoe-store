@@ -60,7 +60,7 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
         backgroundColor: theme.cardColor,
         color: AppColors.primaryOrange,
         child: CustomScrollView(
-          key: ValueKey(isDark),
+          key: ValueKey('${isDark}_${context.locale.languageCode}'),
           physics: const BouncingScrollPhysics(),
           slivers: [
             // 1. Unified Header (Sliver)

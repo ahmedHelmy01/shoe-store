@@ -5,7 +5,6 @@ import 'package:erp/core/common_widget/main_layout/webstore_main_layout.dart';
 import 'package:erp/modules/webstore/onboarding/onboarding_view.dart';
 import 'package:erp/modules/webstore/splash/animated_splash_screen.dart';
 
-/// Splash → Onboarding (first time) → Main Layout
 class SplashRouter extends ConsumerStatefulWidget {
   const SplashRouter({super.key});
 
@@ -44,7 +43,6 @@ class _SplashRouterState extends ConsumerState<SplashRouter> {
         onComplete: _onSplashComplete,
       );
     }
-
     // 2) Route based on Onboarding status
     if (!(_isOnboardingDone!)) {
       return const OnBoarding(key: ValueKey('onboarding'));
@@ -52,4 +50,3 @@ class _SplashRouterState extends ConsumerState<SplashRouter> {
     return const WebStoreMainLayout(key: ValueKey('main'));
   }
 }
-

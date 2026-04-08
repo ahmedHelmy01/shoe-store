@@ -79,8 +79,8 @@ class WebStoreMoreView extends ConsumerWidget {
                 _MoreItem(
                   icon: Icons.language_rounded,
                   title: (context.locale.languageCode == 'ar'
-                          ? LocaleKeys.common.english
-                          : LocaleKeys.common.arabic)
+                          ? LocaleKeys.webstore.more.english
+                          : LocaleKeys.webstore.more.arabic)
                       .tr(context: context),
                   onTap: () async {
                     final next = context.locale.languageCode == 'ar' ? const Locale('en') : const Locale('ar');

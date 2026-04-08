@@ -32,6 +32,13 @@ class AppEmptyWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
+    String resolveText(String? value, {required String fallbackKey}) {
+      final v = value ?? fallbackKey;
+      // Translate only if it matches our key conventions (e.g. "webstore.home.no_offers").
+      final isKey = v.startsWith('common.') || v.startsWith('webstore.');
+      return isKey ? v.tr(context: context) : v;
+    }
+
     return Center(
       child: Padding(
         padding: EdgeInsets.all(32.w),
@@ -87,7 +94,7 @@ class AppEmptyWidget extends StatelessWidget {
 
             // ─── Message ─────────────────────────────────────
             Text(
-              (message ?? LocaleKeys.common.no_data).tr(context: context),
+              resolveText(message, fallbackKey: LocaleKeys.common.no_data),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20.sp,
@@ -99,7 +106,7 @@ class AppEmptyWidget extends StatelessWidget {
             if (subtitle != null) ...[
               12.verticalSpace,
               Text(
-                subtitle!.tr(context: context),
+                resolveText(subtitle, fallbackKey: LocaleKeys.common.no_data),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14.sp,
@@ -125,7 +132,7 @@ class AppEmptyWidget extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    actionText!.tr(context: context),
+                    resolveText(actionText, fallbackKey: LocaleKeys.common.try_again),
                     style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
                   ),
                 ),

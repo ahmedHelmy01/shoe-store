@@ -14,10 +14,11 @@ import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
 import 'package:erp/core/router/app_navigator.dart';
-import 'package:erp/core/common_widget/main_layout/webstore_base_scaffold.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/modules/webstore/auth/presentation/state/webstore_auth_state.dart';
 import 'package:erp/modules/webstore/auth/presentation/view_model/webstore_auth_providers.dart';
+import 'package:erp/modules/webstore/auth/presentation/widgets/webstore_auth_scaffold.dart';
+import 'package:erp/modules/webstore/auth/presentation/widgets/auth_glass_card.dart';
 
 class WebStoreOtpScreen extends ConsumerStatefulWidget {
   final String identifier;
@@ -83,7 +84,10 @@ class _WebStoreOtpScreenState extends ConsumerState<WebStoreOtpScreen> {
   void _onVerify() {
     final code = _otpCode;
     if (code.length < 4) {
-      AppSnackBar.showError(context, LocaleKeys.webstore.auth.otp_subtitle.tr());
+      AppSnackBar.showError(
+        context,
+        LocaleKeys.webstore.auth.otp_subtitle.tr(context: context),
+      );
       return;
     }
 
@@ -132,33 +136,16 @@ class _WebStoreOtpScreenState extends ConsumerState<WebStoreOtpScreen> {
       }
     });
 
-    return WebStoreBaseScaffold(
-      showBack: true,
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // ─── Icon ──────────────────────────
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: AppColors.info.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.verified_user_rounded,
-                  size: 56,
-                  color: AppColors.info,
-                ),
-              ),
-              const SizedBox(height: 24),
-
+    return WebStoreAuthScaffold(
+      child: AuthGlassCard(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
               // ─── Header ────────────────────────
               Text(
-                LocaleKeys.webstore.auth.otp_title.tr(),
+                LocaleKeys.webstore.auth.otp_title.tr(context: context),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 24,
@@ -168,7 +155,7 @@ class _WebStoreOtpScreenState extends ConsumerState<WebStoreOtpScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                '${LocaleKeys.webstore.auth.otp_subtitle.tr()}\n${widget.identifier}',
+                '${LocaleKeys.webstore.auth.otp_subtitle.tr(context: context)}\n${widget.identifier}',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 14,
@@ -246,7 +233,7 @@ class _WebStoreOtpScreenState extends ConsumerState<WebStoreOtpScreen> {
                 isLoading: isLoading,
                 isGradient: true,
                 child: Text(
-                  LocaleKeys.webstore.auth.verify_button.tr(),
+                  LocaleKeys.webstore.auth.verify_button.tr(context: context),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -262,7 +249,7 @@ class _WebStoreOtpScreenState extends ConsumerState<WebStoreOtpScreen> {
                     ? TextButton(
                         onPressed: _onResend,
                         child: Text(
-                          LocaleKeys.webstore.auth.send_code_button.tr(),
+                          LocaleKeys.webstore.auth.send_code_button.tr(context: context),
                           style: const TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w600,
@@ -270,7 +257,7 @@ class _WebStoreOtpScreenState extends ConsumerState<WebStoreOtpScreen> {
                         ),
                       )
                     : Text(
-                        '${LocaleKeys.webstore.auth.otp_subtitle.tr()} $_resendCountdown ${LocaleKeys.common.back.tr()}', // Simplified timer text
+                        '${LocaleKeys.webstore.auth.otp_subtitle.tr(context: context)} $_resendCountdown ${LocaleKeys.common.back.tr(context: context)}', // Simplified timer text
                         style: const TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 14,
@@ -278,8 +265,7 @@ class _WebStoreOtpScreenState extends ConsumerState<WebStoreOtpScreen> {
                       ),
               ),
               const SizedBox(height: 20),
-            ],
-          ),
+          ],
         ),
       ),
     );

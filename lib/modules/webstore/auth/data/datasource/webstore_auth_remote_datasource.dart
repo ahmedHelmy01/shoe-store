@@ -42,7 +42,8 @@ class WebStoreAuthRemoteDataSource {
     return _networkService.post(
       ApiEndpoints.webstore.auth.login,
       body: {
-        'login_name': loginName,
+        // API expects "username" (email/mobile)
+        'username': loginName,
         'password': password,
       },
     );

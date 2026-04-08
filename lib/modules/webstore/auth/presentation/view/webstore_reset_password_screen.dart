@@ -12,10 +12,11 @@ import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
 import 'package:erp/core/router/app_navigator.dart';
-import 'package:erp/core/common_widget/main_layout/webstore_base_scaffold.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/modules/webstore/auth/presentation/state/webstore_auth_state.dart';
 import 'package:erp/modules/webstore/auth/presentation/view_model/webstore_auth_providers.dart';
+import 'package:erp/modules/webstore/auth/presentation/widgets/webstore_auth_scaffold.dart';
+import 'package:erp/modules/webstore/auth/presentation/widgets/auth_glass_card.dart';
 
 class WebStoreResetPasswordScreen extends ConsumerStatefulWidget {
   final String identifier;
@@ -70,35 +71,18 @@ class _WebStoreResetPasswordScreenState
       }
     });
 
-    return WebStoreBaseScaffold(
-      showBack: true,
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // ─── Icon ──────────────────────────
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.12),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.lock_open_rounded,
-                    size: 56,
-                    color: AppColors.primary,
-                  ),
-                ),
-                const SizedBox(height: 24),
-
+    return WebStoreAuthScaffold(
+      child: Form(
+        key: _formKey,
+        child: AuthGlassCard(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
                 // ─── Header ────────────────────────
                 Text(
-                  LocaleKeys.webstore.auth.reset_password_title.tr(),
+                  LocaleKeys.webstore.auth.reset_password_title.tr(context: context),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 24,
@@ -108,7 +92,7 @@ class _WebStoreResetPasswordScreenState
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  LocaleKeys.webstore.auth.reset_password_subtitle.tr(),
+                  LocaleKeys.webstore.auth.reset_password_subtitle.tr(context: context),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 14,
@@ -120,17 +104,17 @@ class _WebStoreResetPasswordScreenState
                 // ─── Password Field ────────────────
                 AppTextField(
                   controller: _passwordController,
-                  label: LocaleKeys.webstore.auth.password_label.tr(),
+                  label: LocaleKeys.webstore.auth.password_label.tr(context: context),
                   hint: '••••••••',
                   prefixIcon: const Icon(Icons.lock_outline,
                       color: AppColors.textSecondary),
                   isPassword: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return LocaleKeys.common.passwordRequired.tr();
+                      return LocaleKeys.common.passwordRequired.tr(context: context);
                     }
                     if (value.length < 6) {
-                      return LocaleKeys.common.passwordInvalid.tr();
+                      return LocaleKeys.common.passwordInvalid.tr(context: context);
                     }
                     return null;
                   },
@@ -140,17 +124,17 @@ class _WebStoreResetPasswordScreenState
                 // ─── Confirm Password Field ────────
                 AppTextField(
                   controller: _confirmPasswordController,
-                  label: LocaleKeys.webstore.auth.confirm_password_label.tr(),
+                  label: LocaleKeys.webstore.auth.confirm_password_label.tr(context: context),
                   hint: '••••••••',
                   prefixIcon: const Icon(Icons.lock_outline,
                       color: AppColors.textSecondary),
                   isPassword: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return LocaleKeys.common.confirmPasswordRequired.tr();
+                      return LocaleKeys.common.confirmPasswordRequired.tr(context: context);
                     }
                     if (value != _passwordController.text) {
-                      return LocaleKeys.common.passwordsDoNotMatch.tr();
+                      return LocaleKeys.common.passwordsDoNotMatch.tr(context: context);
                     }
                     return null;
                   },
@@ -164,7 +148,7 @@ class _WebStoreResetPasswordScreenState
                   isLoading: isLoading,
                   isGradient: true,
                   child: Text(
-                    LocaleKeys.webstore.auth.save_password_button.tr(),
+                    LocaleKeys.webstore.auth.save_password_button.tr(context: context),
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -173,8 +157,7 @@ class _WebStoreResetPasswordScreenState
                   ),
                 ),
                 const SizedBox(height: 20),
-              ],
-            ),
+            ],
           ),
         ),
       ),

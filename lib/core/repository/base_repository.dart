@@ -13,7 +13,7 @@ abstract class BaseRepository {
       return ApiSuccess<T>(response as T);
     } catch (e) {
       if (e is NoInternetException) {
-        return const ApiFailure(
+        return ApiFailure(
           ApiException(
             message: LocaleKeys.common.no_internet,
             type: ApiErrorType.network,
@@ -26,7 +26,7 @@ abstract class BaseRepository {
 
   ApiException _mapExceptionToApiException(dynamic e) {
     if (e is TimeoutException || e is DeadlineExceededException) {
-      return const ApiException(
+      return ApiException(
         message: LocaleKeys.common.timeout_server,
         type: ApiErrorType.timeout,
       );

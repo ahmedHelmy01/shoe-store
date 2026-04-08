@@ -30,9 +30,21 @@ class RouteGenerator {
       case AppRouteNames.webstoreForgotPassword:
         return MaterialPageRoute(builder: (_) => const WebStoreForgotPasswordScreen());
       case AppRouteNames.webstoreOtp:
-        return MaterialPageRoute(builder: (_) => const WebStoreOtpScreen());
+        final args = (settings.arguments is Map) ? (settings.arguments as Map) : const <String, dynamic>{};
+        final identifier = args['identifier'] as String?;
+        final type = args['type'] as String?;
+        if (identifier == null || type == null) return _errorRoute();
+        return MaterialPageRoute(
+          builder: (_) => WebStoreOtpScreen(identifier: identifier, type: type),
+        );
       case AppRouteNames.webstoreResetPassword:
-        return MaterialPageRoute(builder: (_) => const WebStoreResetPasswordScreen());
+        final args = (settings.arguments is Map) ? (settings.arguments as Map) : const <String, dynamic>{};
+        final identifier = args['identifier'] as String?;
+        final code = args['code'] as String?;
+        if (identifier == null || code == null) return _errorRoute();
+        return MaterialPageRoute(
+          builder: (_) => WebStoreResetPasswordScreen(identifier: identifier, code: code),
+        );
       case AppRouteNames.webstoreMain:
         return MaterialPageRoute(builder: (_) => const WebStoreMainLayout());
       case AppRouteNames.webstoreCheckout:
