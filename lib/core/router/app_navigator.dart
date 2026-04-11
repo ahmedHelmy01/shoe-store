@@ -26,6 +26,18 @@ class AppRouteNames {
   static const String webstoreAdminFilters = '/webstore/admin/filters';
   static const String webstoreAdminOrders = '/webstore/admin/orders';
   static const String webstoreAdminOrderCreate = '/webstore/admin/orders/new';
+  static const String webstoreAdminCoupons = '/webstore/admin/coupons';
+  static const String webstoreAdminBranches = '/webstore/admin/branches';
+  static const String webstoreAdminWarehouses = '/webstore/admin/warehouses';
+  static const String webstoreAdminSliders = '/webstore/admin/sliders';
+  static const String webstoreAdminAds = '/webstore/admin/ads';
+  static const String webstoreAdminBoardings = '/webstore/admin/boardings';
+  static const String webstoreAdminPages = '/webstore/admin/pages';
+  static const String webstoreAdminProperties = '/webstore/admin/properties';
+  static const String webstoreAdminPaymentStatuses = '/webstore/admin/payment-statuses';
+  static const String webstoreAdminPaymentMethods = '/webstore/admin/payment-methods';
+  static const String webstoreAdminCities = '/webstore/admin/cities';
+  static const String webstoreAdminGovernorates = '/webstore/admin/governorates';
   static const String webstoreAdminSettings = '/webstore/admin/settings';
 }
 

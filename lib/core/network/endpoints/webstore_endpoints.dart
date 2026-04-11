@@ -108,4 +108,16 @@ class _WebStoreAdmin {
   final String products = '/api/webstore/admin/products';
   final String categories = '/api/webstore/admin/categories';
   final String orders = '/api/webstore/admin/orders';
+  final String branches = '/api/store/admin/branches';
+  final String coupons = '/api/store/admin/coupons';
+  final String warehouses = '/api/store/admin/warehouses';
+  final String sliders = '/api/store/admin/sliders';
+  final String ads = '/api/store/admin/ads';
+  final String boardings = '/api/store/admin/boardings';
+  final String pages = '/api/store/admin/pages';
+  final String properties = '/api/store/admin/properties';
+  final String paymentStatuses = '/api/store/admin/payment-statuses';
+  final String paymentMethods = '/api/store/admin/payment-methods';
+  final String cities = '/api/store/admin/cities';
+  final String governorates = '/api/store/admin/governorates';
 }

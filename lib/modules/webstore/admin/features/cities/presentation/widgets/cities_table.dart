@@ -1,0 +1,62 @@
+import 'package:flutter/material.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
+import '../../data/models/city_row.dart';
+
+class CitiesTable extends StatelessWidget {
+  final List<CityRow> items;
+
+  const CitiesTable({super.key, required this.items});
+
+  @override
+  Widget build(BuildContext context) {
+    return AdminDataTable<CityRow>(
+      rows: items,
+      idOf: (c) => '${c.id}',
+      exportBaseName: 'cities',
+      searchHint: 'Search cities…',
+      searchText: (c) => '${c.id} ${c.name} ${c.nameAr ?? ''} ${c.governorateName ?? ''}',
+      columns: [
+        AdminColumn<CityRow>(
+          title: 'ID',
+          sortable: true,
+          sortValue: (c) => c.id,
+          exportValue: (c) => '${c.id}',
+          cell: (_, c) => Text('${c.id}'),
+          width: 80,
+        ),
+        AdminColumn<CityRow>(
+          title: 'Name',
+          sortable: true,
+          sortValue: (c) => c.name,
+          exportValue: (c) => c.name,
+          cell: (_, c) => Text(c.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+          width: 220,
+        ),
+        AdminColumn<CityRow>(
+          title: 'Name (AR)',
+          sortable: true,
+          sortValue: (c) => c.nameAr ?? '',
+          exportValue: (c) => c.nameAr ?? '',
+          cell: (_, c) => Text(c.nameAr ?? '-', maxLines: 1, overflow: TextOverflow.ellipsis),
+          width: 220,
+        ),
+        AdminColumn<CityRow>(
+          title: 'Governorate',
+          sortable: true,
+          sortValue: (c) => c.governorateName ?? '',
+          exportValue: (c) => c.governorateName ?? '',
+          cell: (_, c) => Text(c.governorateName ?? '-', maxLines: 1, overflow: TextOverflow.ellipsis),
+          width: 200,
+        ),
+        AdminColumn<CityRow>(
+          title: 'Fee',
+          sortable: true,
+          sortValue: (c) => c.deliveryFee,
+          exportValue: (c) => '${c.deliveryFee}',
+          cell: (_, c) => Text('${c.deliveryFee}'),
+          width: 100,
+        ),
+      ],
+    );
+  }
+}
