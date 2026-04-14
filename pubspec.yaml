@@ -22,6 +22,7 @@ dependencies:
   flutter_html: ^3.0.0-alpha.3
   flutter_screenutil: ^5.9.3
   hugeicons: ^1.1.0
+  freerasp: ^7.5.0
 
   # State Management
   flutter_riverpod: ^3.1.0

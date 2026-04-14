@@ -1,6 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/core/security/security_sanitizer.dart';
+
+class SecurityTextInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final sanitized = SecuritySanitizer.sanitize(newValue.text);
+    if (sanitized == newValue.text) return newValue;
+    
+    return newValue.copyWith(
+      text: sanitized,
+      selection: TextSelection.collapsed(offset: sanitized.length),
+    );
+  }
+}
 
 class AppTextField extends StatefulWidget {
   final int? maxLines;
@@ -108,7 +125,10 @@ class _AppTextFieldState extends State<AppTextField> {
             onChanged: widget.onChanged,
             onFieldSubmitted: widget.onFieldSubmitted,
             validator: widget.validator,
-            inputFormatters: widget.inputFormatters,
+            inputFormatters: [
+              SecurityTextInputFormatter(),
+              ...?widget.inputFormatters,
+            ],
             decoration: InputDecoration(
               hintText: widget.useLabelAsHint ? widget.label : widget.hint,
               hintStyle:

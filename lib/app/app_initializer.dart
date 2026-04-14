@@ -11,6 +11,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:erp/core/config/app_flavor.dart';
 import 'package:erp/core/config/app_config_manager.dart';
+import 'package:erp/core/security/security_service.dart';
 
 class AppInitializer {
   AppInitializer._();
@@ -36,7 +37,10 @@ class AppInitializer {
     // 6. Initialize SharedPreferences
     final prefs = await SharedPreferences.getInstance();
 
-    // 7. Cleanup splash (will be manually removed later)
+    // 7. Initialize Security Service (RASP, Root Detection, etc.)
+    await SecurityService().init();
+
+    // 8. Cleanup splash (will be manually removed later)
     if (!kIsWeb) {
       FlutterNativeSplash.remove();
     }
