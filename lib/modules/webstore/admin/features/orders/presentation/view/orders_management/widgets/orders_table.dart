@@ -60,13 +60,12 @@ class OrdersTable extends StatelessWidget {
         ),
         AdminColumn<OrderRow>(
           title: 'Actions',
-          cell: (_, o) => Row(
-            children: [
-              IconButton(onPressed: () => onEdit(o), icon: const Icon(Icons.edit_outlined, size: 20)),
-              IconButton(onPressed: () => onDelete(o.id), icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red)),
-            ],
+          cell: (_, o) => AdminTableActionsCell<OrderRow>(
+            row: o,
+            onEdit: onEdit,
+            onDelete: (item) => onDelete(item.id),
           ),
-          width: 120,
+          width: 130,
         ),
       ],
     );

@@ -82,13 +82,12 @@ class CategoriesTable extends StatelessWidget {
         ),
         AdminColumn<CategoryRow>(
           title: 'Actions',
-          cell: (_, c) => Row(
-            children: [
-              IconButton(onPressed: () => onEdit(c), icon: const Icon(Icons.edit_outlined, size: 20)),
-              IconButton(onPressed: () => onDelete(c.id), icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red)),
-            ],
+          cell: (_, c) => AdminTableActionsCell<CategoryRow>(
+            row: c,
+            onEdit: onEdit,
+            onDelete: (item) => onDelete(item.id),
           ),
-          width: 110,
+          width: 130,
         ),
       ],
     );

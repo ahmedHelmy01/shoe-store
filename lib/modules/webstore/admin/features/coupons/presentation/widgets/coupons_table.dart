@@ -60,13 +60,12 @@ class CouponsTable extends StatelessWidget {
         ),
         AdminColumn<CouponRow>(
           title: 'Actions',
-          cell: (_, c) => Row(
-            children: [
-              IconButton(onPressed: () => onEdit(c), icon: const Icon(Icons.edit_outlined, size: 20)),
-              IconButton(onPressed: () => onDelete(c.id), icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red)),
-            ],
+          cell: (_, c) => AdminTableActionsCell<CouponRow>(
+            row: c,
+            onEdit: onEdit,
+            onDelete: (item) => onDelete(item.id),
           ),
-          width: 120,
+          width: 130,
         ),
       ],
     );

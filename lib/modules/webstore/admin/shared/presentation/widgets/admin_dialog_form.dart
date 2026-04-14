@@ -10,6 +10,9 @@ class AdminDialogForm extends StatelessWidget {
   final Widget child;
   final Widget? footer;
   final AdminDialogSize size;
+  final double? customHeightFactor;
+  final double reserveSpace;
+  final bool closeOnBackdropTap;
 
   const AdminDialogForm({
     super.key,
@@ -19,6 +22,9 @@ class AdminDialogForm extends StatelessWidget {
     required this.child,
     this.footer,
     this.size = AdminDialogSize.medium,
+    this.customHeightFactor,
+    this.reserveSpace = 28,
+    this.closeOnBackdropTap = true,
   });
 
   @override
@@ -34,7 +40,8 @@ class AdminDialogForm extends StatelessWidget {
       children: [
         // Glassmorphism Backdrop
         GestureDetector(
-          onTap: onClose,
+          onTap: closeOnBackdropTap ? onClose : null,
+          behavior: HitTestBehavior.opaque,
           child: TweenAnimationBuilder<double>(
             tween: Tween(begin: 0.0, end: 1.0),
             duration: const Duration(milliseconds: 280),
@@ -57,7 +64,10 @@ class AdminDialogForm extends StatelessWidget {
               scale: value,
               child: Opacity(opacity: ((value - 0.95) * 20).clamp(0.0, 1.0), child: child),
             ),
-            child: _buildDialogContent(context, isMobile, theme, isDark),
+            child: GestureDetector(
+              onTap: () {},
+              child: _buildDialogContent(context, isMobile, theme, isDark),
+            ),
           ),
         ),
       ],
@@ -67,24 +77,43 @@ class AdminDialogForm extends StatelessWidget {
   Widget _buildDialogContent(BuildContext context, bool isMobile, ThemeData theme, bool isDark) {
     final screenWidth = MediaQuery.sizeOf(context).width;
     final screenHeight = MediaQuery.sizeOf(context).height;
-    
-    // Unified Desktop width (around 720px) as preferred by the user.
-    // Small size is now only for mobile.
+
     double dialogWidth;
+    double heightFactor;
     if (isMobile) {
       dialogWidth = screenWidth * 0.92;
+      heightFactor = switch (size) {
+        AdminDialogSize.small => 0.70,
+        AdminDialogSize.medium => 0.82,
+        AdminDialogSize.large => 0.88,
+        AdminDialogSize.xlarge => 0.92,
+      };
     } else {
-      // Consistent medium-large width for a professional web feel
-      dialogWidth = 720.0;
-      if (dialogWidth > screenWidth * 0.9) dialogWidth = screenWidth * 0.9;
+      dialogWidth = switch (size) {
+        AdminDialogSize.small => 560.0,
+        AdminDialogSize.medium => 720.0,
+        AdminDialogSize.large => 860.0,
+        AdminDialogSize.xlarge => 1000.0,
+      };
+      if (dialogWidth > screenWidth * 0.92) dialogWidth = screenWidth * 0.92;
+
+      heightFactor = switch (size) {
+        AdminDialogSize.small => 0.62,
+        AdminDialogSize.medium => 0.78,
+        AdminDialogSize.large => 0.88,
+        AdminDialogSize.xlarge => 0.93,
+      };
     }
 
-    final dialogHeight = isMobile ? screenHeight * 0.85 : screenHeight * 0.88;
+    final maxDialogHeight = screenHeight * (customHeightFactor ?? heightFactor);
+    final minDialogHeight = isMobile ? 220.0 : 260.0;
 
     return Container(
       width: dialogWidth,
-      height: dialogHeight,
-      constraints: BoxConstraints(maxHeight: dialogHeight),
+      constraints: BoxConstraints(
+        minHeight: minDialogHeight,
+        maxHeight: maxDialogHeight,
+      ),
       decoration: BoxDecoration(
         color: theme.scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(isMobile ? 24 : 28),
@@ -98,15 +127,23 @@ class AdminDialogForm extends StatelessWidget {
         border: Border.all(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.06)),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           // Header
           _buildHeader(theme, isDark),
 
           // Body Content
-          Expanded(
+          Flexible(
+            fit: FlexFit.loose,
             child: SingleChildScrollView(
               padding: EdgeInsets.all(isMobile ? 20 : 32),
-              child: child,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  child,
+                  SizedBox(height: reserveSpace),
+                ],
+              ),
             ),
           ),
 

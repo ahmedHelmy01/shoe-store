@@ -66,21 +66,12 @@ class AdsTable extends StatelessWidget {
         ),
         AdminColumn<AdRow>(
           title: 'Actions',
-          cell: (_, a) => Row(
-            children: [
-              IconButton(
-                onPressed: () => onEdit(a),
-                icon: const Icon(Icons.edit_outlined, size: 20),
-                tooltip: 'Edit',
-              ),
-              IconButton(
-                onPressed: () => onDelete(a.id),
-                icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red),
-                tooltip: 'Delete',
-              ),
-            ],
+          cell: (_, a) => AdminTableActionsCell<AdRow>(
+            row: a,
+            onEdit: onEdit,
+            onDelete: (item) => onDelete(item.id),
           ),
-          width: 120,
+          width: 130,
         ),
       ],
     );

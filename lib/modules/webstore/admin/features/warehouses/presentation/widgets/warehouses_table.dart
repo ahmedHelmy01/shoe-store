@@ -4,13 +4,15 @@ import 'package:erp/modules/webstore/admin/features/warehouses/data/models/wareh
 
 class WarehousesTable extends StatelessWidget {
   final List<WarehouseRow> items;
+  final Function(WarehouseRow warehouse) onView;
   final Function(WarehouseRow warehouse) onEdit;
-  final Function(int id) onDelete;
+  final Function(WarehouseRow warehouse) onDelete;
   final Widget Function(BuildContext context, WarehouseRow w)? cardBuilder;
 
   const WarehousesTable({
     super.key,
     required this.items,
+    required this.onView,
     required this.onEdit,
     required this.onDelete,
     this.cardBuilder,
@@ -60,13 +62,14 @@ class WarehousesTable extends StatelessWidget {
         ),
         AdminColumn<WarehouseRow>(
           title: 'Actions',
-          cell: (_, w) => Row(
-            children: [
-              IconButton(onPressed: () => onEdit(w), icon: const Icon(Icons.edit_outlined, size: 20)),
-              IconButton(onPressed: () => onDelete(w.id), icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red)),
-            ],
+          cell: (_, w) => AdminTableActionsCell<WarehouseRow>(
+            row: w,
+            onView: onView,
+            onEdit: onEdit,
+            onDelete: onDelete,
+            confirmBeforeDelete: false,
           ),
-          width: 110,
+          width: 170,
         ),
       ],
     );

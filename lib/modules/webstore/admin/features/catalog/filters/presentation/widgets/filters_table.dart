@@ -74,13 +74,12 @@ class FiltersTable extends StatelessWidget {
         ),
         AdminColumn<FilterRow>(
           title: 'Actions',
-          cell: (_, f) => Row(
-            children: [
-              IconButton(onPressed: () => onEdit(f), icon: const Icon(Icons.edit_outlined, size: 20)),
-              IconButton(onPressed: () => onDelete(f.id), icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red)),
-            ],
+          cell: (_, f) => AdminTableActionsCell<FilterRow>(
+            row: f,
+            onEdit: onEdit,
+            onDelete: (item) => onDelete(item.id),
           ),
-          width: 110,
+          width: 130,
         ),
       ],
     );

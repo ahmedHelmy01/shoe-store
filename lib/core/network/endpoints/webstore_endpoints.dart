@@ -18,6 +18,7 @@ class WebStoreEndpoints {
   // ─── Admin Facing ──────────────────────────────────
   final wishlist = const _WebStoreWishlist();
   final admin = const _WebStoreAdmin();
+  final upload = const _WebStoreUpload();
 }
 
 class _WebStoreAuth {
@@ -152,4 +153,12 @@ class _WebStoreAdmin {
 
   // Other
   final String contacts = '/api/store/admin/contacts';
+}
+
+class _WebStoreUpload {
+  const _WebStoreUpload();
+
+  final String single = '/api/store/upload';
+  final String multiple = '/api/store/upload/multi';
+  final String delete = '/api/store/upload/delete';
 }

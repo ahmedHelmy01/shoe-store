@@ -4,6 +4,7 @@ import 'package:erp/modules/webstore/admin/features/branches/data/models/branch_
 
 class BranchesTable extends StatelessWidget {
   final List<BranchRow> items;
+  final Function(BranchRow branch) onView;
   final Function(BranchRow branch) onEdit;
   final Function(int id) onDelete;
   final Widget Function(BuildContext context, BranchRow b)? cardBuilder;
@@ -11,6 +12,7 @@ class BranchesTable extends StatelessWidget {
   const BranchesTable({
     super.key,
     required this.items,
+    required this.onView,
     required this.onEdit,
     required this.onDelete,
     this.cardBuilder,
@@ -65,6 +67,16 @@ class BranchesTable extends StatelessWidget {
           exportValue: (b) => b.isActive ? 'Yes' : 'No',
           cell: (_, b) => Text(b.isActive ? 'Yes' : 'No'),
           width: 100,
+        ),
+        AdminColumn<BranchRow>(
+          title: 'Actions',
+          cell: (_, b) => AdminTableActionsCell<BranchRow>(
+            row: b,
+            onView: onView,
+            onEdit: onEdit,
+            onDelete: (item) => onDelete(item.id),
+          ),
+          width: 130,
         ),
       ],
     );

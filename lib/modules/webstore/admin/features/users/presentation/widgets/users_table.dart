@@ -107,19 +107,10 @@ class UsersTable extends StatelessWidget {
         AdminColumn<UserRow>(
           title: 'Actions',
           width: 120,
-          cell: (_, item) => Row(
-            children: [
-              IconButton(
-                onPressed: () => onEdit(item),
-                icon: const Icon(Icons.edit_outlined, size: 20),
-                tooltip: 'Edit',
-              ),
-              IconButton(
-                onPressed: () => onDelete(item),
-                icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red),
-                tooltip: 'Delete',
-              ),
-            ],
+          cell: (_, item) => AdminTableActionsCell<UserRow>(
+            row: item,
+            onEdit: onEdit,
+            onDelete: onDelete,
           ),
         ),
       ],

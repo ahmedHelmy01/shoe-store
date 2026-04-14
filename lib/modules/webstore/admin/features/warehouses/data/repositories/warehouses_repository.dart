@@ -38,7 +38,7 @@ class WarehousesRepository extends AdminBaseRepository implements IWarehousesRep
       final json = id == null
           ? await _ds.postData(ApiEndpoints.webstore.admin.warehouses, data)
           : await _ds.putData(
-              ApiEndpoints.withId(ApiEndpoints.webstore.admin.warehouses, id),
+              '${ApiEndpoints.webstore.admin.warehouses}/$id',
               data,
             );
       return parseSingle(json, (j) => WarehouseRow.fromJson(j));
@@ -49,7 +49,7 @@ class WarehousesRepository extends AdminBaseRepository implements IWarehousesRep
   Future<ApiResult<void>> deleteWarehouse(int id) {
     return safeApiCall(() async {
       await _ds.deleteData(
-        ApiEndpoints.withId(ApiEndpoints.webstore.admin.warehouses, id),
+        '${ApiEndpoints.webstore.admin.warehouses}/$id',
       );
     });
   }

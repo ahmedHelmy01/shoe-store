@@ -60,13 +60,12 @@ class PaymentMethodsTable extends StatelessWidget {
         ),
         AdminColumn<PaymentMethodRow>(
           title: 'Actions',
-          cell: (_, p) => Row(
-            children: [
-              IconButton(onPressed: () => onEdit(p), icon: const Icon(Icons.edit_outlined, size: 20)),
-              IconButton(onPressed: () => onDelete(p.id), icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red)),
-            ],
+          cell: (_, p) => AdminTableActionsCell<PaymentMethodRow>(
+            row: p,
+            onEdit: onEdit,
+            onDelete: (item) => onDelete(item.id),
           ),
-          width: 110,
+          width: 130,
         ),
       ],
     );

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:erp/core/network/network_service.dart';
 import 'package:erp/core/network/network_check_internet.dart';
 import 'package:erp/core/services/session_manager.dart';
+import 'package:erp/core/services/upload/upload_service.dart';
 // ... existing imports ...
 
 // ... storage providers ...
@@ -29,6 +30,14 @@ final httpClientProvider = Provider<http.Client>((ref) {
 /// Network Service - Main HTTP wrapper (replaces ApiClient)
 final networkServiceProvider = Provider<NetworkService>((ref) {
   return NetworkService(
+    ref.watch(httpClientProvider),
+    ref.watch(sessionManagerProvider),
+  );
+});
+
+/// Upload Service - multipart uploads and file deletion.
+final uploadServiceProvider = Provider<UploadService>((ref) {
+  return UploadService(
     ref.watch(httpClientProvider),
     ref.watch(sessionManagerProvider),
   );

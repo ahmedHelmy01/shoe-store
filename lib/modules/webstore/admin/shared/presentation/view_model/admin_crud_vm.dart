@@ -38,7 +38,7 @@ class AdminCrudLoading<T> extends AdminCrudState<T> {
   }) {
     return AdminCrudLoading<T>(
       editingItem: clearEditing ? null : (editingItem ?? this.editingItem),
-      isAdding: clearEditing ? false : (isAdding ?? this.isAdding),
+      isAdding: isAdding ?? (clearEditing ? false : this.isAdding),
       isSaving: isSaving ?? this.isSaving,
     );
   }
@@ -63,7 +63,7 @@ class AdminCrudError<T> extends AdminCrudState<T> {
     return AdminCrudError<T>(
       message,
       editingItem: clearEditing ? null : (editingItem ?? this.editingItem),
-      isAdding: clearEditing ? false : (isAdding ?? this.isAdding),
+      isAdding: isAdding ?? (clearEditing ? false : this.isAdding),
       isSaving: isSaving ?? this.isSaving,
     );
   }
@@ -123,7 +123,7 @@ class AdminCrudData<T> extends AdminCrudState<T> {
       total: total ?? this.total,
       search: search ?? this.search,
       editingItem: clearEditing ? null : (editingItem ?? this.editingItem),
-      isAdding: clearEditing ? false : (isAdding ?? this.isAdding),
+      isAdding: isAdding ?? (clearEditing ? false : this.isAdding),
       isSaving: isSaving ?? this.isSaving,
     );
   }

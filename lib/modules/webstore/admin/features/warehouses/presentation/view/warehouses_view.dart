@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
+import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_action_icon_button.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_panel.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
@@ -11,15 +16,25 @@ import '../widgets/warehouses_table.dart';
 import '../widgets/warehouse_form.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/data/models/warehouse_row.dart';
 
-class WarehousesView extends ConsumerWidget {
+class WarehousesView extends ConsumerStatefulWidget {
   const WarehousesView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<WarehousesView> createState() => _WarehousesViewState();
+}
+
+class _WarehousesViewState extends ConsumerState<WarehousesView> {
+  WarehouseRow? _detailsItem;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final state = ref.watch(warehousesVmProvider);
     final notifier = ref.read(warehousesVmProvider.notifier);
+    print(
+      '[WAREHOUSE_UI] build -> isAdding=${state.isAdding}, editingItem=${state.editingItem?.id}, isSaving=${state.isSaving}',
+    );
 
     return Stack(
       children: [
@@ -32,7 +47,15 @@ class WarehousesView extends ConsumerWidget {
                 title: 'Inventory Warehouses',
                 onRefresh: () => notifier.fetch(),
                 primaryActionLabel: 'Add Warehouse',
-                onPrimaryAction: () => notifier.openAdd(),
+                onPrimaryAction: () {
+                  print('[WAREHOUSE_UI] Add button clicked');
+                  setState(() => _detailsItem = null);
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (!mounted) return;
+                    print('[WAREHOUSE_UI] postFrame -> openAdd()');
+                    notifier.openAdd();
+                  });
+                },
               ),
 
               const SizedBox(height: 12),
@@ -46,7 +69,9 @@ class WarehousesView extends ConsumerWidget {
             onClose: () => notifier.closePanel(),
             title: state.isAdding ? 'Create Warehouse' : 'Edit Warehouse',
             size: AdminDialogSize.medium,
+            closeOnBackdropTap: false,
             child: WarehouseForm(
+              key: ValueKey(state.isAdding ? 'warehouse-add' : 'warehouse-edit-${state.editingItem?.id ?? 0}'),
               initial: state.editingItem,
               isSaving: state.isSaving,
               onSave: (data) async {
@@ -55,6 +80,16 @@ class WarehousesView extends ConsumerWidget {
                 }
               },
             ),
+          ),
+        if (_detailsItem != null)
+          AdminDialogForm(
+            isOpen: true,
+            onClose: () => setState(() => _detailsItem = null),
+            title: 'Warehouse Details',
+            size: AdminDialogSize.small,
+            customHeightFactor: 0.70,
+            closeOnBackdropTap: true,
+            child: _WarehouseDetails(item: _detailsItem!),
           ),
       ],
     );
@@ -74,26 +109,70 @@ class WarehousesView extends ConsumerWidget {
             child: WarehousesTable(
               items: items,
               onEdit: (w) => notifier.openEdit(w),
-              onDelete: (id) => notifier.commitDelete(id),
+              onView: (w) => setState(() => _detailsItem = w),
+              onDelete: (w) => _confirmAndDelete(context, notifier, w),
               cardBuilder: (context, w) => _WarehouseCard(
                 warehouse: w,
+                onView: () => setState(() => _detailsItem = w),
                 onEdit: () => notifier.openEdit(w),
-                onDelete: () => notifier.commitDelete(w.id),
+                onDelete: () => _confirmAndDelete(context, notifier, w),
               ),
             ),
           ),
         ),
     };
   }
+
+  Future<void> _confirmAndDelete(
+    BuildContext context,
+    WarehousesVm notifier,
+    WarehouseRow warehouse,
+  ) async {
+    print('[WAREHOUSE_UI] delete requested -> id=${warehouse.id}');
+    AppDialog.show(
+      context,
+      title: 'Delete Warehouse',
+      message: 'Are you sure you want to delete "${warehouse.name}"?',
+      cancelText: 'Cancel',
+      confirmText: 'Delete',
+      onCancel: () => Navigator.of(context).pop(),
+      onConfirm: () async {
+        Navigator.of(context).pop();
+        print('[WAREHOUSE_UI] delete confirm -> id=${warehouse.id}');
+        final result = await notifier.deleteWarehouse(warehouse.id);
+        if (!mounted) return;
+        result.when(
+          success: (_) async {
+            await AppStatusDialog.show(
+              context,
+              status: AppDialogStatus.success,
+              title: 'Deleted',
+              message: 'Warehouse deleted successfully.',
+            );
+          },
+          failure: (e) async {
+            await AppStatusDialog.show(
+              context,
+              status: AppDialogStatus.error,
+              title: 'Delete Failed',
+              message: e.message,
+            );
+          },
+        );
+      },
+    );
+  }
 }
 
 class _WarehouseCard extends StatelessWidget {
   final WarehouseRow warehouse;
+  final VoidCallback onView;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
   const _WarehouseCard({
     required this.warehouse,
+    required this.onView,
     required this.onEdit,
     required this.onDelete,
   });
@@ -136,12 +215,46 @@ class _WarehouseCard extends StatelessWidget {
               PopupMenuButton(
                 itemBuilder: (context) => [
                   PopupMenuItem(
+                    onTap: onView,
+                    child: Row(
+                      children: [
+                        HugeIcon(
+                          icon: AdminActionIconButton.iconOf(AdminActionIconType.view),
+                          color: AdminActionIconButton.colorOf(AdminActionIconType.view),
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        const Text('Details'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
                     onTap: onEdit,
-                    child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: 8), Text('Edit')]),
+                    child: Row(
+                      children: [
+                        HugeIcon(
+                          icon: AdminActionIconButton.iconOf(AdminActionIconType.edit),
+                          color: AdminActionIconButton.colorOf(AdminActionIconType.edit),
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        const Text('Edit'),
+                      ],
+                    ),
                   ),
                   PopupMenuItem(
                     onTap: onDelete,
-                    child: const Row(children: [Icon(Icons.delete_outline_rounded, color: Colors.red), SizedBox(width: 8), Text('Delete')]),
+                    child: Row(
+                      children: [
+                        HugeIcon(
+                          icon: AdminActionIconButton.iconOf(AdminActionIconType.delete),
+                          color: AdminActionIconButton.colorOf(AdminActionIconType.delete),
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        const Text('Delete'),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -170,6 +283,33 @@ class _WarehouseCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _WarehouseDetails extends StatelessWidget {
+  final WarehouseRow item;
+
+  const _WarehouseDetails({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final entries = <MapEntry<String, String>>[
+      MapEntry('ID', item.id.toString()),
+      MapEntry('Name', item.name),
+      MapEntry('Name (Arabic)', item.nameAr ?? '-'),
+      MapEntry('Code', item.code ?? '-'),
+      MapEntry('Branch ID', item.branchId?.toString() ?? '-'),
+      MapEntry('Address', item.location ?? '-'),
+      MapEntry('Phone', item.phone ?? '-'),
+      MapEntry('Active', item.isActive ? 'Yes' : 'No'),
+    ];
+
+    return AdminDetailsPanel(
+      title: item.name,
+      idText: '#${item.id}',
+      headerIcon: Icons.warehouse_rounded,
+      entries: entries,
     );
   }
 }

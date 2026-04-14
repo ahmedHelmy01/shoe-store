@@ -9,6 +9,20 @@ final warehousesVmProvider = NotifierProvider<WarehousesVm, AdminCrudState<Wareh
 
 class WarehousesVm extends AdminCrudVm<WarehouseRow> {
   @override
+  void openAdd() {
+    print('[WAREHOUSE_VM] openAdd before -> isAdding=${state.isAdding}, editingItem=${state.editingItem?.id}');
+    super.openAdd();
+    print('[WAREHOUSE_VM] openAdd after -> isAdding=${state.isAdding}, editingItem=${state.editingItem?.id}');
+  }
+
+  @override
+  void closePanel() {
+    print('[WAREHOUSE_VM] closePanel before -> isAdding=${state.isAdding}, editingItem=${state.editingItem?.id}');
+    super.closePanel();
+    print('[WAREHOUSE_VM] closePanel after -> isAdding=${state.isAdding}, editingItem=${state.editingItem?.id}');
+  }
+
+  @override
   Future<ApiResult<AdminPagedResponse<WarehouseRow>>> getItems({required int page, String? search}) {
     return ref.read(warehousesRepositoryProvider).getWarehouses(page: page, search: search);
   }
@@ -21,5 +35,20 @@ class WarehousesVm extends AdminCrudVm<WarehouseRow> {
   @override
   Future<ApiResult<void>> deleteItem(id) {
     return ref.read(warehousesRepositoryProvider).deleteWarehouse(id as int);
+  }
+
+  Future<ApiResult<void>> deleteWarehouse(int id) async {
+    final res = await deleteItem(id);
+    res.when(
+      success: (_) => fetch(page: currentPage),
+      failure: (_) {},
+    );
+    return res;
+  }
+
+  int get currentPage {
+    final s = state;
+    if (s is AdminCrudData<WarehouseRow>) return s.page;
+    return 1;
   }
 }

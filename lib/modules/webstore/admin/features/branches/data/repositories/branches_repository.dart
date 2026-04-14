@@ -38,7 +38,7 @@ class BranchesRepository extends AdminBaseRepository implements IBranchesReposit
       final json = id == null
           ? await _ds.postData(ApiEndpoints.webstore.admin.branches, data)
           : await _ds.putData(
-              ApiEndpoints.withId(ApiEndpoints.webstore.admin.branches, id),
+              '${ApiEndpoints.webstore.admin.branches}/$id',
               data,
             );
       return parseSingle(json, (j) => BranchRow.fromJson(j));
@@ -49,7 +49,7 @@ class BranchesRepository extends AdminBaseRepository implements IBranchesReposit
   Future<ApiResult<void>> deleteBranch(int id) {
     return safeApiCall(() async {
       await _ds.deleteData(
-        ApiEndpoints.withId(ApiEndpoints.webstore.admin.branches, id),
+        '${ApiEndpoints.webstore.admin.branches}/$id',
       );
     });
   }

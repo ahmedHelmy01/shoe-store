@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:erp/core/common_widget/app_empty_widget/app_empty_widget.dart';
 import 'package:erp/modules/webstore/admin/shared/export/admin_export.dart';
 import 'package:excel/excel.dart' as ex;
 import 'package:pdf/pdf.dart';
@@ -9,8 +10,10 @@ import 'package:pdf/widgets.dart' as pw;
 import 'data_table/admin_table_models.dart';
 import 'data_table/admin_table_toolbar.dart';
 import 'data_table/admin_table_footer.dart';
+import 'data_table/admin_table_actions_cell.dart';
 
 export 'data_table/admin_table_models.dart';
+export 'data_table/admin_table_actions_cell.dart';
 
 class AdminDataTable<T> extends StatefulWidget {
   final List<T> rows;
@@ -117,6 +120,14 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
     final pageRows = _pageRows;
     final allOnPageSelected = pageRows.isNotEmpty &&
         pageRows.every((r) => _selected.contains(widget.idOf(r)));
+    final isEmptyState = _sorted.isEmpty;
+
+    if (isEmptyState) {
+      return const AppEmptyWidget(
+        message: 'No data found',
+        subtitle: 'There are no records to display yet.',
+      );
+    }
 
     return Column(
       children: [

@@ -82,13 +82,12 @@ class ProductsTable extends StatelessWidget {
         ),
         AdminColumn<ProductRow>(
           title: 'Actions',
-          cell: (_, p) => Row(
-            children: [
-              IconButton(onPressed: () => onEdit(p), icon: const Icon(Icons.edit_outlined, size: 20)),
-              IconButton(onPressed: () => onDelete(p.id), icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red)),
-            ],
+          cell: (_, p) => AdminTableActionsCell<ProductRow>(
+            row: p,
+            onEdit: onEdit,
+            onDelete: (item) => onDelete(item.id),
           ),
-          width: 110,
+          width: 130,
         ),
       ],
     );

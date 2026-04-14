@@ -66,21 +66,12 @@ class SlidersTable extends StatelessWidget {
         ),
         AdminColumn<SliderRow>(
           title: 'Actions',
-          cell: (_, s) => Row(
-            children: [
-              IconButton(
-                onPressed: () => onEdit(s),
-                icon: const Icon(Icons.edit_outlined, size: 20),
-                tooltip: 'Edit',
-              ),
-              IconButton(
-                onPressed: () => onDelete(s.id),
-                icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red),
-                tooltip: 'Delete',
-              ),
-            ],
+          cell: (_, s) => AdminTableActionsCell<SliderRow>(
+            row: s,
+            onEdit: onEdit,
+            onDelete: (item) => onDelete(item.id),
           ),
-          width: 120,
+          width: 130,
         ),
       ],
     );

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_action_icon_button.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_panel.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
@@ -10,11 +13,18 @@ import '../widgets/branches_table.dart';
 import '../widgets/branch_form.dart';
 import 'package:erp/modules/webstore/admin/features/branches/data/models/branch_row.dart';
 
-class BranchesView extends ConsumerWidget {
+class BranchesView extends ConsumerStatefulWidget {
   const BranchesView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<BranchesView> createState() => _BranchesViewState();
+}
+
+class _BranchesViewState extends ConsumerState<BranchesView> {
+  BranchRow? _detailsItem;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final state = ref.watch(branchesVmProvider);
@@ -31,7 +41,10 @@ class BranchesView extends ConsumerWidget {
                 title: 'Business Branches',
                 onRefresh: () => notifier.fetch(),
                 primaryActionLabel: 'Add Branch',
-                onPrimaryAction: () => notifier.openAdd(),
+                onPrimaryAction: () {
+                  setState(() => _detailsItem = null);
+                  notifier.openAdd();
+                },
               ),
               const SizedBox(height: 12),
               Expanded(child: _buildBody(context, state, isDark, notifier)),
@@ -54,6 +67,15 @@ class BranchesView extends ConsumerWidget {
               },
             ),
           ),
+        if (_detailsItem != null)
+          AdminDialogForm(
+            isOpen: true,
+            onClose: () => setState(() => _detailsItem = null),
+            title: 'Branch Details',
+            size: AdminDialogSize.small,
+            customHeightFactor: 0.74,
+            child: _BranchDetails(item: _detailsItem!),
+          ),
       ],
     );
   }
@@ -71,10 +93,12 @@ class BranchesView extends ConsumerWidget {
             ),
             child: BranchesTable(
               items: items,
+              onView: (b) => setState(() => _detailsItem = b),
               onEdit: (b) => notifier.openEdit(b),
               onDelete: (id) => notifier.commitDelete(id),
               cardBuilder: (context, b) => _BranchCard(
                 branch: b,
+                onView: () => setState(() => _detailsItem = b),
                 onEdit: () => notifier.openEdit(b),
                 onDelete: () => notifier.commitDelete(b.id),
               ),
@@ -87,11 +111,13 @@ class BranchesView extends ConsumerWidget {
 
 class _BranchCard extends StatelessWidget {
   final BranchRow branch;
+  final VoidCallback onView;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
   const _BranchCard({
     required this.branch,
+    required this.onView,
     required this.onEdit,
     required this.onDelete,
   });
@@ -132,12 +158,46 @@ class _BranchCard extends StatelessWidget {
               PopupMenuButton(
                 itemBuilder: (context) => [
                   PopupMenuItem(
+                    onTap: onView,
+                    child: Row(
+                      children: [
+                        HugeIcon(
+                          icon: AdminActionIconButton.iconOf(AdminActionIconType.view),
+                          color: AdminActionIconButton.colorOf(AdminActionIconType.view),
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        const Text('Details'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
                     onTap: onEdit,
-                    child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: 8), Text('Edit')]),
+                    child: Row(
+                      children: [
+                        HugeIcon(
+                          icon: AdminActionIconButton.iconOf(AdminActionIconType.edit),
+                          color: AdminActionIconButton.colorOf(AdminActionIconType.edit),
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        const Text('Edit'),
+                      ],
+                    ),
                   ),
                   PopupMenuItem(
                     onTap: onDelete,
-                    child: const Row(children: [Icon(Icons.delete_outline_rounded, color: Colors.red), SizedBox(width: 8), Text('Delete')]),
+                    child: Row(
+                      children: [
+                        HugeIcon(
+                          icon: AdminActionIconButton.iconOf(AdminActionIconType.delete),
+                          color: AdminActionIconButton.colorOf(AdminActionIconType.delete),
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        const Text('Delete'),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -173,6 +233,36 @@ class _BranchCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _BranchDetails extends StatelessWidget {
+  final BranchRow item;
+
+  const _BranchDetails({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final entries = <MapEntry<String, String>>[
+      MapEntry('ID', item.id.toString()),
+      MapEntry('Name', item.name),
+      MapEntry('Name (Arabic)', item.nameAr ?? '-'),
+      MapEntry('Code', item.code ?? '-'),
+      MapEntry('Phone', item.phone ?? '-'),
+      MapEntry('Email', item.email ?? '-'),
+      MapEntry('Address', item.address ?? '-'),
+      MapEntry('Address (Arabic)', item.addressAr ?? '-'),
+      MapEntry('Latitude', item.latitude?.toString() ?? '-'),
+      MapEntry('Longitude', item.longitude?.toString() ?? '-'),
+      MapEntry('Active', item.isActive ? 'Yes' : 'No'),
+    ];
+
+    return AdminDetailsPanel(
+      title: item.name,
+      idText: '#${item.id}',
+      headerIcon: Icons.storefront_rounded,
+      entries: entries,
     );
   }
 }

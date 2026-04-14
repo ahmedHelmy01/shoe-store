@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
@@ -31,6 +32,12 @@ class AppEmptyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final glassSize = math.min(180.w, 180.0);
+    final imageSize = math.min(140.w, 140.0);
+    final iconSize = math.min(80.w, 80.0);
+    final safePadding = math.min(32.w, 28.0);
+    final titleSize = math.min(20.sp, 14.0);
+    final subtitleSize = math.min(14.sp, 11.5);
 
     String resolveText(String? value, {required String fallbackKey}) {
       final v = value ?? fallbackKey;
@@ -41,9 +48,10 @@ class AppEmptyWidget extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(32.w),
+        padding: EdgeInsets.all(safePadding),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             // ─── Illustration with Glass Circle ────────────────
             Stack(
@@ -54,8 +62,8 @@ class AppEmptyWidget extends StatelessWidget {
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                       child: Container(
-                        width: 180.w,
-                        height: 180.w,
+                        width: glassSize,
+                        height: glassSize,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: isDark 
@@ -75,14 +83,14 @@ class AppEmptyWidget extends StatelessWidget {
                 if (imagePath != null || (imagePath == null && icon == null))
                   AppImage(
                     imagePath: imagePath ?? AssetManager.noData,
-                    width: 140.w,
-                    height: 140.w,
+                    width: imageSize,
+                    height: imageSize,
                     fit: BoxFit.contain,
                   )
                 else
                   Icon(
                     icon!,
-                    size: 80.w,
+                    size: iconSize,
                     color: isDark 
                         ? Colors.white.withValues(alpha: 0.3) 
                         : AppColors.primary.withValues(alpha: 0.5),
@@ -90,28 +98,31 @@ class AppEmptyWidget extends StatelessWidget {
               ],
             ),
             
-            32.verticalSpace,
+            18.verticalSpace,
 
             // ─── Message ─────────────────────────────────────
             Text(
               resolveText(message, fallbackKey: LocaleKeys.common.no_data),
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.bold,
-                color: theme.textTheme.headlineSmall?.color,
+                fontSize: titleSize,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.2,
+                color: theme.textTheme.titleLarge?.color,
               ),
             ),
             
             if (subtitle != null) ...[
-              12.verticalSpace,
+              8.verticalSpace,
               Text(
                 resolveText(subtitle, fallbackKey: LocaleKeys.common.no_data),
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 14.sp,
-                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
-                  height: 1.5,
+                  fontSize: subtitleSize,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.1,
+                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.62),
+                  height: 1.4,
                 ),
               ),
             ],

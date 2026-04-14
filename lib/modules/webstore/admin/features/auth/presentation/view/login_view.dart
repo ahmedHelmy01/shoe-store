@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
@@ -31,17 +32,24 @@ class _LoginViewState extends ConsumerState<LoginView> {
   }
 
   Future<void> _submit() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      final success = await ref.read(loginVmProvider.notifier).login(
-        _emailCtrl.text.trim(),
-        _passCtrl.text,
+    final formState = _formKey.currentState;
+    if (formState == null || !formState.validate()) {
+      return;
+    }
+
+    final success = await ref.read(loginVmProvider.notifier).login(
+      _emailCtrl.text.trim(),
+      _passCtrl.text,
+    );
+
+    if (!success && mounted) {
+      final error = ref.read(loginVmProvider).error;
+      await AppStatusDialog.show(
+        context,
+        status: AppDialogStatus.error,
+        title: 'Login Failed',
+        message: error ?? 'Please check your credentials and try again.',
       );
-      if (!success && mounted) {
-        final error = ref.read(loginVmProvider).error;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error ?? 'Login Failed'), backgroundColor: AppColors.error),
-        );
-      }
     }
   }
 
@@ -88,6 +96,19 @@ class _LoginViewState extends ConsumerState<LoginView> {
                               label: 'Email Address',
                               hint: 'admin@example.com',
                               keyboardType: TextInputType.emailAddress,
+                              validator: (value) {
+                                final email = value?.trim() ?? '';
+                                if (email.isEmpty) {
+                                  return 'Email is required';
+                                }
+                                final isEmailValid = RegExp(
+                                  r'^[\w\.-]+@[\w\.-]+\.\w+$',
+                                ).hasMatch(email);
+                                if (!isEmailValid) {
+                                  return 'Enter a valid email';
+                                }
+                                return null;
+                              },
                               borderRadius: 16,
                               prefixIcon: HugeIcon(
                                 icon: HugeIconsStrokeRounded.mail01,
@@ -102,6 +123,12 @@ class _LoginViewState extends ConsumerState<LoginView> {
                               label: 'Password',
                               hint: '••••••••',
                               isPassword: true,
+                              validator: (value) {
+                                if ((value ?? '').trim().isEmpty) {
+                                  return 'Password is required';
+                                }
+                                return null;
+                              },
                               borderRadius: 16,
                               prefixIcon: HugeIcon(
                                 icon: HugeIconsStrokeRounded.lockPassword,
