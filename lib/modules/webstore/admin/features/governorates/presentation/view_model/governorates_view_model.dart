@@ -10,16 +10,16 @@ final governoratesVmProvider = NotifierProvider<GovernoratesVm, AdminCrudState<G
 class GovernoratesVm extends AdminCrudVm<GovernorateRow> {
   @override
   Future<ApiResult<AdminPagedResponse<GovernorateRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getGovernorates(page: page, search: search);
+    return ref.read(governoratesRepositoryProvider).getGovernorates(page: page, search: search);
   }
 
   @override
   Future<ApiResult<GovernorateRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).saveGovernorate(data, id: id as int?);
+    return ref.read(governoratesRepositoryProvider).saveGovernorate(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deleteGovernorate(id as int);
+    return ref.read(governoratesRepositoryProvider).deleteGovernorate(id as int);
   }
 }

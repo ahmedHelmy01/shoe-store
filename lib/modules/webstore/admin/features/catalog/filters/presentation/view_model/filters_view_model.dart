@@ -10,16 +10,16 @@ final filtersVmProvider = NotifierProvider.autoDispose<FiltersVm, AdminCrudState
 class FiltersVm extends AdminCrudVm<FilterRow> {
   @override
   Future<ApiResult<AdminPagedResponse<FilterRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getFilters(page: page, search: search);
+    return ref.read(filtersRepositoryProvider).getFilters(page: page, search: search);
   }
 
   @override
   Future<ApiResult<FilterRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).saveFilter(data, id: id as int?);
+    return ref.read(filtersRepositoryProvider).saveFilter(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deleteFilter(id as int);
+    return ref.read(filtersRepositoryProvider).deleteFilter(id as int);
   }
 }

@@ -10,16 +10,16 @@ final propertiesVmProvider = NotifierProvider<PropertiesVm, AdminCrudState<Prope
 class PropertiesVm extends AdminCrudVm<PropertyRow> {
   @override
   Future<ApiResult<AdminPagedResponse<PropertyRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getProperties(page: page, search: search);
+    return ref.read(propertiesRepositoryProvider).getProperties(page: page, search: search);
   }
 
   @override
   Future<ApiResult<PropertyRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).saveProperty(data, id: id as int?);
+    return ref.read(propertiesRepositoryProvider).saveProperty(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deleteProperty(id as int);
+    return ref.read(propertiesRepositoryProvider).deleteProperty(id as int);
   }
 }

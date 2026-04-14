@@ -10,16 +10,16 @@ final companiesVmProvider = NotifierProvider.autoDispose<CompaniesVm, AdminCrudS
 class CompaniesVm extends AdminCrudVm<CompanyRow> {
   @override
   Future<ApiResult<AdminPagedResponse<CompanyRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getCompanies(page: page, search: search);
+    return ref.read(companiesRepositoryProvider).getCompanies(page: page, search: search);
   }
 
   @override
   Future<ApiResult<CompanyRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).saveCompany(data, id: id as int?);
+    return ref.read(companiesRepositoryProvider).saveCompany(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deleteCompany(id as int);
+    return ref.read(companiesRepositoryProvider).deleteCompany(id as int);
   }
 }

@@ -10,16 +10,16 @@ final pagesVmProvider = NotifierProvider<PagesVm, AdminCrudState<PageRow>>(Pages
 class PagesVm extends AdminCrudVm<PageRow> {
   @override
   Future<ApiResult<AdminPagedResponse<PageRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getPages(page: page, search: search);
+    return ref.read(pagesRepositoryProvider).getPages(page: page, search: search);
   }
 
   @override
   Future<ApiResult<PageRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).savePage(data, id: id as int?);
+    return ref.read(pagesRepositoryProvider).savePage(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deletePage(id as int);
+    return ref.read(pagesRepositoryProvider).deletePage(id as int);
   }
 }

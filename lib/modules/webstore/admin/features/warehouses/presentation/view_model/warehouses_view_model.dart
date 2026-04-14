@@ -10,16 +10,16 @@ final warehousesVmProvider = NotifierProvider<WarehousesVm, AdminCrudState<Wareh
 class WarehousesVm extends AdminCrudVm<WarehouseRow> {
   @override
   Future<ApiResult<AdminPagedResponse<WarehouseRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getWarehouses(page: page, search: search);
+    return ref.read(warehousesRepositoryProvider).getWarehouses(page: page, search: search);
   }
 
   @override
   Future<ApiResult<WarehouseRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).saveWarehouse(data, id: id as int?);
+    return ref.read(warehousesRepositoryProvider).saveWarehouse(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deleteWarehouse(id as int);
+    return ref.read(warehousesRepositoryProvider).deleteWarehouse(id as int);
   }
 }

@@ -10,16 +10,16 @@ final paymentMethodsVmProvider = NotifierProvider<PaymentMethodsVm, AdminCrudSta
 class PaymentMethodsVm extends AdminCrudVm<PaymentMethodRow> {
   @override
   Future<ApiResult<AdminPagedResponse<PaymentMethodRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getPaymentMethods(page: page, search: search);
+    return ref.read(paymentMethodsRepositoryProvider).getPaymentMethods(page: page, search: search);
   }
 
   @override
   Future<ApiResult<PaymentMethodRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).savePaymentMethod(data, id: id as int?);
+    return ref.read(paymentMethodsRepositoryProvider).savePaymentMethod(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deletePaymentMethod(id as int);
+    return ref.read(paymentMethodsRepositoryProvider).deletePaymentMethod(id as int);
   }
 }

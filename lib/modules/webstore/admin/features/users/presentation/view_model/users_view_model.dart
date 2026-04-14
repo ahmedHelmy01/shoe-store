@@ -10,7 +10,7 @@ final usersVmProvider = NotifierProvider.autoDispose<UsersVm, AdminCrudState<Use
 class UsersVm extends AdminCrudVm<UserRow> {
   @override
   Future<ApiResult<AdminPagedResponse<UserRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getClients(page: page, search: search);
+    return ref.read(usersRepositoryProvider).getUsers(page: page, search: search);
   }
 
   @override

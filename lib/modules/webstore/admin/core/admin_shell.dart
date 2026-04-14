@@ -12,10 +12,14 @@ import 'package:erp/modules/webstore/admin/features/users/presentation/view/user
 import 'package:erp/modules/webstore/admin/features/orders/presentation/view/orders_management/orders_view.dart';
 
 import 'package:erp/modules/webstore/admin/features/catalog/products/presentation/view/products_view.dart';
+import 'package:erp/modules/webstore/admin/features/catalog/presentation/view/catalog_view.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/categories/presentation/view/categories_view.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/companies/presentation/view/companies_view.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/filters/presentation/view/filters_view.dart';
 import 'package:erp/modules/webstore/admin/features/orders/presentation/view/order_create/order_create_view.dart';
+import 'package:erp/modules/webstore/admin/features/auth/presentation/view/login_view.dart';
+import 'package:erp/core/providers/core_providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:erp/modules/webstore/admin/features/ads/presentation/view/ads_view.dart';
 import 'package:erp/modules/webstore/admin/features/boardings/presentation/view/boardings_view.dart';
@@ -30,16 +34,16 @@ import 'package:erp/modules/webstore/admin/features/properties/presentation/view
 import 'package:erp/modules/webstore/admin/features/sliders/presentation/view/sliders_view.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/presentation/view/warehouses_view.dart';
 
-class AdminShell extends StatefulWidget {
+class AdminShell extends ConsumerStatefulWidget {
   final AdminRouteId initial;
 
   const AdminShell({super.key, this.initial = AdminRouteId.dashboard});
 
   @override
-  State<AdminShell> createState() => _AdminShellState();
+  ConsumerState<AdminShell> createState() => _AdminShellState();
 }
 
-class _AdminShellState extends State<AdminShell> {
+class _AdminShellState extends ConsumerState<AdminShell> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late AdminRouteId _selected;
   bool _collapsed = false;
@@ -90,6 +94,15 @@ class _AdminShellState extends State<AdminShell> {
         );
 
         final title = AdminRoutes.titleOf(_selected);
+        final authStatus = ref.watch(authStateProvider.select((s) => s.status));
+
+        if (authStatus == AuthStatus.initial) {
+          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+        }
+
+        if (authStatus == AuthStatus.unauthenticated) {
+          return const LoginView();
+        }
 
         return WebStoreBaseScaffold(
           scaffoldKey: _scaffoldKey,
@@ -167,9 +180,10 @@ class _AdminShellState extends State<AdminShell> {
           subtitle: 'Configure storefront behavior, delivery, payments, and branding.',
           icon: Icons.settings_rounded,
         ),
-      AdminRouteId.catalog => const ProductsView(),
+      AdminRouteId.catalog => const CatalogView(),
       AdminRouteId.operations => const BranchesView(),
       AdminRouteId.storefront => const SlidersView(),
+      AdminRouteId.login => const LoginView(),
     };
   }
 }

@@ -10,16 +10,16 @@ final ordersVmProvider = NotifierProvider<OrdersVm, AdminCrudState<OrderRow>>(Or
 class OrdersVm extends AdminCrudVm<OrderRow> {
   @override
   Future<ApiResult<AdminPagedResponse<OrderRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getOrders(page: page, search: search);
+    return ref.read(ordersRepositoryProvider).getOrders(page: page, search: search);
   }
 
   @override
   Future<ApiResult<OrderRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).saveOrder(data, id: id as int?);
+    return ref.read(ordersRepositoryProvider).saveOrder(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deleteOrder(id as int);
+    return ref.read(ordersRepositoryProvider).deleteOrder(id as int);
   }
 }

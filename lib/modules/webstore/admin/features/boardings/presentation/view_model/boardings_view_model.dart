@@ -10,16 +10,16 @@ final boardingsVmProvider = NotifierProvider<BoardingsVm, AdminCrudState<Boardin
 class BoardingsVm extends AdminCrudVm<BoardingRow> {
   @override
   Future<ApiResult<AdminPagedResponse<BoardingRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getBoardings(page: page, search: search);
+    return ref.read(boardingsRepositoryProvider).getBoardings(page: page, search: search);
   }
 
   @override
   Future<ApiResult<BoardingRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).saveBoarding(data, id: id as int?);
+    return ref.read(boardingsRepositoryProvider).saveBoarding(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deleteBoarding(id as int);
+    return ref.read(boardingsRepositoryProvider).deleteBoarding(id as int);
   }
 }

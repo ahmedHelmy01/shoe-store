@@ -10,16 +10,16 @@ final slidersVmProvider = NotifierProvider<SlidersVm, AdminCrudState<SliderRow>>
 class SlidersVm extends AdminCrudVm<SliderRow> {
   @override
   Future<ApiResult<AdminPagedResponse<SliderRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getSliders(page: page, search: search);
+    return ref.read(slidersRepositoryProvider).getSliders(page: page, search: search);
   }
 
   @override
   Future<ApiResult<SliderRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).saveSlider(data, id: id as int?);
+    return ref.read(slidersRepositoryProvider).saveSlider(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deleteSlider(id as int);
+    return ref.read(slidersRepositoryProvider).deleteSlider(id as int);
   }
 }

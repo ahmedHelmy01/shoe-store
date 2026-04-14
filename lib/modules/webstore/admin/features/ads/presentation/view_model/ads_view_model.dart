@@ -10,16 +10,16 @@ final adsVmProvider = NotifierProvider<AdsVm, AdminCrudState<AdRow>>(AdsVm.new);
 class AdsVm extends AdminCrudVm<AdRow> {
   @override
   Future<ApiResult<AdminPagedResponse<AdRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getAds(page: page, search: search);
+    return ref.read(adsRepositoryProvider).getAds(page: page, search: search);
   }
 
   @override
   Future<ApiResult<AdRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).saveAd(data, id: id as int?);
+    return ref.read(adsRepositoryProvider).saveAd(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deleteAd(id as int);
+    return ref.read(adsRepositoryProvider).deleteAd(id as int);
   }
 }

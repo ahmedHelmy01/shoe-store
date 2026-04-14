@@ -27,6 +27,7 @@ enum AdminRouteId {
   pages,
   properties,
   settings,
+  login,
 }
 
 class AdminNavNode {
@@ -229,12 +230,14 @@ class AdminRoutes {
       AppRouteNames.webstoreAdminCities => AdminRouteId.cities,
       AppRouteNames.webstoreAdminGovernorates => AdminRouteId.governorates,
       AppRouteNames.webstoreAdminSettings => AdminRouteId.settings,
+      'login' => AdminRouteId.login,
       _ => AdminRouteId.dashboard,
     };
   }
 
   static String toRouteName(AdminRouteId id) {
     return switch (id) {
+      AdminRouteId.login => 'login',
       AdminRouteId.dashboard => AppRouteNames.webstoreAdminDashboard,
       AdminRouteId.users => AppRouteNames.webstoreAdminUsers,
       AdminRouteId.products => AppRouteNames.webstoreAdminProducts,

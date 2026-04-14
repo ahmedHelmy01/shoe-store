@@ -10,16 +10,16 @@ final branchesVmProvider = NotifierProvider<BranchesVm, AdminCrudState<BranchRow
 class BranchesVm extends AdminCrudVm<BranchRow> {
   @override
   Future<ApiResult<AdminPagedResponse<BranchRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getBranches(page: page, search: search);
+    return ref.read(branchesRepositoryProvider).getBranches(page: page, search: search);
   }
 
   @override
   Future<ApiResult<BranchRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).saveBranch(data, id: id as int?);
+    return ref.read(branchesRepositoryProvider).saveBranch(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deleteBranch(id as int);
+    return ref.read(branchesRepositoryProvider).deleteBranch(id as int);
   }
 }

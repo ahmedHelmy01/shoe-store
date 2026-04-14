@@ -10,16 +10,16 @@ final couponsVmProvider = NotifierProvider<CouponsVm, AdminCrudState<CouponRow>>
 class CouponsVm extends AdminCrudVm<CouponRow> {
   @override
   Future<ApiResult<AdminPagedResponse<CouponRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getCoupons(page: page, search: search);
+    return ref.read(couponsRepositoryProvider).getCoupons(page: page, search: search);
   }
 
   @override
   Future<ApiResult<CouponRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).saveCoupon(data, id: id as int?);
+    return ref.read(couponsRepositoryProvider).saveCoupon(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deleteCoupon(id as int);
+    return ref.read(couponsRepositoryProvider).deleteCoupon(id as int);
   }
 }

@@ -10,16 +10,16 @@ final paymentStatusesVmProvider = NotifierProvider<PaymentStatusesVm, AdminCrudS
 class PaymentStatusesVm extends AdminCrudVm<PaymentStatusRow> {
   @override
   Future<ApiResult<AdminPagedResponse<PaymentStatusRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getPaymentStatuses(page: page, search: search);
+    return ref.read(paymentStatusesRepositoryProvider).getPaymentStatuses(page: page, search: search);
   }
 
   @override
   Future<ApiResult<PaymentStatusRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).savePaymentStatus(data, id: id as int?);
+    return ref.read(paymentStatusesRepositoryProvider).savePaymentStatus(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deletePaymentStatus(id as int);
+    return ref.read(paymentStatusesRepositoryProvider).deletePaymentStatus(id as int);
   }
 }

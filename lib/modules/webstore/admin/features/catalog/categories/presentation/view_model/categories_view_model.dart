@@ -10,16 +10,16 @@ final categoriesVmProvider = NotifierProvider.autoDispose<CategoriesVm, AdminCru
 class CategoriesVm extends AdminCrudVm<CategoryRow> {
   @override
   Future<ApiResult<AdminPagedResponse<CategoryRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getCategories(page: page, search: search);
+    return ref.read(categoriesRepositoryProvider).getCategories(page: page, search: search);
   }
 
   @override
   Future<ApiResult<CategoryRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).saveCategory(data, id: id as int?);
+    return ref.read(categoriesRepositoryProvider).saveCategory(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deleteCategory(id as int);
+    return ref.read(categoriesRepositoryProvider).deleteCategory(id as int);
   }
 }

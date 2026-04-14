@@ -10,16 +10,16 @@ final productsVmProvider = NotifierProvider.autoDispose<ProductsVm, AdminCrudSta
 class ProductsVm extends AdminCrudVm<ProductRow> {
   @override
   Future<ApiResult<AdminPagedResponse<ProductRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getProducts(page: page, search: search);
+    return ref.read(productsRepositoryProvider).getProducts(page: page, search: search);
   }
 
   @override
   Future<ApiResult<ProductRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).saveProduct(data, id: id as int?);
+    return ref.read(productsRepositoryProvider).saveProduct(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deleteProduct(id as int);
+    return ref.read(productsRepositoryProvider).deleteProduct(id as int);
   }
 }

@@ -10,16 +10,16 @@ final citiesVmProvider = NotifierProvider<CitiesVm, AdminCrudState<CityRow>>(Cit
 class CitiesVm extends AdminCrudVm<CityRow> {
   @override
   Future<ApiResult<AdminPagedResponse<CityRow>>> getItems({required int page, String? search}) {
-    return ref.read(webStoreAdminRepositoryProvider).getCities(page: page, search: search);
+    return ref.read(citiesRepositoryProvider).getCities(page: page, search: search);
   }
 
   @override
   Future<ApiResult<CityRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(webStoreAdminRepositoryProvider).saveCity(data, id: id as int?);
+    return ref.read(citiesRepositoryProvider).saveCity(data, id: id as int?);
   }
 
   @override
   Future<ApiResult<void>> deleteItem(id) {
-    return ref.read(webStoreAdminRepositoryProvider).deleteCity(id as int);
+    return ref.read(citiesRepositoryProvider).deleteCity(id as int);
   }
 }
