@@ -15,6 +15,8 @@ class BranchRow {
     required this.isActive,
   });
 
+  String? get location => address;
+
   factory BranchRow.fromJson(Map<String, dynamic> json) {
     return BranchRow(
       id: json['id'] as int? ?? 0,

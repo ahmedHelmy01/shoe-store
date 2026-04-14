@@ -1,4 +1,4 @@
-import '../data/models/branch_row.dart';
+import 'package:erp/modules/webstore/admin/features/branches/data/models/branch_row.dart';
 
 sealed class BranchesState {
   const BranchesState();

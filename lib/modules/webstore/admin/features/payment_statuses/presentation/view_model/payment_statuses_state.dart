@@ -1,4 +1,4 @@
-import '../data/models/payment_status_row.dart';
+import 'package:erp/modules/webstore/admin/features/payment_statuses/data/models/payment_status_row.dart';
 
 sealed class PaymentStatusesState {
   const PaymentStatusesState();

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
-import '../view_model/ads_state.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
 import '../view_model/ads_view_model.dart';
 import '../widgets/ads_table.dart';
-import '../widgets/ads_mobile_list.dart';
+import '../widgets/ad_form.dart';
+import 'package:erp/modules/webstore/admin/features/ads/data/models/ad_row.dart';
 
 class AdsView extends ConsumerWidget {
   const AdsView({super.key});
@@ -13,67 +17,244 @@ class AdsView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final isWide = MediaQuery.sizeOf(context).width >= 980;
     final state = ref.watch(adsVmProvider);
+    final notifier = ref.read(adsVmProvider.notifier);
 
-    return Padding(
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              AdminPageHeader(
+                title: 'Advertisements',
+                onRefresh: () => notifier.fetch(),
+                primaryActionLabel: 'Add Ad',
+                onPrimaryAction: () => notifier.openAdd(),
+              ),
+              const SizedBox(height: 20),
+
+              // Body
+              Expanded(child: _buildBody(context, state, isDark, ref)),
+            ],
+          ),
+        ),
+
+        // Side Panel for Add/Edit
+        if (state.isAdding || state.editingItem != null)
+          AdminDialogForm(
+            isOpen: state.isAdding || state.editingItem != null,
+            onClose: () => notifier.closePanel(),
+            title: state.isAdding ? 'Create New Ad' : 'Edit Ad',
+            size: AdminDialogSize.medium,
+            child: AdForm(
+              initial: state.editingItem,
+              isSaving: state.isSaving,
+              onSave: (data) async {
+                final success = await notifier.commitSave(
+                  data,
+                  id: state.editingItem?.id,
+                );
+                if (success) {
+                  notifier.closePanel();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        state.isAdding
+                            ? 'Ad created successfully'
+                            : 'Ad updated successfully',
+                      ),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildBody(
+    BuildContext context,
+    AdminCrudState<AdRow> state,
+    bool isDark,
+    WidgetRef ref,
+  ) {
+    final notifier = ref.read(adsVmProvider.notifier);
+
+    return switch (state) {
+      AdminCrudLoading() => const Center(child: CircularProgressIndicator()),
+      AdminCrudError(:final message) => AdminStateWidget(message: message, onRetry: () => notifier.fetch()),
+      AdminCrudData(:final items) => AppAnimation.fadeInUp(
+        duration: const Duration(milliseconds: 420),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            color: (isDark ? Colors.white : Colors.black).withValues(
+              alpha: 0.04,
+            ),
+            border: Border.all(
+              color: (isDark ? Colors.white : Colors.black).withValues(
+                alpha: 0.08,
+              ),
+            ),
+          ),
+          child: AdsTable(
+            items: items,
+            onEdit: (a) => notifier.openEdit(a),
+            onDelete: (id) => _showDeleteDialog(context, id, notifier),
+            cardBuilder: (context, a) => _AdCard(
+              ad: a,
+              onEdit: () => notifier.openEdit(a),
+              onDelete: () => _showDeleteDialog(context, a.id, notifier),
+            ),
+          ),
+        ),
+      ),
+    };
+  }
+
+  void _showDeleteDialog(BuildContext context, int id, AdsVm notifier) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Ad?'),
+        content: const Text(
+          'This action cannot be undone and will remove the ad from the storefront.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              notifier.commitDelete(id);
+              Navigator.pop(ctx);
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AdCard extends StatelessWidget {
+  final AdRow ad;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  const _AdCard({
+    required this.ad,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
       padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.04),
+        border: Border.all(
+          color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08),
+        ),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Expanded(
-                child: Text(
-                  'Ads',
-                  style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      ad.title,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Location: ${ad.location ?? "Global"}',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.textTheme.bodySmall?.color?.withValues(
+                          alpha: 0.6,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              IconButton(
-                tooltip: 'Refresh',
-                onPressed: () => ref.read(adsVmProvider.notifier).refresh(),
-                icon: const Icon(Icons.refresh_rounded),
+              PopupMenuButton(
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    onTap: onEdit,
+                    child: const Row(
+                      children: [
+                        Icon(Icons.edit_outlined),
+                        SizedBox(width: 8),
+                        Text('Edit'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    onTap: onDelete,
+                    child: const Row(
+                      children: [
+                        Icon(Icons.delete_outline_rounded, color: Colors.red),
+                        SizedBox(width: 8),
+                        Text('Delete'),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          Expanded(
-            child: _buildBody(context, state, isDark, isWide, ref),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: (ad.isActive ? Colors.green : Colors.red).withValues(
+                    alpha: 0.1,
+                  ),
+                ),
+                child: Text(
+                  ad.isActive ? 'Active' : 'Disabled',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: ad.isActive ? Colors.green : Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Text(
+                'ID: ${ad.id}',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.textTheme.bodySmall?.color?.withValues(
+                    alpha: 0.4,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
-  }
-
-  Widget _buildBody(BuildContext context, AdsState state, bool isDark, bool isWide, WidgetRef ref) {
-    return switch (state) {
-      AdsLoading() => const Center(child: CircularProgressIndicator()),
-      AdsError(:final message) => Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(message, style: const TextStyle(color: Colors.red)),
-              const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: () => ref.read(adsVmProvider.notifier).refresh(),
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
-        ),
-      AdsData(:final items) => AppAnimation.fadeInUp(
-          duration: const Duration(milliseconds: 420),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
-              color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.04),
-              border: Border.all(
-                color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08),
-              ),
-            ),
-            child: isWide ? AdsTable(items: items) : AdsMobileList(items: items),
-          ),
-        ),
-    };
   }
 }

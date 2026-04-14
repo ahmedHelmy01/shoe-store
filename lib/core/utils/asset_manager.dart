@@ -40,6 +40,10 @@ class AssetManager {
   static String get shopping => "${_webstoreImages}shopping.png";
   static String get specialTag => "${_webstoreImages}special-tag.png";
 
+  // Admin State Illustrations
+  static String get adminError => "${_webstoreImages}admin_error.png";
+  static String get adminUnauthorized => "${_webstoreImages}admin_unauthorized.png";
+
   // Payment Methods
   static String get visa => "${_webstoreImages}visa.png";
   static String get instapay => "${_webstoreImages}instapay.png";

@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
-import '../../data/models/governorate_row.dart';
+import 'package:erp/modules/webstore/admin/features/governorates/data/models/governorate_row.dart';
 
 class GovernoratesTable extends StatelessWidget {
   final List<GovernorateRow> items;
+  final Function(GovernorateRow g) onEdit;
+  final Function(int id) onDelete;
+  final Widget Function(BuildContext context, GovernorateRow g)? cardBuilder;
 
-  const GovernoratesTable({super.key, required this.items});
+  const GovernoratesTable({
+    super.key,
+    required this.items,
+    required this.onEdit,
+    required this.onDelete,
+    this.cardBuilder,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +24,7 @@ class GovernoratesTable extends StatelessWidget {
       exportBaseName: 'governorates',
       searchHint: 'Search governorates…',
       searchText: (g) => '${g.id} ${g.name} ${g.nameAr ?? ''}',
+      cardBuilder: cardBuilder,
       columns: [
         AdminColumn<GovernorateRow>(
           title: 'ID',

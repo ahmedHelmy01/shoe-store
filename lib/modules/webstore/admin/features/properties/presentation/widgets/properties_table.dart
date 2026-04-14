@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
-import '../../data/models/property_row.dart';
+import 'package:erp/modules/webstore/admin/features/properties/data/models/property_row.dart';
 
 class PropertiesTable extends StatelessWidget {
   final List<PropertyRow> items;
+  final Function(PropertyRow property) onEdit;
+  final Function(int id) onDelete;
+  final Widget Function(BuildContext context, PropertyRow p)? cardBuilder;
 
-  const PropertiesTable({super.key, required this.items});
+  const PropertiesTable({
+    super.key,
+    required this.items,
+    required this.onEdit,
+    required this.onDelete,
+    this.cardBuilder,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +24,7 @@ class PropertiesTable extends StatelessWidget {
       exportBaseName: 'properties',
       searchHint: 'Search properties…',
       searchText: (p) => '${p.id} ${p.name} ${p.type}',
+      cardBuilder: cardBuilder,
       columns: [
         AdminColumn<PropertyRow>(
           title: 'ID',

@@ -1,35 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
-import '../../data/models/payment_status_row.dart';
+import 'package:erp/modules/webstore/admin/features/payment_statuses/data/models/payment_status_row.dart';
 
 class PaymentStatusesTable extends StatelessWidget {
   final List<PaymentStatusRow> items;
+  final Function(PaymentStatusRow s) onEdit;
+  final Function(int id) onDelete;
+  final Widget Function(BuildContext context, PaymentStatusRow s)? cardBuilder;
 
-  const PaymentStatusesTable({super.key, required this.items});
+  const PaymentStatusesTable({
+    super.key,
+    required this.items,
+    required this.onEdit,
+    required this.onDelete,
+    this.cardBuilder,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AdminDataTable<PaymentStatusRow>(
       rows: items,
-      idOf: (p) => '${p.id}',
+      idOf: (s) => '${s.id}',
       exportBaseName: 'payment_statuses',
       searchHint: 'Search statuses…',
-      searchText: (p) => '${p.id} ${p.name}',
+      searchText: (s) => '${s.id} ${s.name}',
+      cardBuilder: cardBuilder,
       columns: [
         AdminColumn<PaymentStatusRow>(
           title: 'ID',
           sortable: true,
-          sortValue: (p) => p.id,
-          exportValue: (p) => '${p.id}',
-          cell: (_, p) => Text('${p.id}'),
+          sortValue: (s) => s.id,
+          exportValue: (s) => '${s.id}',
+          cell: (_, s) => Text('${s.id}'),
           width: 80,
         ),
         AdminColumn<PaymentStatusRow>(
           title: 'Name',
           sortable: true,
-          sortValue: (p) => p.name,
-          exportValue: (p) => p.name,
-          cell: (_, p) => Text(p.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+          sortValue: (s) => s.name,
+          exportValue: (s) => s.name,
+          cell: (_, s) => Text(s.name, maxLines: 1, overflow: TextOverflow.ellipsis),
           width: 280,
         ),
         AdminColumn<PaymentStatusRow>(

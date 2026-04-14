@@ -6,7 +6,7 @@ import 'package:erp/core/providers/theme_provider.dart';
 import 'package:erp/core/theme/app_theme.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/config/app_flavor.dart';
-import 'package:erp/modules/webstore/admin/presentation/admin_route_generator.dart';
+import 'package:erp/modules/webstore/admin/core/admin_route_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

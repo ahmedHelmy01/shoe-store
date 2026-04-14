@@ -5,6 +5,7 @@ class BoardingRow {
   final String? image;
   final String? description;
   final int sortOrder;
+  final bool isActive;
 
   const BoardingRow({
     required this.id,
@@ -13,6 +14,7 @@ class BoardingRow {
     this.image,
     this.description,
     required this.sortOrder,
+    required this.isActive,
   });
 
   factory BoardingRow.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class BoardingRow {
       image: json['image'] as String?,
       description: json['description'] as String?,
       sortOrder: json['sort_order'] as int? ?? 0,
+      isActive: (json['is_active'] ?? json['active'] ?? true) as bool,
     );
   }
 }

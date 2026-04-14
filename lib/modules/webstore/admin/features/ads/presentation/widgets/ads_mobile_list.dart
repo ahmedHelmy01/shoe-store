@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/models/ad_row.dart';
+import 'package:erp/modules/webstore/admin/features/ads/data/models/ad_row.dart';
 
 class AdsMobileList extends StatelessWidget {
   final List<AdRow> items;

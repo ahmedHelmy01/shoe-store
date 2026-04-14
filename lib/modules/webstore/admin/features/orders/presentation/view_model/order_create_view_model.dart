@@ -32,6 +32,7 @@ class OrderCreateVm {
   final void Function(String) onPaymentChanged;
   final void Function(int) onDiscountChanged;
   final void Function(int productId) onDropProduct;
+  final VoidCallback onClearSelection;
   final VoidCallback onSubmit;
 
   const OrderCreateVm({
@@ -61,6 +62,7 @@ class OrderCreateVm {
     required this.onPaymentChanged,
     required this.onDiscountChanged,
     required this.onDropProduct,
+    required this.onClearSelection,
     required this.onSubmit,
   });
 }

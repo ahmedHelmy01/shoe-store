@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
-import '../../data/models/branch_row.dart';
+import 'package:erp/modules/webstore/admin/features/branches/data/models/branch_row.dart';
 
 class BranchesTable extends StatelessWidget {
   final List<BranchRow> items;
+  final Function(BranchRow branch) onEdit;
+  final Function(int id) onDelete;
+  final Widget Function(BuildContext context, BranchRow b)? cardBuilder;
 
-  const BranchesTable({super.key, required this.items});
+  const BranchesTable({
+    super.key,
+    required this.items,
+    required this.onEdit,
+    required this.onDelete,
+    this.cardBuilder,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +24,7 @@ class BranchesTable extends StatelessWidget {
       exportBaseName: 'branches',
       searchHint: 'Search branches…',
       searchText: (b) => '${b.id} ${b.name} ${b.nameAr ?? ''} ${b.phone ?? ''}',
+      cardBuilder: cardBuilder,
       columns: [
         AdminColumn<BranchRow>(
           title: 'ID',

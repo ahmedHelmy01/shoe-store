@@ -1,54 +1,25 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
-import 'products_state.dart';
+import 'package:erp/core/network/api_result.dart';
+import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_response.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
+import 'package:erp/modules/webstore/admin/features/catalog/products/data/models/product_row.dart';
 
-final productsVmProvider = NotifierProvider<ProductsVm, ProductsState>(ProductsVm.new);
+final productsVmProvider = NotifierProvider.autoDispose<ProductsVm, AdminCrudState<ProductRow>>(ProductsVm.new);
 
-class ProductsVm extends Notifier<ProductsState> {
+class ProductsVm extends AdminCrudVm<ProductRow> {
   @override
-  ProductsState build() {
-    Future.microtask(() => fetch());
-    return const ProductsLoading();
+  Future<ApiResult<AdminPagedResponse<ProductRow>>> getItems({required int page, String? search}) {
+    return ref.read(webStoreAdminRepositoryProvider).getProducts(page: page, search: search);
   }
 
-  String _search = '';
-  int _page = 1;
-
-  Future<void> fetch({String? search, int? page}) async {
-    if (search != null) _search = search;
-    if (page != null) _page = page;
-
-    state = const ProductsLoading();
-    final repo = ref.read(webStoreAdminRepositoryProvider);
-    final res = await repo.getProducts(page: _page, search: _search);
-
-    res.when(
-      success: (paged) {
-        state = ProductsData(
-          items: paged.items,
-          page: paged.page,
-          lastPage: paged.lastPage,
-          total: paged.total,
-          search: _search,
-        );
-      },
-      failure: (e) {
-        state = ProductsError(e.message);
-      },
-    );
+  @override
+  Future<ApiResult<ProductRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
+    return ref.read(webStoreAdminRepositoryProvider).saveProduct(data, id: id as int?);
   }
 
-  Future<void> refresh() async => fetch(page: _page);
-
-  Future<void> nextPage() async {
-    final s = state;
-    if (s is! ProductsData || !s.canNext) return;
-    await fetch(page: s.page + 1);
-  }
-
-  Future<void> prevPage() async {
-    final s = state;
-    if (s is! ProductsData || !s.canPrev) return;
-    await fetch(page: s.page - 1);
+  @override
+  Future<ApiResult<void>> deleteItem(id) {
+    return ref.read(webStoreAdminRepositoryProvider).deleteProduct(id as int);
   }
 }

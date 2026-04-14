@@ -1,54 +1,25 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:erp/modules/webstore/admin/presentation/view_model/admin_products_view_model.dart';
-import 'payment_methods_state.dart';
+import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
+import 'package:erp/core/network/api_result.dart';
+import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_response.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
+import 'package:erp/modules/webstore/admin/features/payment_methods/data/models/payment_method_row.dart';
 
-final paymentMethodsVmProvider = NotifierProvider<PaymentMethodsVm, PaymentMethodsState>(PaymentMethodsVm.new);
+final paymentMethodsVmProvider = NotifierProvider<PaymentMethodsVm, AdminCrudState<PaymentMethodRow>>(PaymentMethodsVm.new);
 
-class PaymentMethodsVm extends Notifier<PaymentMethodsState> {
+class PaymentMethodsVm extends AdminCrudVm<PaymentMethodRow> {
   @override
-  PaymentMethodsState build() {
-    Future.microtask(() => fetch());
-    return const PaymentMethodsLoading();
+  Future<ApiResult<AdminPagedResponse<PaymentMethodRow>>> getItems({required int page, String? search}) {
+    return ref.read(webStoreAdminRepositoryProvider).getPaymentMethods(page: page, search: search);
   }
 
-  String _search = '';
-  int _page = 1;
-
-  Future<void> fetch({String? search, int? page}) async {
-    if (search != null) _search = search;
-    if (page != null) _page = page;
-
-    state = const PaymentMethodsLoading();
-    final repo = ref.read(webStoreAdminRepositoryProvider);
-    final res = await repo.getPaymentMethods(page: _page, search: _search);
-
-    res.when(
-      success: (paged) {
-        state = PaymentMethodsData(
-          items: paged.items,
-          page: paged.page,
-          lastPage: paged.lastPage,
-          total: paged.total,
-          search: _search,
-        );
-      },
-      failure: (e) {
-        state = PaymentMethodsError(e.message);
-      },
-    );
+  @override
+  Future<ApiResult<PaymentMethodRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
+    return ref.read(webStoreAdminRepositoryProvider).savePaymentMethod(data, id: id as int?);
   }
 
-  Future<void> refresh() async => fetch(page: _page);
-
-  Future<void> nextPage() async {
-    final s = state;
-    if (s is! PaymentMethodsData || !s.canNext) return;
-    await fetch(page: s.page + 1);
-  }
-
-  Future<void> prevPage() async {
-    final s = state;
-    if (s is! PaymentMethodsData || !s.canPrev) return;
-    await fetch(page: s.page - 1);
+  @override
+  Future<ApiResult<void>> deleteItem(id) {
+    return ref.read(webStoreAdminRepositoryProvider).deletePaymentMethod(id as int);
   }
 }

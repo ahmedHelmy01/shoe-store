@@ -1,4 +1,4 @@
-import '../data/models/governorate_row.dart';
+import 'package:erp/modules/webstore/admin/features/governorates/data/models/governorate_row.dart';
 
 sealed class GovernoratesState {
   const GovernoratesState();

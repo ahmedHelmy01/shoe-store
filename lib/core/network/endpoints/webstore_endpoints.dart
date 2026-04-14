@@ -1,6 +1,6 @@
 /// WebStore Endpoints
 ///
-/// Hierarchical endpoints for the massive WebStore module (102 endpoints).
+/// Hierarchical endpoints for the massive WebStore module (102+ endpoints).
 library;
 
 class WebStoreEndpoints {
@@ -36,51 +36,51 @@ class _WebStoreAuth {
 
 class _WebStoreCatalog {
   const _WebStoreCatalog();
-  final String products = '/api/webstore/catalog/products';
-  final String productDetail = '/api/webstore/catalog/products/{id}';
-  final String categories = '/api/webstore/catalog/categories';
-  final String categoryDetail = '/api/webstore/catalog/categories/{id}';
-  final String search = '/api/webstore/catalog/search';
-  final String filters = '/api/webstore/catalog/filters';
+  final String products = '/api/store/catalog/products';
+  final String productDetail = '/api/store/catalog/products/{id}';
+  final String categories = '/api/store/catalog/categories';
+  final String categoryDetail = '/api/store/catalog/categories/{id}';
+  final String search = '/api/store/catalog/search';
+  final String filters = '/api/store/catalog/properties';
 }
 
 class _WebStoreCart {
   const _WebStoreCart();
-  final String index = '/api/webstore/cart';
-  final String add = '/api/webstore/cart/add';
-  final String update = '/api/webstore/cart/update';
-  final String remove = '/api/webstore/cart/remove';
-  final String clear = '/api/webstore/cart/clear';
-  final String applyCoupon = '/api/webstore/cart/apply-coupon';
+  final String index = '/api/store/cart';
+  final String add = '/api/store/cart/add';
+  final String update = '/api/store/cart/update';
+  final String remove = '/api/store/cart/remove';
+  final String clear = '/api/store/cart/clear';
+  final String applyCoupon = '/api/store/cart/apply-coupon';
 }
 
 class _WebStoreCheckout {
   const _WebStoreCheckout();
-  final String summary = '/api/webstore/checkout/summary';
-  final String confirm = '/api/webstore/checkout/confirm';
+  final String summary = '/api/store/checkout/summary';
+  final String confirm = '/api/store/checkout/confirm';
 }
 
 class _WebStoreOrders {
   const _WebStoreOrders();
-  final String index = '/api/webstore/orders';
-  final String detail = '/api/webstore/orders/{id}';
-  final String cancel = '/api/webstore/orders/{id}/cancel';
-  final String returnOrder = '/api/webstore/orders/{id}/return';
-  final String track = '/api/webstore/orders/{id}/track';
-  final String reorder = '/api/webstore/orders/{id}/reorder';
+  final String index = '/api/store/orders';
+  final String detail = '/api/store/orders/{id}';
+  final String cancel = '/api/store/orders/{id}/cancel';
+  final String returnOrder = '/api/store/orders/{id}/return';
+  final String track = '/api/store/orders/{id}/track';
+  final String reorder = '/api/store/orders/{id}/reorder';
 }
 
 class _WebStoreProfile {
   const _WebStoreProfile();
-  final String get = '/api/webstore/profile';
-  final String update = '/api/webstore/profile/update';
-  final String changePassword = '/api/webstore/profile/change-password';
-  final String avatar = '/api/webstore/profile/avatar';
-  final String addresses = '/api/webstore/addresses';
-  final String createAddress = '/api/webstore/addresses/create';
-  final String updateAddress = '/api/webstore/addresses/{id}';
-  final String deleteAddress = '/api/webstore/addresses/{id}';
-  final String defaultAddress = '/api/webstore/addresses/{id}/default';
+  final String get = '/api/store/profile';
+  final String update = '/api/store/profile/update';
+  final String changePassword = '/api/store/profile/change-password';
+  final String avatar = '/api/store/profile/avatar';
+  final String addresses = '/api/store/addresses';
+  final String createAddress = '/api/store/addresses/create';
+  final String updateAddress = '/api/store/addresses/{id}';
+  final String deleteAddress = '/api/store/addresses/{id}';
+  final String defaultAddress = '/api/store/addresses/{id}/default';
 }
 
 class _WebStoreCms {
@@ -97,27 +97,59 @@ class _WebStoreCms {
 
 class _WebStoreWishlist {
   const _WebStoreWishlist();
-  final String index = '/api/webstore/wishlist';
-  final String add = '/api/webstore/wishlist/add';
-  final String remove = '/api/webstore/wishlist/remove';
+  final String index = '/api/store/wishlist';
+  final String add = '/api/store/wishlist/add';
+  final String remove = '/api/store/wishlist/remove';
 }
 
 class _WebStoreAdmin {
   const _WebStoreAdmin();
-  final String dashboard = '/api/webstore/admin/dashboard';
-  final String products = '/api/webstore/admin/products';
-  final String categories = '/api/webstore/admin/categories';
-  final String orders = '/api/webstore/admin/orders';
-  final String branches = '/api/store/admin/branches';
-  final String coupons = '/api/store/admin/coupons';
-  final String warehouses = '/api/store/admin/warehouses';
+  
+  // Dashboard
+  final String dashboard = '/api/store/admin/dashboard';
+  final String statistics = '/api/store/admin/statistics';
+
+  // Catalog
+  final String products = '/api/store/admin/products';
+  final String productsImport = '/api/store/admin/products/import';
+  final String categories = '/api/store/admin/categories';
+  final String properties = '/api/store/admin/properties';
+  final String filters = '/api/store/admin/properties'; // Alias for compatibility
+  final String companies = '/api/store/admin/manufacturers'; // Alias
+  final String manufacturers = '/api/store/admin/manufacturers';
+  final String tags = '/api/store/admin/tags';
+
+  // CMS
   final String sliders = '/api/store/admin/sliders';
   final String ads = '/api/store/admin/ads';
   final String boardings = '/api/store/admin/boardings';
   final String pages = '/api/store/admin/pages';
-  final String properties = '/api/store/admin/properties';
-  final String paymentStatuses = '/api/store/admin/payment-statuses';
-  final String paymentMethods = '/api/store/admin/payment-methods';
-  final String cities = '/api/store/admin/cities';
+
+  // Sales
+  final String orders = '/api/store/admin/orders';
+  final String orderStatuses = '/api/store/admin/order-statuses';
+  String orderStatusUpdate(int id) => '/api/store/admin/orders/$id/status';
+
+  // Localize
   final String governorates = '/api/store/admin/governorates';
+  final String cities = '/api/store/admin/cities';
+
+  // Configuration
+  final String branches = '/api/store/admin/branches';
+  final String warehouses = '/api/store/admin/warehouses';
+  String warehouseReport(int id) => '/api/store/admin/warehouses/$id/report';
+  final String paymentMethods = '/api/store/admin/payment-methods';
+  final String paymentStatuses = '/api/store/admin/payment-statuses';
+  final String settings = '/api/store/admin/settings';
+
+  // Customers
+  final String clients = '/api/store/admin/clients';
+  String clientReport(int id) => '/api/store/admin/clients/$id/report';
+  final String customerGroups = '/api/store/admin/customer-groups';
+
+  // Marketing
+  final String coupons = '/api/store/admin/coupons';
+
+  // Other
+  final String contacts = '/api/store/admin/contacts';
 }

@@ -2,10 +2,10 @@ import 'dart:math';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/modules/webstore/catalog/data/models/category_model.dart';
 import 'package:erp/modules/webstore/auth/data/models/webstore_user_model.dart';
-import 'admin_order_row.dart';
-import 'admin_dashboard_models.dart';
-import 'admin_company_row.dart';
-import 'admin_filter_row.dart';
+import 'package:erp/modules/webstore/admin/features/orders/data/models/order_row.dart';
+import 'package:erp/modules/webstore/admin/features/dashboard/data/models/dashboard_models.dart';
+import 'package:erp/modules/webstore/admin/features/catalog/companies/data/models/company_row.dart';
+import 'package:erp/modules/webstore/admin/features/catalog/filters/data/models/filter_row.dart';
 
 /// Temporary seeded fake data for admin UI until APIs are wired.
 class FakeData {
@@ -184,9 +184,10 @@ class FakeData {
       return CompanyRow(
         id: id,
         name: '${names[rnd.nextInt(names.length)]} ${id <= 8 ? '' : '#$id'}'.trim(),
+        code: 'CMP-${1000 + id}',
         country: countries[rnd.nextInt(countries.length)],
         productsCount: rnd.nextInt(480),
-        active: rnd.nextInt(10) != 0,
+        isActive: rnd.nextInt(10) != 0,
       );
     });
   }
@@ -216,7 +217,7 @@ class FakeData {
         name: '${names[rnd.nextInt(names.length)]}${rnd.nextBool() ? '' : ' #$id'}'.trim(),
         type: type,
         optionsCount: options,
-        active: rnd.nextInt(10) != 0,
+        isActive: rnd.nextInt(10) != 0,
       );
     });
   }

@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
-import '../../data/models/warehouse_row.dart';
+import 'package:erp/modules/webstore/admin/features/warehouses/data/models/warehouse_row.dart';
 
 class WarehousesTable extends StatelessWidget {
   final List<WarehouseRow> items;
+  final Function(WarehouseRow warehouse) onEdit;
+  final Function(int id) onDelete;
+  final Widget Function(BuildContext context, WarehouseRow w)? cardBuilder;
 
-  const WarehousesTable({super.key, required this.items});
+  const WarehousesTable({
+    super.key,
+    required this.items,
+    required this.onEdit,
+    required this.onDelete,
+    this.cardBuilder,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +24,7 @@ class WarehousesTable extends StatelessWidget {
       exportBaseName: 'warehouses',
       searchHint: 'Search warehouses…',
       searchText: (w) => '${w.id} ${w.name} ${w.location ?? ''}',
+      cardBuilder: cardBuilder,
       columns: [
         AdminColumn<WarehouseRow>(
           title: 'ID',
@@ -29,11 +39,11 @@ class WarehousesTable extends StatelessWidget {
           sortable: true,
           sortValue: (w) => w.name,
           exportValue: (w) => w.name,
-          cell: (_, w) => Text(w.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-          width: 260,
+          cell: (_, w) => Text(w.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+          width: 280,
         ),
         AdminColumn<WarehouseRow>(
-          title: 'Location',
+          title: 'Address',
           sortable: true,
           sortValue: (w) => w.location ?? '',
           exportValue: (w) => w.location ?? '',
@@ -47,6 +57,16 @@ class WarehousesTable extends StatelessWidget {
           exportValue: (w) => w.isActive ? 'Yes' : 'No',
           cell: (_, w) => Text(w.isActive ? 'Yes' : 'No'),
           width: 100,
+        ),
+        AdminColumn<WarehouseRow>(
+          title: 'Actions',
+          cell: (_, w) => Row(
+            children: [
+              IconButton(onPressed: () => onEdit(w), icon: const Icon(Icons.edit_outlined, size: 20)),
+              IconButton(onPressed: () => onDelete(w.id), icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red)),
+            ],
+          ),
+          width: 110,
         ),
       ],
     );

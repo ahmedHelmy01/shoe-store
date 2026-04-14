@@ -1,4 +1,4 @@
-import '../data/models/payment_method_row.dart';
+import 'package:erp/modules/webstore/admin/features/payment_methods/data/models/payment_method_row.dart';
 
 sealed class PaymentMethodsState {
   const PaymentMethodsState();

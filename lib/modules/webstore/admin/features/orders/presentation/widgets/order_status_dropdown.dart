@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:erp/modules/webstore/admin/presentation/features/orders/order_list/widgets/order_status_dot.dart';
+import 'order_status_dot.dart';
 
 class OrderStatusDropdown extends StatelessWidget {
   final String status;

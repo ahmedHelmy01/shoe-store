@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
-import '../../data/models/ad_row.dart';
+import 'package:erp/modules/webstore/admin/features/ads/data/models/ad_row.dart';
 
 class AdsTable extends StatelessWidget {
   final List<AdRow> items;
+  final Function(AdRow ad) onEdit;
+  final Function(int id) onDelete;
+  final Widget Function(BuildContext context, AdRow ad)? cardBuilder;
 
-  const AdsTable({super.key, required this.items});
+  const AdsTable({
+    super.key,
+    required this.items,
+    required this.onEdit,
+    required this.onDelete,
+    this.cardBuilder,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,8 +22,9 @@ class AdsTable extends StatelessWidget {
       rows: items,
       idOf: (a) => '${a.id}',
       exportBaseName: 'ads',
-      searchHint: 'Search ads…',
-      searchText: (a) => '${a.id} ${a.title} ${a.titleAr ?? ''} ${a.location ?? ''}',
+      searchHint: 'Search advertisements…',
+      searchText: (a) => '${a.id} ${a.title} ${a.location ?? ''}',
+      cardBuilder: cardBuilder,
       columns: [
         AdminColumn<AdRow>(
           title: 'ID',
@@ -33,28 +43,44 @@ class AdsTable extends StatelessWidget {
           width: 260,
         ),
         AdminColumn<AdRow>(
-          title: 'Title (AR)',
-          sortable: true,
-          sortValue: (a) => a.titleAr ?? '',
-          exportValue: (a) => a.titleAr ?? '',
-          cell: (_, a) => Text(a.titleAr ?? '-', maxLines: 1, overflow: TextOverflow.ellipsis),
-          width: 260,
-        ),
-        AdminColumn<AdRow>(
-          title: 'Location',
-          sortable: true,
-          sortValue: (a) => a.location ?? '',
-          exportValue: (a) => a.location ?? '',
-          cell: (_, a) => Text(a.location ?? '-', maxLines: 1, overflow: TextOverflow.ellipsis),
-          width: 160,
-        ),
-        AdminColumn<AdRow>(
           title: 'Active',
           sortable: true,
           sortValue: (a) => a.isActive ? 1 : 0,
-          exportValue: (a) => a.isActive ? 'Yes' : 'No',
-          cell: (_, a) => Text(a.isActive ? 'Yes' : 'No'),
-          width: 110,
+          exportValue: (a) => a.isActive ? 'Active' : 'Inactive',
+          cell: (_, a) => Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: a.isActive ? Colors.green.withValues(alpha: 0.1) : Colors.red.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              a.isActive ? 'Active' : 'Inactive',
+              style: TextStyle(
+                color: a.isActive ? Colors.green : Colors.red,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          width: 100,
+        ),
+        AdminColumn<AdRow>(
+          title: 'Actions',
+          cell: (_, a) => Row(
+            children: [
+              IconButton(
+                onPressed: () => onEdit(a),
+                icon: const Icon(Icons.edit_outlined, size: 20),
+                tooltip: 'Edit',
+              ),
+              IconButton(
+                onPressed: () => onDelete(a.id),
+                icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red),
+                tooltip: 'Delete',
+              ),
+            ],
+          ),
+          width: 120,
         ),
       ],
     );

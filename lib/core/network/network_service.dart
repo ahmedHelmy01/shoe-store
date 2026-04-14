@@ -128,6 +128,13 @@ class NetworkService {
 
   dynamic _processResponse(http.Response response) {
     final data = _decodeBody(response.body);
+    String? serverMessage;
+    if (data is Map) {
+      serverMessage = data['message']?.toString() ?? 
+                      data['msg']?.toString() ?? 
+                      data['error']?.toString() ?? 
+                      data['errorMessage']?.toString();
+    }
 
     switch (response.statusCode) {
       case 200:
@@ -135,21 +142,25 @@ class NetworkService {
       case 204:
         return data;
       case 400:
-        throw NetworkException(message: 'Invalid request', statusCode: 400, data: data);
+        throw NetworkException(
+          message: serverMessage ?? 'Invalid request',
+          statusCode: 400,
+          data: data,
+        );
       case 401:
-        throw UnauthorizedException(data: data);
+        throw UnauthorizedException(message: serverMessage, data: data);
       case 403:
-        throw ForbiddenException(data: data);
+        throw ForbiddenException(message: serverMessage, data: data);
       case 404:
-        throw NotFoundException(data: data);
+        throw NotFoundException(message: serverMessage, data: data);
       case 422:
-        final message = data['message'] ?? 'خطأ في التحقق من البيانات';
+        final message = serverMessage ?? 'خطأ في التحقق من البيانات';
         throw ValidationException(message: message, data: data);
       case 500:
-        throw InternalServerErrorException(data: data);
+        throw InternalServerErrorException(message: serverMessage, data: data);
       default:
         throw NetworkException(
-          message: 'حدث خطأ في الشبكة',
+          message: serverMessage ?? 'حدث خطأ في الشبكة',
           statusCode: response.statusCode,
           data: data,
         );

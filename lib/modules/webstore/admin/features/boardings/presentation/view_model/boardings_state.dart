@@ -1,4 +1,4 @@
-import '../data/models/boarding_row.dart';
+import 'package:erp/modules/webstore/admin/features/boardings/data/models/boarding_row.dart';
 
 sealed class BoardingsState {
   const BoardingsState();

@@ -9,6 +9,9 @@ class CouponRow {
   final int usageCount;
   final bool isActive;
 
+  String get discountAmount => '$value ${type == 'fixed' ? 'EGP' : '%'}';
+  bool get isPercentage => type == 'percentage';
+
   const CouponRow({
     required this.id,
     required this.code,

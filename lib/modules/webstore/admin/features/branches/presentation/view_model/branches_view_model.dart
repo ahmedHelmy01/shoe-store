@@ -1,54 +1,25 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:erp/modules/webstore/admin/presentation/view_model/admin_products_view_model.dart';
-import 'branches_state.dart';
+import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
+import 'package:erp/core/network/api_result.dart';
+import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_response.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
+import 'package:erp/modules/webstore/admin/features/branches/data/models/branch_row.dart';
 
-final branchesVmProvider = NotifierProvider<BranchesVm, BranchesState>(BranchesVm.new);
+final branchesVmProvider = NotifierProvider<BranchesVm, AdminCrudState<BranchRow>>(BranchesVm.new);
 
-class BranchesVm extends Notifier<BranchesState> {
+class BranchesVm extends AdminCrudVm<BranchRow> {
   @override
-  BranchesState build() {
-    Future.microtask(() => fetch());
-    return const BranchesLoading();
+  Future<ApiResult<AdminPagedResponse<BranchRow>>> getItems({required int page, String? search}) {
+    return ref.read(webStoreAdminRepositoryProvider).getBranches(page: page, search: search);
   }
 
-  String _search = '';
-  int _page = 1;
-
-  Future<void> fetch({String? search, int? page}) async {
-    if (search != null) _search = search;
-    if (page != null) _page = page;
-
-    state = const BranchesLoading();
-    final repo = ref.read(webStoreAdminRepositoryProvider);
-    final res = await repo.getBranches(page: _page, search: _search);
-
-    res.when(
-      success: (paged) {
-        state = BranchesData(
-          items: paged.items,
-          page: paged.page,
-          lastPage: paged.lastPage,
-          total: paged.total,
-          search: _search,
-        );
-      },
-      failure: (e) {
-        state = BranchesError(e.message);
-      },
-    );
+  @override
+  Future<ApiResult<BranchRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
+    return ref.read(webStoreAdminRepositoryProvider).saveBranch(data, id: id as int?);
   }
 
-  Future<void> refresh() async => fetch(page: _page);
-
-  Future<void> nextPage() async {
-    final s = state;
-    if (s is! BranchesData || !s.canNext) return;
-    await fetch(page: s.page + 1);
-  }
-
-  Future<void> prevPage() async {
-    final s = state;
-    if (s is! BranchesData || !s.canPrev) return;
-    await fetch(page: s.page - 1);
+  @override
+  Future<ApiResult<void>> deleteItem(id) {
+    return ref.read(webStoreAdminRepositoryProvider).deleteBranch(id as int);
   }
 }

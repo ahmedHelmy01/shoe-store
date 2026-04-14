@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
-import '../../data/models/coupon_row.dart';
+import 'package:erp/modules/webstore/admin/features/coupons/data/models/coupon_row.dart';
 
 class CouponsTable extends StatelessWidget {
   final List<CouponRow> items;
+  final Function(CouponRow c) onEdit;
+  final Function(int id) onDelete;
+  final Widget Function(BuildContext context, CouponRow c)? cardBuilder;
 
-  const CouponsTable({super.key, required this.items});
+  const CouponsTable({
+    super.key,
+    required this.items,
+    required this.onEdit,
+    required this.onDelete,
+    this.cardBuilder,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +23,8 @@ class CouponsTable extends StatelessWidget {
       idOf: (c) => '${c.id}',
       exportBaseName: 'coupons',
       searchHint: 'Search coupons…',
-      searchText: (c) => '${c.id} ${c.code} ${c.type}',
+      searchText: (c) => '${c.id} ${c.code}',
+      cardBuilder: cardBuilder,
       columns: [
         AdminColumn<CouponRow>(
           title: 'ID',
@@ -29,24 +39,34 @@ class CouponsTable extends StatelessWidget {
           sortable: true,
           sortValue: (c) => c.code,
           exportValue: (c) => c.code,
-          cell: (_, c) => Text(c.code, style: const TextStyle(fontWeight: FontWeight.bold)),
-          width: 160,
+          cell: (_, c) => Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.blue.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
+            ),
+            child: Text(c.code, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
+          ),
+          width: 180,
         ),
         AdminColumn<CouponRow>(
-          title: 'Type',
+          title: 'Discount',
           sortable: true,
-          sortValue: (c) => c.type,
-          exportValue: (c) => c.type,
-          cell: (_, c) => Text(c.type),
+          sortValue: (c) => c.discountAmount ?? 0,
+          exportValue: (c) => '${c.discountAmount}',
+          cell: (_, c) => Text(c.isPercentage ? '${c.discountAmount}%' : '\$${c.discountAmount}'),
           width: 120,
         ),
         AdminColumn<CouponRow>(
-          title: 'Value',
-          sortable: true,
-          sortValue: (c) => c.value,
-          exportValue: (c) => '${c.value}',
-          cell: (_, c) => Text('${c.value}'),
-          width: 100,
+          title: 'Actions',
+          cell: (_, c) => Row(
+            children: [
+              IconButton(onPressed: () => onEdit(c), icon: const Icon(Icons.edit_outlined, size: 20)),
+              IconButton(onPressed: () => onDelete(c.id), icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red)),
+            ],
+          ),
+          width: 120,
         ),
       ],
     );

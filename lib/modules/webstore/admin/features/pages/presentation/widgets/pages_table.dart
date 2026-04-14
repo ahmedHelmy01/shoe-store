@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
-import '../../data/models/page_row.dart';
+import 'package:erp/modules/webstore/admin/features/pages/data/models/page_row.dart';
 
 class PagesTable extends StatelessWidget {
   final List<PageRow> items;
+  final Function(PageRow page) onEdit;
+  final Function(int id) onDelete;
+  final Widget Function(BuildContext context, PageRow p)? cardBuilder;
 
-  const PagesTable({super.key, required this.items});
+  const PagesTable({
+    super.key,
+    required this.items,
+    required this.onEdit,
+    required this.onDelete,
+    this.cardBuilder,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +24,7 @@ class PagesTable extends StatelessWidget {
       exportBaseName: 'pages',
       searchHint: 'Search pages…',
       searchText: (p) => '${p.id} ${p.title} ${p.slug}',
+      cardBuilder: cardBuilder,
       columns: [
         AdminColumn<PageRow>(
           title: 'ID',
@@ -47,6 +57,16 @@ class PagesTable extends StatelessWidget {
           exportValue: (p) => p.isActive ? 'Yes' : 'No',
           cell: (_, p) => Text(p.isActive ? 'Yes' : 'No'),
           width: 100,
+        ),
+        AdminColumn<PageRow>(
+          title: 'Actions',
+          cell: (_, p) => Row(
+            children: [
+              IconButton(onPressed: () => onEdit(p), icon: const Icon(Icons.edit_outlined, size: 20)),
+              IconButton(onPressed: () => onDelete(p.id), icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red)),
+            ],
+          ),
+          width: 110,
         ),
       ],
     );

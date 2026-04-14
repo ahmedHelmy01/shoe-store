@@ -1,54 +1,25 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:erp/modules/webstore/admin/presentation/view_model/admin_products_view_model.dart';
-import 'cities_state.dart';
+import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
+import 'package:erp/core/network/api_result.dart';
+import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_response.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
+import 'package:erp/modules/webstore/admin/features/cities/data/models/city_row.dart';
 
-final citiesVmProvider = NotifierProvider<CitiesVm, CitiesState>(CitiesVm.new);
+final citiesVmProvider = NotifierProvider<CitiesVm, AdminCrudState<CityRow>>(CitiesVm.new);
 
-class CitiesVm extends Notifier<CitiesState> {
+class CitiesVm extends AdminCrudVm<CityRow> {
   @override
-  CitiesState build() {
-    Future.microtask(() => fetch());
-    return const CitiesLoading();
+  Future<ApiResult<AdminPagedResponse<CityRow>>> getItems({required int page, String? search}) {
+    return ref.read(webStoreAdminRepositoryProvider).getCities(page: page, search: search);
   }
 
-  String _search = '';
-  int _page = 1;
-
-  Future<void> fetch({String? search, int? page}) async {
-    if (search != null) _search = search;
-    if (page != null) _page = page;
-
-    state = const CitiesLoading();
-    final repo = ref.read(webStoreAdminRepositoryProvider);
-    final res = await repo.getCities(page: _page, search: _search);
-
-    res.when(
-      success: (paged) {
-        state = CitiesData(
-          items: paged.items,
-          page: paged.page,
-          lastPage: paged.lastPage,
-          total: paged.total,
-          search: _search,
-        );
-      },
-      failure: (e) {
-        state = CitiesError(e.message);
-      },
-    );
+  @override
+  Future<ApiResult<CityRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
+    return ref.read(webStoreAdminRepositoryProvider).saveCity(data, id: id as int?);
   }
 
-  Future<void> refresh() async => fetch(page: _page);
-
-  Future<void> nextPage() async {
-    final s = state;
-    if (s is! CitiesData || !s.canNext) return;
-    await fetch(page: s.page + 1);
-  }
-
-  Future<void> prevPage() async {
-    final s = state;
-    if (s is! CitiesData || !s.canPrev) return;
-    await fetch(page: s.page - 1);
+  @override
+  Future<ApiResult<void>> deleteItem(id) {
+    return ref.read(webStoreAdminRepositoryProvider).deleteCity(id as int);
   }
 }

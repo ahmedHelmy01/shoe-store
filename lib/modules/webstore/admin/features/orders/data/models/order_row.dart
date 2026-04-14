@@ -17,6 +17,21 @@ class OrderRow {
     required this.createdAt,
   });
 
+  String get customerName => customer;
+  double get totalPrice => total;
+
+  factory OrderRow.fromJson(Map<String, dynamic> json) {
+    return OrderRow(
+      id: json['id'] as int? ?? 0,
+      customer: json['customer'] ?? json['customer_name'] ?? 'Unknown',
+      status: json['status'] as String? ?? 'pending',
+      payment: json['payment'] as String? ?? 'cod',
+      total: (json['total'] ?? json['total_price'] as num? ?? 0).toDouble(),
+      itemsCount: json['items_count'] as int? ?? 0,
+      createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : DateTime.now(),
+    );
+  }
+
   OrderRow copyWith({
     int? id,
     String? customer,

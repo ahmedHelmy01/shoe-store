@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
-import '../../data/models/boarding_row.dart';
+import 'package:erp/modules/webstore/admin/features/boardings/data/models/boarding_row.dart';
 
 class BoardingsTable extends StatelessWidget {
   final List<BoardingRow> items;
+  final Function(BoardingRow boarding) onEdit;
+  final Function(int id) onDelete;
+  final Widget Function(BuildContext context, BoardingRow b)? cardBuilder;
 
-  const BoardingsTable({super.key, required this.items});
+  const BoardingsTable({
+    super.key,
+    required this.items,
+    required this.onEdit,
+    required this.onDelete,
+    this.cardBuilder,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +24,7 @@ class BoardingsTable extends StatelessWidget {
       exportBaseName: 'boardings',
       searchHint: 'Search boardings…',
       searchText: (b) => '${b.id} ${b.title} ${b.titleAr ?? ''}',
+      cardBuilder: cardBuilder,
       columns: [
         AdminColumn<BoardingRow>(
           title: 'ID',
@@ -30,7 +40,7 @@ class BoardingsTable extends StatelessWidget {
           sortValue: (b) => b.title,
           exportValue: (b) => b.title,
           cell: (_, b) => Text(b.title, maxLines: 1, overflow: TextOverflow.ellipsis),
-          width: 260,
+          width: 300,
         ),
         AdminColumn<BoardingRow>(
           title: 'Title (AR)',

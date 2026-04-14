@@ -1,4 +1,4 @@
-import '../data/models/page_row.dart';
+import 'package:erp/modules/webstore/admin/features/pages/data/models/page_row.dart';
 
 sealed class PagesState {
   const PagesState();

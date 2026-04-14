@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
-import '../../data/models/payment_method_row.dart';
+import 'package:erp/modules/webstore/admin/features/payment_methods/data/models/payment_method_row.dart';
 
 class PaymentMethodsTable extends StatelessWidget {
   final List<PaymentMethodRow> items;
+  final Function(PaymentMethodRow m) onEdit;
+  final Function(int id) onDelete;
+  final Widget Function(BuildContext context, PaymentMethodRow m)? cardBuilder;
 
-  const PaymentMethodsTable({super.key, required this.items});
+  const PaymentMethodsTable({
+    super.key,
+    required this.items,
+    required this.onEdit,
+    required this.onDelete,
+    this.cardBuilder,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +24,7 @@ class PaymentMethodsTable extends StatelessWidget {
       exportBaseName: 'payment_methods',
       searchHint: 'Search methods…',
       searchText: (p) => '${p.id} ${p.title} ${p.type}',
+      cardBuilder: cardBuilder,
       columns: [
         AdminColumn<PaymentMethodRow>(
           title: 'ID',
@@ -47,6 +57,16 @@ class PaymentMethodsTable extends StatelessWidget {
           exportValue: (p) => p.isActive ? 'Yes' : 'No',
           cell: (_, p) => Text(p.isActive ? 'Yes' : 'No'),
           width: 100,
+        ),
+        AdminColumn<PaymentMethodRow>(
+          title: 'Actions',
+          cell: (_, p) => Row(
+            children: [
+              IconButton(onPressed: () => onEdit(p), icon: const Icon(Icons.edit_outlined, size: 20)),
+              IconButton(onPressed: () => onDelete(p.id), icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red)),
+            ],
+          ),
+          width: 110,
         ),
       ],
     );

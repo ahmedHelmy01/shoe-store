@@ -187,5 +187,91 @@ class WebStoreAdminRemoteDataSource {
     );
     return (res as Map).cast<String, dynamic>();
   }
+
+  Future<Map<String, dynamic>> getCategories({
+    int page = 1,
+    String? search,
+  }) async {
+    final res = await _network.get(
+      ApiEndpoints.webstore.admin.categories,
+      query: {
+        'page': page,
+        if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
+      },
+    );
+    return (res as Map).cast<String, dynamic>();
+  }
+
+  Future<Map<String, dynamic>> getFilters({
+    int page = 1,
+    String? search,
+  }) async {
+    final res = await _network.get(
+      ApiEndpoints.webstore.admin.filters,
+      query: {
+        'page': page,
+        if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
+      },
+    );
+    return (res as Map).cast<String, dynamic>();
+  }
+
+  Future<Map<String, dynamic>> getCompanies({
+    int page = 1,
+    String? search,
+  }) async {
+    final res = await _network.get(
+      ApiEndpoints.webstore.admin.companies,
+      query: {
+        'page': page,
+        if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
+      },
+    );
+    return (res as Map).cast<String, dynamic>();
+  }
+
+  Future<Map<String, dynamic>> getOrders({
+    int page = 1,
+    String? search,
+  }) async {
+    final res = await _network.get(
+      ApiEndpoints.webstore.admin.orders,
+      query: {
+        'page': page,
+        if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
+      },
+    );
+    return (res as Map).cast<String, dynamic>();
+  }
+
+  Future<Map<String, dynamic>> getClients({
+    int page = 1,
+    String? search,
+  }) async {
+    final res = await _network.get(
+      ApiEndpoints.webstore.admin.clients,
+      query: {
+        'page': page,
+        if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
+      },
+    );
+    return (res as Map).cast<String, dynamic>();
+  }
+
+  // ─── Generic CRUD ──────────────────────────────
+
+  Future<Map<String, dynamic>> postData(String path, Map<String, dynamic> data) async {
+    final res = await _network.post(path, body: data);
+    return (res as Map).cast<String, dynamic>();
+  }
+
+  Future<Map<String, dynamic>> putData(String path, Map<String, dynamic> data) async {
+    final res = await _network.put(path, body: data);
+    return (res as Map).cast<String, dynamic>();
+  }
+
+  Future<void> deleteData(String path) async {
+    await _network.delete(path);
+  }
 }
 

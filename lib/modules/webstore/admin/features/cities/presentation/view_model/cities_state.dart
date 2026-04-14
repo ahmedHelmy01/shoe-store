@@ -1,4 +1,4 @@
-import '../data/models/city_row.dart';
+import 'package:erp/modules/webstore/admin/features/cities/data/models/city_row.dart';
 
 sealed class CitiesState {
   const CitiesState();

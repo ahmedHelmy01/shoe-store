@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
-import '../../data/models/city_row.dart';
+import 'package:erp/modules/webstore/admin/features/cities/data/models/city_row.dart';
 
 class CitiesTable extends StatelessWidget {
   final List<CityRow> items;
+  final Function(CityRow city) onEdit;
+  final Function(int id) onDelete;
+  final Widget Function(BuildContext context, CityRow c)? cardBuilder;
 
-  const CitiesTable({super.key, required this.items});
+  const CitiesTable({
+    super.key,
+    required this.items,
+    required this.onEdit,
+    required this.onDelete,
+    this.cardBuilder,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +24,7 @@ class CitiesTable extends StatelessWidget {
       exportBaseName: 'cities',
       searchHint: 'Search cities…',
       searchText: (c) => '${c.id} ${c.name} ${c.nameAr ?? ''} ${c.governorateName ?? ''}',
+      cardBuilder: cardBuilder,
       columns: [
         AdminColumn<CityRow>(
           title: 'ID',

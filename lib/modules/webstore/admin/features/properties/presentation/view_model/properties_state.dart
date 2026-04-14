@@ -1,4 +1,4 @@
-import '../data/models/property_row.dart';
+import 'package:erp/modules/webstore/admin/features/properties/data/models/property_row.dart';
 
 sealed class PropertiesState {
   const PropertiesState();

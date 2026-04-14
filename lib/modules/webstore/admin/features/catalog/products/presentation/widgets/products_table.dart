@@ -1,23 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
-import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:erp/modules/webstore/admin/features/catalog/products/data/models/product_row.dart';
 
 class ProductsTable extends StatelessWidget {
-  final List<WebStoreProduct> items;
+  final List<ProductRow> items;
+  final Function(ProductRow p) onEdit;
+  final Function(int id) onDelete;
+  final Widget Function(BuildContext context, ProductRow p)? cardBuilder;
 
-  const ProductsTable({super.key, required this.items});
+  const ProductsTable({
+    super.key,
+    required this.items,
+    required this.onEdit,
+    required this.onDelete,
+    this.cardBuilder,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return AdminDataTable<WebStoreProduct>(
+    return AdminDataTable<ProductRow>(
       rows: items,
       idOf: (p) => '${p.id}',
       exportBaseName: 'products',
       searchHint: 'Search products…',
       searchText: (p) => '${p.id} ${p.name} ${p.sku}',
+      cardBuilder: cardBuilder,
       columns: [
-        AdminColumn<WebStoreProduct>(
+        AdminColumn<ProductRow>(
           title: 'ID',
           sortable: true,
           sortValue: (p) => p.id,
@@ -25,50 +34,61 @@ class ProductsTable extends StatelessWidget {
           cell: (_, p) => Text('${p.id}'),
           width: 80,
         ),
-        AdminColumn<WebStoreProduct>(
-          title: 'Image',
-          cell: (_, p) => Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: Colors.grey.withValues(alpha: 0.1),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: p.images.isNotEmpty
-                ? CachedNetworkImage(
-                    imageUrl: p.images.first,
-                    fit: BoxFit.cover,
-                    placeholder: (_, __) => const Center(child: SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2))),
-                    errorWidget: (_, __, ___) => const Icon(Icons.image_not_supported_rounded, size: 16),
-                  )
-                : const Icon(Icons.image_rounded, size: 20),
-          ),
-          width: 80,
-        ),
-        AdminColumn<WebStoreProduct>(
+        AdminColumn<ProductRow>(
           title: 'Name',
           sortable: true,
           sortValue: (p) => p.name,
           exportValue: (p) => p.name,
           cell: (_, p) => Text(p.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-          width: 300,
+          width: 250,
         ),
-        AdminColumn<WebStoreProduct>(
+        AdminColumn<ProductRow>(
+          title: 'SKU',
+          sortable: true,
+          sortValue: (p) => p.sku,
+          exportValue: (p) => p.sku,
+          cell: (_, p) => Text(p.sku, style: const TextStyle(fontFamily: 'monospace', fontSize: 12)),
+          width: 150,
+        ),
+        AdminColumn<ProductRow>(
           title: 'Price',
           sortable: true,
-          sortValue: (p) => p.price,
-          exportValue: (p) => '${p.price}',
-          cell: (_, p) => Text('${p.price}'),
+          sortValue: (p) => p.price ?? 0.0,
+          exportValue: (p) => '${p.price ?? ''}',
+          cell: (_, p) => Text(p.price != null ? '\$${p.price}' : '-'),
           width: 100,
         ),
-        AdminColumn<WebStoreProduct>(
-          title: 'Stock',
+        AdminColumn<ProductRow>(
+          title: 'Status',
           sortable: true,
-          sortValue: (p) => p.stock,
-          exportValue: (p) => '${p.stock}',
-          cell: (_, p) => Text('${p.stock}'),
+          sortValue: (p) => p.isActive ? 1 : 0,
+          exportValue: (p) => p.isActive ? 'Active' : 'Inactive',
+          cell: (_, p) => Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: (p.isActive ? Colors.green : Colors.red).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              p.isActive ? 'Active' : 'Inactive',
+              style: TextStyle(
+                color: p.isActive ? Colors.green : Colors.red,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           width: 100,
+        ),
+        AdminColumn<ProductRow>(
+          title: 'Actions',
+          cell: (_, p) => Row(
+            children: [
+              IconButton(onPressed: () => onEdit(p), icon: const Icon(Icons.edit_outlined, size: 20)),
+              IconButton(onPressed: () => onDelete(p.id), icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.red)),
+            ],
+          ),
+          width: 110,
         ),
       ],
     );

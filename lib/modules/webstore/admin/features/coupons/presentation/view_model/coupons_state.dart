@@ -1,4 +1,4 @@
-import '../data/models/coupon_row.dart';
+import 'package:erp/modules/webstore/admin/features/coupons/data/models/coupon_row.dart';
 
 sealed class CouponsState {
   const CouponsState();

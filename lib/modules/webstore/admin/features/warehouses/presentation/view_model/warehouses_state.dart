@@ -1,4 +1,4 @@
-import '../data/models/warehouse_row.dart';
+import 'package:erp/modules/webstore/admin/features/warehouses/data/models/warehouse_row.dart';
 
 sealed class WarehousesState {
   const WarehousesState();
