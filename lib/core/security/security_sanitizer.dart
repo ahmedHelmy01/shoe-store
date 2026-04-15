@@ -4,7 +4,9 @@ class SecuritySanitizer {
   static String sanitize(String input) {
     if (input.isEmpty) return input;
 
-    String sanitized = input.trim();
+    // Do not trim while typing to avoid breaking spaces between words.
+    // Field submit handlers already trim values when needed.
+    String sanitized = input;
 
     // Remove <script> tags and similar patterns
     sanitized = sanitized.replaceAll(RegExp(r'<[^>]*script[^>]*>', caseSensitive: false), '');

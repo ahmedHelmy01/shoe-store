@@ -66,9 +66,18 @@ class BoardingsView extends ConsumerWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(18),
-              color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.04),
-              border: Border.all(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08)),
+              color: isDark ? const Color(0xFF0F1B2D) : Colors.white,
+              border: Border.all(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.05)),
+              boxShadow: [
+                if (!isDark)
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.03),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+              ],
             ),
+            clipBehavior: Clip.antiAlias,
             child: BoardingsTable(
               items: items,
               onEdit: (b) => notifier.openEdit(b),

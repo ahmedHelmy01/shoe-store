@@ -24,26 +24,24 @@ class AppDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final radius = BorderRadius.circular(AppConstants.borderRadius * 1.8);
 
-    return AlertDialog(
+    return Dialog(
       backgroundColor: Colors.transparent,
       elevation: 0,
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppConstants.borderRadius * 1.5),
-      ),
-      titlePadding: EdgeInsets.zero,
-      contentPadding: EdgeInsets.zero,
-      actionsPadding: EdgeInsets.zero,
-      title: Container(
-        padding: const EdgeInsets.fromLTRB(18, 18, 18, 0),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 430),
+        padding: const EdgeInsets.fromLTRB(18, 16, 18, 14),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppConstants.borderRadius * 1.5),
+          borderRadius: radius,
           gradient: LinearGradient(
             colors: [
-              (isDark ? const Color(0xFF17263F) : Colors.white),
-              (isDark ? const Color(0xFF101B30) : const Color(0xFFFFFBF8)),
+              isDark ? const Color(0xFF13233D) : Colors.white,
+              isDark ? const Color(0xFF0D1A2E) : const Color(0xFFFFF7F1),
             ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
           border: Border.all(
             color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08),
@@ -51,113 +49,102 @@ class AppDialog extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.12),
-              blurRadius: 22,
-              offset: const Offset(0, 10),
+              blurRadius: 30,
+              offset: const Offset(0, 16),
             ),
           ],
         ),
-        child: Row(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.primaryOrange.withValues(alpha: 0.18),
-                border: Border.all(color: AppColors.primaryOrange.withValues(alpha: 0.35)),
-              ),
-              child: const Icon(Icons.warning_amber_rounded, size: 20, color: AppColors.primaryOrange),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                title,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: isDark ? Colors.white : AppColors.primary,
+            Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.primaryOrange.withValues(alpha: 0.18),
+                    border: Border.all(color: AppColors.primaryOrange.withValues(alpha: 0.35)),
+                  ),
+                  child: const Icon(Icons.warning_amber_rounded, size: 22, color: AppColors.primaryOrange),
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      content: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppConstants.borderRadius * 1.5),
-          gradient: LinearGradient(
-            colors: [
-              (isDark ? const Color(0xFF17263F) : Colors.white),
-              (isDark ? const Color(0xFF101B30) : const Color(0xFFFFFBF8)),
-            ],
-          ),
-          border: Border(
-            left: BorderSide(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08)),
-            right: BorderSide(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08)),
-            bottom: BorderSide(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08)),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(18, 12, 18, 16),
-          child: Text(
-            message,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.8),
-              height: 1.45,
-            ),
-          ),
-        ),
-      ),
-      actions: [
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppConstants.borderRadius * 1.5),
-            gradient: LinearGradient(
-              colors: [
-                (isDark ? const Color(0xFF17263F) : Colors.white),
-                (isDark ? const Color(0xFF101B30) : const Color(0xFFFFFBF8)),
-              ],
-            ),
-            border: Border(
-              left: BorderSide(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08)),
-              right: BorderSide(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08)),
-              bottom: BorderSide(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08)),
-            ),
-          ),
-          padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (cancelText != null)
-                TextButton(
-                  onPressed: onCancel ?? () => Navigator.pop(context),
+                const SizedBox(width: 10),
+                Expanded(
                   child: Text(
-                    cancelText!,
-                    style: TextStyle(
-                      color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.72),
-                      fontWeight: FontWeight.w600,
+                    title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: isDark ? Colors.white : AppColors.primary,
                     ),
                   ),
                 ),
-              if (confirmText != null) ...[
-                const SizedBox(width: 8),
-                AppButton(
-                  onPressed: onConfirm ?? () => Navigator.pop(context),
-                  type: ButtonType.primary,
-                  width: 108,
-                  child: Text(
-                    confirmText!,
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-                  ),
-                ),
               ],
-            ],
-          ),
+            ),
+            const SizedBox(height: 12),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                message,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.82),
+                  height: 1.45,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                if (cancelText != null)
+                  Expanded(
+                    child: SizedBox(
+                      height: 44,
+                      child: OutlinedButton(
+                        onPressed: onCancel ?? () => Navigator.pop(context),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                            color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.18),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+                          ),
+                        ),
+                        child: Text(
+                          cancelText!,
+                          style: TextStyle(
+                            color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.74),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                if (cancelText != null && confirmText != null) const SizedBox(width: 10),
+                if (confirmText != null)
+                  Expanded(
+                    child: SizedBox(
+                      height: 44,
+                      child: AppButton(
+                        onPressed: onConfirm ?? () => Navigator.pop(context),
+                        type: ButtonType.primary,
+                        child: Text(
+                          confirmText!,
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 2),
+          ],
         ),
-      ],
+      ),
     );
   }
 
-  static void show(
+  static Future<void> show(
     BuildContext context, {
     required String title,
     required String message,
@@ -166,16 +153,31 @@ class AppDialog extends StatelessWidget {
     VoidCallback? onConfirm,
     VoidCallback? onCancel,
   }) {
-    showDialog(
+    return showGeneralDialog<void>(
       context: context,
-      builder: (context) => AppDialog(
-        title: title,
-        message: message,
-        confirmText: confirmText,
-        cancelText: cancelText,
-        onConfirm: onConfirm,
-        onCancel: onCancel,
+      barrierLabel: 'AppDialog',
+      barrierDismissible: true,
+      barrierColor: Colors.black54,
+      transitionDuration: const Duration(milliseconds: 260),
+      pageBuilder: (_, __, ___) => SafeArea(
+        child: Center(
+          child: AppDialog(
+            title: title,
+            message: message,
+            confirmText: confirmText,
+            cancelText: cancelText,
+            onConfirm: onConfirm,
+            onCancel: onCancel,
+          ),
+        ),
       ),
+      transitionBuilder: (_, animation, __, child) {
+        final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+        return FadeTransition(
+          opacity: animation,
+          child: ScaleTransition(scale: Tween<double>(begin: 0.96, end: 1).animate(curved), child: child),
+        );
+      },
     );
   }
 }

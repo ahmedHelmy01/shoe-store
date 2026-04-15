@@ -40,6 +40,7 @@ class AdminDataTableToolbar extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final border = (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08);
+    const uniformPillWidth = 132.0;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -100,85 +101,143 @@ class AdminDataTableToolbar extends StatelessWidget {
               child: const Text('Clear'),
             ),
           const SizedBox(width: 6),
-          _Pill(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.table_rows_rounded, size: 18),
-                const SizedBox(width: 8),
-                const Text('Rows'),
-                const SizedBox(width: 8),
-                DropdownButton<int>(
-                  value: pageSize,
-                  underline: const SizedBox.shrink(),
-                  onChanged: (v) => v == null ? null : onPageSize(v),
-                  items: const [
-                    DropdownMenuItem(value: 10, child: Text('10')),
-                    DropdownMenuItem(value: 25, child: Text('25')),
-                    DropdownMenuItem(value: 50, child: Text('50')),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          _Pill(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.download_rounded, size: 18),
-                const SizedBox(width: 8),
-                TextButton(
-                  onPressed: onExportAllCsv,
-                  child: const Text('Export CSV'),
-                ),
-                if (onExportSelectedCsv != null) ...[
-                  Container(width: 1, height: 18, color: border),
-                  TextButton(
-                    onPressed: onExportSelectedCsv,
-                    child: const Text('Export selected'),
+          SizedBox(
+            width: uniformPillWidth,
+            child: _Pill(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.table_rows_rounded, size: 18),
+                  const SizedBox(width: 8),
+                  PopupMenuButton<int>(
+                    tooltip: 'Rows per page',
+                    padding: EdgeInsets.zero,
+                    color: Colors.white,
+                    surfaceTintColor: Colors.white,
+                    onSelected: onPageSize,
+                    itemBuilder: (_) => const [
+                      PopupMenuItem(value: 10, child: Text('Rows 10')),
+                      PopupMenuItem(value: 25, child: Text('Rows 25')),
+                      PopupMenuItem(value: 50, child: Text('Rows 50')),
+                    ],
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Rows $pageSize',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                        ),
+                        const SizedBox(width: 4),
+                        const Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+                      ],
+                    ),
                   ),
                 ],
-              ],
+              ),
             ),
           ),
-          _Pill(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.picture_as_pdf_rounded, size: 18),
-                const SizedBox(width: 8),
-                TextButton(
-                  onPressed: onExportAllPdf,
-                  child: const Text('Export PDF'),
-                ),
-                if (onExportSelectedPdf != null) ...[
-                  Container(width: 1, height: 18, color: border),
-                  TextButton(
-                    onPressed: onExportSelectedPdf,
-                    child: const Text('Selected'),
+          SizedBox(
+            width: uniformPillWidth,
+            child: _Pill(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.download_rounded, size: 18),
+                  const SizedBox(width: 8),
+                  PopupMenuButton<String>(
+                    padding: EdgeInsets.zero,
+                    color: Colors.white,
+                    surfaceTintColor: Colors.white,
+                    onSelected: (v) {
+                      if (v == 'all') onExportAllCsv();
+                      if (v == 'selected') onExportSelectedCsv?.call();
+                    },
+                    itemBuilder: (_) => [
+                      const PopupMenuItem(value: 'all', child: Text('Export CSV')),
+                      if (onExportSelectedCsv != null)
+                        const PopupMenuItem(value: 'selected', child: Text('Export selected')),
+                    ],
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Text('CSV'),
+                        SizedBox(width: 2),
+                        Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+                      ],
+                    ),
                   ),
                 ],
-              ],
+              ),
             ),
           ),
-          _Pill(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.grid_on_rounded, size: 18),
-                const SizedBox(width: 8),
-                TextButton(
-                  onPressed: onExportAllExcel,
-                  child: const Text('Export Excel'),
-                ),
-                if (onExportSelectedExcel != null) ...[
-                  Container(width: 1, height: 18, color: border),
-                  TextButton(
-                    onPressed: onExportSelectedExcel,
-                    child: const Text('Selected'),
+          SizedBox(
+            width: uniformPillWidth,
+            child: _Pill(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.picture_as_pdf_rounded, size: 18),
+                  const SizedBox(width: 8),
+                  PopupMenuButton<String>(
+                    padding: EdgeInsets.zero,
+                    color: Colors.white,
+                    surfaceTintColor: Colors.white,
+                    onSelected: (v) {
+                      if (v == 'all') onExportAllPdf();
+                      if (v == 'selected') onExportSelectedPdf?.call();
+                    },
+                    itemBuilder: (_) => [
+                      const PopupMenuItem(value: 'all', child: Text('Export PDF')),
+                      if (onExportSelectedPdf != null)
+                        const PopupMenuItem(value: 'selected', child: Text('Export selected')),
+                    ],
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Text('PDF'),
+                        SizedBox(width: 2),
+                        Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+                      ],
+                    ),
                   ),
                 ],
-              ],
+              ),
+            ),
+          ),
+          SizedBox(
+            width: uniformPillWidth,
+            child: _Pill(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.grid_on_rounded, size: 18),
+                  const SizedBox(width: 8),
+                  PopupMenuButton<String>(
+                    padding: EdgeInsets.zero,
+                    color: Colors.white,
+                    surfaceTintColor: Colors.white,
+                    onSelected: (v) {
+                      if (v == 'all') onExportAllExcel();
+                      if (v == 'selected') onExportSelectedExcel?.call();
+                    },
+                    itemBuilder: (_) => [
+                      const PopupMenuItem(value: 'all', child: Text('Export Excel')),
+                      if (onExportSelectedExcel != null)
+                        const PopupMenuItem(value: 'selected', child: Text('Export selected')),
+                    ],
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Text('Excel'),
+                        SizedBox(width: 2),
+                        Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -196,6 +255,7 @@ class _Pill extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     return Container(
+      constraints: const BoxConstraints(minHeight: 40),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(999),

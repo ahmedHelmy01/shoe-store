@@ -24,6 +24,7 @@ class AdminDataTable<T> extends StatefulWidget {
   final String searchHint;
   final String Function(T row)? searchText;
   final Widget Function(BuildContext context, T row)? cardBuilder;
+  final double borderRadius;
 
   const AdminDataTable({
     super.key,
@@ -35,6 +36,7 @@ class AdminDataTable<T> extends StatefulWidget {
     this.searchHint = 'Search…',
     this.searchText,
     this.cardBuilder,
+    this.borderRadius = 18,
   });
 
   @override
@@ -122,15 +124,12 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
         pageRows.every((r) => _selected.contains(widget.idOf(r)));
     final isEmptyState = _sorted.isEmpty;
 
-    if (isEmptyState) {
-      return const AppEmptyWidget(
-        message: 'No data found',
-        subtitle: 'There are no records to display yet.',
-      );
-    }
-
-    return Column(
-      children: [
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(widget.borderRadius),
+      child: Container(
+        color: isDark ? const Color(0xFF0F1B2D) : Colors.white,
+        child: Column(
+        children: [
         AdminDataTableToolbar(
           selectedCount: _selected.length,
           enableSearch: widget.enableSearch,
@@ -172,19 +171,28 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
           onClearSelection: _selected.isEmpty ? null : () => setState(_selected.clear),
         ),
         Divider(height: 1, thickness: 1, color: border),
-        Expanded(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final isMobile = constraints.maxWidth < 600;
+        if (isEmptyState)
+          const Expanded(
+            child: AppEmptyWidget(
+              message: 'No data found',
+              subtitle: 'There are no records to display yet.',
+              showGlassBackground: false,
+            ),
+          )
+        else
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final isMobile = constraints.maxWidth < 600;
 
-              if (isMobile && widget.cardBuilder != null) {
-                return ListView.separated(
-                  padding: const EdgeInsets.all(12),
-                  itemCount: pageRows.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
-                  itemBuilder: (context, i) => widget.cardBuilder!(context, pageRows[i]),
-                );
-              }
+                if (isMobile && widget.cardBuilder != null) {
+                  return ListView.separated(
+                    padding: const EdgeInsets.all(12),
+                    itemCount: pageRows.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    itemBuilder: (context, i) => widget.cardBuilder!(context, pageRows[i]),
+                  );
+                }
 
               final zebraA = (isDark ? Colors.white : Colors.black).withValues(alpha: isDark ? 0.03 : 0.03);
               final zebraB = (isDark ? Colors.white : Colors.black).withValues(alpha: isDark ? 0.015 : 0.015);
@@ -263,18 +271,18 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
                 ],
               );
 
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                  child: SingleChildScrollView(
-                    child: table,
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                    child: SingleChildScrollView(
+                      child: table,
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
         Divider(height: 1, thickness: 1, color: border),
         AdminDataTableFooter(
           page: _page,
@@ -284,7 +292,9 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
           onPrev: _page > 1 ? () => setState(() => _page--) : null,
           onNext: _page < _pageCount ? () => setState(() => _page++) : null,
         ),
-      ],
+        ],
+      ),
+      ),
     );
   }
 

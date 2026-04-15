@@ -4,6 +4,8 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
 import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
+import 'package:erp/modules/webstore/admin/features/branches/data/models/branch_row.dart';
+import 'package:erp/modules/webstore/admin/features/branches/presentation/view_model/branches_view_model.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_action_icon_button.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_panel.dart';
@@ -27,11 +29,21 @@ class _WarehousesViewState extends ConsumerState<WarehousesView> {
   WarehouseRow? _detailsItem;
 
   @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(branchesVmProvider.notifier).fetch(page: 1));
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final state = ref.watch(warehousesVmProvider);
+    final branchesState = ref.watch(branchesVmProvider);
     final notifier = ref.read(warehousesVmProvider.notifier);
+    final branches = branchesState is AdminCrudData<BranchRow>
+        ? branchesState.items
+        : const <BranchRow>[];
     print(
       '[WAREHOUSE_UI] build -> isAdding=${state.isAdding}, editingItem=${state.editingItem?.id}, isSaving=${state.isSaving}',
     );
@@ -89,7 +101,17 @@ class _WarehousesViewState extends ConsumerState<WarehousesView> {
             size: AdminDialogSize.small,
             customHeightFactor: 0.70,
             closeOnBackdropTap: true,
-            child: _WarehouseDetails(item: _detailsItem!),
+            child: _WarehouseDetails(
+              item: _detailsItem!,
+              branchName: () {
+                final branchId = _detailsItem!.branchId;
+                if (branchId == null) return '-';
+                for (final branch in branches) {
+                  if (branch.id == branchId) return branch.name;
+                }
+                return '-';
+              }(),
+            ),
           ),
       ],
     );
@@ -103,9 +125,18 @@ class _WarehousesViewState extends ConsumerState<WarehousesView> {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(18),
-              color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.04),
-              border: Border.all(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08)),
+              color: isDark ? const Color(0xFF0F1B2D) : Colors.white,
+              border: Border.all(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.05)),
+              boxShadow: [
+                if (!isDark)
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.03),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+              ],
             ),
+            clipBehavior: Clip.antiAlias,
             child: WarehousesTable(
               items: items,
               onEdit: (w) => notifier.openEdit(w),
@@ -289,8 +320,12 @@ class _WarehouseCard extends StatelessWidget {
 
 class _WarehouseDetails extends StatelessWidget {
   final WarehouseRow item;
+  final String branchName;
 
-  const _WarehouseDetails({required this.item});
+  const _WarehouseDetails({
+    required this.item,
+    required this.branchName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -299,7 +334,7 @@ class _WarehouseDetails extends StatelessWidget {
       MapEntry('Name', item.name),
       MapEntry('Name (Arabic)', item.nameAr ?? '-'),
       MapEntry('Code', item.code ?? '-'),
-      MapEntry('Branch ID', item.branchId?.toString() ?? '-'),
+      MapEntry('Branch', branchName),
       MapEntry('Address', item.location ?? '-'),
       MapEntry('Phone', item.phone ?? '-'),
       MapEntry('Active', item.isActive ? 'Yes' : 'No'),
