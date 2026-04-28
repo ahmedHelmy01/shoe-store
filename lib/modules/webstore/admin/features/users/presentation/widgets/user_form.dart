@@ -61,14 +61,14 @@ class _UserFormState extends State<UserForm> {
           AppTextField(
             controller: _nameController,
             label: 'Full Name',
-            hint: 'Enter customer name',
+            hint: 'Enter user name',
             validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
           ),
           const SizedBox(height: 20),
           AppTextField(
             controller: _emailController,
             label: 'Email Address',
-            hint: 'customer@example.com',
+            hint: 'user@example.com',
             keyboardType: TextInputType.emailAddress,
           ),
           const SizedBox(height: 20),
@@ -82,7 +82,7 @@ class _UserFormState extends State<UserForm> {
           AppButton(
             onPressed: _submit,
             isLoading: widget.isSaving,
-            child: Text(widget.initial == null ? 'Add Customer' : 'Save Changes'),
+            child: Text(widget.initial == null ? 'Add User' : 'Save Changes'),
           ),
         ],
       ),

@@ -4,7 +4,9 @@ import 'package:erp/core/router/app_navigator.dart';
 enum AdminRouteId {
   dashboard,
   catalog,
+  customerGroup,
   users,
+  customerGroups,
   products,
   categories,
   companies,
@@ -200,10 +202,23 @@ class AdminRoutes {
       ],
     ),
     AdminNavNode(
-      id: AdminRouteId.users,
-      routeName: AppRouteNames.webstoreAdminUsers,
-      title: 'Users',
+      id: AdminRouteId.customerGroup,
+      title: 'Customers',
       icon: Icons.people_alt_rounded,
+      children: [
+        AdminNavNode(
+          id: AdminRouteId.users,
+          routeName: AppRouteNames.webstoreAdminUsers,
+          title: 'Users',
+          icon: Icons.person_rounded,
+        ),
+        AdminNavNode(
+          id: AdminRouteId.customerGroups,
+          routeName: AppRouteNames.webstoreAdminCustomerGroups,
+          title: 'Customer Groups',
+          icon: Icons.groups_rounded,
+        ),
+      ],
     ),
     AdminNavNode(
       id: AdminRouteId.settings,
@@ -218,6 +233,7 @@ class AdminRoutes {
       AppRouteNames.webstoreAdminDashboard => AdminRouteId.dashboard,
       AppRouteNames.webstoreAdmin => AdminRouteId.dashboard,
       AppRouteNames.webstoreAdminUsers => AdminRouteId.users,
+      AppRouteNames.webstoreAdminCustomerGroups => AdminRouteId.customerGroups,
       AppRouteNames.webstoreAdminProducts => AdminRouteId.products,
       AppRouteNames.webstoreAdminCategories => AdminRouteId.categories,
       AppRouteNames.webstoreAdminCompanies => AdminRouteId.companies,
@@ -248,6 +264,7 @@ class AdminRoutes {
       AdminRouteId.login => 'login',
       AdminRouteId.dashboard => AppRouteNames.webstoreAdminDashboard,
       AdminRouteId.users => AppRouteNames.webstoreAdminUsers,
+      AdminRouteId.customerGroups => AppRouteNames.webstoreAdminCustomerGroups,
       AdminRouteId.products => AppRouteNames.webstoreAdminProducts,
       AdminRouteId.categories => AppRouteNames.webstoreAdminCategories,
       AdminRouteId.companies => AppRouteNames.webstoreAdminCompanies,
@@ -272,6 +289,7 @@ class AdminRoutes {
       AdminRouteId.catalog => AppRouteNames.webstoreAdminProducts,
       AdminRouteId.operations => AdminRouteId.governorates.toString(),
       AdminRouteId.storefront => AdminRouteId.sliders.toString(),
+      AdminRouteId.customerGroup => AppRouteNames.webstoreAdminUsers,
     };
   }
 

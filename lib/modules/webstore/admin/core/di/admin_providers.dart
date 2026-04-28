@@ -22,6 +22,7 @@ import 'package:erp/modules/webstore/admin/features/payment_statuses/data/reposi
 import 'package:erp/modules/webstore/admin/features/properties/data/repositories/properties_repository.dart';
 import 'package:erp/modules/webstore/admin/features/sliders/data/repositories/sliders_repository.dart';
 import 'package:erp/modules/webstore/admin/features/order_statuses/data/repositories/order_statuses_repository.dart';
+import 'package:erp/modules/webstore/admin/features/customers/customer_groups/data/repositories/customer_groups_repository.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/data/repositories/warehouses_repository.dart';
 
 final webStoreAdminRemoteDataSourceProvider = Provider<WebStoreAdminRemoteDataSource>((ref) {
@@ -106,6 +107,10 @@ final warehousesRepositoryProvider = Provider<IWarehousesRepository>((ref) {
 
 final orderStatusesRepositoryProvider = Provider<IOrderStatusesRepository>((ref) {
   return OrderStatusesRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+});
+
+final customerGroupsRepositoryProvider = Provider<ICustomerGroupsRepository>((ref) {
+  return CustomerGroupsRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
 });
 
 // Dropdown Data Providers

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_default_badge.dart';
 import 'package:erp/modules/webstore/admin/features/order_statuses/data/models/order_status_row.dart';
 
 class OrderStatusesTable extends StatelessWidget {
@@ -54,7 +55,12 @@ class OrderStatusesTable extends StatelessWidget {
           sortable: true,
           sortValue: (s) => s.name,
           exportValue: (s) => s.name,
-          cell: (_, s) => Text(s.name, style: const TextStyle(fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis),
+          cell: (_, s) => Text(
+            s.name,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
           width: 250,
         ),
         AdminColumn<OrderStatusRow>(
@@ -70,8 +76,8 @@ class OrderStatusesTable extends StatelessWidget {
           sortable: true,
           sortValue: (s) => s.isDefault ? 1 : 0,
           exportValue: (s) => s.isDefault ? 'Yes' : 'No',
-          cell: (_, s) => s.isDefault ? const Icon(Icons.check_circle, color: Colors.green, size: 20) : const SizedBox.shrink(),
-          width: 80,
+          cell: (_, s) => AdminDefaultBadge(isDefault: s.isDefault),
+          width: 100,
         ),
         AdminColumn<OrderStatusRow>(
           title: 'Status',
@@ -112,6 +118,7 @@ class OrderStatusesTable extends StatelessWidget {
 
 class _StatusDetailsDialog extends StatelessWidget {
   final OrderStatusRow status;
+
   const _StatusDetailsDialog({required this.status});
 
   @override
@@ -123,9 +130,25 @@ class _StatusDetailsDialog extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', status.name, Icons.title_rounded, bottomPadding: 0)),
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context,
+                'Name (EN)',
+                status.name,
+                Icons.title_rounded,
+                bottomPadding: 0,
+              ),
+            ),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', status.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context,
+                'Name (AR)',
+                status.nameAr ?? 'N/A',
+                Icons.translate_rounded,
+                bottomPadding: 0,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 20),
@@ -135,7 +158,10 @@ class _StatusDetailsDialog extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Color Indicator', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                  const Text(
+                    'Color Indicator',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                  ),
                   const SizedBox(height: 8),
                   Container(
                     width: double.infinity,
@@ -159,15 +185,39 @@ class _StatusDetailsDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Sort Order', '${status.sortOrder}', Icons.sort_rounded, bottomPadding: 0)),
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context,
+                'Sort Order',
+                '${status.sortOrder}',
+                Icons.sort_rounded,
+                bottomPadding: 0,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 20),
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Default', status.isDefault ? 'Yes' : 'No', Icons.check_circle_outline_rounded, bottomPadding: 0)),
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context,
+                'Default',
+                status.isDefault ? 'Yes' : 'No',
+                Icons.check_circle_outline_rounded,
+                bottomPadding: 0,
+              ),
+            ),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Active', status.isActive ? 'Yes' : 'No', Icons.toggle_on_rounded, bottomPadding: 0)),
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context,
+                'Active',
+                status.isActive ? 'Yes' : 'No',
+                Icons.toggle_on_rounded,
+                bottomPadding: 0,
+              ),
+            ),
           ],
         ),
       ],
@@ -183,6 +233,8 @@ class _StatusDetailsDialog extends StatelessWidget {
   }
 
   Color _getContrastColor(Color color) {
-    return ThemeData.estimateBrightnessForColor(color) == Brightness.light ? Colors.black : Colors.white;
+    return ThemeData.estimateBrightnessForColor(color) == Brightness.light
+        ? Colors.black
+        : Colors.white;
   }
 }

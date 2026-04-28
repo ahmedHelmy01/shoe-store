@@ -22,12 +22,12 @@ class UsersTable extends StatelessWidget {
     return AdminDataTable<UserRow>(
       rows: items,
       idOf: (item) => '${item.id}',
-      exportBaseName: 'customers',
-      searchHint: 'Search customers...',
+      exportBaseName: 'users',
+      searchHint: 'Search users...',
       searchText: (item) => '${item.name} ${item.email ?? ""} ${item.mobile ?? ""}',
       columns: [
         AdminColumn<UserRow>(
-          title: 'Customer',
+          title: 'User',
           width: 280,
           cell: (_, item) => Row(
             children: [

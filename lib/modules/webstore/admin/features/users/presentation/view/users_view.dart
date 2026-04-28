@@ -29,8 +29,8 @@ class UsersView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Customers',
-                primaryActionLabel: 'Add Customer',
+                title: 'Users',
+                primaryActionLabel: 'Add User',
                 onPrimaryAction: () => notifier.openAdd(),
                 onRefresh: () => notifier.fetch(),
               ),
@@ -43,7 +43,7 @@ class UsersView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Add Customer' : 'Edit Customer',
+            title: state.isAdding ? 'Add User' : 'Edit User',
             child: UserForm(
               initial: state.editingItem,
               isSaving: state.isSaving,

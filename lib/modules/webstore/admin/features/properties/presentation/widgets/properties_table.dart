@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_default_badge.dart';
 import 'package:erp/modules/webstore/admin/features/properties/data/models/property_row.dart';
 
 class PropertiesTable extends StatelessWidget {
@@ -49,8 +50,8 @@ class PropertiesTable extends StatelessWidget {
           sortable: true,
           sortValue: (p) => p.isDefault ? 1 : 0,
           exportValue: (p) => p.isDefault ? 'Yes' : 'No',
-          cell: (_, p) => Text(p.isDefault ? 'Yes' : 'No', style: TextStyle(color: p.isDefault ? Colors.blue : null, fontWeight: p.isDefault ? FontWeight.bold : null)),
-          width: 100,
+          cell: (_, p) => AdminDefaultBadge(isDefault: p.isDefault),
+          width: 120,
         ),
         AdminColumn<PropertyRow>(
           title: 'Status',

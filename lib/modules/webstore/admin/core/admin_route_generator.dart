@@ -27,6 +27,8 @@ class AdminRouteGenerator {
       case AppRouteNames.webstoreAdminPaymentMethods:
       case AppRouteNames.webstoreAdminCities:
       case AppRouteNames.webstoreAdminGovernorates:
+      case AppRouteNames.webstoreAdminOrderStatuses:
+      case AppRouteNames.webstoreAdminCustomerGroups:
       case AppRouteNames.webstoreAdminSettings:
       case '/':
       case null:
