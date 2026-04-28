@@ -9,6 +9,7 @@ abstract class ICompaniesRepository {
   Future<ApiResult<AdminPagedResponse<CompanyRow>>> getCompanies({
     int page = 1,
     String? search,
+    int? perPage,
   });
 
   Future<ApiResult<CompanyRow>> saveCompany(Map<String, dynamic> data, {int? id});
@@ -25,9 +26,10 @@ class CompaniesRepository extends AdminBaseRepository implements ICompaniesRepos
   Future<ApiResult<AdminPagedResponse<CompanyRow>>> getCompanies({
     int page = 1,
     String? search,
+    int? perPage,
   }) {
     return safeApiCall(() async {
-      final json = await _ds.getCompanies(page: page, search: search);
+      final json = await _ds.getCompanies(page: page, search: search, perPage: perPage);
       return parsePaged(json, page, (j) => CompanyRow.fromJson(j));
     });
   }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
+import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/features/properties/data/models/property_row.dart';
 import '../view_model/properties_view_model.dart';
 import '../widgets/properties_table.dart';
@@ -45,11 +48,28 @@ class PropertiesView extends ConsumerWidget {
             title: state.isAdding ? 'Create Property' : 'Edit Property',
             size: AdminDialogSize.medium,
             child: PropertyForm(
+              key: ValueKey(state.isAdding ? 'property-add' : 'property-edit-${state.editingItem?.id ?? 0}'),
               initial: state.editingItem,
               isSaving: state.isSaving,
               onSave: (data) async {
-                if (await notifier.commitSave(data, id: state.editingItem?.id)) {
+                final result = await notifier.commitSave(data, id: state.editingItem?.id);
+                if (!context.mounted) return;
+
+                if (result) {
                   notifier.closePanel();
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.success,
+                    title: state.isAdding ? 'Property Created' : 'Property Updated',
+                    message: 'The property has been saved successfully.',
+                  );
+                } else {
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.error,
+                    title: 'Save Failed',
+                    message: 'Could not save the property. Please try again.',
+                  );
                 }
               },
             ),
@@ -81,16 +101,36 @@ class PropertiesView extends ConsumerWidget {
             child: PropertiesTable(
               items: items,
               onEdit: (p) => notifier.openEdit(p),
-              onDelete: (id) => notifier.commitDelete(id),
+              onDelete: (id) => _confirmAndDelete(context, notifier, id, items.firstWhere((p) => p.id == id).title),
               cardBuilder: (context, p) => _PropertyCard(
                 property: p,
                 onEdit: () => notifier.openEdit(p),
-                onDelete: () => notifier.commitDelete(p.id),
+                onDelete: () => _confirmAndDelete(context, notifier, p.id, p.title),
               ),
             ),
           ),
         ),
     };
+  }
+
+  void _confirmAndDelete(BuildContext context, PropertiesVm notifier, int id, String title) {
+    AppDialog.show(
+      context,
+      title: 'Delete Property',
+      message: 'Are you sure you want to delete "$title"?',
+      cancelText: 'Cancel',
+      confirmText: 'Delete',
+      onConfirm: () async {
+        Navigator.pop(context);
+        final success = await notifier.commitDelete(id);
+        if (!context.mounted) return;
+        if (success) {
+          AppStatusDialog.show(context, status: AppDialogStatus.success, title: 'Deleted', message: 'Property deleted successfully.');
+        } else {
+          AppStatusDialog.show(context, status: AppDialogStatus.error, title: 'Delete Failed', message: 'Could not delete property.');
+        }
+      },
+    );
   }
 }
 
@@ -127,12 +167,12 @@ class _PropertyCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      property.name,
+                      property.title,
                       style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Type: ${property.type}',
+                      'Default: ${property.isDefault ? 'Yes' : 'No'}',
                       style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6)),
                     ),
                   ],
@@ -140,14 +180,8 @@ class _PropertyCard extends StatelessWidget {
               ),
               PopupMenuButton(
                 itemBuilder: (context) => [
-                  PopupMenuItem(
-                    onTap: onEdit,
-                    child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: 8), Text('Edit')]),
-                  ),
-                  PopupMenuItem(
-                    onTap: onDelete,
-                    child: const Row(children: [Icon(Icons.delete_outline_rounded, color: Colors.red), SizedBox(width: 8), Text('Delete')]),
-                  ),
+                  PopupMenuItem(onTap: onEdit, child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: 8), Text('Edit')])),
+                  PopupMenuItem(onTap: onDelete, child: const Row(children: [Icon(Icons.delete_outline_rounded, color: Colors.red), SizedBox(width: 8), Text('Delete')])),
                 ],
               ),
             ],
@@ -156,17 +190,7 @@ class _PropertyCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: (property.isFilterable ? Colors.blue : Colors.grey).withValues(alpha: 0.1),
-                ),
-                child: Text(
-                  property.isFilterable ? 'Filterable' : 'Static',
-                  style: theme.textTheme.labelSmall?.copyWith(color: property.isFilterable ? Colors.blue : Colors.grey, fontWeight: FontWeight.bold),
-                ),
-              ),
+              AdminStatusBadge(isActive: property.isActive),
               Text(
                 'ID: ${property.id}',
                 style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.4)),

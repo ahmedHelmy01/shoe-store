@@ -1,40 +1,63 @@
 class CouponRow {
   final int id;
   final String code;
-  final String type;
-  final double value;
-  final DateTime? startsAt;
-  final DateTime? expiresAt;
-  final int? usageLimit;
-  final int usageCount;
+  final String discountType;
+  final double discountValue;
+  final double minimumOrderValue;
+  final int maxUses;
+  final int maxUsesPerCustomer;
+  final String? startsAt;
+  final String? expiresAt;
   final bool isActive;
-
-  String get discountAmount => '$value ${type == 'fixed' ? 'EGP' : '%'}';
-  bool get isPercentage => type == 'percentage';
 
   const CouponRow({
     required this.id,
     required this.code,
-    required this.type,
-    required this.value,
+    required this.discountType,
+    required this.discountValue,
+    required this.minimumOrderValue,
+    required this.maxUses,
+    required this.maxUsesPerCustomer,
     this.startsAt,
     this.expiresAt,
-    this.usageLimit,
-    required this.usageCount,
     required this.isActive,
   });
 
+  bool get isPercentage => discountType == 'percentage';
+
   factory CouponRow.fromJson(Map<String, dynamic> json) {
+    // Map API int values to internal string constants
+    final rawType = json['discount_type'];
+    String typeStr = 'percentage';
+    if (rawType == 2 || json['discount_type_label']?.toString().toLowerCase().contains('fixed') == true) {
+      typeStr = 'fixed';
+    }
+
     return CouponRow(
       id: json['id'] as int? ?? 0,
       code: json['code'] as String? ?? '',
-      type: json['type'] as String? ?? 'fixed',
-      value: (json['value'] as num? ?? 0).toDouble(),
-      startsAt: json['starts_at'] != null ? DateTime.tryParse(json['starts_at']) : null,
-      expiresAt: json['expires_at'] != null ? DateTime.tryParse(json['expires_at']) : null,
-      usageLimit: json['usage_limit'] as int?,
-      usageCount: json['usage_count'] as int? ?? 0,
-      isActive: json['is_active'] as bool? ?? true,
+      discountType: typeStr,
+      discountValue: double.tryParse(json['discount_value']?.toString() ?? '0') ?? 0.0,
+      minimumOrderValue: double.tryParse(json['minimum_order_value']?.toString() ?? '0') ?? 0.0,
+      maxUses: json['usage_limit'] as int? ?? 0,
+      maxUsesPerCustomer: json['per_user_limit'] as int? ?? 0,
+      startsAt: json['start_date'] as String?,
+      expiresAt: json['end_date'] as String?,
+      isActive: json['is_active'] == true || json['is_active'] == 1,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'code': code,
+      'discount_type': discountType,
+      'discount_value': discountValue,
+      'minimum_order_value': minimumOrderValue,
+      'max_uses': maxUses,
+      'max_uses_per_customer': maxUsesPerCustomer,
+      'starts_at': startsAt,
+      'expires_at': expiresAt,
+      'is_active': isActive,
+    };
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/branches/data/models/branch_row.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 
 class BranchesTable extends StatelessWidget {
   final List<BranchRow> items;
@@ -41,7 +42,29 @@ class BranchesTable extends StatelessWidget {
           sortable: true,
           sortValue: (b) => b.name,
           exportValue: (b) => b.name,
-          cell: (_, b) => Text(b.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+          cell: (_, b) => Row(
+            children: [
+              Expanded(child: Text(b.name, maxLines: 1, overflow: TextOverflow.ellipsis)),
+              if (b.isMain)
+                Container(
+                  margin: const EdgeInsets.only(left: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
+                  ),
+                  child: const Text(
+                    'MAIN',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ),
+            ],
+          ),
           width: 240,
         ),
         AdminColumn<BranchRow>(
@@ -64,8 +87,12 @@ class BranchesTable extends StatelessWidget {
           title: 'Active',
           sortable: true,
           sortValue: (b) => b.isActive ? 1 : 0,
-          exportValue: (b) => b.isActive ? 'Yes' : 'No',
-          cell: (_, b) => Text(b.isActive ? 'Yes' : 'No'),
+          exportValue: (b) => b.isActive ? 'Open' : 'Closed',
+          cell: (_, b) => AdminStatusBadge(
+            isActive: b.isActive,
+            activeLabel: 'Open',
+            inactiveLabel: 'Closed',
+          ),
           width: 100,
         ),
         AdminColumn<BranchRow>(
@@ -75,6 +102,7 @@ class BranchesTable extends StatelessWidget {
             onView: onView,
             onEdit: onEdit,
             onDelete: (item) => onDelete(item.id),
+            confirmBeforeDelete: false,
           ),
           width: 130,
         ),

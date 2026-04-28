@@ -9,7 +9,7 @@ final pagesVmProvider = NotifierProvider<PagesVm, AdminCrudState<PageRow>>(Pages
 
 class PagesVm extends AdminCrudVm<PageRow> {
   @override
-  Future<ApiResult<AdminPagedResponse<PageRow>>> getItems({required int page, String? search}) {
+  Future<ApiResult<AdminPagedResponse<PageRow>>> getItems({required int page, String? search, int? perPage}) {
     return ref.read(pagesRepositoryProvider).getPages(page: page, search: search);
   }
 

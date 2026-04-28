@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
+import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
@@ -47,9 +51,26 @@ class CategoriesView extends ConsumerWidget {
             child: CategoryForm(
               initial: state.editingItem,
               isSaving: state.isSaving,
+              categories: state is AdminCrudData ? (state as AdminCrudData<CategoryRow>).items : [],
               onSave: (data) async {
-                if (await notifier.commitSave(data, id: state.editingItem?.id)) {
+                final result = await notifier.commitSave(data, id: state.editingItem?.id);
+                if (!context.mounted) return;
+                
+                if (result) {
                   notifier.closePanel();
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.success,
+                    title: state.isAdding ? 'Category Added' : 'Category Updated',
+                    message: 'The category was saved successfully.',
+                  );
+                } else {
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.error,
+                    title: 'Save Failed',
+                    message: 'An error occurred while saving the category.',
+                  );
                 }
               },
             ),
@@ -83,28 +104,70 @@ class CategoriesView extends ConsumerWidget {
             ),
             clipBehavior: Clip.antiAlias,
             child: CategoriesTable(
-              items: items,
+              state: state as AdminCrudData<CategoryRow>,
+              onNextPage: () => notifier.nextPage(),
+              onPrevPage: () => notifier.prevPage(),
+              onSearch: (q) => notifier.fetch(search: q, page: 1),
+              onServerPageSize: (size) => notifier.fetch(perPage: size, page: 1),
               onEdit: (c) => notifier.openEdit(c),
-              onDelete: (id) => notifier.commitDelete(id),
+              onDelete: (id) => _confirmAndDelete(context, notifier, id, items.firstWhere((c) => c.id == id).name),
               cardBuilder: (context, c) => _CategoryCard(
                 category: c,
+                onView: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => CategoryDetailsDialog(category: c),
+                  );
+                },
                 onEdit: () => notifier.openEdit(c),
-                onDelete: () => notifier.commitDelete(c.id),
+                onDelete: () => _confirmAndDelete(context, notifier, c.id, c.name),
               ),
             ),
           ),
         ),
     };
   }
+
+  void _confirmAndDelete(BuildContext context, CategoriesVm notifier, int id, String name) {
+    AppDialog.show(
+      context,
+      title: 'Delete Category',
+      message: 'Are you sure you want to delete category "$name"?',
+      cancelText: 'Cancel',
+      confirmText: 'Delete',
+      onConfirm: () async {
+        Navigator.pop(context);
+        final success = await notifier.commitDelete(id);
+        if (!context.mounted) return;
+        if (success) {
+          AppStatusDialog.show(
+            context,
+            status: AppDialogStatus.success,
+            title: 'Deleted',
+            message: 'Category deleted successfully.',
+          );
+        } else {
+          AppStatusDialog.show(
+            context,
+            status: AppDialogStatus.error,
+            title: 'Delete Failed',
+            message: 'Could not delete the category. Please try again.',
+          );
+        }
+      },
+    );
+  }
 }
 
 class _CategoryCard extends StatelessWidget {
   final CategoryRow category;
+  final VoidCallback onView;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
   const _CategoryCard({
     required this.category,
+    required this.onView,
     required this.onEdit,
     required this.onDelete,
   });
@@ -136,7 +199,7 @@ class _CategoryCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Parent ID: ${category.parentId ?? "None"}',
+                      'Code: ${category.code ?? "None"}',
                       style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6)),
                     ),
                   ],
@@ -144,6 +207,10 @@ class _CategoryCard extends StatelessWidget {
               ),
               PopupMenuButton(
                 itemBuilder: (context) => [
+                  PopupMenuItem(
+                    onTap: onView,
+                    child: const Row(children: [Icon(Icons.visibility_outlined, color: Colors.blue), SizedBox(width: 8), Text('View Details')]),
+                  ),
                   PopupMenuItem(
                     onTap: onEdit,
                     child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: 8), Text('Edit')]),
@@ -160,10 +227,7 @@ class _CategoryCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '${category.productsCount} Products',
-                style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: theme.primaryColor),
-              ),
+              AdminStatusBadge(isActive: category.isActive),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(

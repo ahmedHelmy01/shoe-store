@@ -9,6 +9,7 @@ abstract class IBranchesRepository {
   Future<ApiResult<AdminPagedResponse<BranchRow>>> getBranches({
     int page = 1,
     String? search,
+    int? perPage,
   });
 
   Future<ApiResult<BranchRow>> saveBranch(Map<String, dynamic> data, {int? id});
@@ -25,9 +26,10 @@ class BranchesRepository extends AdminBaseRepository implements IBranchesReposit
   Future<ApiResult<AdminPagedResponse<BranchRow>>> getBranches({
     int page = 1,
     String? search,
+    int? perPage,
   }) {
     return safeApiCall(() async {
-      final json = await _ds.getBranches(page: page, search: search);
+      final json = await _ds.getBranches(page: page, search: search, perPage: perPage);
       return parsePaged(json, page, (j) => BranchRow.fromJson(j));
     });
   }

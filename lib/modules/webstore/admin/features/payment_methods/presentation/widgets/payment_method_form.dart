@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
+import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
 import 'package:erp/modules/webstore/admin/features/payment_methods/data/models/payment_method_row.dart';
 
 class PaymentMethodForm extends StatefulWidget {
@@ -21,28 +22,44 @@ class PaymentMethodForm extends StatefulWidget {
 
 class _PaymentMethodFormState extends State<PaymentMethodForm> {
   late final TextEditingController _nameCtrl;
-  late final TextEditingController _descCtrl;
+  late final TextEditingController _nameArCtrl;
+  late final TextEditingController _noteCtrl;
+  late final TextEditingController _noteArCtrl;
+  late final TextEditingController _sortOrderCtrl;
+  late String _type;
   late bool _isActive;
 
   @override
   void initState() {
     super.initState();
-    _nameCtrl = TextEditingController(text: widget.initial?.name ?? '');
-    _descCtrl = TextEditingController(text: widget.initial?.description ?? '');
-    _isActive = widget.initial?.isActive ?? true;
+    final i = widget.initial;
+    _nameCtrl = TextEditingController(text: i?.name ?? '');
+    _nameArCtrl = TextEditingController(text: i?.nameAr ?? '');
+    _noteCtrl = TextEditingController(text: i?.note ?? '');
+    _noteArCtrl = TextEditingController(text: i?.noteAr ?? '');
+    _sortOrderCtrl = TextEditingController(text: i?.sortOrder.toString() ?? '0');
+    _type = i?.type ?? 'cod';
+    _isActive = i?.isActive ?? true;
   }
 
   @override
   void dispose() {
     _nameCtrl.dispose();
-    _descCtrl.dispose();
+    _nameArCtrl.dispose();
+    _noteCtrl.dispose();
+    _noteArCtrl.dispose();
+    _sortOrderCtrl.dispose();
     super.dispose();
   }
 
   void _submit() {
     widget.onSave({
       'name': _nameCtrl.text.trim(),
-      'description': _descCtrl.text.trim(),
+      'name_ar': _nameArCtrl.text.trim(),
+      'type': 'cod',
+      'note': _noteCtrl.text.trim(),
+      'note_ar': _noteArCtrl.text.trim(),
+      'sort_order': int.tryParse(_sortOrderCtrl.text.trim()) ?? 0,
       'is_active': _isActive,
     });
   }
@@ -52,18 +69,55 @@ class _PaymentMethodFormState extends State<PaymentMethodForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        AppTextField(
-          controller: _nameCtrl,
-          label: 'Method Name',
-          hint: 'e.g. Credit Card, PayPal',
-          borderRadius: 14,
+        Row(
+          children: [
+            Expanded(
+              child: AppTextField(
+                controller: _nameCtrl,
+                label: 'Name (English)',
+                hint: 'e.g. Credit Card',
+                borderRadius: 14,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: AppTextField(
+                controller: _nameArCtrl,
+                label: 'Name (Arabic)',
+                hint: 'مثال: بطاقة ائتمان',
+                borderRadius: 14,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 18),
+        Row(
+          children: [
+            Expanded(
+              child: AppTextField(
+                controller: _noteCtrl,
+                label: 'Note (English)',
+                hint: 'e.g. Additional fees apply',
+                borderRadius: 14,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: AppTextField(
+                controller: _noteArCtrl,
+                label: 'Note (Arabic)',
+                hint: 'مثال: تطبق رسوم إضافية',
+                borderRadius: 14,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 18),
         AppTextField(
-          controller: _descCtrl,
-          label: 'Instructions',
-          hint: 'Payment details for the user...',
-          maxLines: 3,
+          controller: _sortOrderCtrl,
+          label: 'Sort Order',
+          hint: '0',
+          keyboardType: TextInputType.number,
           borderRadius: 14,
         ),
         const SizedBox(height: 18),

@@ -22,16 +22,21 @@ class FilterForm extends StatefulWidget {
 class _FilterFormState extends State<FilterForm> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameCtrl;
+  late final TextEditingController _nameArCtrl;
+  bool _isActive = true;
 
   @override
   void initState() {
     super.initState();
     _nameCtrl = TextEditingController(text: widget.initial?.name ?? '');
+    _nameArCtrl = TextEditingController(text: widget.initial?.nameAr ?? '');
+    _isActive = widget.initial?.isActive ?? true;
   }
 
   @override
   void dispose() {
     _nameCtrl.dispose();
+    _nameArCtrl.dispose();
     super.dispose();
   }
 
@@ -39,6 +44,8 @@ class _FilterFormState extends State<FilterForm> {
     if (_formKey.currentState?.validate() ?? false) {
       widget.onSave({
         'name': _nameCtrl.text.trim(),
+        'name_ar': _nameArCtrl.text.trim(),
+        'is_active': _isActive,
       });
     }
   }
@@ -52,15 +59,29 @@ class _FilterFormState extends State<FilterForm> {
         children: [
           AppTextField(
             controller: _nameCtrl,
-            label: 'Filter Name',
-            hint: 'e.g. Color, Size',
+            label: 'Name (English)',
+            hint: 'e.g. Featured',
             validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
+          ),
+          const SizedBox(height: 16),
+          AppTextField(
+            controller: _nameArCtrl,
+            label: 'Name (Arabic)',
+            hint: 'e.g. مميز',
+            validator: (v) => v == null || v.isEmpty ? 'Arabic name is required' : null,
+          ),
+          const SizedBox(height: 16),
+          SwitchListTile(
+            title: const Text('Is Active'),
+            value: _isActive,
+            onChanged: (val) => setState(() => _isActive = val),
+            contentPadding: EdgeInsets.zero,
           ),
           const SizedBox(height: 32),
           AppButton(
             onPressed: _submit,
             isLoading: widget.isSaving,
-            child: Text(widget.initial == null ? 'Add Filter' : 'Save Changes'),
+            child: Text(widget.initial == null ? 'Add Tag' : 'Save Changes'),
           ),
         ],
       ),

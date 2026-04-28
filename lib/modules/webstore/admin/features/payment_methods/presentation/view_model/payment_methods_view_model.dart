@@ -9,7 +9,7 @@ final paymentMethodsVmProvider = NotifierProvider<PaymentMethodsVm, AdminCrudSta
 
 class PaymentMethodsVm extends AdminCrudVm<PaymentMethodRow> {
   @override
-  Future<ApiResult<AdminPagedResponse<PaymentMethodRow>>> getItems({required int page, String? search}) {
+  Future<ApiResult<AdminPagedResponse<PaymentMethodRow>>> getItems({required int page, String? search, int? perPage}) {
     return ref.read(paymentMethodsRepositoryProvider).getPaymentMethods(page: page, search: search);
   }
 

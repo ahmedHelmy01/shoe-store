@@ -9,7 +9,7 @@ final propertiesVmProvider = NotifierProvider<PropertiesVm, AdminCrudState<Prope
 
 class PropertiesVm extends AdminCrudVm<PropertyRow> {
   @override
-  Future<ApiResult<AdminPagedResponse<PropertyRow>>> getItems({required int page, String? search}) {
+  Future<ApiResult<AdminPagedResponse<PropertyRow>>> getItems({required int page, String? search, int? perPage}) {
     return ref.read(propertiesRepositoryProvider).getProperties(page: page, search: search);
   }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/features/payment_statuses/data/models/payment_status_row.dart';
 
 class PaymentStatusesTable extends StatelessWidget {
@@ -23,7 +25,7 @@ class PaymentStatusesTable extends StatelessWidget {
       idOf: (s) => '${s.id}',
       exportBaseName: 'payment_statuses',
       searchHint: 'Search statuses…',
-      searchText: (s) => '${s.id} ${s.name}',
+      searchText: (s) => '${s.id} ${s.name} ${s.nameAr ?? ''}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<PaymentStatusRow>(
@@ -39,35 +41,79 @@ class PaymentStatusesTable extends StatelessWidget {
           sortable: true,
           sortValue: (s) => s.name,
           exportValue: (s) => s.name,
-          cell: (_, s) => Text(s.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-          width: 280,
+          cell: (_, s) => Text(s.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+          width: 200,
         ),
         AdminColumn<PaymentStatusRow>(
-          title: 'Color',
-          sortable: false,
-          cell: (_, p) => Row(
-            children: [
-              Container(
-                width: 16,
-                height: 16,
-                decoration: BoxDecoration(
-                  color: Color(int.parse(p.color.replaceFirst('#', '0xFF'))),
-                  shape: BoxShape.circle,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(p.color),
-            ],
-          ),
-          width: 140,
-        ),
-        AdminColumn<PaymentStatusRow>(
-          title: 'Active',
+          title: 'Arabic Name',
           sortable: true,
-          sortValue: (p) => p.isActive ? 1 : 0,
-          exportValue: (p) => p.isActive ? 'Yes' : 'No',
-          cell: (_, p) => Text(p.isActive ? 'Yes' : 'No'),
-          width: 100,
+          sortValue: (s) => s.nameAr ?? '',
+          exportValue: (s) => s.nameAr ?? '',
+          cell: (_, s) => Text(s.nameAr ?? '-', style: const TextStyle(fontWeight: FontWeight.w600)),
+          width: 200,
+        ),
+        AdminColumn<PaymentStatusRow>(
+          title: 'Order',
+          sortable: true,
+          sortValue: (s) => s.sortOrder,
+          exportValue: (s) => '${s.sortOrder}',
+          cell: (_, s) => Text('${s.sortOrder}'),
+          width: 80,
+        ),
+        AdminColumn<PaymentStatusRow>(
+          title: 'Status',
+          sortable: true,
+          sortValue: (s) => s.isActive ? 1 : 0,
+          exportValue: (s) => s.isActive ? 'Active' : 'Inactive',
+          cell: (_, s) => AdminStatusBadge(isActive: s.isActive),
+          width: 110,
+        ),
+        AdminColumn<PaymentStatusRow>(
+          title: 'Actions',
+          cell: (_, s) => AdminTableActionsCell<PaymentStatusRow>(
+            row: s,
+            onView: (s) {
+              showDialog(
+                context: context,
+                builder: (_) => _PaymentStatusDetailsDialog(status: s),
+              );
+            },
+            onEdit: onEdit,
+            onDelete: (item) => onDelete(item.id),
+            confirmBeforeDelete: false,
+          ),
+          width: 130,
+        ),
+      ],
+    );
+  }
+}
+
+class _PaymentStatusDetailsDialog extends StatelessWidget {
+  final PaymentStatusRow status;
+  const _PaymentStatusDetailsDialog({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    return AdminDetailsDialog(
+      title: 'Payment Status Details',
+      id: status.id.toString(),
+      icon: Icons.info_rounded,
+      children: [
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', status.name, Icons.language_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', status.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Sort Order', '${status.sortOrder}', Icons.sort_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Active', status.isActive ? 'Yes' : 'No', Icons.check_circle_outline_rounded, bottomPadding: 0)),
+          ],
         ),
       ],
     );

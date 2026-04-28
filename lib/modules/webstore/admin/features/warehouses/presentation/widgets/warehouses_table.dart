@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/data/models/warehouse_row.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 
 class WarehousesTable extends StatelessWidget {
   final List<WarehouseRow> items;
@@ -56,8 +57,8 @@ class WarehousesTable extends StatelessWidget {
           title: 'Active',
           sortable: true,
           sortValue: (w) => w.isActive ? 1 : 0,
-          exportValue: (w) => w.isActive ? 'Yes' : 'No',
-          cell: (_, w) => Text(w.isActive ? 'Yes' : 'No'),
+          exportValue: (w) => w.isActive ? 'Active' : 'Inactive',
+          cell: (_, w) => AdminStatusBadge(isActive: w.isActive),
           width: 100,
         ),
         AdminColumn<WarehouseRow>(

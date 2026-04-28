@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/features/boardings/data/models/boarding_row.dart';
 
 class BoardingsTable extends StatelessWidget {
@@ -35,30 +37,109 @@ class BoardingsTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<BoardingRow>(
+          title: 'Image',
+          cell: (_, b) => b.image != null
+              ? Image.network(
+                  b.image!,
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => const Icon(Icons.image_not_supported, size: 24),
+                )
+              : const Icon(Icons.image_not_supported, size: 24),
+          width: 80,
+        ),
+        AdminColumn<BoardingRow>(
           title: 'Title',
           sortable: true,
           sortValue: (b) => b.title,
           exportValue: (b) => b.title,
-          cell: (_, b) => Text(b.title, maxLines: 1, overflow: TextOverflow.ellipsis),
-          width: 300,
+          cell: (_, b) => Text(b.title, style: const TextStyle(fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis),
+          width: 250,
         ),
         AdminColumn<BoardingRow>(
-          title: 'Title (AR)',
+          title: 'Pos',
           sortable: true,
-          sortValue: (b) => b.titleAr ?? '',
-          exportValue: (b) => b.titleAr ?? '',
-          cell: (_, b) => Text(b.titleAr ?? '-', maxLines: 1, overflow: TextOverflow.ellipsis),
-          width: 260,
+          sortValue: (b) => b.position,
+          exportValue: (b) => '${b.position}',
+          cell: (_, b) => Text('${b.position}'),
+          width: 60,
         ),
         AdminColumn<BoardingRow>(
-          title: 'Order',
+          title: 'Status',
           sortable: true,
-          sortValue: (b) => b.sortOrder,
-          exportValue: (b) => '${b.sortOrder}',
-          cell: (_, b) => Text('${b.sortOrder}'),
+          sortValue: (b) => b.isActive ? 1 : 0,
+          exportValue: (b) => b.isActive ? 'Active' : 'Inactive',
+          cell: (_, b) => AdminStatusBadge(isActive: b.isActive),
           width: 100,
+        ),
+        AdminColumn<BoardingRow>(
+          title: 'Actions',
+          cell: (_, b) => AdminTableActionsCell<BoardingRow>(
+            row: b,
+            onView: (boarding) {
+              showDialog(
+                context: context,
+                builder: (_) => _BoardingDetailsDialog(boarding: boarding),
+              );
+            },
+            onEdit: onEdit,
+            onDelete: (item) => onDelete(item.id),
+            confirmBeforeDelete: false,
+          ),
+          width: 130,
         ),
       ],
     );
   }
 }
+
+class _BoardingDetailsDialog extends StatelessWidget {
+  final BoardingRow boarding;
+  const _BoardingDetailsDialog({required this.boarding});
+
+  @override
+  Widget build(BuildContext context) {
+    return AdminDetailsDialog(
+      title: 'Onboarding Screen Details',
+      id: boarding.id.toString(),
+      icon: Icons.info_outline_rounded,
+      children: [
+        if (boarding.image != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                boarding.image!,
+                height: 180,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+              ),
+            ),
+          ),
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Title (EN)', boarding.title, Icons.title_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Title (AR)', boarding.titleAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Position', '${boarding.position}', Icons.sort_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Status', boarding.isActive ? 'Active' : 'Inactive', Icons.check_circle_outline_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 20),
+        AdminDetailsDialog.buildDetailRow(context, 'Content (EN)', boarding.content ?? 'N/A', Icons.description_rounded),
+        AdminDetailsDialog.buildDetailRow(context, 'Content (AR)', boarding.contentAr ?? 'N/A', Icons.description_outlined),
+      ],
+    );
+  }
+}
+
+

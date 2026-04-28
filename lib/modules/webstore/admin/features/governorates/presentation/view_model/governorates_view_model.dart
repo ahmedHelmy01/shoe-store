@@ -9,7 +9,7 @@ final governoratesVmProvider = NotifierProvider<GovernoratesVm, AdminCrudState<G
 
 class GovernoratesVm extends AdminCrudVm<GovernorateRow> {
   @override
-  Future<ApiResult<AdminPagedResponse<GovernorateRow>>> getItems({required int page, String? search}) {
+  Future<ApiResult<AdminPagedResponse<GovernorateRow>>> getItems({required int page, String? search, int? perPage}) {
     return ref.read(governoratesRepositoryProvider).getGovernorates(page: page, search: search);
   }
 

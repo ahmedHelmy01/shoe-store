@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/companies/data/models/company_row.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 
 class CompaniesTable extends StatelessWidget {
   final List<CompanyRow> items;
@@ -23,7 +25,7 @@ class CompaniesTable extends StatelessWidget {
       idOf: (c) => '${c.id}',
       exportBaseName: 'companies',
       searchHint: 'Search companies…',
-      searchText: (c) => '${c.id} ${c.name} ${c.code ?? ''}',
+      searchText: (c) => '${c.id} ${c.name} ${c.nameAr ?? ''}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<CompanyRow>(
@@ -43,41 +45,49 @@ class CompaniesTable extends StatelessWidget {
           width: 250,
         ),
         AdminColumn<CompanyRow>(
-          title: 'Code',
+          title: 'Arabic Name',
           sortable: true,
-          sortValue: (c) => c.code ?? '',
-          exportValue: (c) => c.code ?? '',
-          cell: (_, c) => Text(c.code ?? '-'),
-          width: 120,
+          sortValue: (c) => c.nameAr ?? '',
+          exportValue: (c) => c.nameAr ?? '',
+          cell: (_, c) => Text(c.nameAr ?? '-', style: const TextStyle(fontWeight: FontWeight.w600)),
+          width: 200,
         ),
         AdminColumn<CompanyRow>(
           title: 'Status',
           sortable: true,
           sortValue: (c) => c.isActive ? 1 : 0,
           exportValue: (c) => c.isActive ? 'Active' : 'Inactive',
-          cell: (_, c) => Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: (c.isActive ? Colors.green : Colors.red).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              c.isActive ? 'Active' : 'Inactive',
-              style: TextStyle(
-                color: c.isActive ? Colors.green : Colors.red,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
+          cell: (_, c) => AdminStatusBadge(isActive: c.isActive),
           width: 100,
         ),
         AdminColumn<CompanyRow>(
           title: 'Actions',
           cell: (_, c) => AdminTableActionsCell<CompanyRow>(
             row: c,
+            onView: (c) {
+              showDialog(
+                context: context,
+                builder: (context) => AdminDetailsDialog(
+                  title: 'Company Details',
+                  id: c.id.toString(),
+                  icon: Icons.business_rounded,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', c.name, Icons.language_rounded, bottomPadding: 0)),
+                        const SizedBox(width: 16),
+                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', c.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    AdminDetailsDialog.buildStatusRow(context, c.isActive),
+                  ],
+                ),
+              );
+            },
             onEdit: onEdit,
             onDelete: (item) => onDelete(item.id),
+            confirmBeforeDelete: false,
           ),
           width: 130,
         ),
@@ -85,3 +95,4 @@ class CompaniesTable extends StatelessWidget {
     );
   }
 }
+

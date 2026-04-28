@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_empty_widget/app_empty_widget.dart';
@@ -26,6 +27,17 @@ class AdminDataTable<T> extends StatefulWidget {
   final Widget Function(BuildContext context, T row)? cardBuilder;
   final double borderRadius;
 
+  final bool isServerSide;
+  final int serverPage;
+  final int serverLastPage;
+  final int serverTotal;
+  final VoidCallback? onNextPage;
+  final VoidCallback? onPrevPage;
+  final ValueChanged<String>? onSearch;
+  final String? initialSearchQuery;
+  final int? initialPageSize;
+  final ValueChanged<int>? onServerPageSize;
+
   const AdminDataTable({
     super.key,
     required this.rows,
@@ -37,6 +49,16 @@ class AdminDataTable<T> extends StatefulWidget {
     this.searchText,
     this.cardBuilder,
     this.borderRadius = 18,
+    this.isServerSide = false,
+    this.serverPage = 1,
+    this.serverLastPage = 1,
+    this.serverTotal = 0,
+    this.onNextPage,
+    this.onPrevPage,
+    this.onSearch,
+    this.initialSearchQuery,
+    this.initialPageSize,
+    this.onServerPageSize,
   });
 
   @override
@@ -47,18 +69,30 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
   final Set<String> _selected = <String>{};
   int? _sortIndex;
   bool _sortAsc = true;
-  int _pageSize = 10;
+  late int _pageSize;
   int _page = 1;
-  final TextEditingController _searchCtrl = TextEditingController();
-  String _query = '';
+  late final TextEditingController _searchCtrl;
+  late String _query;
+
+  Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageSize = widget.initialPageSize ?? 10;
+    _query = widget.initialSearchQuery ?? '';
+    _searchCtrl = TextEditingController(text: _query);
+  }
 
   @override
   void dispose() {
     _searchCtrl.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
   List<T> get _filtered {
+    if (widget.isServerSide) return widget.rows.toList(growable: false);
     if (!widget.enableSearch) return widget.rows.toList(growable: false);
     final q = _query.trim().toLowerCase();
     if (q.isEmpty) return widget.rows.toList(growable: false);
@@ -95,9 +129,10 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
     return copy;
   }
 
-  int get _pageCount => max(1, (_sorted.length / _pageSize).ceil());
+  int get _pageCount => widget.isServerSide ? widget.serverLastPage : max(1, (_sorted.length / _pageSize).ceil());
 
   List<T> get _pageRows {
+    if (widget.isServerSide) return _sorted;
     final start = (_page - 1) * _pageSize;
     final end = min(start + _pageSize, _sorted.length);
     if (start >= _sorted.length) return const [];
@@ -135,15 +170,27 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
           enableSearch: widget.enableSearch,
           searchHint: widget.searchHint,
           searchController: _searchCtrl,
-          onSearchChanged: (v) => setState(() {
-            _query = v;
-            _page = 1;
-          }),
+          onSearchChanged: (v) {
+            setState(() {
+              _query = v;
+              if (!widget.isServerSide) _page = 1;
+            });
+          },
+          onSearchSubmitted: (v) {
+            if (widget.isServerSide && widget.onSearch != null) {
+              widget.onSearch!(v);
+            }
+          },
           pageSize: _pageSize,
-          onPageSize: (v) => setState(() {
-            _pageSize = v;
-            _page = 1;
-          }),
+          onPageSize: (v) {
+            setState(() {
+              _pageSize = v;
+              _page = 1;
+            });
+            if (widget.isServerSide) {
+              widget.onServerPageSize?.call(v);
+            }
+          },
           onExportAllCsv: () => _exportCsv(rows: _sorted, filenameSuffix: 'all'),
           onExportSelectedCsv: _selected.isEmpty
               ? null
@@ -285,12 +332,16 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
           ),
         Divider(height: 1, thickness: 1, color: border),
         AdminDataTableFooter(
-          page: _page,
-          pageCount: _pageCount,
-          pageSize: _pageSize,
-          total: _sorted.length,
-          onPrev: _page > 1 ? () => setState(() => _page--) : null,
-          onNext: _page < _pageCount ? () => setState(() => _page++) : null,
+          page: widget.isServerSide ? widget.serverPage : _page,
+          pageCount: widget.isServerSide ? widget.serverLastPage : _pageCount,
+          pageSize: widget.isServerSide ? widget.rows.length : _pageSize,
+          total: widget.isServerSide ? widget.serverTotal : _sorted.length,
+          onPrev: widget.isServerSide 
+              ? widget.onPrevPage 
+              : (_page > 1 ? () => setState(() => _page--) : null),
+          onNext: widget.isServerSide 
+              ? widget.onNextPage 
+              : (_page < _pageCount ? () => setState(() => _page++) : null),
         ),
         ],
       ),

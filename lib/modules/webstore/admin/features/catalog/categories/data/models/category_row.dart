@@ -1,35 +1,34 @@
 class CategoryRow {
   final int id;
   final String name;
+  final String? nameAr;
+  final String? code;
   final int? parentId;
-  final int productsCount;
+  final String? description;
+  final String? descriptionAr;
   final bool isActive;
 
   CategoryRow({
     required this.id,
     required this.name,
+    this.nameAr,
+    this.code,
     this.parentId,
-    this.productsCount = 0,
+    this.description,
+    this.descriptionAr,
     this.isActive = true,
   });
 
   factory CategoryRow.fromJson(Map<String, dynamic> json) {
     return CategoryRow(
       id: json['id'] as int? ?? 0,
-      name: json['name'] as String? ?? 'Unnamed Category',
-      parentId: json['parentId'] as int?,
-      productsCount: json['productsCount'] as int? ?? 0,
+      name: json['name'] as String? ?? json['name_en'] as String? ?? 'Unnamed Category',
+      nameAr: json['name_ar'] as String?,
+      code: json['code'] as String?,
+      parentId: json['parent_id'] as int?,
+      description: json['description'] as String? ?? json['description_en'] as String?,
+      descriptionAr: json['description_ar'] as String?,
       isActive: (json['active'] ?? json['is_active'] ?? true) as bool,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'parentId': parentId,
-      'productsCount': productsCount,
-      'is_active': isActive,
-    };
   }
 }

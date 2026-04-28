@@ -9,7 +9,7 @@ final boardingsVmProvider = NotifierProvider<BoardingsVm, AdminCrudState<Boardin
 
 class BoardingsVm extends AdminCrudVm<BoardingRow> {
   @override
-  Future<ApiResult<AdminPagedResponse<BoardingRow>>> getItems({required int page, String? search}) {
+  Future<ApiResult<AdminPagedResponse<BoardingRow>>> getItems({required int page, String? search, int? perPage}) {
     return ref.read(boardingsRepositoryProvider).getBoardings(page: page, search: search);
   }
 

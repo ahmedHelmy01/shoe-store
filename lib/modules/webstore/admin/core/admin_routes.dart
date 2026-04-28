@@ -12,6 +12,7 @@ enum AdminRouteId {
   orderGroup,
   orders,
   orderCreate,
+  orderStatuses,
   coupons,
   paymentStatuses,
   paymentMethods,
@@ -82,7 +83,7 @@ class AdminRoutes {
         AdminNavNode(
           id: AdminRouteId.filters,
           routeName: AppRouteNames.webstoreAdminFilters,
-          title: 'Filters',
+          title: 'Tags',
           icon: Icons.tune_rounded,
         ),
       ],
@@ -134,6 +135,12 @@ class AdminRoutes {
           routeName: AppRouteNames.webstoreAdminOrderCreate,
           title: 'New order',
           icon: Icons.add_shopping_cart_rounded,
+        ),
+        AdminNavNode(
+          id: AdminRouteId.orderStatuses,
+          routeName: AppRouteNames.webstoreAdminOrderStatuses,
+          title: 'Order Statuses',
+          icon: Icons.flag_rounded,
         ),
         AdminNavNode(
           id: AdminRouteId.coupons,
@@ -217,6 +224,7 @@ class AdminRoutes {
       AppRouteNames.webstoreAdminFilters => AdminRouteId.filters,
       AppRouteNames.webstoreAdminOrders => AdminRouteId.orders,
       AppRouteNames.webstoreAdminOrderCreate => AdminRouteId.orderCreate,
+      AppRouteNames.webstoreAdminOrderStatuses => AdminRouteId.orderStatuses,
       AppRouteNames.webstoreAdminCoupons => AdminRouteId.coupons,
       AppRouteNames.webstoreAdminBranches => AdminRouteId.branches,
       AppRouteNames.webstoreAdminWarehouses => AdminRouteId.warehouses,
@@ -247,6 +255,7 @@ class AdminRoutes {
       AdminRouteId.orderGroup => AppRouteNames.webstoreAdminOrders,
       AdminRouteId.orders => AppRouteNames.webstoreAdminOrders,
       AdminRouteId.orderCreate => AppRouteNames.webstoreAdminOrderCreate,
+      AdminRouteId.orderStatuses => AppRouteNames.webstoreAdminOrderStatuses,
       AdminRouteId.coupons => AppRouteNames.webstoreAdminCoupons,
       AdminRouteId.branches => AppRouteNames.webstoreAdminBranches,
       AdminRouteId.warehouses => AppRouteNames.webstoreAdminWarehouses,
@@ -261,7 +270,7 @@ class AdminRoutes {
       AdminRouteId.governorates => AppRouteNames.webstoreAdminGovernorates,
       AdminRouteId.settings => AppRouteNames.webstoreAdminSettings,
       AdminRouteId.catalog => AppRouteNames.webstoreAdminProducts,
-      AdminRouteId.operations => AdminRouteId.governorates.toString(), // Dummy but handled by switch
+      AdminRouteId.operations => AdminRouteId.governorates.toString(),
       AdminRouteId.storefront => AdminRouteId.sliders.toString(),
     };
   }

@@ -75,6 +75,7 @@ class AdminCrudData<T> extends AdminCrudState<T> {
   final int? lastPage;
   final int? total;
   final String search;
+  final int perPage;
 
   const AdminCrudData({
     required this.items,
@@ -82,6 +83,7 @@ class AdminCrudData<T> extends AdminCrudState<T> {
     required this.lastPage,
     required this.total,
     required this.search,
+    required this.perPage,
     super.editingItem,
     super.isAdding = false,
     super.isSaving = false,
@@ -111,6 +113,7 @@ class AdminCrudData<T> extends AdminCrudState<T> {
     int? lastPage,
     int? total,
     String? search,
+    int? perPage,
     T? editingItem,
     bool? isAdding,
     bool? isSaving,
@@ -122,6 +125,7 @@ class AdminCrudData<T> extends AdminCrudState<T> {
       lastPage: lastPage ?? this.lastPage,
       total: total ?? this.total,
       search: search ?? this.search,
+      perPage: perPage ?? this.perPage,
       editingItem: clearEditing ? null : (editingItem ?? this.editingItem),
       isAdding: isAdding ?? (clearEditing ? false : this.isAdding),
       isSaving: isSaving ?? this.isSaving,
@@ -139,9 +143,10 @@ abstract class AdminCrudVm<T> extends Notifier<AdminCrudState<T>> {
 
   String _search = '';
   int _page = 1;
+  int _perPage = 10; // Default to 10 to match UI dropdown default, or 25. Let's use 10.
 
   /// Implement this to call the specific repository method.
-  Future<ApiResult<AdminPagedResponse<T>>> getItems({required int page, String? search});
+  Future<ApiResult<AdminPagedResponse<T>>> getItems({required int page, String? search, int? perPage});
 
   /// Implement this to save (create or update) an item.
   Future<ApiResult<T>> saveItem(Map<String, dynamic> data, {dynamic id});
@@ -149,9 +154,10 @@ abstract class AdminCrudVm<T> extends Notifier<AdminCrudState<T>> {
   /// Implement this to delete an item.
   Future<ApiResult<void>> deleteItem(dynamic id);
 
-  Future<void> fetch({String? search, int? page}) async {
+  Future<void> fetch({String? search, int? page, int? perPage}) async {
     if (search != null) _search = search;
     if (page != null) _page = page;
+    if (perPage != null) _perPage = perPage;
 
     // Preserving UI flags during transitions
     final s = state;
@@ -161,7 +167,7 @@ abstract class AdminCrudVm<T> extends Notifier<AdminCrudState<T>> {
       isSaving: s.isSaving,
     );
     
-    final res = await getItems(page: _page, search: _search);
+    final res = await getItems(page: _page, search: _search, perPage: _perPage);
 
     res.when(
       success: (paged) {
@@ -171,6 +177,7 @@ abstract class AdminCrudVm<T> extends Notifier<AdminCrudState<T>> {
           lastPage: paged.lastPage,
           total: paged.total,
           search: _search,
+          perPage: _perPage,
           editingItem: state.editingItem,
           isAdding: state.isAdding,
           isSaving: state.isSaving,
@@ -217,11 +224,14 @@ abstract class AdminCrudVm<T> extends Notifier<AdminCrudState<T>> {
     );
   }
 
-  Future<void> commitDelete(dynamic id) async {
+  Future<bool> commitDelete(dynamic id) async {
     final res = await deleteItem(id);
-    res.when(
-      success: (_) => fetch(page: _page),
-      failure: (e) => {}, // Handle error
+    return res.when(
+      success: (_) {
+        fetch(page: _page);
+        return true;
+      },
+      failure: (e) => false,
     );
   }
 

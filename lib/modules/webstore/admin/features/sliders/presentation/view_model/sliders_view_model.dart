@@ -9,7 +9,7 @@ final slidersVmProvider = NotifierProvider<SlidersVm, AdminCrudState<SliderRow>>
 
 class SlidersVm extends AdminCrudVm<SliderRow> {
   @override
-  Future<ApiResult<AdminPagedResponse<SliderRow>>> getItems({required int page, String? search}) {
+  Future<ApiResult<AdminPagedResponse<SliderRow>>> getItems({required int page, String? search, int? perPage}) {
     return ref.read(slidersRepositoryProvider).getSliders(page: page, search: search);
   }
 

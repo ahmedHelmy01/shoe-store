@@ -184,9 +184,6 @@ class FakeData {
       return CompanyRow(
         id: id,
         name: '${names[rnd.nextInt(names.length)]} ${id <= 8 ? '' : '#$id'}'.trim(),
-        code: 'CMP-${1000 + id}',
-        country: countries[rnd.nextInt(countries.length)],
-        productsCount: rnd.nextInt(480),
         isActive: rnd.nextInt(10) != 0,
       );
     });
@@ -215,8 +212,7 @@ class FakeData {
       return FilterRow(
         id: id,
         name: '${names[rnd.nextInt(names.length)]}${rnd.nextBool() ? '' : ' #$id'}'.trim(),
-        type: type,
-        optionsCount: options,
+
         isActive: rnd.nextInt(10) != 0,
       );
     });

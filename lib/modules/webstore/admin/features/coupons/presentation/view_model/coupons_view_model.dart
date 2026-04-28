@@ -9,7 +9,7 @@ final couponsVmProvider = NotifierProvider<CouponsVm, AdminCrudState<CouponRow>>
 
 class CouponsVm extends AdminCrudVm<CouponRow> {
   @override
-  Future<ApiResult<AdminPagedResponse<CouponRow>>> getItems({required int page, String? search}) {
+  Future<ApiResult<AdminPagedResponse<CouponRow>>> getItems({required int page, String? search, int? perPage}) {
     return ref.read(couponsRepositoryProvider).getCoupons(page: page, search: search);
   }
 

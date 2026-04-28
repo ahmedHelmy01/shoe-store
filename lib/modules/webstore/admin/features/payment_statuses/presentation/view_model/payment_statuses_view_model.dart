@@ -9,7 +9,7 @@ final paymentStatusesVmProvider = NotifierProvider<PaymentStatusesVm, AdminCrudS
 
 class PaymentStatusesVm extends AdminCrudVm<PaymentStatusRow> {
   @override
-  Future<ApiResult<AdminPagedResponse<PaymentStatusRow>>> getItems({required int page, String? search}) {
+  Future<ApiResult<AdminPagedResponse<PaymentStatusRow>>> getItems({required int page, String? search, int? perPage}) {
     return ref.read(paymentStatusesRepositoryProvider).getPaymentStatuses(page: page, search: search);
   }
 

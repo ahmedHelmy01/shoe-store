@@ -22,19 +22,21 @@ class CompanyForm extends StatefulWidget {
 class _CompanyFormState extends State<CompanyForm> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameCtrl;
-  late final TextEditingController _codeCtrl;
+  late final TextEditingController _nameArCtrl;
+  bool _isActive = true;
 
   @override
   void initState() {
     super.initState();
     _nameCtrl = TextEditingController(text: widget.initial?.name ?? '');
-    _codeCtrl = TextEditingController(text: widget.initial?.code ?? '');
+    _nameArCtrl = TextEditingController(text: widget.initial?.nameAr ?? '');
+    _isActive = widget.initial?.isActive ?? true;
   }
 
   @override
   void dispose() {
     _nameCtrl.dispose();
-    _codeCtrl.dispose();
+    _nameArCtrl.dispose();
     super.dispose();
   }
 
@@ -42,7 +44,8 @@ class _CompanyFormState extends State<CompanyForm> {
     if (_formKey.currentState?.validate() ?? false) {
       widget.onSave({
         'name': _nameCtrl.text.trim(),
-        'code': _codeCtrl.text.trim(),
+        'name_ar': _nameArCtrl.text.trim(),
+        'is_active': _isActive,
       });
     }
   }
@@ -56,15 +59,23 @@ class _CompanyFormState extends State<CompanyForm> {
         children: [
           AppTextField(
             controller: _nameCtrl,
-            label: 'Company Name',
-            hint: 'e.g. Samsung, Apple',
+            label: 'Company Name (English)',
+            hint: 'e.g. Pfizer',
             validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           AppTextField(
-            controller: _codeCtrl,
-            label: 'Company Code',
-            hint: 'e.g. SAMSUNG_EGY',
+            controller: _nameArCtrl,
+            label: 'Company Name (Arabic)',
+            hint: 'e.g. فايزر',
+            validator: (v) => v == null || v.isEmpty ? 'Arabic name is required' : null,
+          ),
+          const SizedBox(height: 16),
+          SwitchListTile(
+            title: const Text('Is Active'),
+            value: _isActive,
+            onChanged: (val) => setState(() => _isActive = val),
+            contentPadding: EdgeInsets.zero,
           ),
           const SizedBox(height: 32),
           AppButton(

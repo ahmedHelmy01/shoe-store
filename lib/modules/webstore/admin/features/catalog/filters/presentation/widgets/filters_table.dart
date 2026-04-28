@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/filters/data/models/filter_row.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+
+import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
 
 class FiltersTable extends StatelessWidget {
   final List<FilterRow> items;
@@ -21,8 +25,8 @@ class FiltersTable extends StatelessWidget {
     return AdminDataTable<FilterRow>(
       rows: items,
       idOf: (f) => '${f.id}',
-      exportBaseName: 'filters',
-      searchHint: 'Search filters…',
+      exportBaseName: 'tags',
+      searchHint: 'Search tags…',
       searchText: (f) => '${f.id} ${f.name}',
       cardBuilder: cardBuilder,
       columns: [
@@ -43,41 +47,50 @@ class FiltersTable extends StatelessWidget {
           width: 250,
         ),
         AdminColumn<FilterRow>(
-          title: 'Type',
+          title: 'Arabic Name',
           sortable: true,
-          sortValue: (f) => f.type,
-          exportValue: (f) => f.type,
-          cell: (_, f) => Text(f.type, style: const TextStyle(fontFamily: 'monospace', fontSize: 12)),
-          width: 120,
+          sortValue: (f) => f.nameAr ?? '',
+          exportValue: (f) => f.nameAr ?? '',
+          cell: (_, f) => Text(f.nameAr ?? '-', style: const TextStyle(fontWeight: FontWeight.w600)),
+          width: 200,
         ),
+
         AdminColumn<FilterRow>(
           title: 'Status',
           sortable: true,
           sortValue: (f) => f.isActive ? 1 : 0,
           exportValue: (f) => f.isActive ? 'Active' : 'Inactive',
-          cell: (_, f) => Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: (f.isActive ? Colors.green : Colors.red).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              f.isActive ? 'Active' : 'Inactive',
-              style: TextStyle(
-                color: f.isActive ? Colors.green : Colors.red,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
+          cell: (_, f) => AdminStatusBadge(isActive: f.isActive),
           width: 100,
         ),
         AdminColumn<FilterRow>(
           title: 'Actions',
           cell: (_, f) => AdminTableActionsCell<FilterRow>(
             row: f,
+            onView: (f) {
+              showDialog(
+                context: context,
+                builder: (context) => AdminDetailsDialog(
+                  title: 'Tag Details',
+                  id: f.id.toString(),
+                  icon: Icons.local_offer_rounded,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', f.name, Icons.language_rounded, bottomPadding: 0)),
+                        const SizedBox(width: 16),
+                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', f.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    AdminDetailsDialog.buildStatusRow(context, f.isActive),
+                  ],
+                ),
+              );
+            },
             onEdit: onEdit,
             onDelete: (item) => onDelete(item.id),
+            confirmBeforeDelete: false,
           ),
           width: 130,
         ),
@@ -85,3 +98,4 @@ class FiltersTable extends StatelessWidget {
     );
   }
 }
+

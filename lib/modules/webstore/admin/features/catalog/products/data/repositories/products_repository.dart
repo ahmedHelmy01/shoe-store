@@ -9,6 +9,7 @@ abstract class IProductsRepository {
   Future<ApiResult<AdminPagedResponse<ProductRow>>> getProducts({
     int page = 1,
     String? search,
+    int? perPage,
   });
 
   Future<ApiResult<ProductRow>> saveProduct(Map<String, dynamic> data, {int? id});
@@ -25,9 +26,10 @@ class ProductsRepository extends AdminBaseRepository implements IProductsReposit
   Future<ApiResult<AdminPagedResponse<ProductRow>>> getProducts({
     int page = 1,
     String? search,
+    int? perPage,
   }) {
     return safeApiCall(() async {
-      final json = await _ds.getProducts(page: page, search: search);
+      final json = await _ds.getProducts(page: page, search: search, perPage: perPage);
       return parsePaged(json, page, (j) => ProductRow.fromJson(j));
     });
   }

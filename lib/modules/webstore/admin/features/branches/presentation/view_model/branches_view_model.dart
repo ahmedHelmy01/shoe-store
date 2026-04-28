@@ -9,8 +9,8 @@ final branchesVmProvider = NotifierProvider<BranchesVm, AdminCrudState<BranchRow
 
 class BranchesVm extends AdminCrudVm<BranchRow> {
   @override
-  Future<ApiResult<AdminPagedResponse<BranchRow>>> getItems({required int page, String? search}) {
-    return ref.read(branchesRepositoryProvider).getBranches(page: page, search: search);
+  Future<ApiResult<AdminPagedResponse<BranchRow>>> getItems({required int page, String? search, int? perPage}) {
+    return ref.read(branchesRepositoryProvider).getBranches(page: page, search: search, perPage: perPage);
   }
 
   @override

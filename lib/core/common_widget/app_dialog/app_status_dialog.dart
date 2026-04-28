@@ -58,6 +58,8 @@ class AppStatusDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final isSuccess = status == AppDialogStatus.success;
     final statusColor = isSuccess ? AppColors.success : AppColors.error;
     final statusIcon = isSuccess ? Icons.check_circle_rounded : Icons.error_rounded;
@@ -69,12 +71,12 @@ class AppStatusDialog extends StatelessWidget {
         constraints: const BoxConstraints(maxWidth: 420),
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: const Color(0xFF0F1D35),
+          color: isDark ? const Color(0xFF0F1D35) : Colors.white,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+          border: Border.all(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.12)),
           boxShadow: [
             BoxShadow(
-              color: statusColor.withValues(alpha: 0.22),
+              color: (isDark ? statusColor : Colors.black).withValues(alpha: isDark ? 0.22 : 0.08),
               blurRadius: 34,
               offset: const Offset(0, 16),
             ),
@@ -105,8 +107,8 @@ class AppStatusDialog extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: isDark ? Colors.white : Colors.black87,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
               ),
@@ -116,7 +118,7 @@ class AppStatusDialog extends StatelessWidget {
               message,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.85),
+                color: (isDark ? Colors.white : Colors.black87).withValues(alpha: 0.85),
                 fontSize: 14,
                 height: 1.45,
               ),

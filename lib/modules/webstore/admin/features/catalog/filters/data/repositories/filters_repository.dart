@@ -36,9 +36,9 @@ class FiltersRepository extends AdminBaseRepository implements IFiltersRepositor
   Future<ApiResult<FilterRow>> saveFilter(Map<String, dynamic> data, {int? id}) {
     return safeApiCall(() async {
       final json = id == null
-          ? await _ds.postData(ApiEndpoints.webstore.admin.filters, data)
+          ? await _ds.postData(ApiEndpoints.webstore.admin.tags, data)
           : await _ds.putData(
-              ApiEndpoints.withId(ApiEndpoints.webstore.admin.filters, id),
+              ApiEndpoints.withId(ApiEndpoints.webstore.admin.tags, id),
               data,
             );
       return parseSingle(json, (j) => FilterRow.fromJson(j));
@@ -49,7 +49,7 @@ class FiltersRepository extends AdminBaseRepository implements IFiltersRepositor
   Future<ApiResult<void>> deleteFilter(int id) {
     return safeApiCall(() async {
       await _ds.deleteData(
-        ApiEndpoints.withId(ApiEndpoints.webstore.admin.filters, id),
+        ApiEndpoints.withId(ApiEndpoints.webstore.admin.tags, id),
       );
     });
   }

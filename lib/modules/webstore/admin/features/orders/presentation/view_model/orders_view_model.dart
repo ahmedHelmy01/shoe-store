@@ -9,7 +9,7 @@ final ordersVmProvider = NotifierProvider<OrdersVm, AdminCrudState<OrderRow>>(Or
 
 class OrdersVm extends AdminCrudVm<OrderRow> {
   @override
-  Future<ApiResult<AdminPagedResponse<OrderRow>>> getItems({required int page, String? search}) {
+  Future<ApiResult<AdminPagedResponse<OrderRow>>> getItems({required int page, String? search, int? perPage}) {
     return ref.read(ordersRepositoryProvider).getOrders(page: page, search: search);
   }
 

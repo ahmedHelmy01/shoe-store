@@ -9,8 +9,8 @@ final companiesVmProvider = NotifierProvider.autoDispose<CompaniesVm, AdminCrudS
 
 class CompaniesVm extends AdminCrudVm<CompanyRow> {
   @override
-  Future<ApiResult<AdminPagedResponse<CompanyRow>>> getItems({required int page, String? search}) {
-    return ref.read(companiesRepositoryProvider).getCompanies(page: page, search: search);
+  Future<ApiResult<AdminPagedResponse<CompanyRow>>> getItems({required int page, String? search, int? perPage}) {
+    return ref.read(companiesRepositoryProvider).getCompanies(page: page, search: search, perPage: perPage);
   }
 
   @override

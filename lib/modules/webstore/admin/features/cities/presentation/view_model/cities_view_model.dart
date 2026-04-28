@@ -9,7 +9,7 @@ final citiesVmProvider = NotifierProvider<CitiesVm, AdminCrudState<CityRow>>(Cit
 
 class CitiesVm extends AdminCrudVm<CityRow> {
   @override
-  Future<ApiResult<AdminPagedResponse<CityRow>>> getItems({required int page, String? search}) {
+  Future<ApiResult<AdminPagedResponse<CityRow>>> getItems({required int page, String? search, int? perPage}) {
     return ref.read(citiesRepositoryProvider).getCities(page: page, search: search);
   }
 

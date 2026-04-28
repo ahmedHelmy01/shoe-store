@@ -20,67 +20,149 @@ class AdForm extends StatefulWidget {
 }
 
 class _AdFormState extends State<AdForm> {
+  final _formKey = GlobalKey<FormState>();
   late final TextEditingController _titleCtrl;
+  late final TextEditingController _titleArCtrl;
+  late final TextEditingController _contentCtrl;
+  late final TextEditingController _contentArCtrl;
+  late final TextEditingController _imageCtrl;
   late final TextEditingController _locationCtrl;
+  late final TextEditingController _linkUrlCtrl;
   late bool _isActive;
 
   @override
   void initState() {
     super.initState();
     _titleCtrl = TextEditingController(text: widget.initial?.title ?? '');
-    _locationCtrl = TextEditingController(text: widget.initial?.location ?? '');
+    _titleArCtrl = TextEditingController(text: widget.initial?.titleAr ?? '');
+    _contentCtrl = TextEditingController(text: widget.initial?.content ?? '');
+    _contentArCtrl = TextEditingController(text: widget.initial?.contentAr ?? '');
+    _imageCtrl = TextEditingController(text: widget.initial?.image ?? '');
+    _locationCtrl = TextEditingController(text: widget.initial?.location ?? 'home');
+    _linkUrlCtrl = TextEditingController(text: widget.initial?.linkUrl ?? '');
     _isActive = widget.initial?.isActive ?? true;
   }
 
   @override
   void dispose() {
     _titleCtrl.dispose();
+    _titleArCtrl.dispose();
+    _contentCtrl.dispose();
+    _contentArCtrl.dispose();
+    _imageCtrl.dispose();
     _locationCtrl.dispose();
+    _linkUrlCtrl.dispose();
     super.dispose();
   }
 
   void _submit() {
-    final data = {
-      'title': _titleCtrl.text.trim(),
-      'location': _locationCtrl.text.trim(),
-      'is_active': _isActive,
-    };
-    widget.onSave(data);
+    if (_formKey.currentState?.validate() ?? false) {
+      widget.onSave({
+        'title': _titleCtrl.text.trim(),
+        'title_ar': _titleArCtrl.text.trim(),
+        'content': _contentCtrl.text.trim(),
+        'content_ar': _contentArCtrl.text.trim(),
+        'image': _imageCtrl.text.trim(),
+        'location': _locationCtrl.text.trim(),
+        'link_url': _linkUrlCtrl.text.trim(),
+        'is_active': _isActive,
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        AppTextField(
-          controller: _titleCtrl,
-          label: 'Title (English)',
-          hint: 'e.g. Summer Sale 2024',
-          borderRadius: 14,
+    return Form(
+      key: _formKey,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: AppTextField(
+                    controller: _titleCtrl,
+                    label: 'Title (EN)',
+                    hint: 'e.g. Special Offer',
+                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: AppTextField(
+                    controller: _titleArCtrl,
+                    label: 'Title (AR)',
+                    hint: 'عرض خاص',
+                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 18),
+            Row(
+              children: [
+                Expanded(
+                  child: AppTextField(
+                    controller: _contentCtrl,
+                    label: 'Content (EN)',
+                    hint: 'Buy 1 Get 1',
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: AppTextField(
+                    controller: _contentArCtrl,
+                    label: 'Content (AR)',
+                    hint: 'اشتري 1 واحصل على 1',
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 18),
+            AppTextField(
+              controller: _imageCtrl,
+              label: 'Image Path/URL',
+              hint: 'uploads/ads/offer.jpg',
+            ),
+            const SizedBox(height: 18),
+            Row(
+              children: [
+                Expanded(
+                  child: AppTextField(
+                    controller: _locationCtrl,
+                    label: 'Location',
+                    hint: 'home',
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: AppTextField(
+                    controller: _linkUrlCtrl,
+                    label: 'Link URL',
+                    hint: '/offers',
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 18),
+            SwitchListTile(
+              title: const Text('Is Active'),
+              subtitle: const Text('Hide or show this ad on the storefront'),
+              value: _isActive,
+              onChanged: (v) => setState(() => _isActive = v),
+              contentPadding: EdgeInsets.zero,
+            ),
+            const SizedBox(height: 32),
+            AppButton(
+              onPressed: _submit,
+              isLoading: widget.isSaving,
+              child: Text(widget.initial == null ? 'Create Ad' : 'Save Changes'),
+            ),
+          ],
         ),
-        const SizedBox(height: 18),
-        AppTextField(
-          controller: _locationCtrl,
-          label: 'Location / Link',
-          hint: 'e.g. https://store.com/offers',
-          borderRadius: 14,
-        ),
-        const SizedBox(height: 18),
-        SwitchListTile(
-          title: const Text('Is Active'),
-          subtitle: const Text('Hide or show this ad on the storefront'),
-          value: _isActive,
-          onChanged: (v) => setState(() => _isActive = v),
-          contentPadding: EdgeInsets.zero,
-        ),
-        const SizedBox(height: 32),
-        AppButton(
-          onPressed: _submit,
-          isLoading: widget.isSaving,
-          child: Text(widget.initial == null ? 'Create Ad' : 'Save Changes'),
-        ),
-      ],
+      ),
     );
   }
 }
+

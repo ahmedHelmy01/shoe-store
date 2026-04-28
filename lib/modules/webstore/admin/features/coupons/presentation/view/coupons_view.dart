@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
+import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import '../view_model/coupons_view_model.dart';
 import '../widgets/coupons_table.dart';
 import '../widgets/coupon_form.dart';
@@ -45,11 +48,28 @@ class CouponsView extends ConsumerWidget {
             title: state.isAdding ? 'Create Coupon' : 'Edit Coupon',
             size: AdminDialogSize.medium,
             child: CouponForm(
+              key: ValueKey(state.isAdding ? 'coupon-add' : 'coupon-edit-${state.editingItem?.id ?? 0}'),
               initial: state.editingItem,
               isSaving: state.isSaving,
               onSave: (data) async {
-                if (await notifier.commitSave(data, id: state.editingItem?.id)) {
+                final result = await notifier.commitSave(data, id: state.editingItem?.id);
+                if (!context.mounted) return;
+
+                if (result) {
                   notifier.closePanel();
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.success,
+                    title: state.isAdding ? 'Coupon Created' : 'Coupon Updated',
+                    message: 'The coupon has been saved successfully.',
+                  );
+                } else {
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.error,
+                    title: 'Save Failed',
+                    message: 'Could not save the coupon. Please try again.',
+                  );
                 }
               },
             ),
@@ -81,16 +101,36 @@ class CouponsView extends ConsumerWidget {
             child: CouponsTable(
               items: items,
               onEdit: (c) => notifier.openEdit(c),
-              onDelete: (id) => notifier.commitDelete(id),
+              onDelete: (id) => _confirmAndDelete(context, notifier, id, items.firstWhere((c) => c.id == id).code),
               cardBuilder: (context, c) => _CouponCard(
                 coupon: c,
                 onEdit: () => notifier.openEdit(c),
-                onDelete: () => notifier.commitDelete(c.id),
+                onDelete: () => _confirmAndDelete(context, notifier, c.id, c.code),
               ),
             ),
           ),
         ),
     };
+  }
+
+  void _confirmAndDelete(BuildContext context, CouponsVm notifier, int id, String name) {
+    AppDialog.show(
+      context,
+      title: 'Delete Coupon',
+      message: 'Are you sure you want to delete coupon "$name"?',
+      cancelText: 'Cancel',
+      confirmText: 'Delete',
+      onConfirm: () async {
+        Navigator.pop(context);
+        final success = await notifier.commitDelete(id);
+        if (!context.mounted) return;
+        if (success) {
+          AppStatusDialog.show(context, status: AppDialogStatus.success, title: 'Deleted', message: 'Coupon deleted successfully.');
+        } else {
+          AppStatusDialog.show(context, status: AppDialogStatus.error, title: 'Delete Failed', message: 'Could not delete coupon. Please try again.');
+        }
+      },
+    );
   }
 }
 
@@ -143,7 +183,7 @@ class _CouponCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      coupon.isPercentage ? '${coupon.discountAmount}% Discount' : '\$${coupon.discountAmount} Off',
+                      coupon.isPercentage ? '${coupon.discountValue}% Discount' : '\$${coupon.discountValue} Off',
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -151,14 +191,8 @@ class _CouponCard extends StatelessWidget {
               ),
               PopupMenuButton(
                 itemBuilder: (context) => [
-                  PopupMenuItem(
-                    onTap: onEdit,
-                    child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: 8), Text('Edit')]),
-                  ),
-                  PopupMenuItem(
-                    onTap: onDelete,
-                    child: const Row(children: [Icon(Icons.delete_outline_rounded, color: Colors.red), SizedBox(width: 8), Text('Delete')]),
-                  ),
+                  PopupMenuItem(onTap: onEdit, child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: 8), Text('Edit')])),
+                  PopupMenuItem(onTap: onDelete, child: const Row(children: [Icon(Icons.delete_outline_rounded, color: Colors.red), SizedBox(width: 8), Text('Delete')])),
                 ],
               ),
             ],
@@ -167,6 +201,7 @@ class _CouponCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              AdminStatusBadge(isActive: coupon.isActive),
               Text(
                 'ID: ${coupon.id}',
                 style: theme.textTheme.labelSmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.4)),

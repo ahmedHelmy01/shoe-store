@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
+import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import '../view_model/sliders_view_model.dart';
 import '../widgets/sliders_table.dart';
 import '../widgets/slider_form.dart';
@@ -27,24 +30,17 @@ class SlidersView extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
               AdminPageHeader(
                 title: 'Homepage Sliders',
                 onRefresh: () => notifier.fetch(),
                 primaryActionLabel: 'Add Slider',
                 onPrimaryAction: () => notifier.openAdd(),
               ),
-              const SizedBox(height: 20),
-              
-              // Body
-              Expanded(
-                child: _buildBody(context, state, isDark, ref),
-              ),
+              const SizedBox(height: 12),
+              Expanded(child: _buildBody(context, state, isDark, notifier)),
             ],
           ),
         ),
-
-        // Side Panel for Add/Edit
         if (state.isAdding || state.editingItem != null)
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
@@ -52,14 +48,27 @@ class SlidersView extends ConsumerWidget {
             title: state.isAdding ? 'Create Slider' : 'Edit Slider',
             size: AdminDialogSize.medium,
             child: SliderForm(
+              key: ValueKey(state.isAdding ? 'slider-add' : 'slider-edit-${state.editingItem?.id ?? 0}'),
               initial: state.editingItem,
               isSaving: state.isSaving,
               onSave: (data) async {
-                final success = await notifier.commitSave(data, id: state.editingItem?.id);
-                if (success) {
+                final result = await notifier.commitSave(data, id: state.editingItem?.id);
+                if (!context.mounted) return;
+
+                if (result) {
                   notifier.closePanel();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Slider saved successfully'), backgroundColor: Colors.green),
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.success,
+                    title: state.isAdding ? 'Slider Created' : 'Slider Updated',
+                    message: 'The slider has been saved successfully.',
+                  );
+                } else {
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.error,
+                    title: 'Save Failed',
+                    message: 'Could not save the slider. Please try again.',
                   );
                 }
               },
@@ -69,9 +78,7 @@ class SlidersView extends ConsumerWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context, AdminCrudState<SliderRow> state, bool isDark, WidgetRef ref) {
-    final notifier = ref.read(slidersVmProvider.notifier);
-
+  Widget _buildBody(BuildContext context, AdminCrudState<SliderRow> state, bool isDark, SlidersVm notifier) {
     return switch (state) {
       AdminCrudLoading() => const Center(child: CircularProgressIndicator()),
       AdminCrudError(:final message) => AdminStateWidget(message: message, onRetry: () => notifier.fetch()),
@@ -94,11 +101,11 @@ class SlidersView extends ConsumerWidget {
             child: SlidersTable(
               items: items,
               onEdit: (s) => notifier.openEdit(s),
-              onDelete: (id) => _showDeleteDialog(context, id, notifier),
+              onDelete: (id) => _confirmAndDelete(context, notifier, id, items.firstWhere((s) => s.id == id).title),
               cardBuilder: (context, s) => _SliderCard(
                 slider: s,
                 onEdit: () => notifier.openEdit(s),
-                onDelete: () => _showDeleteDialog(context, s.id, notifier),
+                onDelete: () => _confirmAndDelete(context, notifier, s.id, s.title),
               ),
             ),
           ),
@@ -106,26 +113,27 @@ class SlidersView extends ConsumerWidget {
     };
   }
 
-  void _showDeleteDialog(BuildContext context, int id, SlidersVm notifier) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Delete Slider?'),
-        content: const Text('Are you sure you want to remove this slider?'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-          TextButton(
-            onPressed: () {
-              notifier.commitDelete(id);
-              Navigator.pop(ctx);
-            },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
+  void _confirmAndDelete(BuildContext context, SlidersVm notifier, int id, String title) {
+    AppDialog.show(
+      context,
+      title: 'Delete Slider',
+      message: 'Are you sure you want to delete "$title"?',
+      cancelText: 'Cancel',
+      confirmText: 'Delete',
+      onConfirm: () async {
+        Navigator.pop(context);
+        final success = await notifier.commitDelete(id);
+        if (!context.mounted) return;
+        if (success) {
+          AppStatusDialog.show(context, status: AppDialogStatus.success, title: 'Deleted', message: 'Slider deleted successfully.');
+        } else {
+          AppStatusDialog.show(context, status: AppDialogStatus.error, title: 'Delete Failed', message: 'Could not delete slider.');
+        }
+      },
     );
   }
 }
+
 
 class _SliderCard extends StatelessWidget {
   final SliderRow slider;

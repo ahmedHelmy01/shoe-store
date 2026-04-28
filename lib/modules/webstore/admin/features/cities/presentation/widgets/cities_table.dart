@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/cities/data/models/city_row.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_table_actions_cell.dart';
 
 class CitiesTable extends StatelessWidget {
   final List<CityRow> items;
@@ -65,6 +66,16 @@ class CitiesTable extends StatelessWidget {
           exportValue: (c) => '${c.deliveryFee}',
           cell: (_, c) => Text('${c.deliveryFee}'),
           width: 100,
+        ),
+        AdminColumn<CityRow>(
+          title: 'Actions',
+          cell: (_, c) => AdminTableActionsCell<CityRow>(
+            row: c,
+            onEdit: onEdit,
+            onDelete: (item) => onDelete(item.id),
+            confirmBeforeDelete: false,
+          ),
+          width: 130,
         ),
       ],
     );

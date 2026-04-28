@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
+import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
@@ -8,6 +10,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_sta
 import '../view_model/products_view_model.dart';
 import '../widgets/products_table.dart';
 import '../widgets/product_form.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/products/data/models/product_row.dart';
 
 class ProductsView extends ConsumerWidget {
@@ -48,11 +51,27 @@ class ProductsView extends ConsumerWidget {
               initial: state.editingItem,
               isSaving: state.isSaving,
               onSave: (data) async {
-                if (await notifier.commitSave(
+                final result = await notifier.commitSave(
                   data,
                   id: state.editingItem?.id,
-                )) {
+                );
+                if (!context.mounted) return;
+
+                if (result) {
                   notifier.closePanel();
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.success,
+                    title: state.isAdding ? 'Product Added' : 'Product Updated',
+                    message: 'The product has been saved successfully.',
+                  );
+                } else {
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.error,
+                    title: 'Save Failed',
+                    message: 'An error occurred while saving the product.',
+                  );
                 }
               },
             ),
@@ -69,7 +88,10 @@ class ProductsView extends ConsumerWidget {
   ) {
     return switch (state) {
       AdminCrudLoading() => const Center(child: CircularProgressIndicator()),
-      AdminCrudError(:final message) => AdminStateWidget(message: message, onRetry: () => notifier.fetch()),
+      AdminCrudError(:final message) => AdminStateWidget(
+        message: message,
+        onRetry: () => notifier.fetch(),
+      ),
       AdminCrudData(:final items) => AppAnimation.fadeInUp(
         child: Container(
           decoration: BoxDecoration(
@@ -91,18 +113,63 @@ class ProductsView extends ConsumerWidget {
           ),
           clipBehavior: Clip.antiAlias,
           child: ProductsTable(
-            items: items,
+            state: state,
             onEdit: (p) => notifier.openEdit(p),
-            onDelete: (id) => notifier.commitDelete(id),
+            onDelete: (id) => _confirmAndDelete(
+              context,
+              notifier,
+              id,
+              items.firstWhere((p) => p.id == id).name,
+            ),
+            onNextPage: () => notifier.nextPage(),
+            onPrevPage: () => notifier.prevPage(),
+            onSearch: (q) => notifier.fetch(search: q, page: 1),
+            onServerPageSize: (size) => notifier.fetch(perPage: size, page: 1),
             cardBuilder: (context, p) => _ProductCard(
               product: p,
               onEdit: () => notifier.openEdit(p),
-              onDelete: () => notifier.commitDelete(p.id),
+              onDelete: () =>
+                  _confirmAndDelete(context, notifier, p.id, p.name),
             ),
           ),
         ),
       ),
     };
+  }
+
+  void _confirmAndDelete(
+    BuildContext context,
+    ProductsVm notifier,
+    int id,
+    String name,
+  ) {
+    AppDialog.show(
+      context,
+      title: 'Delete Product',
+      message: 'Are you sure you want to delete product "$name"?',
+      cancelText: 'Cancel',
+      confirmText: 'Delete',
+      onConfirm: () async {
+        Navigator.pop(context);
+        final success = await notifier.commitDelete(id);
+        if (!context.mounted) return;
+        if (success) {
+          AppStatusDialog.show(
+            context,
+            status: AppDialogStatus.success,
+            title: 'Deleted',
+            message: 'Product deleted successfully.',
+          );
+        } else {
+          AppStatusDialog.show(
+            context,
+            status: AppDialogStatus.error,
+            title: 'Delete Failed',
+            message: 'Could not delete the product. Please try again.',
+          );
+        }
+      },
+    );
   }
 }
 
@@ -136,6 +203,25 @@ class _ProductCard extends StatelessWidget {
         children: [
           Row(
             children: [
+              if (product.image != null)
+                Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      product.image!,
+                      width: 48,
+                      height: 48,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        width: 48,
+                        height: 48,
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.image_not_supported, size: 20),
+                      ),
+                    ),
+                  ),
+                ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,6 +232,8 @@ class _ProductCard extends StatelessWidget {
                         fontWeight: FontWeight.w900,
                         letterSpacing: -0.5,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -190,23 +278,9 @@ class _ProductCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: (product.isActive ? Colors.green : Colors.red)
-                      .withValues(alpha: 0.1),
-                ),
-                child: Text(
-                  product.isActive ? 'Active' : 'Inactive',
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: product.isActive ? Colors.green : Colors.red,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+              AdminStatusBadge(isActive: product.isActive),
               Text(
-                product.price != null ? '\$${product.price}' : '-',
+                product.salePrice != null ? '${product.salePrice} EGP' : '-',
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w900,
                   color: theme.primaryColor,

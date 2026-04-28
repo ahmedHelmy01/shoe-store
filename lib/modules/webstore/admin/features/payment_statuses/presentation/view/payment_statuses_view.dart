@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
+import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/features/payment_statuses/data/models/payment_status_row.dart';
 import '../view_model/payment_statuses_view_model.dart';
 import '../widgets/payment_statuses_table.dart';
@@ -45,11 +48,28 @@ class PaymentStatusesView extends ConsumerWidget {
             title: state.isAdding ? 'Create Status' : 'Edit Status',
             size: AdminDialogSize.small,
             child: PaymentStatusForm(
+              key: ValueKey(state.isAdding ? 'ps-add' : 'ps-edit-${state.editingItem?.id ?? 0}'),
               initial: state.editingItem,
               isSaving: state.isSaving,
               onSave: (data) async {
-                if (await notifier.commitSave(data, id: state.editingItem?.id)) {
+                final result = await notifier.commitSave(data, id: state.editingItem?.id);
+                if (!context.mounted) return;
+
+                if (result) {
                   notifier.closePanel();
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.success,
+                    title: state.isAdding ? 'Status Created' : 'Status Updated',
+                    message: 'The payment status has been saved successfully.',
+                  );
+                } else {
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.error,
+                    title: 'Save Failed',
+                    message: 'Could not save the payment status. Please try again.',
+                  );
                 }
               },
             ),
@@ -81,16 +101,36 @@ class PaymentStatusesView extends ConsumerWidget {
             child: PaymentStatusesTable(
               items: items,
               onEdit: (s) => notifier.openEdit(s),
-              onDelete: (id) => notifier.commitDelete(id),
+              onDelete: (id) => _confirmAndDelete(context, notifier, id, items.firstWhere((s) => s.id == id).name),
               cardBuilder: (context, s) => _PaymentStatusCard(
                 status: s,
                 onEdit: () => notifier.openEdit(s),
-                onDelete: () => notifier.commitDelete(s.id),
+                onDelete: () => _confirmAndDelete(context, notifier, s.id, s.name),
               ),
             ),
           ),
         ),
     };
+  }
+
+  void _confirmAndDelete(BuildContext context, PaymentStatusesVm notifier, int id, String name) {
+    AppDialog.show(
+      context,
+      title: 'Delete Payment Status',
+      message: 'Are you sure you want to delete "$name"?',
+      cancelText: 'Cancel',
+      confirmText: 'Delete',
+      onConfirm: () async {
+        Navigator.pop(context);
+        final success = await notifier.commitDelete(id);
+        if (!context.mounted) return;
+        if (success) {
+          AppStatusDialog.show(context, status: AppDialogStatus.success, title: 'Deleted', message: 'Payment status deleted successfully.');
+        } else {
+          AppStatusDialog.show(context, status: AppDialogStatus.error, title: 'Delete Failed', message: 'Could not delete payment status.');
+        }
+      },
+    );
   }
 }
 
@@ -109,7 +149,6 @@ class _PaymentStatusCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final colorVal = Color(int.parse(status.color.replaceFirst('#', '0xFF')));
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -123,28 +162,30 @@ class _PaymentStatusCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                width: 12,
-                height: 12,
-                decoration: BoxDecoration(color: colorVal, shape: BoxShape.circle),
-              ),
-              const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  status.name,
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      status.name,
+                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
+                    ),
+                    if (status.nameAr != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        status.nameAr!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
               PopupMenuButton(
                 itemBuilder: (context) => [
-                  PopupMenuItem(
-                    onTap: onEdit,
-                    child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: 8), Text('Edit')]),
-                  ),
-                  PopupMenuItem(
-                    onTap: onDelete,
-                    child: const Row(children: [Icon(Icons.delete_outline_rounded, color: Colors.red), SizedBox(width: 8), Text('Delete')]),
-                  ),
+                  PopupMenuItem(onTap: onEdit, child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: 8), Text('Edit')])),
+                  PopupMenuItem(onTap: onDelete, child: const Row(children: [Icon(Icons.delete_outline_rounded, color: Colors.red), SizedBox(width: 8), Text('Delete')])),
                 ],
               ),
             ],
@@ -153,25 +194,12 @@ class _PaymentStatusCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              AdminStatusBadge(isActive: status.isActive),
               Text(
-                'HEX: ${status.color.toUpperCase()}',
+                'ID: ${status.id}',
                 style: theme.textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: colorVal,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: (status.isActive ? Colors.green : Colors.red).withValues(alpha: 0.1),
-                ),
-                child: Text(
-                  status.isActive ? 'Active' : 'Inactive',
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: status.isActive ? Colors.green : Colors.red,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.4),
                 ),
               ),
             ],

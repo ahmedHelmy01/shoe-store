@@ -9,7 +9,7 @@ final filtersVmProvider = NotifierProvider.autoDispose<FiltersVm, AdminCrudState
 
 class FiltersVm extends AdminCrudVm<FilterRow> {
   @override
-  Future<ApiResult<AdminPagedResponse<FilterRow>>> getItems({required int page, String? search}) {
+  Future<ApiResult<AdminPagedResponse<FilterRow>>> getItems({required int page, String? search, int? perPage}) {
     return ref.read(filtersRepositoryProvider).getFilters(page: page, search: search);
   }
 

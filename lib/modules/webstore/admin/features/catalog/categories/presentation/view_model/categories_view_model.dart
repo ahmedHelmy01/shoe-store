@@ -9,8 +9,8 @@ final categoriesVmProvider = NotifierProvider.autoDispose<CategoriesVm, AdminCru
 
 class CategoriesVm extends AdminCrudVm<CategoryRow> {
   @override
-  Future<ApiResult<AdminPagedResponse<CategoryRow>>> getItems({required int page, String? search}) {
-    return ref.read(categoriesRepositoryProvider).getCategories(page: page, search: search);
+  Future<ApiResult<AdminPagedResponse<CategoryRow>>> getItems({required int page, String? search, int? perPage}) {
+    return ref.read(categoriesRepositoryProvider).getCategories(page: page, search: search, perPage: perPage);
   }
 
   @override

@@ -9,9 +9,13 @@ import 'package:erp/modules/webstore/admin/features/branches/presentation/view_m
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_action_icon_button.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_panel.dart';
+import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 
 import '../view_model/warehouses_view_model.dart';
 import '../widgets/warehouses_table.dart';
@@ -26,7 +30,6 @@ class WarehousesView extends ConsumerStatefulWidget {
 }
 
 class _WarehousesViewState extends ConsumerState<WarehousesView> {
-  WarehouseRow? _detailsItem;
 
   @override
   void initState() {
@@ -61,17 +64,12 @@ class _WarehousesViewState extends ConsumerState<WarehousesView> {
                 primaryActionLabel: 'Add Warehouse',
                 onPrimaryAction: () {
                   print('[WAREHOUSE_UI] Add button clicked');
-                  setState(() => _detailsItem = null);
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if (!mounted) return;
-                    print('[WAREHOUSE_UI] postFrame -> openAdd()');
-                    notifier.openAdd();
-                  });
+                  notifier.openAdd();
                 },
               ),
 
               const SizedBox(height: 12),
-              Expanded(child: _buildBody(context, state, isDark, notifier)),
+              Expanded(child: _buildBody(context, state, isDark, notifier, branches)),
             ],
           ),
         ),
@@ -87,37 +85,33 @@ class _WarehousesViewState extends ConsumerState<WarehousesView> {
               initial: state.editingItem,
               isSaving: state.isSaving,
               onSave: (data) async {
-                if (await notifier.commitSave(data, id: state.editingItem?.id)) {
+                final success = await notifier.commitSave(data, id: state.editingItem?.id);
+                if (!context.mounted) return;
+                
+                if (success) {
                   notifier.closePanel();
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.success,
+                    title: state.isAdding ? 'Warehouse Created' : 'Warehouse Updated',
+                    message: 'The warehouse has been saved successfully.',
+                  );
+                } else {
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.error,
+                    title: 'Save Failed',
+                    message: 'Could not save the warehouse. Please try again.',
+                  );
                 }
               },
-            ),
-          ),
-        if (_detailsItem != null)
-          AdminDialogForm(
-            isOpen: true,
-            onClose: () => setState(() => _detailsItem = null),
-            title: 'Warehouse Details',
-            size: AdminDialogSize.small,
-            customHeightFactor: 0.70,
-            closeOnBackdropTap: true,
-            child: _WarehouseDetails(
-              item: _detailsItem!,
-              branchName: () {
-                final branchId = _detailsItem!.branchId;
-                if (branchId == null) return '-';
-                for (final branch in branches) {
-                  if (branch.id == branchId) return branch.name;
-                }
-                return '-';
-              }(),
             ),
           ),
       ],
     );
   }
 
-  Widget _buildBody(BuildContext context, AdminCrudState<WarehouseRow> state, bool isDark, WarehousesVm notifier) {
+  Widget _buildBody(BuildContext context, AdminCrudState<WarehouseRow> state, bool isDark, WarehousesVm notifier, List<BranchRow> branches) {
     return switch (state) {
       AdminCrudLoading() => const Center(child: CircularProgressIndicator()),
       AdminCrudError(:final message) => AdminStateWidget(message: message, onRetry: () => notifier.fetch()),
@@ -140,11 +134,11 @@ class _WarehousesViewState extends ConsumerState<WarehousesView> {
             child: WarehousesTable(
               items: items,
               onEdit: (w) => notifier.openEdit(w),
-              onView: (w) => setState(() => _detailsItem = w),
+              onView: (w) => _showDetails(context, w, branches),
               onDelete: (w) => _confirmAndDelete(context, notifier, w),
               cardBuilder: (context, w) => _WarehouseCard(
                 warehouse: w,
-                onView: () => setState(() => _detailsItem = w),
+                onView: () => _showDetails(context, w, branches),
                 onEdit: () => notifier.openEdit(w),
                 onDelete: () => _confirmAndDelete(context, notifier, w),
               ),
@@ -191,6 +185,25 @@ class _WarehousesViewState extends ConsumerState<WarehousesView> {
           },
         );
       },
+    );
+  }
+
+  void _showDetails(BuildContext context, WarehouseRow w, List<BranchRow> branches) {
+    final branchName = () {
+      final branchId = w.branchId;
+      if (branchId == null) return '-';
+      for (final branch in branches) {
+        if (branch.id == branchId) return branch.name;
+      }
+      return '-';
+    }();
+
+    showDialog(
+      context: context,
+      builder: (_) => _WarehouseDetails(
+        item: w,
+        branchName: branchName,
+      ),
     );
   }
 }
@@ -295,17 +308,7 @@ class _WarehouseCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: (warehouse.isActive ? Colors.green : Colors.red).withValues(alpha: 0.1),
-                ),
-                child: Text(
-                  warehouse.isActive ? 'Active' : 'Inactive',
-                  style: theme.textTheme.labelSmall?.copyWith(color: warehouse.isActive ? Colors.green : Colors.red, fontWeight: FontWeight.bold),
-                ),
-              ),
+              AdminStatusBadge(isActive: warehouse.isActive),
               Text(
                 'ID: ${warehouse.id}',
                 style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.4)),
@@ -329,22 +332,32 @@ class _WarehouseDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final entries = <MapEntry<String, String>>[
-      MapEntry('ID', item.id.toString()),
-      MapEntry('Name', item.name),
-      MapEntry('Name (Arabic)', item.nameAr ?? '-'),
-      MapEntry('Code', item.code ?? '-'),
-      MapEntry('Branch', branchName),
-      MapEntry('Address', item.location ?? '-'),
-      MapEntry('Phone', item.phone ?? '-'),
-      MapEntry('Active', item.isActive ? 'Yes' : 'No'),
-    ];
-
-    return AdminDetailsPanel(
-      title: item.name,
-      idText: '#${item.id}',
-      headerIcon: Icons.warehouse_rounded,
-      entries: entries,
+    return AdminDetailsDialog(
+      title: 'Warehouse Details',
+      id: item.id.toString(),
+      icon: Icons.warehouse_rounded,
+      children: [
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', item.name, Icons.title_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', item.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Code', item.code ?? 'N/A', Icons.qr_code_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Branch', branchName, Icons.storefront_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 20),
+        AdminDetailsDialog.buildDetailRow(context, 'Address', item.location ?? 'N/A', Icons.location_on_rounded),
+        AdminDetailsDialog.buildDetailRow(context, 'Phone', item.phone ?? 'N/A', Icons.phone_rounded),
+        const SizedBox(height: 12),
+        AdminDetailsDialog.buildStatusRow(context, item.isActive),
+      ],
     );
   }
 }

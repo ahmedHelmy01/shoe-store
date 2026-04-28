@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
+import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import '../view_model/ads_view_model.dart';
 import '../widgets/ads_table.dart';
 import '../widgets/ad_form.dart';
@@ -27,22 +30,17 @@ class AdsView extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
               AdminPageHeader(
                 title: 'Advertisements',
                 onRefresh: () => notifier.fetch(),
                 primaryActionLabel: 'Add Ad',
                 onPrimaryAction: () => notifier.openAdd(),
               ),
-              const SizedBox(height: 20),
-
-              // Body
-              Expanded(child: _buildBody(context, state, isDark, ref)),
+              const SizedBox(height: 12),
+              Expanded(child: _buildBody(context, state, isDark, notifier)),
             ],
           ),
         ),
-
-        // Side Panel for Add/Edit
         if (state.isAdding || state.editingItem != null)
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
@@ -50,24 +48,27 @@ class AdsView extends ConsumerWidget {
             title: state.isAdding ? 'Create New Ad' : 'Edit Ad',
             size: AdminDialogSize.medium,
             child: AdForm(
+              key: ValueKey(state.isAdding ? 'ad-add' : 'ad-edit-${state.editingItem?.id ?? 0}'),
               initial: state.editingItem,
               isSaving: state.isSaving,
               onSave: (data) async {
-                final success = await notifier.commitSave(
-                  data,
-                  id: state.editingItem?.id,
-                );
-                if (success) {
+                final result = await notifier.commitSave(data, id: state.editingItem?.id);
+                if (!context.mounted) return;
+
+                if (result) {
                   notifier.closePanel();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        state.isAdding
-                            ? 'Ad created successfully'
-                            : 'Ad updated successfully',
-                      ),
-                      backgroundColor: Colors.green,
-                    ),
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.success,
+                    title: state.isAdding ? 'Ad Created' : 'Ad Updated',
+                    message: 'The advertisement has been saved successfully.',
+                  );
+                } else {
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.error,
+                    title: 'Save Failed',
+                    message: 'Could not save the advertisement. Please try again.',
                   );
                 }
               },
@@ -77,78 +78,62 @@ class AdsView extends ConsumerWidget {
     );
   }
 
-  Widget _buildBody(
-    BuildContext context,
-    AdminCrudState<AdRow> state,
-    bool isDark,
-    WidgetRef ref,
-  ) {
-    final notifier = ref.read(adsVmProvider.notifier);
-
+  Widget _buildBody(BuildContext context, AdminCrudState<AdRow> state, bool isDark, AdsVm notifier) {
     return switch (state) {
       AdminCrudLoading() => const Center(child: CircularProgressIndicator()),
       AdminCrudError(:final message) => AdminStateWidget(message: message, onRetry: () => notifier.fetch()),
       AdminCrudData(:final items) => AppAnimation.fadeInUp(
-        duration: const Duration(milliseconds: 420),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            color: isDark ? const Color(0xFF0F1B2D) : Colors.white,
-            border: Border.all(
-              color: (isDark ? Colors.white : Colors.black).withValues(
-                alpha: 0.05,
-              ),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              color: isDark ? const Color(0xFF0F1B2D) : Colors.white,
+              border: Border.all(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.05)),
+              boxShadow: [
+                if (!isDark)
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.03),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+              ],
             ),
-            boxShadow: [
-              if (!isDark)
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.03),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                ),
-            ],
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: AdsTable(
-            items: items,
-            onEdit: (a) => notifier.openEdit(a),
-            onDelete: (id) => _showDeleteDialog(context, id, notifier),
-            cardBuilder: (context, a) => _AdCard(
-              ad: a,
-              onEdit: () => notifier.openEdit(a),
-              onDelete: () => _showDeleteDialog(context, a.id, notifier),
+            clipBehavior: Clip.antiAlias,
+            child: AdsTable(
+              items: items,
+              onEdit: (a) => notifier.openEdit(a),
+              onDelete: (id) => _confirmAndDelete(context, notifier, id, items.firstWhere((a) => a.id == id).title),
+              cardBuilder: (context, a) => _AdCard(
+                ad: a,
+                onEdit: () => notifier.openEdit(a),
+                onDelete: () => _confirmAndDelete(context, notifier, a.id, a.title),
+              ),
             ),
           ),
         ),
-      ),
     };
   }
 
-  void _showDeleteDialog(BuildContext context, int id, AdsVm notifier) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Delete Ad?'),
-        content: const Text(
-          'This action cannot be undone and will remove the ad from the storefront.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              notifier.commitDelete(id);
-              Navigator.pop(ctx);
-            },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
+  void _confirmAndDelete(BuildContext context, AdsVm notifier, int id, String title) {
+    AppDialog.show(
+      context,
+      title: 'Delete Advertisement',
+      message: 'Are you sure you want to delete "$title"?',
+      cancelText: 'Cancel',
+      confirmText: 'Delete',
+      onConfirm: () async {
+        Navigator.pop(context);
+        final success = await notifier.commitDelete(id);
+        if (!context.mounted) return;
+        if (success) {
+          AppStatusDialog.show(context, status: AppDialogStatus.success, title: 'Deleted', message: 'Advertisement deleted successfully.');
+        } else {
+          AppStatusDialog.show(context, status: AppDialogStatus.error, title: 'Delete Failed', message: 'Could not delete advertisement.');
+        }
+      },
     );
   }
 }
+
 
 class _AdCard extends StatelessWidget {
   final AdRow ad;

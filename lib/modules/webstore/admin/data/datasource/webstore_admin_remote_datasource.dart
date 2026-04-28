@@ -24,12 +24,14 @@ class WebStoreAdminRemoteDataSource {
   Future<Map<String, dynamic>> getProducts({
     int page = 1,
     String? search,
+    int? perPage,
   }) async {
     final res = await _network.get(
       ApiEndpoints.webstore.admin.products,
       query: {
         'page': page,
         if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
+        if (perPage != null) 'per_page': perPage,
       },
     );
     return (res as Map).cast<String, dynamic>();
@@ -38,12 +40,14 @@ class WebStoreAdminRemoteDataSource {
   Future<Map<String, dynamic>> getBranches({
     int page = 1,
     String? search,
+    int? perPage,
   }) async {
     final res = await _network.get(
       ApiEndpoints.webstore.admin.branches,
       query: {
         'page': page,
         if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
+        if (perPage != null) 'per_page': perPage,
       },
     );
     return (res as Map).cast<String, dynamic>();
@@ -147,6 +151,20 @@ class WebStoreAdminRemoteDataSource {
     return (res as Map).cast<String, dynamic>();
   }
 
+  Future<Map<String, dynamic>> getOrderStatuses({
+    int page = 1,
+    String? search,
+  }) async {
+    final res = await _network.get(
+      ApiEndpoints.webstore.admin.orderStatuses,
+      query: {
+        'page': page,
+        if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
+      },
+    );
+    return (res as Map).cast<String, dynamic>();
+  }
+
   Future<Map<String, dynamic>> getPaymentStatuses({
     int page = 1,
     String? search,
@@ -206,12 +224,14 @@ class WebStoreAdminRemoteDataSource {
   Future<Map<String, dynamic>> getCategories({
     int page = 1,
     String? search,
+    int? perPage,
   }) async {
     final res = await _network.get(
       ApiEndpoints.webstore.admin.categories,
       query: {
         'page': page,
         if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
+        if (perPage != null) 'per_page': perPage,
       },
     );
     return (res as Map).cast<String, dynamic>();
@@ -222,7 +242,7 @@ class WebStoreAdminRemoteDataSource {
     String? search,
   }) async {
     final res = await _network.get(
-      ApiEndpoints.webstore.admin.filters,
+      ApiEndpoints.webstore.admin.tags,
       query: {
         'page': page,
         if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
@@ -234,12 +254,14 @@ class WebStoreAdminRemoteDataSource {
   Future<Map<String, dynamic>> getCompanies({
     int page = 1,
     String? search,
+    int? perPage,
   }) async {
     final res = await _network.get(
       ApiEndpoints.webstore.admin.companies,
       query: {
         'page': page,
         if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
+        if (perPage != null) 'per_page': perPage,
       },
     );
     return (res as Map).cast<String, dynamic>();

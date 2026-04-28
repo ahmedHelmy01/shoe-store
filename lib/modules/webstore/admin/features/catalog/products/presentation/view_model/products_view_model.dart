@@ -9,8 +9,8 @@ final productsVmProvider = NotifierProvider.autoDispose<ProductsVm, AdminCrudSta
 
 class ProductsVm extends AdminCrudVm<ProductRow> {
   @override
-  Future<ApiResult<AdminPagedResponse<ProductRow>>> getItems({required int page, String? search}) {
-    return ref.read(productsRepositoryProvider).getProducts(page: page, search: search);
+  Future<ApiResult<AdminPagedResponse<ProductRow>>> getItems({required int page, String? search, int? perPage}) {
+    return ref.read(productsRepositoryProvider).getProducts(page: page, search: search, perPage: perPage);
   }
 
   @override

@@ -23,7 +23,7 @@ class WarehousesVm extends AdminCrudVm<WarehouseRow> {
   }
 
   @override
-  Future<ApiResult<AdminPagedResponse<WarehouseRow>>> getItems({required int page, String? search}) {
+  Future<ApiResult<AdminPagedResponse<WarehouseRow>>> getItems({required int page, String? search, int? perPage}) {
     return ref.read(warehousesRepositoryProvider).getWarehouses(page: page, search: search);
   }
 

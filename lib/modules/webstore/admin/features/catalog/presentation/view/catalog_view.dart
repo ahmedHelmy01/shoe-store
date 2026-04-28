@@ -56,7 +56,7 @@ class _CatalogViewState extends ConsumerState<CatalogView> with SingleTickerProv
               Tab(text: 'Products', icon: Icon(Icons.inventory_2_rounded, size: 20)),
               Tab(text: 'Categories', icon: Icon(Icons.account_tree_rounded, size: 20)),
               Tab(text: 'Companies', icon: Icon(Icons.apartment_rounded, size: 20)),
-              Tab(text: 'Filters', icon: Icon(Icons.tune_rounded, size: 20)),
+              Tab(text: 'Tags', icon: Icon(Icons.tune_rounded, size: 20)),
             ],
           ),
         ),

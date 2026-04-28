@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
+import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
+import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/products/data/models/product_row.dart';
 
-class ProductForm extends StatefulWidget {
+class ProductForm extends ConsumerStatefulWidget {
   final ProductRow? initial;
   final bool isSaving;
   final void Function(Map<String, dynamic> data) onSave;
@@ -16,77 +19,179 @@ class ProductForm extends StatefulWidget {
   });
 
   @override
-  State<ProductForm> createState() => _ProductFormState();
+  ConsumerState<ProductForm> createState() => _ProductFormState();
 }
 
-class _ProductFormState extends State<ProductForm> {
+class _ProductFormState extends ConsumerState<ProductForm> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _nameCtrl;
+  
+  late final TextEditingController _nameArCtrl;
+  late final TextEditingController _nameEnCtrl;
   late final TextEditingController _skuCtrl;
-  late final TextEditingController _priceCtrl;
-  late final TextEditingController _descCtrl;
+  late final TextEditingController _salePriceCtrl;
+  late final TextEditingController _purchasePriceCtrl;
+  late final TextEditingController _descArCtrl;
+  late final TextEditingController _descEnCtrl;
+  
+  int? _selectedCategoryId;
+  int? _selectedCompanyId;
 
   @override
   void initState() {
     super.initState();
-    _nameCtrl = TextEditingController(text: widget.initial?.name ?? '');
+    _nameArCtrl = TextEditingController(text: widget.initial?.nameAr ?? '');
+    _nameEnCtrl = TextEditingController(text: widget.initial?.nameEn ?? '');
     _skuCtrl = TextEditingController(text: widget.initial?.sku ?? '');
-    _priceCtrl = TextEditingController(text: widget.initial?.price?.toString() ?? '');
-    _descCtrl = TextEditingController(text: widget.initial?.description ?? '');
+    _salePriceCtrl = TextEditingController(text: widget.initial?.salePrice ?? '');
+    _purchasePriceCtrl = TextEditingController(text: widget.initial?.purchasePrice ?? '');
+    _descArCtrl = TextEditingController(text: widget.initial?.descriptionAr ?? '');
+    _descEnCtrl = TextEditingController(text: widget.initial?.description ?? '');
+    
+    _selectedCategoryId = widget.initial?.productCategoryId;
+    _selectedCompanyId = widget.initial?.companyId;
   }
 
   @override
   void dispose() {
-    _nameCtrl.dispose();
+    _nameArCtrl.dispose();
+    _nameEnCtrl.dispose();
     _skuCtrl.dispose();
-    _priceCtrl.dispose();
-    _descCtrl.dispose();
+    _salePriceCtrl.dispose();
+    _purchasePriceCtrl.dispose();
+    _descArCtrl.dispose();
+    _descEnCtrl.dispose();
     super.dispose();
   }
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
       widget.onSave({
-        'name': _nameCtrl.text.trim(),
+        'name_ar': _nameArCtrl.text.trim(),
+        'name_en': _nameEnCtrl.text.trim(),
+        'name': _nameEnCtrl.text.trim(),
         'sku': _skuCtrl.text.trim(),
-        'price': double.tryParse(_priceCtrl.text.trim()) ?? 0.0,
-        'description': _descCtrl.text.trim(),
+        'sale_price': _salePriceCtrl.text.trim(),
+        'purchase_price': _purchasePriceCtrl.text.trim(),
+        'description_ar': _descArCtrl.text.trim(),
+        'description': _descEnCtrl.text.trim(),
+        'product_category_id': _selectedCategoryId,
+        'manufacturer_id': _selectedCompanyId, // Using manufacturer_id as requested
+        'is_active': (widget.initial?.isActive ?? true) ? 1 : 0, // Convert to 1/0
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final categoriesAsync = ref.watch(allCategoriesProvider);
+    final companiesAsync = ref.watch(allCompaniesProvider);
+
     return Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AppTextField(
-            controller: _nameCtrl,
-            label: 'Product Name',
-            hint: 'e.g. iPhone 15 Pro',
-            validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
+          Row(
+            children: [
+              Expanded(
+                child: AppTextField(
+                  controller: _nameArCtrl,
+                  label: 'Name (Arabic)',
+                  hint: 'اسم المنتج بالعربي',
+                  validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: AppTextField(
+                  controller: _nameEnCtrl,
+                  label: 'Name (English)',
+                  hint: 'Product name in English',
+                  validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: AppTextField(
+                  controller: _skuCtrl,
+                  label: 'SKU / Barcode',
+                  hint: 'e.g. SKU-12345',
+                  validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: categoriesAsync.when(
+                  data: (list) => AppDropdown<int>(
+                    label: 'Category',
+                    hint: 'Select Category',
+                    value: list.any((c) => c.id == _selectedCategoryId) ? _selectedCategoryId : null,
+                    items: list.map((c) => DropdownMenuItem(
+                      value: c.id,
+                      child: Text(c.name),
+                    )).toList(),
+                    onChanged: (v) => setState(() => _selectedCategoryId = v),
+                  ),
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                  error: (e, _) => Text('Error loading categories'),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          companiesAsync.when(
+            data: (list) => AppDropdown<int>(
+              label: 'Company / Manufacturer',
+              hint: 'Select Company',
+              value: list.any((c) => c.id == _selectedCompanyId) ? _selectedCompanyId : null,
+              items: list.map((c) => DropdownMenuItem(
+                value: c.id,
+                child: Text(c.name),
+              )).toList(),
+              onChanged: (v) => setState(() => _selectedCompanyId = v),
+            ),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (e, _) => Text('Error loading companies'),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: AppTextField(
+                  controller: _purchasePriceCtrl,
+                  label: 'Purchase Price',
+                  hint: '0.00',
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: AppTextField(
+                  controller: _salePriceCtrl,
+                  label: 'Sale Price',
+                  hint: '0.00',
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 20),
           AppTextField(
-            controller: _skuCtrl,
-            label: 'SKU / Barcode',
-            hint: 'e.g. APP-IP15P-BK',
+            controller: _descArCtrl,
+            label: 'Description (Arabic)',
+            hint: 'وصف المنتج بالعربي...',
+            maxLines: 3,
           ),
           const SizedBox(height: 20),
           AppTextField(
-            controller: _priceCtrl,
-            label: 'Initial Price',
-            hint: '0.00',
-            keyboardType: TextInputType.number,
-          ),
-          const SizedBox(height: 20),
-          AppTextField(
-            controller: _descCtrl,
-            label: 'Description',
-            hint: 'Full product details...',
-            maxLines: 4,
+            controller: _descEnCtrl,
+            label: 'Description (English)',
+            hint: 'Product description in English...',
+            maxLines: 3,
           ),
           const SizedBox(height: 32),
           AppButton(
@@ -99,3 +204,4 @@ class _ProductFormState extends State<ProductForm> {
     );
   }
 }
+

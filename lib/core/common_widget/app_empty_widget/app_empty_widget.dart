@@ -47,7 +47,7 @@ class AppEmptyWidget extends StatelessWidget {
     }
 
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: EdgeInsets.all(safePadding),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

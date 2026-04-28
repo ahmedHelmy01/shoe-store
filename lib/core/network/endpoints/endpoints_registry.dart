@@ -20,7 +20,12 @@ class ApiEndpoints {
 
   /// Replace path parameters like {id} with actual values
   static String withId(String path, dynamic id) {
-    return path.replaceAll('{id}', id.toString());
+    if (path.contains('{id}')) {
+      return path.replaceAll('{id}', id.toString());
+    } else {
+      final cleanPath = path.endsWith('/') ? path.substring(0, path.length - 1) : path;
+      return '$cleanPath/$id';
+    }
   }
 
   /// Replace path parameter {slug} with actual value

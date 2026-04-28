@@ -21,6 +21,7 @@ import 'package:erp/modules/webstore/admin/features/payment_methods/data/reposit
 import 'package:erp/modules/webstore/admin/features/payment_statuses/data/repositories/payment_statuses_repository.dart';
 import 'package:erp/modules/webstore/admin/features/properties/data/repositories/properties_repository.dart';
 import 'package:erp/modules/webstore/admin/features/sliders/data/repositories/sliders_repository.dart';
+import 'package:erp/modules/webstore/admin/features/order_statuses/data/repositories/order_statuses_repository.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/data/repositories/warehouses_repository.dart';
 
 final webStoreAdminRemoteDataSourceProvider = Provider<WebStoreAdminRemoteDataSource>((ref) {
@@ -102,3 +103,27 @@ final slidersRepositoryProvider = Provider<ISlidersRepository>((ref) {
 final warehousesRepositoryProvider = Provider<IWarehousesRepository>((ref) {
   return WarehousesRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
 });
+
+final orderStatusesRepositoryProvider = Provider<IOrderStatusesRepository>((ref) {
+  return OrderStatusesRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+});
+
+// Dropdown Data Providers
+final allCategoriesProvider = FutureProvider((ref) async {
+  final repo = ref.read(categoriesRepositoryProvider);
+  final res = await repo.getCategories(page: 1, perPage: 1000); // Fetch a large batch for dropdowns
+  return res.when(
+    success: (paged) => paged.items,
+    failure: (e) => throw e,
+  );
+});
+
+final allCompaniesProvider = FutureProvider((ref) async {
+  final repo = ref.read(companiesRepositoryProvider);
+  final res = await repo.getCompanies(page: 1, perPage: 1000);
+  return res.when(
+    success: (paged) => paged.items,
+    failure: (e) => throw e,
+  );
+});
+

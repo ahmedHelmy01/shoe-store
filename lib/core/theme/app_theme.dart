@@ -80,6 +80,10 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
         ),
       ),
+      popupMenuTheme: const PopupMenuThemeData(
+        color: Colors.white,
+        surfaceTintColor: Colors.white,
+      ),
       dividerTheme: const DividerThemeData(
         color: Color(0xFFEEEEEE),
         thickness: 1,
@@ -158,6 +162,10 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
         ),
+      ),
+      popupMenuTheme: const PopupMenuThemeData(
+        color: darkSurface,
+        surfaceTintColor: darkSurface,
       ),
       dividerTheme: DividerThemeData(
         color: Colors.white.withValues(alpha: 0.1),

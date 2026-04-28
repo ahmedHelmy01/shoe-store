@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
+import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_action_icon_button.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_panel.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
@@ -12,6 +14,8 @@ import '../view_model/branches_view_model.dart';
 import '../widgets/branches_table.dart';
 import '../widgets/branch_form.dart';
 import 'package:erp/modules/webstore/admin/features/branches/data/models/branch_row.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 
 class BranchesView extends ConsumerStatefulWidget {
   const BranchesView({super.key});
@@ -21,7 +25,6 @@ class BranchesView extends ConsumerStatefulWidget {
 }
 
 class _BranchesViewState extends ConsumerState<BranchesView> {
-  BranchRow? _detailsItem;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +45,6 @@ class _BranchesViewState extends ConsumerState<BranchesView> {
                 onRefresh: () => notifier.fetch(),
                 primaryActionLabel: 'Add Branch',
                 onPrimaryAction: () {
-                  setState(() => _detailsItem = null);
                   notifier.openAdd();
                 },
               ),
@@ -61,20 +63,27 @@ class _BranchesViewState extends ConsumerState<BranchesView> {
               initial: state.editingItem,
               isSaving: state.isSaving,
               onSave: (data) async {
-                if (await notifier.commitSave(data, id: state.editingItem?.id)) {
+                final result = await notifier.commitSave(data, id: state.editingItem?.id);
+                if (!mounted) return;
+                
+                if (result) {
                   notifier.closePanel();
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.success,
+                    title: state.isAdding ? 'Branch Created' : 'Branch Updated',
+                    message: 'The branch has been saved successfully.',
+                  );
+                } else {
+                  AppStatusDialog.show(
+                    context,
+                    status: AppDialogStatus.error,
+                    title: 'Save Failed',
+                    message: 'An error occurred while saving the branch.',
+                  );
                 }
               },
             ),
-          ),
-        if (_detailsItem != null)
-          AdminDialogForm(
-            isOpen: true,
-            onClose: () => setState(() => _detailsItem = null),
-            title: 'Branch Details',
-            size: AdminDialogSize.small,
-            customHeightFactor: 0.74,
-            child: _BranchDetails(item: _detailsItem!),
           ),
       ],
     );
@@ -102,19 +111,49 @@ class _BranchesViewState extends ConsumerState<BranchesView> {
             clipBehavior: Clip.antiAlias,
             child: BranchesTable(
               items: items,
-              onView: (b) => setState(() => _detailsItem = b),
+              onView: (b) => showDialog(context: context, builder: (_) => _BranchDetails(item: b)),
               onEdit: (b) => notifier.openEdit(b),
-              onDelete: (id) => notifier.commitDelete(id),
+              onDelete: (id) => _confirmAndDelete(context, notifier, id, items.firstWhere((b) => b.id == id).name),
               cardBuilder: (context, b) => _BranchCard(
                 branch: b,
-                onView: () => setState(() => _detailsItem = b),
+                onView: () => showDialog(context: context, builder: (_) => _BranchDetails(item: b)),
                 onEdit: () => notifier.openEdit(b),
-                onDelete: () => notifier.commitDelete(b.id),
+                onDelete: () => _confirmAndDelete(context, notifier, b.id, b.name),
               ),
             ),
           ),
         ),
     };
+  }
+
+  void _confirmAndDelete(BuildContext context, BranchesVm notifier, int id, String name) {
+    AppDialog.show(
+      context,
+      title: 'Delete Branch',
+      message: 'Are you sure you want to delete branch "$name"?',
+      cancelText: 'Cancel',
+      confirmText: 'Delete',
+      onConfirm: () async {
+        Navigator.pop(context);
+        final success = await notifier.commitDelete(id);
+        if (!context.mounted) return;
+        if (success) {
+          AppStatusDialog.show(
+            context,
+            status: AppDialogStatus.success,
+            title: 'Deleted',
+            message: 'Branch deleted successfully.',
+          );
+        } else {
+          AppStatusDialog.show(
+            context,
+            status: AppDialogStatus.error,
+            title: 'Delete Failed',
+            message: 'Could not delete the branch. Please try again.',
+          );
+        }
+      },
+    );
   }
 }
 
@@ -227,16 +266,10 @@ class _BranchCard extends StatelessWidget {
                     ),
                   ],
                 ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: (branch.isActive ? Colors.green : Colors.red).withValues(alpha: 0.1),
-                ),
-                child: Text(
-                  branch.isActive ? 'Open' : 'Closed',
-                  style: theme.textTheme.labelSmall?.copyWith(color: branch.isActive ? Colors.green : Colors.red, fontWeight: FontWeight.bold),
-                ),
+              AdminStatusBadge(
+                isActive: branch.isActive,
+                activeLabel: 'Open',
+                inactiveLabel: 'Closed',
               ),
             ],
           ),
@@ -253,25 +286,64 @@ class _BranchDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final entries = <MapEntry<String, String>>[
-      MapEntry('ID', item.id.toString()),
-      MapEntry('Name', item.name),
-      MapEntry('Name (Arabic)', item.nameAr ?? '-'),
-      MapEntry('Code', item.code ?? '-'),
-      MapEntry('Phone', item.phone ?? '-'),
-      MapEntry('Email', item.email ?? '-'),
-      MapEntry('Address', item.address ?? '-'),
-      MapEntry('Address (Arabic)', item.addressAr ?? '-'),
-      MapEntry('Latitude', item.latitude?.toString() ?? '-'),
-      MapEntry('Longitude', item.longitude?.toString() ?? '-'),
-      MapEntry('Active', item.isActive ? 'Yes' : 'No'),
-    ];
-
-    return AdminDetailsPanel(
-      title: item.name,
-      idText: '#${item.id}',
-      headerIcon: Icons.storefront_rounded,
-      entries: entries,
+    return AdminDetailsDialog(
+      title: 'Branch Details',
+      id: item.id.toString(),
+      icon: Icons.storefront_rounded,
+      children: [
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', item.name, Icons.title_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', item.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Code', item.code ?? 'N/A', Icons.qr_code_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Phone', item.phone ?? 'N/A', Icons.phone_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 20),
+        AdminDetailsDialog.buildDetailRow(context, 'Email', item.email ?? 'N/A', Icons.email_rounded),
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Address (EN)', item.address ?? 'N/A', Icons.location_on_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Address (AR)', item.addressAr ?? 'N/A', Icons.location_on_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'City', item.city ?? 'N/A', Icons.location_city_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Country', item.country ?? 'N/A', Icons.public_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Latitude', item.latitude?.toString() ?? 'N/A', Icons.map_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Longitude', item.longitude?.toString() ?? 'N/A', Icons.map_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Description (EN)', item.description ?? 'N/A', Icons.description_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Description (AR)', item.descriptionAr ?? 'N/A', Icons.description_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 20),
+        AdminDetailsDialog.buildDetailRow(context, 'Type', item.isMain ? 'Main Branch' : 'Standard Branch', Icons.info_outline_rounded),
+        const SizedBox(height: 12),
+        AdminDetailsDialog.buildStatusRow(context, item.isActive),
+      ],
     );
   }
 }

@@ -9,7 +9,7 @@ final adsVmProvider = NotifierProvider<AdsVm, AdminCrudState<AdRow>>(AdsVm.new);
 
 class AdsVm extends AdminCrudVm<AdRow> {
   @override
-  Future<ApiResult<AdminPagedResponse<AdRow>>> getItems({required int page, String? search}) {
+  Future<ApiResult<AdminPagedResponse<AdRow>>> getItems({required int page, String? search, int? perPage}) {
     return ref.read(adsRepositoryProvider).getAds(page: page, search: search);
   }
 

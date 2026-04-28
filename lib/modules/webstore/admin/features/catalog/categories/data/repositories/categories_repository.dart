@@ -9,6 +9,7 @@ abstract class ICategoriesRepository {
   Future<ApiResult<AdminPagedResponse<CategoryRow>>> getCategories({
     int page = 1,
     String? search,
+    int? perPage,
   });
 
   Future<ApiResult<CategoryRow>> saveCategory(Map<String, dynamic> data, {int? id});
@@ -25,9 +26,10 @@ class CategoriesRepository extends AdminBaseRepository implements ICategoriesRep
   Future<ApiResult<AdminPagedResponse<CategoryRow>>> getCategories({
     int page = 1,
     String? search,
+    int? perPage,
   }) {
     return safeApiCall(() async {
-      final json = await _ds.getCategories(page: page, search: search);
+      final json = await _ds.getCategories(page: page, search: search, perPage: perPage);
       return parsePaged(json, page, (j) => CategoryRow.fromJson(j));
     });
   }

@@ -32,6 +32,7 @@ import 'package:erp/modules/webstore/admin/features/payment_methods/presentation
 import 'package:erp/modules/webstore/admin/features/payment_statuses/presentation/view/payment_statuses_view.dart';
 import 'package:erp/modules/webstore/admin/features/properties/presentation/view/properties_view.dart';
 import 'package:erp/modules/webstore/admin/features/sliders/presentation/view/sliders_view.dart';
+import 'package:erp/modules/webstore/admin/features/order_statuses/presentation/view/order_statuses_view.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/presentation/view/warehouses_view.dart';
 
 class AdminShell extends ConsumerStatefulWidget {
@@ -162,6 +163,7 @@ class _AdminShellState extends ConsumerState<AdminShell> {
       AdminRouteId.orderGroup => const OrdersView(),
       AdminRouteId.orders => const OrdersView(),
       AdminRouteId.orderCreate => const OrderCreateView(),
+      AdminRouteId.orderStatuses => const OrderStatusesView(),
       AdminRouteId.coupons => const CouponsView(),
       AdminRouteId.branches => const BranchesView(),
       AdminRouteId.warehouses => const WarehousesView(),

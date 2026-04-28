@@ -139,105 +139,107 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
 
             // ─── Main content ──────────────────────────
             Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // ─── Glow effect behind logo ─────────
-                  AnimatedBuilder(
-                    animation: _glowAnimation,
-                    builder: (context, child) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primaryOrange.withOpacity(
-                                _glowAnimation.value * 0.3,
-                              ),
-                              blurRadius: 60,
-                              spreadRadius: 20,
-                            ),
-                          ],
-                        ),
-                        child: child,
-                      );
-                    },
-                    child: // ─── Logo ──────────────────────
-                        AnimatedBuilder(
-                      animation: _logoController,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // ─── Glow effect behind logo ─────────
+                    AnimatedBuilder(
+                      animation: _glowAnimation,
                       builder: (context, child) {
-                        return Transform.rotate(
-                          angle: _logoRotation.value,
-                          child: Opacity(
-                            opacity: _logoOpacity.value,
-                            child: Transform.scale(
-                              scale: _logoScale.value,
-                              child: child,
-                            ),
+                        return Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primaryOrange.withOpacity(
+                                  _glowAnimation.value * 0.3,
+                                ),
+                                blurRadius: 60,
+                                spreadRadius: 20,
+                              ),
+                            ],
                           ),
+                          child: child,
                         );
                       },
-                      child: Container(
-                        width: 200.w,
-                        height: 200.w,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.2),
-                            width: 2,
+                      child: // ─── Logo ──────────────────────
+                          AnimatedBuilder(
+                        animation: _logoController,
+                        builder: (context, child) {
+                          return Transform.rotate(
+                            angle: _logoRotation.value,
+                            child: Opacity(
+                              opacity: _logoOpacity.value,
+                              child: Transform.scale(
+                                scale: _logoScale.value,
+                                child: child,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: 200.w,
+                          height: 200.w,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.2),
+                              width: 2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primaryOrange.withOpacity(0.2),
+                                blurRadius: 20,
+                                spreadRadius: 5,
+                              ),
+                            ],
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primaryOrange.withOpacity(0.2),
-                              blurRadius: 20,
-                              spreadRadius: 5,
+                          padding: EdgeInsets.all(20.w),
+                          child: ClipOval(
+                            child: Image.asset(
+                              AssetManager.logoElTarshopy,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    40.verticalSpace,
+
+                    // ─── App Name ────────────────────────
+                    SlideTransition(
+                      position: _textSlide,
+                      child: FadeTransition(
+                        opacity: _textOpacity,
+                        child: Column(
+                          children: [
+                            Text(
+                              'الطرشوبي',
+                              style: TextStyle(
+                                fontSize: 32.sp,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                                letterSpacing: 2,
+                              ),
+                            ),
+                            8.verticalSpace,
+                            Text(
+                              'صيدليتك أونلاين',
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.primaryOrange.withOpacity(0.9),
+                                letterSpacing: 1,
+                              ),
                             ),
                           ],
                         ),
-                        padding: EdgeInsets.all(20.w),
-                        child: ClipOval(
-                          child: Image.asset(
-                            AssetManager.logoElTarshopy,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
                       ),
                     ),
-                  ),
-
-                  40.verticalSpace,
-
-                  // ─── App Name ────────────────────────
-                  SlideTransition(
-                    position: _textSlide,
-                    child: FadeTransition(
-                      opacity: _textOpacity,
-                      child: Column(
-                        children: [
-                          Text(
-                            'الطرشوبي',
-                            style: TextStyle(
-                              fontSize: 32.sp,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.white,
-                              letterSpacing: 2,
-                            ),
-                          ),
-                          8.verticalSpace,
-                          Text(
-                            'صيدليتك أونلاين',
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.primaryOrange.withOpacity(0.9),
-                              letterSpacing: 1,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
 

@@ -5,7 +5,11 @@ class PageRow {
   final String? content;
   final String? contentAr;
   final String slug;
+  final String? image;
   final bool isActive;
+  final int? companyId;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   const PageRow({
     required this.id,
@@ -14,7 +18,11 @@ class PageRow {
     this.content,
     this.contentAr,
     required this.slug,
+    this.image,
     required this.isActive,
+    this.companyId,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory PageRow.fromJson(Map<String, dynamic> json) {
@@ -25,7 +33,11 @@ class PageRow {
       content: json['content'] as String?,
       contentAr: json['content_ar'] as String?,
       slug: json['slug'] as String? ?? '',
-      isActive: json['is_active'] as bool? ?? true,
+      image: json['image'] as String?,
+      isActive: json['is_active'] == true || json['is_active'] == 1,
+      companyId: json['company_id'] as int?,
+      createdAt: json['created_at'] != null ? DateTime.tryParse(json['created_at'].toString()) : null,
+      updatedAt: json['updated_at'] != null ? DateTime.tryParse(json['updated_at'].toString()) : null,
     );
   }
 }
