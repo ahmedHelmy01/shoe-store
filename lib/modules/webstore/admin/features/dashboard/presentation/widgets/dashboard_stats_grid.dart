@@ -25,11 +25,11 @@ class DashboardStatsGrid extends StatelessWidget {
             spacing: 12,
             runSpacing: 12,
             children: [
-              _buildStat('Today Revenue', '${stats.todayRevenue.toStringAsFixed(0)} ${AppConstants.currency}', Icons.auto_graph_rounded, AppColors.primary, (width - 44)/2),
-              _buildStat('Today Orders', stats.todayOrders.toString(), Icons.shopping_bag_outlined, AppColors.secondary, (width - 44)/2),
-              _buildStat('Total Revenue', '${stats.totalRevenue.toStringAsFixed(0)} ${AppConstants.currency}', Icons.account_balance_wallet_rounded, AppColors.success, (width - 44)/2),
-              _buildStat('Total Orders', stats.totalOrders.toString(), Icons.receipt_long_rounded, AppColors.warning, (width - 44)/2),
-              _buildStat('Total Customers', stats.totalCustomers.toString(), Icons.people_outline_rounded, AppColors.info, width - 40),
+              _buildStat('Today Revenue', '${stats.todayRevenue.toStringAsFixed(0)} ${AppConstants.currency}', Icons.auto_graph_rounded, AppColors.primary, (width - 60) / 2),
+              _buildStat('Today Orders', stats.todayOrders.toString(), Icons.shopping_bag_outlined, AppColors.secondary, (width - 60) / 2),
+              _buildStat('Total Revenue', '${stats.totalRevenue.toStringAsFixed(0)} ${AppConstants.currency}', Icons.account_balance_wallet_rounded, AppColors.success, (width - 60) / 2),
+              _buildStat('Total Orders', stats.totalOrders.toString(), Icons.receipt_long_rounded, AppColors.warning, (width - 60) / 2),
+              _buildStat('Total Customers', stats.totalCustomers.toString(), Icons.people_outline_rounded, AppColors.info, (width - 60) / 2),
             ],
           )
         : Row(
