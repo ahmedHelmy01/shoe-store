@@ -34,7 +34,9 @@ import 'package:erp/modules/webstore/admin/features/properties/presentation/view
 import 'package:erp/modules/webstore/admin/features/sliders/presentation/view/sliders_view.dart';
 import 'package:erp/modules/webstore/admin/features/order_statuses/presentation/view/order_statuses_view.dart';
 import 'package:erp/modules/webstore/admin/features/customers/customer_groups/presentation/view/customer_groups_view.dart';
+import 'package:erp/modules/webstore/admin/features/customers/reports/presentation/view/client_reports_view.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/presentation/view/warehouses_view.dart';
+import 'package:erp/modules/webstore/admin/features/contacts/presentation/view/contacts_view.dart';
 
 class AdminShell extends ConsumerStatefulWidget {
   final AdminRouteId initial;
@@ -188,6 +190,9 @@ class _AdminShellState extends ConsumerState<AdminShell> {
       AdminRouteId.storefront => const SlidersView(),
       AdminRouteId.customerGroup => const UsersView(),
       AdminRouteId.customerGroups => const CustomerGroupsView(),
+      AdminRouteId.clientReports => const ClientReportsView(),
+      AdminRouteId.contacts => const ContactsView(),
+      AdminRouteId.supportGroup => const ContactsView(),
       AdminRouteId.login => const LoginView(),
     };
   }

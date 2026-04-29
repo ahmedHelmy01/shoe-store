@@ -19,7 +19,7 @@ class AppConstants {
   static const String arabicCode = 'ar';
   static const String englishCode = 'en';
   static const String localeKey = 'locale';
-  static const String currency = 'ر.س'; // Saudi Riyal
+  static const String currency = 'ج.م'; // Egyptian Pound
 }
 
 class AppColors {

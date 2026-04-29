@@ -29,7 +29,9 @@ class AdminRouteGenerator {
       case AppRouteNames.webstoreAdminGovernorates:
       case AppRouteNames.webstoreAdminOrderStatuses:
       case AppRouteNames.webstoreAdminCustomerGroups:
+      case AppRouteNames.webstoreAdminClientReports:
       case AppRouteNames.webstoreAdminSettings:
+      case AppRouteNames.webstoreAdminContacts:
       case '/':
       case null:
         final id = AdminRoutes.fromRouteName(settings.name);

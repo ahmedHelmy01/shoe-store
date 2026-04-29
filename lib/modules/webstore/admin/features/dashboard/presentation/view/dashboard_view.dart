@@ -1,122 +1,114 @@
+import 'package:erp/modules/webstore/admin/features/dashboard/data/models/admin_dashboard_models.dart';
 import 'package:flutter/material.dart';
-import 'package:erp/core/common_widget/app_animation/app_animation.dart';
-import '../../data/admin_fake_data.dart';
-import '../widgets/stat_card.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:erp/core/constants/app_constants.dart';
+import '../view_model/admin_dashboard_view_model.dart';
 import '../widgets/glass_panel.dart';
 import '../widgets/dashboard_charts.dart';
-
-class DashboardView extends StatelessWidget {
+import '../widgets/dashboard_header.dart';
+import '../widgets/dashboard_stats_grid.dart';
+import '../widgets/dashboard_charts_layout.dart';
+class DashboardView extends ConsumerStatefulWidget {
   const DashboardView({super.key});
 
   @override
+  ConsumerState<DashboardView> createState() => _DashboardViewState();
+}
+
+class _DashboardViewState extends ConsumerState<DashboardView> {
+  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final width = MediaQuery.sizeOf(context).width;
     final isMobile = width < 600;
+    
+    final dashboardState = ref.watch(adminDashboardProvider);
 
-    final kpis = AdminDashboardFakeData.dashboardKpis();
-    final sales = AdminDashboardFakeData.dashboardSales();
-    final topCats = AdminDashboardFakeData.dashboardTopCategories();
-    final statuses = AdminDashboardFakeData.dashboardOrderStatus();
+    if (dashboardState.isLoading && dashboardState.statistics == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
-    final chartWidgets = <Widget>[
-      GlassPanel(
-        title: 'Sales (14 days)',
-        child: SalesChart(points: sales),
-      ),
-      GlassPanel(
-        title: 'Orders (14 days)',
-        child: OrdersChart(points: sales),
-      ),
-      GlassPanel(
-        title: 'Orders status',
-        child: StatusDonut(items: statuses),
-      ),
-      GlassPanel(
-        title: 'Top categories',
-        child: TopCategoriesChart(items: topCats),
-      ),
-    ];
+    if (dashboardState.error != null && dashboardState.statistics == null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline_rounded, size: 64, color: AppColors.error),
+            const SizedBox(height: 16),
+            Text('Error: ${dashboardState.error}', style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: () => ref.read(adminDashboardProvider.notifier).getStatistics(),
+              icon: const Icon(Icons.refresh_rounded),
+              label: const Text('Try Again'),
+            ),
+          ],
+        ),
+      );
+    }
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Overview',
-            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
-              children: [
-                StatCard(
-                  title: kpis[0].title,
-                  value: kpis[0].value,
-                  deltaPercent: kpis[0].deltaPercent,
-                  positive: kpis[0].positive,
-                  icon: Icons.receipt_long_rounded,
+    final stats = dashboardState.statistics!;
+
+    final totalRevenueFromTop = stats.topProducts.fold<double>(0, (prev, e) => prev + e.totalRevenue);
+    
+    final revenueShareItems = stats.topProducts.map((p) {
+      final share = totalRevenueFromTop > 0 ? (p.totalRevenue / totalRevenueFromTop) * 100 : 0.0;
+      return AdminStatusShare(status: p.productName, value: share);
+    }).toList();
+
+    final productQtyItems = stats.topProducts.map((p) {
+      return AdminSalesPoint(day: DateTime.now(), revenue: p.totalRevenue, orders: p.totalQty);
+    }).toList();
+
+    return RefreshIndicator(
+      onRefresh: () => ref.read(adminDashboardProvider.notifier).getStatistics(),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            DashboardHeader(
+              greeting: _getGreetingString(),
+              isLoading: dashboardState.isLoading,
+            ),
+            const SizedBox(height: 32),
+            DashboardStatsGrid(
+              stats: stats,
+              isMobile: isMobile,
+              width: width,
+            ),
+            const SizedBox(height: 32),
+            DashboardChartsLayout(
+              charts: [
+                GlassPanel(
+                  title: 'Inventory Movement (Top Products Qty)',
+                  child: OrdersChart(points: productQtyItems),
                 ),
-                StatCard(
-                  title: kpis[1].title,
-                  value: kpis[1].value,
-                  deltaPercent: kpis[1].deltaPercent,
-                  positive: kpis[1].positive,
-                  icon: Icons.payments_rounded,
+                GlassPanel(
+                  title: 'Financial Contribution (Revenue Share)',
+                  child: StatusDonut(items: revenueShareItems),
                 ),
-                StatCard(
-                  title: kpis[2].title,
-                  value: kpis[2].value,
-                  deltaPercent: kpis[2].deltaPercent,
-                  positive: kpis[2].positive,
-                  icon: Icons.people_alt_rounded,
-                ),
-                StatCard(
-                  title: kpis[3].title,
-                  value: kpis[3].value,
-                  deltaPercent: kpis[3].deltaPercent,
-                  positive: kpis[3].positive,
-                  icon: Icons.warning_amber_rounded,
+                GlassPanel(
+                  title: 'Revenue Performance (By Product)',
+                  child: TopCategoriesChart(
+                    items: stats.topProducts
+                        .map((e) => AdminCategoryShare(name: e.productName, value: e.totalRevenue))
+                        .toList(),
+                  ),
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 24),
-          AppAnimation.fadeInUp(
-            duration: const Duration(milliseconds: 500),
-            child: LayoutBuilder(
-              builder: (context, c) {
-                final wide = c.maxWidth >= 980;
-                if (!wide) {
-                  return Column(
-                    children: chartWidgets
-                        .map((w) => Padding(
-                              padding: const EdgeInsets.only(bottom: 16),
-                              child: SizedBox(height: 300, child: w),
-                            ))
-                        .toList(),
-                  );
-                }
-
-                return GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
-                  childAspectRatio: 2.2,
-                  children: chartWidgets,
-                );
-              },
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+
+  String _getGreetingString() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Morning';
+    if (hour < 17) return 'Afternoon';
+    return 'Evening';
+  }
 }
+
+

@@ -318,10 +318,17 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
                 ],
               );
 
+                final totalTableWidth = widget.columns.fold<double>(
+                  80.0, // Initial width for checkbox and margins
+                  (prev, col) => prev + (col.width ?? 150) + 18, // width + columnSpacing
+                );
+
                 return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                    constraints: BoxConstraints(
+                      minWidth: max(constraints.maxWidth, totalTableWidth),
+                    ),
                     child: SingleChildScrollView(
                       child: table,
                     ),

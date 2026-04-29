@@ -102,6 +102,38 @@ class AppAnimation extends StatelessWidget {
     );
   }
 
+  /// Shortcut for FadeInLeft
+  static Widget fadeInLeft({
+    required Widget child,
+    Duration duration = const Duration(milliseconds: 800),
+    Duration delay = Duration.zero,
+    double offset = 30.0,
+  }) {
+    return AppAnimation(
+      type: AnimationType.fadeInLeft,
+      duration: duration,
+      delay: delay,
+      offset: offset,
+      child: child,
+    );
+  }
+
+  /// Shortcut for FadeInRight
+  static Widget fadeInRight({
+    required Widget child,
+    Duration duration = const Duration(milliseconds: 800),
+    Duration delay = Duration.zero,
+    double offset = 30.0,
+  }) {
+    return AppAnimation(
+      type: AnimationType.fadeInRight,
+      duration: duration,
+      delay: delay,
+      offset: offset,
+      child: child,
+    );
+  }
+
   /// Shortcut for FadeZoomIn
   static Widget fadeZoomIn({
     required Widget child,

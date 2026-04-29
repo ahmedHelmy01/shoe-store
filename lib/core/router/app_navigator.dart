@@ -40,7 +40,9 @@ class AppRouteNames {
   static const String webstoreAdminGovernorates = '/webstore/admin/governorates';
   static const String webstoreAdminOrderStatuses = '/webstore/admin/order-statuses';
   static const String webstoreAdminCustomerGroups = '/webstore/admin/customer-groups';
+  static const String webstoreAdminClientReports = '/webstore/admin/client-reports';
   static const String webstoreAdminSettings = '/webstore/admin/settings';
+  static const String webstoreAdminContacts = '/webstore/admin/contacts';
 }
 
 class AppNavigator {

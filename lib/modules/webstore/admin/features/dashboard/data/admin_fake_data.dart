@@ -3,23 +3,6 @@ import 'models/admin_dashboard_models.dart';
 
 /// Temporary seeded fake data for admin Dashboard.
 class AdminDashboardFakeData {
-  static List<AdminKpi> dashboardKpis({int seed = 31}) {
-    final rnd = Random(seed);
-    int delta() => (rnd.nextInt(22) + 2) * (rnd.nextBool() ? 1 : -1);
-    bool pos(int d) => d >= 0;
-
-    final d1 = delta();
-    final d2 = delta();
-    final d3 = delta();
-    final d4 = delta();
-
-    return [
-      AdminKpi(title: 'Orders (Today)', value: '${rnd.nextInt(140) + 20}', deltaPercent: d1.abs(), positive: pos(d1)),
-      AdminKpi(title: 'Revenue (7d)', value: '${(rnd.nextInt(900000) + 120000) / 100} EGP', deltaPercent: d2.abs(), positive: pos(d2)),
-      AdminKpi(title: 'Active Users', value: '${rnd.nextInt(1800) + 300}', deltaPercent: d3.abs(), positive: pos(d3)),
-      AdminKpi(title: 'Low Stock', value: '${rnd.nextInt(28) + 4}', deltaPercent: d4.abs(), positive: !pos(d4)),
-    ];
-  }
 
   static List<AdminSalesPoint> dashboardSales({int days = 14, int seed = 37}) {
     final rnd = Random(seed);

@@ -29,7 +29,10 @@ enum AdminRouteId {
   boardings,
   pages,
   properties,
+  supportGroup,
+  contacts,
   settings,
+  clientReports,
   login,
 }
 
@@ -218,6 +221,25 @@ class AdminRoutes {
           title: 'Customer Groups',
           icon: Icons.groups_rounded,
         ),
+        AdminNavNode(
+          id: AdminRouteId.clientReports,
+          routeName: AppRouteNames.webstoreAdminClientReports,
+          title: 'Clients Reports',
+          icon: Icons.analytics_rounded,
+        ),
+      ],
+    ),
+    AdminNavNode(
+      id: AdminRouteId.supportGroup,
+      title: 'Support',
+      icon: Icons.support_agent_rounded,
+      children: [
+        AdminNavNode(
+          id: AdminRouteId.contacts,
+          routeName: AppRouteNames.webstoreAdminContacts,
+          title: 'Messages',
+          icon: Icons.chat_bubble_outline_rounded,
+        ),
       ],
     ),
     AdminNavNode(
@@ -254,6 +276,8 @@ class AdminRoutes {
       AppRouteNames.webstoreAdminCities => AdminRouteId.cities,
       AppRouteNames.webstoreAdminGovernorates => AdminRouteId.governorates,
       AppRouteNames.webstoreAdminSettings => AdminRouteId.settings,
+      AppRouteNames.webstoreAdminClientReports => AdminRouteId.clientReports,
+      AppRouteNames.webstoreAdminContacts => AdminRouteId.contacts,
       'login' => AdminRouteId.login,
       _ => AdminRouteId.dashboard,
     };
@@ -286,10 +310,13 @@ class AdminRoutes {
       AdminRouteId.cities => AppRouteNames.webstoreAdminCities,
       AdminRouteId.governorates => AppRouteNames.webstoreAdminGovernorates,
       AdminRouteId.settings => AppRouteNames.webstoreAdminSettings,
+      AdminRouteId.clientReports => AppRouteNames.webstoreAdminClientReports,
+      AdminRouteId.contacts => AppRouteNames.webstoreAdminContacts,
       AdminRouteId.catalog => AppRouteNames.webstoreAdminProducts,
       AdminRouteId.operations => AdminRouteId.governorates.toString(),
       AdminRouteId.storefront => AdminRouteId.sliders.toString(),
       AdminRouteId.customerGroup => AppRouteNames.webstoreAdminUsers,
+      AdminRouteId.supportGroup => AppRouteNames.webstoreAdminContacts,
     };
   }
 

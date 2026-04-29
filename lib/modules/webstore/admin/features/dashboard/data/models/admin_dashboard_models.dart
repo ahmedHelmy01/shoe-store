@@ -1,16 +1,3 @@
-class AdminKpi {
-  final String title;
-  final String value;
-  final int deltaPercent; // +/- percent vs previous period
-  final bool positive;
-
-  const AdminKpi({
-    required this.title,
-    required this.value,
-    required this.deltaPercent,
-    required this.positive,
-  });
-}
 
 class AdminSalesPoint {
   final DateTime day;
