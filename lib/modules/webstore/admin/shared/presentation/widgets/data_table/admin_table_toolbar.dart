@@ -45,225 +45,239 @@ class AdminDataTableToolbar extends StatelessWidget {
     final border = (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08);
     const uniformPillWidth = 132.0;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      child: Wrap(
-        alignment: WrapAlignment.spaceBetween,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 16,
-        runSpacing: 16,
-        children: [
-          if (enableSearch)
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 360),
-              child: TextField(
-                controller: searchController,
-                onChanged: (v) {
-                  onSearchChanged(v);
-                  if (v.isEmpty) {
-                    onSearchSubmitted?.call('');
-                  }
-                },
-                onSubmitted: onSearchSubmitted,
-                decoration: InputDecoration(
-                  hintText: searchHint,
-                  prefixIcon: IconButton(
-                    tooltip: 'Search',
-                    icon: const Icon(Icons.search_rounded),
-                    onPressed: () => onSearchSubmitted?.call(searchController.text),
-                  ),
-                  isDense: true,
-                  filled: true,
-                  fillColor: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.04),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: border),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: border),
-                  ),
-                  suffixIcon: searchController.text.isEmpty
-                      ? null
-                      : IconButton(
-                          tooltip: 'Clear',
-                          onPressed: () {
-                            searchController.clear();
-                            onSearchChanged('');
-                            onSearchSubmitted?.call('');
-                          },
-                          icon: const Icon(Icons.close_rounded),
-                        ),
-                ),
-              ),
-            ),
-          Wrap(
-            alignment: WrapAlignment.center,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isWide = constraints.maxWidth > 700;
+        final isMobile = constraints.maxWidth < 500;
+        
+        // Calculate width for export buttons to be 2 per row on mobile
+        // 24 is the total horizontal padding (12 on each side)
+        // 10 is the spacing between pills
+        final pillWidth = isMobile 
+            ? (constraints.maxWidth - 24 - 10) / 2 
+            : uniformPillWidth;
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          child: Wrap(
+            alignment: isWide ? WrapAlignment.spaceBetween : WrapAlignment.center,
             crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 10,
-            runSpacing: 10,
+            spacing: 16,
+            runSpacing: 16,
             children: [
-              if (selectedCount > 0) ...[
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(999),
-                    color: AppColors.primaryOrange.withValues(alpha: 0.14),
-                    border: Border.all(color: AppColors.primaryOrange.withValues(alpha: 0.25)),
-                  ),
-                  child: Text(
-                    '$selectedCount selected',
-                    style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w900),
-                  ),
-                ),
-                TextButton(
-                  onPressed: onClearSelection,
-                  child: const Text('Clear'),
-                ),
-              ],
-              SizedBox(
-                width: uniformPillWidth,
-                child: _Pill(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.table_rows_rounded, size: 18),
-                      const SizedBox(width: 8),
-                      PopupMenuButton<int>(
-                        tooltip: 'Rows per page',
-                        padding: EdgeInsets.zero,
-                        color: Colors.white,
-                        surfaceTintColor: Colors.white,
-                        onSelected: onPageSize,
-                        itemBuilder: (_) => const [
-                          PopupMenuItem(value: 10, child: Text('Rows 10')),
-                          PopupMenuItem(value: 25, child: Text('Rows 25')),
-                          PopupMenuItem(value: 50, child: Text('Rows 50')),
-                        ],
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'Rows $pageSize',
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                  ),
+              if (enableSearch)
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: isWide ? 360 : double.infinity),
+                  child: TextField(
+                    controller: searchController,
+                    onChanged: (v) {
+                      onSearchChanged(v);
+                      if (v.isEmpty) {
+                        onSearchSubmitted?.call('');
+                      }
+                    },
+                    onSubmitted: onSearchSubmitted,
+                    decoration: InputDecoration(
+                      hintText: searchHint,
+                      prefixIcon: IconButton(
+                        tooltip: 'Search',
+                        icon: const Icon(Icons.search_rounded),
+                        onPressed: () => onSearchSubmitted?.call(searchController.text),
+                      ),
+                      isDense: true,
+                      filled: true,
+                      fillColor: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.04),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide(color: border),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide(color: border),
+                      ),
+                      suffixIcon: searchController.text.isEmpty
+                          ? null
+                          : IconButton(
+                              tooltip: 'Clear',
+                              onPressed: () {
+                                searchController.clear();
+                                onSearchChanged('');
+                                onSearchSubmitted?.call('');
+                              },
+                              icon: const Icon(Icons.close_rounded),
                             ),
-                            const SizedBox(width: 4),
-                            const Icon(Icons.keyboard_arrow_down_rounded, size: 18),
-                          ],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                width: uniformPillWidth,
-                child: _Pill(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.download_rounded, size: 18),
-                      const SizedBox(width: 8),
-                      PopupMenuButton<String>(
-                        padding: EdgeInsets.zero,
-                        color: Colors.white,
-                        surfaceTintColor: Colors.white,
-                        onSelected: (v) {
-                          if (v == 'all') onExportAllCsv();
-                          if (v == 'selected') onExportSelectedCsv?.call();
-                        },
-                        itemBuilder: (_) => [
-                          const PopupMenuItem(value: 'all', child: Text('Export CSV')),
-                          if (onExportSelectedCsv != null)
-                            const PopupMenuItem(value: 'selected', child: Text('Export selected')),
+              Wrap(
+                alignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 10,
+                runSpacing: 10,
+                children: [
+                  if (selectedCount > 0) ...[
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(999),
+                        color: AppColors.primaryOrange.withValues(alpha: 0.14),
+                        border: Border.all(color: AppColors.primaryOrange.withValues(alpha: 0.25)),
+                      ),
+                      child: Text(
+                        '$selectedCount selected',
+                        style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w900),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: onClearSelection,
+                      child: const Text('Clear'),
+                    ),
+                  ],
+                  SizedBox(
+                    width: pillWidth,
+                    child: _Pill(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.table_rows_rounded, size: 18),
+                          const SizedBox(width: 8),
+                          PopupMenuButton<int>(
+                            tooltip: 'Rows per page',
+                            padding: EdgeInsets.zero,
+                            color: Colors.white,
+                            surfaceTintColor: Colors.white,
+                            onSelected: onPageSize,
+                            itemBuilder: (_) => const [
+                              PopupMenuItem(value: 10, child: Text('Rows 10')),
+                              PopupMenuItem(value: 25, child: Text('Rows 25')),
+                              PopupMenuItem(value: 50, child: Text('Rows 50')),
+                            ],
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Rows $pageSize',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                ),
+                                const SizedBox(width: 4),
+                                const Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+                              ],
+                            ),
+                          ),
                         ],
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: const [
-                            Text('CSV'),
-                            SizedBox(width: 2),
-                            Icon(Icons.keyboard_arrow_down_rounded, size: 18),
-                          ],
-                        ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              SizedBox(
-                width: uniformPillWidth,
-                child: _Pill(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.picture_as_pdf_rounded, size: 18),
-                      const SizedBox(width: 8),
-                      PopupMenuButton<String>(
-                        padding: EdgeInsets.zero,
-                        color: Colors.white,
-                        surfaceTintColor: Colors.white,
-                        onSelected: (v) {
-                          if (v == 'all') onExportAllPdf();
-                          if (v == 'selected') onExportSelectedPdf?.call();
-                        },
-                        itemBuilder: (_) => [
-                          const PopupMenuItem(value: 'all', child: Text('Export PDF')),
-                          if (onExportSelectedPdf != null)
-                            const PopupMenuItem(value: 'selected', child: Text('Export selected')),
+                  SizedBox(
+                    width: pillWidth,
+                    child: _Pill(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.download_rounded, size: 18),
+                          const SizedBox(width: 8),
+                          PopupMenuButton<String>(
+                            padding: EdgeInsets.zero,
+                            color: Colors.white,
+                            surfaceTintColor: Colors.white,
+                            onSelected: (v) {
+                              if (v == 'all') onExportAllCsv();
+                              if (v == 'selected') onExportSelectedCsv?.call();
+                            },
+                            itemBuilder: (_) => [
+                              const PopupMenuItem(value: 'all', child: Text('Export CSV')),
+                              if (onExportSelectedCsv != null)
+                                const PopupMenuItem(value: 'selected', child: Text('Export selected')),
+                            ],
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: const [
+                                Text('CSV'),
+                                SizedBox(width: 2),
+                                Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+                              ],
+                            ),
+                          ),
                         ],
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: const [
-                            Text('PDF'),
-                            SizedBox(width: 2),
-                            Icon(Icons.keyboard_arrow_down_rounded, size: 18),
-                          ],
-                        ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              SizedBox(
-                width: uniformPillWidth,
-                child: _Pill(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.grid_on_rounded, size: 18),
-                      const SizedBox(width: 8),
-                      PopupMenuButton<String>(
-                        padding: EdgeInsets.zero,
-                        color: Colors.white,
-                        surfaceTintColor: Colors.white,
-                        onSelected: (v) {
-                          if (v == 'all') onExportAllExcel();
-                          if (v == 'selected') onExportSelectedExcel?.call();
-                        },
-                        itemBuilder: (_) => [
-                          const PopupMenuItem(value: 'all', child: Text('Export Excel')),
-                          if (onExportSelectedExcel != null)
-                            const PopupMenuItem(value: 'selected', child: Text('Export selected')),
+                  SizedBox(
+                    width: pillWidth,
+                    child: _Pill(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.picture_as_pdf_rounded, size: 18),
+                          const SizedBox(width: 8),
+                          PopupMenuButton<String>(
+                            padding: EdgeInsets.zero,
+                            color: Colors.white,
+                            surfaceTintColor: Colors.white,
+                            onSelected: (v) {
+                              if (v == 'all') onExportAllPdf();
+                              if (v == 'selected') onExportSelectedPdf?.call();
+                            },
+                            itemBuilder: (_) => [
+                              const PopupMenuItem(value: 'all', child: Text('Export PDF')),
+                              if (onExportSelectedPdf != null)
+                                const PopupMenuItem(value: 'selected', child: Text('Export selected')),
+                            ],
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: const [
+                                Text('PDF'),
+                                SizedBox(width: 2),
+                                Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+                              ],
+                            ),
+                          ),
                         ],
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: const [
-                            Text('Excel'),
-                            SizedBox(width: 2),
-                            Icon(Icons.keyboard_arrow_down_rounded, size: 18),
-                          ],
-                        ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  SizedBox(
+                    width: pillWidth,
+                    child: _Pill(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.grid_on_rounded, size: 18),
+                          const SizedBox(width: 8),
+                          PopupMenuButton<String>(
+                            padding: EdgeInsets.zero,
+                            color: Colors.white,
+                            surfaceTintColor: Colors.white,
+                            onSelected: (v) {
+                              if (v == 'all') onExportAllExcel();
+                              if (v == 'selected') onExportSelectedExcel?.call();
+                            },
+                            itemBuilder: (_) => [
+                              const PopupMenuItem(value: 'all', child: Text('Export Excel')),
+                              if (onExportSelectedExcel != null)
+                                const PopupMenuItem(value: 'selected', child: Text('Export selected')),
+                            ],
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: const [
+                                Text('Excel'),
+                                SizedBox(width: 2),
+                                Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

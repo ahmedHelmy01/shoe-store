@@ -6,6 +6,7 @@ import 'package:erp/modules/webstore/admin/shared/export/admin_export.dart';
 import 'package:excel/excel.dart' as ex;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:flutter/services.dart';
 
 // New modular imports
 import 'data_table/admin_table_models.dart';
@@ -129,7 +130,9 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
     return copy;
   }
 
-  int get _pageCount => widget.isServerSide ? widget.serverLastPage : max(1, (_sorted.length / _pageSize).ceil());
+  int get _pageCount => widget.isServerSide
+      ? widget.serverLastPage
+      : max(1, (_sorted.length / _pageSize).ceil());
 
   List<T> get _pageRows {
     if (widget.isServerSide) return _sorted;
@@ -152,10 +155,13 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final border = (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08);
+    final border = (isDark ? Colors.white : Colors.black).withValues(
+      alpha: 0.08,
+    );
 
     final pageRows = _pageRows;
-    final allOnPageSelected = pageRows.isNotEmpty &&
+    final allOnPageSelected =
+        pageRows.isNotEmpty &&
         pageRows.every((r) => _selected.contains(widget.idOf(r)));
     final isEmptyState = _sorted.isEmpty;
 
@@ -164,203 +170,258 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
       child: Container(
         color: isDark ? const Color(0xFF0F1B2D) : Colors.white,
         child: Column(
-        children: [
-        AdminDataTableToolbar(
-          selectedCount: _selected.length,
-          enableSearch: widget.enableSearch,
-          searchHint: widget.searchHint,
-          searchController: _searchCtrl,
-          onSearchChanged: (v) {
-            setState(() {
-              _query = v;
-              if (!widget.isServerSide) _page = 1;
-            });
-          },
-          onSearchSubmitted: (v) {
-            if (widget.isServerSide && widget.onSearch != null) {
-              widget.onSearch!(v);
-            }
-          },
-          pageSize: _pageSize,
-          onPageSize: (v) {
-            setState(() {
-              _pageSize = v;
-              _page = 1;
-            });
-            if (widget.isServerSide) {
-              widget.onServerPageSize?.call(v);
-            }
-          },
-          onExportAllCsv: () => _exportCsv(rows: _sorted, filenameSuffix: 'all'),
-          onExportSelectedCsv: _selected.isEmpty
-              ? null
-              : () {
-                  final map = {for (final r in widget.rows) widget.idOf(r): r};
-                  final selectedRows = _selected.map((id) => map[id]).whereType<T>().toList();
-                  _exportCsv(rows: selectedRows, filenameSuffix: 'selected');
-                },
-          onExportAllPdf: () => _exportPdf(rows: _sorted, filenameSuffix: 'all'),
-          onExportSelectedPdf: _selected.isEmpty
-              ? null
-              : () {
-                  final map = {for (final r in widget.rows) widget.idOf(r): r};
-                  final selectedRows = _selected.map((id) => map[id]).whereType<T>().toList();
-                  _exportPdf(rows: selectedRows, filenameSuffix: 'selected');
-                },
-          onExportAllExcel: () => _exportExcel(rows: _sorted, filenameSuffix: 'all'),
-          onExportSelectedExcel: _selected.isEmpty
-              ? null
-              : () {
-                  final map = {for (final r in widget.rows) widget.idOf(r): r};
-                  final selectedRows = _selected.map((id) => map[id]).whereType<T>().toList();
-                  _exportExcel(rows: selectedRows, filenameSuffix: 'selected');
-                },
-          onClearSelection: _selected.isEmpty ? null : () => setState(_selected.clear),
-        ),
-        Divider(height: 1, thickness: 1, color: border),
-        if (isEmptyState)
-          const Expanded(
-            child: AppEmptyWidget(
-              message: 'No data found',
-              subtitle: 'There are no records to display yet.',
-              showGlassBackground: false,
-            ),
-          )
-        else
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final isMobile = constraints.maxWidth < 600;
-
-                if (isMobile && widget.cardBuilder != null) {
-                  return ListView.separated(
-                    padding: const EdgeInsets.all(12),
-                    itemCount: pageRows.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
-                    itemBuilder: (context, i) => widget.cardBuilder!(context, pageRows[i]),
-                  );
+          children: [
+            AdminDataTableToolbar(
+              selectedCount: _selected.length,
+              enableSearch: widget.enableSearch,
+              searchHint: widget.searchHint,
+              searchController: _searchCtrl,
+              onSearchChanged: (v) {
+                setState(() {
+                  _query = v;
+                  if (!widget.isServerSide) _page = 1;
+                });
+              },
+              onSearchSubmitted: (v) {
+                if (widget.isServerSide && widget.onSearch != null) {
+                  widget.onSearch!(v);
                 }
-
-              final zebraA = (isDark ? Colors.white : Colors.black).withValues(alpha: isDark ? 0.03 : 0.03);
-              final zebraB = (isDark ? Colors.white : Colors.black).withValues(alpha: isDark ? 0.015 : 0.015);
-
-              final table = DataTable(
-                headingRowColor: WidgetStatePropertyAll(
-                  (isDark ? Colors.white : Colors.black).withValues(alpha: 0.05),
+              },
+              pageSize: _pageSize,
+              onPageSize: (v) {
+                setState(() {
+                  _pageSize = v;
+                  _page = 1;
+                });
+                if (widget.isServerSide) {
+                  widget.onServerPageSize?.call(v);
+                }
+              },
+              onExportAllCsv: () =>
+                  _exportCsv(rows: _sorted, filenameSuffix: 'all'),
+              onExportSelectedCsv: _selected.isEmpty
+                  ? null
+                  : () {
+                      final map = {
+                        for (final r in widget.rows) widget.idOf(r): r,
+                      };
+                      final selectedRows = _selected
+                          .map((id) => map[id])
+                          .whereType<T>()
+                          .toList();
+                      _exportCsv(
+                        rows: selectedRows,
+                        filenameSuffix: 'selected',
+                      );
+                    },
+              onExportAllPdf: () =>
+                  _exportPdf(rows: _sorted, filenameSuffix: 'all'),
+              onExportSelectedPdf: _selected.isEmpty
+                  ? null
+                  : () {
+                      final map = {
+                        for (final r in widget.rows) widget.idOf(r): r,
+                      };
+                      final selectedRows = _selected
+                          .map((id) => map[id])
+                          .whereType<T>()
+                          .toList();
+                      _exportPdf(
+                        rows: selectedRows,
+                        filenameSuffix: 'selected',
+                      );
+                    },
+              onExportAllExcel: () =>
+                  _exportExcel(rows: _sorted, filenameSuffix: 'all'),
+              onExportSelectedExcel: _selected.isEmpty
+                  ? null
+                  : () {
+                      final map = {
+                        for (final r in widget.rows) widget.idOf(r): r,
+                      };
+                      final selectedRows = _selected
+                          .map((id) => map[id])
+                          .whereType<T>()
+                          .toList();
+                      _exportExcel(
+                        rows: selectedRows,
+                        filenameSuffix: 'selected',
+                      );
+                    },
+              onClearSelection: _selected.isEmpty
+                  ? null
+                  : () => setState(_selected.clear),
+            ),
+            Divider(height: 1, thickness: 1, color: border),
+            if (isEmptyState)
+              const Expanded(
+                child: AppEmptyWidget(
+                  message: 'No data found',
+                  subtitle: 'There are no records to display yet.',
+                  showGlassBackground: false,
                 ),
-                showCheckboxColumn: false,
-                horizontalMargin: 16,
-                columnSpacing: 18,
-                headingRowHeight: 54,
-                dataRowMinHeight: 52,
-                dataRowMaxHeight: 64,
-                sortAscending: _sortAsc,
-                sortColumnIndex: _sortIndex == null ? null : _sortIndex! + 1,
-                columns: [
-                  DataColumn(
-                    label: Checkbox(
-                      value: allOnPageSelected,
-                      onChanged: (v) {
-                        setState(() {
-                          final shouldSelect = v ?? false;
-                          for (final r in pageRows) {
-                            final id = widget.idOf(r);
-                            if (shouldSelect) {
-                              _selected.add(id);
-                            } else {
-                              _selected.remove(id);
-                            }
-                          }
-                        });
-                      },
-                    ),
-                  ),
-                  for (int i = 0; i < widget.columns.length; i++)
-                    DataColumn(
-                      onSort: widget.columns[i].sortable
-                          ? (_, asc) {
-                              setState(() {
-                                _sortIndex = i;
-                                _sortAsc = asc;
-                              });
-                            }
-                          : null,
-                      label: SizedBox(
-                        width: widget.columns[i].width,
-                        child: Text(widget.columns[i].title),
+              )
+            else
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final isMobile = constraints.maxWidth < 600;
+
+                    if (isMobile && widget.cardBuilder != null) {
+                      return ListView.separated(
+                        padding: const EdgeInsets.all(12),
+                        itemCount: pageRows.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 12),
+                        itemBuilder: (context, i) =>
+                            widget.cardBuilder!(context, pageRows[i]),
+                      );
+                    }
+
+                    final zebraA = (isDark ? Colors.white : Colors.black)
+                        .withValues(alpha: isDark ? 0.03 : 0.03);
+                    final zebraB = (isDark ? Colors.white : Colors.black)
+                        .withValues(alpha: isDark ? 0.015 : 0.015);
+
+                    final table = DataTable(
+                      headingRowColor: WidgetStatePropertyAll(
+                        (isDark ? Colors.white : Colors.black).withValues(
+                          alpha: 0.05,
+                        ),
                       ),
-                    ),
-                ],
-                rows: [
-                  for (int i = 0; i < pageRows.length; i++)
-                    DataRow(
-                      selected: _selected.contains(widget.idOf(pageRows[i])),
-                      color: WidgetStatePropertyAll(i.isEven ? zebraA : zebraB),
-                      cells: [
-                        DataCell(
-                          Checkbox(
-                            value: _selected.contains(widget.idOf(pageRows[i])),
+                      showCheckboxColumn: false,
+                      horizontalMargin: 16,
+                      columnSpacing: 18,
+                      headingRowHeight: 54,
+                      dataRowMinHeight: 52,
+                      dataRowMaxHeight: 64,
+                      sortAscending: _sortAsc,
+                      sortColumnIndex: _sortIndex == null
+                          ? null
+                          : _sortIndex! + 1,
+                      columns: [
+                        DataColumn(
+                          label: Checkbox(
+                            value: allOnPageSelected,
                             onChanged: (v) {
-                              final id = widget.idOf(pageRows[i]);
                               setState(() {
-                                if (v ?? false) {
-                                  _selected.add(id);
-                                } else {
-                                  _selected.remove(id);
+                                final shouldSelect = v ?? false;
+                                for (final r in pageRows) {
+                                  final id = widget.idOf(r);
+                                  if (shouldSelect) {
+                                    _selected.add(id);
+                                  } else {
+                                    _selected.remove(id);
+                                  }
                                 }
                               });
                             },
                           ),
                         ),
-                        for (final col in widget.columns) DataCell(col.cell(context, pageRows[i])),
+                        for (int i = 0; i < widget.columns.length; i++)
+                          DataColumn(
+                            onSort: widget.columns[i].sortable
+                                ? (_, asc) {
+                                    setState(() {
+                                      _sortIndex = i;
+                                      _sortAsc = asc;
+                                    });
+                                  }
+                                : null,
+                            label: SizedBox(
+                              width: widget.columns[i].width,
+                              child: Text(widget.columns[i].title),
+                            ),
+                          ),
                       ],
-                    ),
-                ],
-              );
+                      rows: [
+                        for (int i = 0; i < pageRows.length; i++)
+                          DataRow(
+                            selected: _selected.contains(
+                              widget.idOf(pageRows[i]),
+                            ),
+                            color: WidgetStatePropertyAll(
+                              i.isEven ? zebraA : zebraB,
+                            ),
+                            cells: [
+                              DataCell(
+                                Checkbox(
+                                  value: _selected.contains(
+                                    widget.idOf(pageRows[i]),
+                                  ),
+                                  onChanged: (v) {
+                                    final id = widget.idOf(pageRows[i]);
+                                    setState(() {
+                                      if (v ?? false) {
+                                        _selected.add(id);
+                                      } else {
+                                        _selected.remove(id);
+                                      }
+                                    });
+                                  },
+                                ),
+                              ),
+                              for (final col in widget.columns)
+                                DataCell(col.cell(context, pageRows[i])),
+                            ],
+                          ),
+                      ],
+                    );
 
-                final totalTableWidth = widget.columns.fold<double>(
-                  80.0, // Initial width for checkbox and margins
-                  (prev, col) => prev + (col.width ?? 150) + 18, // width + columnSpacing
-                );
+                    final totalTableWidth = widget.columns.fold<double>(
+                      80.0, // Initial width for checkbox and margins
+                      (prev, col) =>
+                          prev +
+                          (col.width ?? 150) +
+                          18, // width + columnSpacing
+                    );
 
-                return SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minWidth: max(constraints.maxWidth, totalTableWidth),
-                    ),
-                    child: SingleChildScrollView(
-                      child: table,
-                    ),
-                  ),
-                );
-              },
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minWidth: max(constraints.maxWidth, totalTableWidth),
+                        ),
+                        child: SingleChildScrollView(child: table),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            Divider(height: 1, thickness: 1, color: border),
+            AdminDataTableFooter(
+              page: widget.isServerSide ? widget.serverPage : _page,
+              pageCount: widget.isServerSide
+                  ? widget.serverLastPage
+                  : _pageCount,
+              pageSize: widget.isServerSide ? widget.rows.length : _pageSize,
+              total: widget.isServerSide ? widget.serverTotal : _sorted.length,
+              onPrev: widget.isServerSide
+                  ? widget.onPrevPage
+                  : (_page > 1 ? () => setState(() => _page--) : null),
+              onNext: widget.isServerSide
+                  ? widget.onNextPage
+                  : (_page < _pageCount ? () => setState(() => _page++) : null),
             ),
-          ),
-        Divider(height: 1, thickness: 1, color: border),
-        AdminDataTableFooter(
-          page: widget.isServerSide ? widget.serverPage : _page,
-          pageCount: widget.isServerSide ? widget.serverLastPage : _pageCount,
-          pageSize: widget.isServerSide ? widget.rows.length : _pageSize,
-          total: widget.isServerSide ? widget.serverTotal : _sorted.length,
-          onPrev: widget.isServerSide 
-              ? widget.onPrevPage 
-              : (_page > 1 ? () => setState(() => _page--) : null),
-          onNext: widget.isServerSide 
-              ? widget.onNextPage 
-              : (_page < _pageCount ? () => setState(() => _page++) : null),
+          ],
         ),
-        ],
-      ),
       ),
     );
   }
 
-  Future<void> _exportCsv({required List<T> rows, required String filenameSuffix}) async {
-    final cols = widget.columns;
+  Future<void> _exportCsv({
+    required List<T> rows,
+    required String filenameSuffix,
+  }) async {
+    final cols = widget.columns
+        .where((c) => c.exportValue != null || c.sortValue != null)
+        .toList();
 
     String esc(String v) {
-      final needs = v.contains(',') || v.contains('"') || v.contains('\n') || v.contains('\r');
+      final needs =
+          v.contains(',') ||
+          v.contains('"') ||
+          v.contains('\n') ||
+          v.contains('\r');
       final out = v.replaceAll('"', '""');
       return needs ? '"$out"' : out;
     }
@@ -369,16 +430,25 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
     final lines = <String>[header];
 
     for (final r in rows) {
-      final values = cols.map((c) {
-        final v = c.exportValue?.call(r) ?? c.sortValue?.call(r)?.toString() ?? '';
-        return esc(v);
-      }).join(',');
+      final values = cols
+          .map((c) {
+            final v =
+                c.exportValue?.call(r) ??
+                c.sortValue?.call(r)?.toString() ??
+                '';
+            return esc(v);
+          })
+          .join(',');
       lines.add(values);
     }
 
     final csv = lines.join('\n');
     final filename = '${widget.exportBaseName}_$filenameSuffix.csv';
-    await AdminExport.downloadText(filename: filename, content: csv, mimeType: 'text/csv;charset=utf-8');
+    await AdminExport.downloadText(
+      filename: filename,
+      content: csv,
+      mimeType: 'text/csv;charset=utf-8',
+    );
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -392,8 +462,13 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
     }
   }
 
-  Future<void> _exportExcel({required List<T> rows, required String filenameSuffix}) async {
-    final cols = widget.columns;
+  Future<void> _exportExcel({
+    required List<T> rows,
+    required String filenameSuffix,
+  }) async {
+    final cols = widget.columns
+        .where((c) => c.exportValue != null || c.sortValue != null)
+        .toList();
     final excel = ex.Excel.createExcel();
     final sheet = excel['Sheet1'];
 
@@ -401,7 +476,13 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
     for (final r in rows) {
       sheet.appendRow(
         cols
-            .map((c) => ex.TextCellValue(c.exportValue?.call(r) ?? c.sortValue?.call(r)?.toString() ?? ''))
+            .map(
+              (c) => ex.TextCellValue(
+                c.exportValue?.call(r) ??
+                    c.sortValue?.call(r)?.toString() ??
+                    '',
+              ),
+            )
             .toList(),
       );
     }
@@ -413,7 +494,8 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
     await AdminExport.downloadBytes(
       filename: filename,
       bytes: bytes,
-      mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      mimeType:
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     );
 
     if (mounted) {
@@ -428,29 +510,72 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
     }
   }
 
-  Future<void> _exportPdf({required List<T> rows, required String filenameSuffix}) async {
-    final cols = widget.columns;
+  Future<void> _exportPdf({
+    required List<T> rows,
+    required String filenameSuffix,
+  }) async {
+    final cols = widget.columns
+        .where((c) => c.exportValue != null || c.sortValue != null)
+        .toList();
     final doc = pw.Document();
+
+    final fontData = await rootBundle.load(
+      'assets/common/fonts/Harmattan-Regular.ttf',
+    );
+    final ttf = pw.Font.ttf(fontData);
 
     doc.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
+        theme: pw.ThemeData.withFont(base: ttf),
         build: (context) {
           return [
-            pw.Text(
-              '${widget.exportBaseName.toUpperCase()} (${rows.length})',
-              style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
-            ),
-            pw.SizedBox(height: 12),
-            pw.TableHelper.fromTextArray(
-              headers: cols.map((c) => c.title).toList(),
-              data: rows
-                  .map((r) => cols.map((c) => c.exportValue?.call(r) ?? c.sortValue?.call(r)?.toString() ?? '').toList())
-                  .toList(),
-              headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-              cellStyle: const pw.TextStyle(fontSize: 9),
-              headerDecoration: const pw.BoxDecoration(),
-              cellAlignment: pw.Alignment.centerLeft,
+            pw.Directionality(
+              textDirection: pw.TextDirection.rtl,
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+                children: [
+                  pw.Text(
+                    '${widget.exportBaseName.toUpperCase()} (${rows.length})',
+                    style: pw.TextStyle(
+                      fontSize: 18,
+                      fontWeight: pw.FontWeight.bold,
+                      font: ttf,
+                    ),
+                  ),
+                  pw.SizedBox(height: 20),
+                  pw.TableHelper.fromTextArray(
+                    headers: cols.map((c) => c.title).toList(),
+                    data: rows
+                        .map(
+                          (r) => cols
+                              .map(
+                                (c) =>
+                                    c.exportValue?.call(r) ??
+                                    c.sortValue?.call(r)?.toString() ??
+                                    '',
+                              )
+                              .toList(),
+                        )
+                        .toList(),
+                    headerStyle: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold,
+                      font: ttf,
+                      fontSize: 10,
+                    ),
+                    cellStyle: pw.TextStyle(fontSize: 9, font: ttf),
+                    headerDecoration: const pw.BoxDecoration(
+                      color: PdfColors.grey200,
+                    ),
+                    cellAlignment: pw.Alignment.centerRight,
+                    border: pw.TableBorder.all(
+                      color: PdfColors.grey400,
+                      width: 0.5,
+                    ),
+                    headerAlignment: pw.Alignment.centerRight,
+                  ),
+                ],
+              ),
             ),
           ];
         },
@@ -459,7 +584,11 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
 
     final bytes = await doc.save();
     final filename = '${widget.exportBaseName}_$filenameSuffix.pdf';
-    await AdminExport.downloadBytes(filename: filename, bytes: bytes, mimeType: 'application/pdf');
+    await AdminExport.downloadBytes(
+      filename: filename,
+      bytes: bytes,
+      mimeType: 'application/pdf',
+    );
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

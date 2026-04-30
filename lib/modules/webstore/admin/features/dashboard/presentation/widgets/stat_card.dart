@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:erp/core/constants/app_constants.dart';
 
 class StatCard extends StatelessWidget {
+  final Color? color;
   final String title;
   final String value;
   final int deltaPercent;
@@ -10,6 +11,7 @@ class StatCard extends StatelessWidget {
 
   const StatCard({
     super.key,
+    this.color,
     required this.title,
     required this.value,
     required this.deltaPercent,
@@ -21,10 +23,14 @@ class StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final fg = theme.textTheme.bodyMedium?.color ?? (isDark ? Colors.white : Colors.black);
+    final fg =
+        theme.textTheme.bodyMedium?.color ??
+        (isDark ? Colors.white : Colors.black);
+
+    final activeColor = color ?? AppColors.primary;
 
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(18),
@@ -32,10 +38,10 @@ class StatCard extends StatelessWidget {
           color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08),
         ),
       ),
-      constraints: const BoxConstraints(minHeight: 130),
+      constraints: const BoxConstraints(minHeight: 80),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,10 +51,10 @@ class StatCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
+                      color: activeColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Icon(icon, size: 18, color: AppColors.primary),
+                    child: Icon(icon, size: 18, color: activeColor),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
@@ -59,12 +65,13 @@ class StatCard extends StatelessWidget {
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: fg.withValues(alpha: 0.6),
                         fontWeight: FontWeight.w700,
+                        fontSize: 10,
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 6),
               FittedBox(
                 fit: BoxFit.scaleDown,
                 alignment: AlignmentDirectional.centerStart,
@@ -79,18 +86,22 @@ class StatCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: (positive ? Colors.green : Colors.red).withValues(alpha: 0.1),
+              color: (positive ? Colors.green : Colors.red).withValues(
+                alpha: 0.1,
+              ),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  positive ? Icons.trending_up_rounded : Icons.trending_down_rounded,
+                  positive
+                      ? Icons.trending_up_rounded
+                      : Icons.trending_down_rounded,
                   size: 14,
                   color: positive ? Colors.green : Colors.red,
                 ),
