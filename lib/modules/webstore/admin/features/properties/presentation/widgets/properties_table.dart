@@ -68,7 +68,7 @@ class PropertiesTable extends StatelessWidget {
             onView: (prop) {
               showDialog(
                 context: context,
-                builder: (_) => _PropertyDetailsDialog(property: prop),
+                builder: (_) => PropertyDetailsDialog(property: prop),
               );
             },
             onEdit: onEdit,
@@ -82,9 +82,9 @@ class PropertiesTable extends StatelessWidget {
   }
 }
 
-class _PropertyDetailsDialog extends StatelessWidget {
+class PropertyDetailsDialog extends StatelessWidget {
   final PropertyRow property;
-  const _PropertyDetailsDialog({required this.property});
+  const PropertyDetailsDialog({super.key, required this.property});
 
   @override
   Widget build(BuildContext context) {

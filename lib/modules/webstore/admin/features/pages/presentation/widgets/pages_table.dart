@@ -80,7 +80,7 @@ class PagesTable extends StatelessWidget {
             onView: (page) {
               showDialog(
                 context: context,
-                builder: (_) => _PageDetailsDialog(page: page),
+                builder: (_) => PageDetailsDialog(page: page),
               );
             },
             onEdit: onEdit,
@@ -94,9 +94,9 @@ class PagesTable extends StatelessWidget {
   }
 }
 
-class _PageDetailsDialog extends StatelessWidget {
+class PageDetailsDialog extends StatelessWidget {
   final PageRow page;
-  const _PageDetailsDialog({required this.page});
+  const PageDetailsDialog({super.key, required this.page});
 
   @override
   Widget build(BuildContext context) {

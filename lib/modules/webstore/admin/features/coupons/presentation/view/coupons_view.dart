@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_card_popup_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
@@ -104,6 +105,7 @@ class CouponsView extends ConsumerWidget {
               onDelete: (id) => _confirmAndDelete(context, notifier, id, items.firstWhere((c) => c.id == id).code),
               cardBuilder: (context, c) => _CouponCard(
                 coupon: c,
+                onView: () => showDialog(context: context, builder: (_) => CouponDetailsDialog(coupon: c)),
                 onEdit: () => notifier.openEdit(c),
                 onDelete: () => _confirmAndDelete(context, notifier, c.id, c.code),
               ),
@@ -136,11 +138,13 @@ class CouponsView extends ConsumerWidget {
 
 class _CouponCard extends StatelessWidget {
   final CouponRow coupon;
+  final VoidCallback onView;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
   const _CouponCard({
     required this.coupon,
+    required this.onView,
     required this.onEdit,
     required this.onDelete,
   });
@@ -189,11 +193,10 @@ class _CouponCard extends StatelessWidget {
                   ],
                 ),
               ),
-              PopupMenuButton(
-                itemBuilder: (context) => [
-                  PopupMenuItem(onTap: onEdit, child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: 8), Text('Edit')])),
-                  PopupMenuItem(onTap: onDelete, child: const Row(children: [Icon(Icons.delete_outline_rounded, color: Colors.red), SizedBox(width: 8), Text('Delete')])),
-                ],
+              AdminCardPopupMenu(
+                onView: onView,
+                onEdit: onEdit,
+                onDelete: onDelete,
               ),
             ],
           ),

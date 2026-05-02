@@ -80,7 +80,7 @@ class BoardingsTable extends StatelessWidget {
             onView: (boarding) {
               showDialog(
                 context: context,
-                builder: (_) => _BoardingDetailsDialog(boarding: boarding),
+                builder: (_) => BoardingDetailsDialog(boarding: boarding),
               );
             },
             onEdit: onEdit,
@@ -94,9 +94,9 @@ class BoardingsTable extends StatelessWidget {
   }
 }
 
-class _BoardingDetailsDialog extends StatelessWidget {
+class BoardingDetailsDialog extends StatelessWidget {
   final BoardingRow boarding;
-  const _BoardingDetailsDialog({required this.boarding});
+  const BoardingDetailsDialog({super.key, required this.boarding});
 
   @override
   Widget build(BuildContext context) {

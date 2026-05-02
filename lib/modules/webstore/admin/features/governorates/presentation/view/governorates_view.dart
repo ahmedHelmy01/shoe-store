@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_card_popup_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
@@ -84,6 +85,7 @@ class GovernoratesView extends ConsumerWidget {
               onDelete: (id) => notifier.commitDelete(id),
               cardBuilder: (context, g) => _GovernorateCard(
                 gov: g,
+                onView: () => notifier.openEdit(g),
                 onEdit: () => notifier.openEdit(g),
                 onDelete: () => notifier.commitDelete(g.id),
               ),
@@ -96,11 +98,13 @@ class GovernoratesView extends ConsumerWidget {
 
 class _GovernorateCard extends StatelessWidget {
   final GovernorateRow gov;
+  final VoidCallback onView;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
   const _GovernorateCard({
     required this.gov,
+    required this.onView,
     required this.onEdit,
     required this.onDelete,
   });
@@ -138,17 +142,10 @@ class _GovernorateCard extends StatelessWidget {
                   ],
                 ),
               ),
-              PopupMenuButton(
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    onTap: onEdit,
-                    child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: 8), Text('Edit')]),
-                  ),
-                  PopupMenuItem(
-                    onTap: onDelete,
-                    child: const Row(children: [Icon(Icons.delete_outline_rounded, color: Colors.red), SizedBox(width: 8), Text('Delete')]),
-                  ),
-                ],
+              AdminCardPopupMenu(
+                onView: onView,
+                onEdit: onEdit,
+                onDelete: onDelete,
               ),
             ],
           ),

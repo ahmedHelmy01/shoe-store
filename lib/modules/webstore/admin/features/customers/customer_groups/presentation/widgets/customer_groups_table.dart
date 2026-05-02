@@ -68,7 +68,7 @@ class CustomerGroupsTable extends StatelessWidget {
             onView: (group) {
               showDialog(
                 context: context,
-                builder: (_) => _GroupDetailsDialog(group: group),
+                builder: (_) => CustomerGroupDetailsDialog(group: group),
               );
             },
             onEdit: onEdit,
@@ -82,9 +82,9 @@ class CustomerGroupsTable extends StatelessWidget {
   }
 }
 
-class _GroupDetailsDialog extends StatelessWidget {
+class CustomerGroupDetailsDialog extends StatelessWidget {
   final CustomerGroupRow group;
-  const _GroupDetailsDialog({required this.group});
+  const CustomerGroupDetailsDialog({super.key, required this.group});
 
   @override
   Widget build(BuildContext context) {

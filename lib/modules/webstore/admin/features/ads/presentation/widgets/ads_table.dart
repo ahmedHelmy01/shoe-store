@@ -77,7 +77,7 @@ class AdsTable extends StatelessWidget {
             onView: (ad) {
               showDialog(
                 context: context,
-                builder: (_) => _AdDetailsDialog(ad: ad),
+                builder: (_) => AdDetailsDialog(ad: ad),
               );
             },
             onEdit: onEdit,
@@ -91,9 +91,9 @@ class AdsTable extends StatelessWidget {
   }
 }
 
-class _AdDetailsDialog extends StatelessWidget {
+class AdDetailsDialog extends StatelessWidget {
   final AdRow ad;
-  const _AdDetailsDialog({required this.ad});
+  const AdDetailsDialog({super.key, required this.ad});
 
   @override
   Widget build(BuildContext context) {

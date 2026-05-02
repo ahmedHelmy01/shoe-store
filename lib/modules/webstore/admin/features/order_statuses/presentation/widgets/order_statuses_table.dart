@@ -94,7 +94,7 @@ class OrderStatusesTable extends StatelessWidget {
             onView: (status) {
               showDialog(
                 context: context,
-                builder: (_) => _StatusDetailsDialog(status: status),
+                builder: (_) => OrderStatusDetailsDialog(status: status),
               );
             },
             onEdit: onEdit,
@@ -116,10 +116,10 @@ class OrderStatusesTable extends StatelessWidget {
   }
 }
 
-class _StatusDetailsDialog extends StatelessWidget {
+class OrderStatusDetailsDialog extends StatelessWidget {
   final OrderStatusRow status;
 
-  const _StatusDetailsDialog({required this.status});
+  const OrderStatusDetailsDialog({super.key, required this.status});
 
   @override
   Widget build(BuildContext context) {

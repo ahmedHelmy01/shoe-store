@@ -75,7 +75,7 @@ class PaymentMethodsTable extends StatelessWidget {
             onView: (p) {
               showDialog(
                 context: context,
-                builder: (_) => _PaymentMethodDetailsDialog(method: p),
+                builder: (_) => PaymentMethodDetailsDialog(method: p),
               );
             },
             onEdit: onEdit,
@@ -89,9 +89,9 @@ class PaymentMethodsTable extends StatelessWidget {
   }
 }
 
-class _PaymentMethodDetailsDialog extends StatelessWidget {
+class PaymentMethodDetailsDialog extends StatelessWidget {
   final PaymentMethodRow method;
-  const _PaymentMethodDetailsDialog({required this.method});
+  const PaymentMethodDetailsDialog({super.key, required this.method});
 
   @override
   Widget build(BuildContext context) {

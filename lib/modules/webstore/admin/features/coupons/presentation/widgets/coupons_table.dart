@@ -94,7 +94,7 @@ class CouponsTable extends StatelessWidget {
             onView: (c) {
               showDialog(
                 context: context,
-                builder: (_) => _CouponDetailsDialog(coupon: c),
+                builder: (_) => CouponDetailsDialog(coupon: c),
               );
             },
             onEdit: onEdit,
@@ -108,9 +108,9 @@ class CouponsTable extends StatelessWidget {
   }
 }
 
-class _CouponDetailsDialog extends StatelessWidget {
+class CouponDetailsDialog extends StatelessWidget {
   final CouponRow coupon;
-  const _CouponDetailsDialog({required this.coupon});
+  const CouponDetailsDialog({super.key, required this.coupon});
 
   @override
   Widget build(BuildContext context) {

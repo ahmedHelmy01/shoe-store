@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_card_popup_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
@@ -104,6 +105,7 @@ class CustomerGroupsView extends ConsumerWidget {
               onDelete: (id) => _confirmAndDelete(context, notifier, id, items.firstWhere((g) => g.id == id).title),
               cardBuilder: (context, g) => _GroupCard(
                 group: g,
+                onView: () => showDialog(context: context, builder: (_) => CustomerGroupDetailsDialog(group: g)),
                 onEdit: () => notifier.openEdit(g),
                 onDelete: () => _confirmAndDelete(context, notifier, g.id, g.title),
               ),
@@ -136,11 +138,13 @@ class CustomerGroupsView extends ConsumerWidget {
 
 class _GroupCard extends StatelessWidget {
   final CustomerGroupRow group;
+  final VoidCallback onView;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
   const _GroupCard({
     required this.group,
+    required this.onView,
     required this.onEdit,
     required this.onDelete,
   });
@@ -168,11 +172,10 @@ class _GroupCard extends StatelessWidget {
                   style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
                 ),
               ),
-              PopupMenuButton(
-                itemBuilder: (context) => [
-                  PopupMenuItem(onTap: onEdit, child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: 8), Text('Edit')])),
-                  PopupMenuItem(onTap: onDelete, child: const Row(children: [Icon(Icons.delete_outline_rounded, color: Colors.red), SizedBox(width: 8), Text('Delete')])),
-                ],
+              AdminCardPopupMenu(
+                onView: onView,
+                onEdit: onEdit,
+                onDelete: onDelete,
               ),
             ],
           ),

@@ -75,7 +75,7 @@ class PaymentStatusesTable extends StatelessWidget {
             onView: (s) {
               showDialog(
                 context: context,
-                builder: (_) => _PaymentStatusDetailsDialog(status: s),
+                builder: (_) => PaymentStatusDetailsDialog(status: s),
               );
             },
             onEdit: onEdit,
@@ -89,9 +89,9 @@ class PaymentStatusesTable extends StatelessWidget {
   }
 }
 
-class _PaymentStatusDetailsDialog extends StatelessWidget {
+class PaymentStatusDetailsDialog extends StatelessWidget {
   final PaymentStatusRow status;
-  const _PaymentStatusDetailsDialog({required this.status});
+  const PaymentStatusDetailsDialog({super.key, required this.status});
 
   @override
   Widget build(BuildContext context) {

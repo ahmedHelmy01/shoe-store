@@ -48,9 +48,11 @@ dependencies:
   logger: ^2.5.0
   http: ^1.6.0
   flutter_native_splash: ^2.4.0
-  pdf: ^3.11.3
   excel: ^4.0.6
   syncfusion_flutter_charts: ^33.1.47
+  syncfusion_flutter_pdf: ^33.1.47
+  arabic_reshaper: ^0.0.1
+  bidi: ^2.0.13
 
 dev_dependencies:
   flutter_test:

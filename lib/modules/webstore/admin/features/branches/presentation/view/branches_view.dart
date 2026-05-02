@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_card_popup_menu.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
@@ -203,51 +204,10 @@ class _BranchCard extends StatelessWidget {
                   ],
                 ),
               ),
-              PopupMenuButton(
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    onTap: onView,
-                    child: Row(
-                      children: [
-                        HugeIcon(
-                          icon: AdminActionIconButton.iconOf(AdminActionIconType.view),
-                          color: AdminActionIconButton.colorOf(AdminActionIconType.view),
-                          size: 18,
-                        ),
-                        const SizedBox(width: 8),
-                        const Text('Details'),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    onTap: onEdit,
-                    child: Row(
-                      children: [
-                        HugeIcon(
-                          icon: AdminActionIconButton.iconOf(AdminActionIconType.edit),
-                          color: AdminActionIconButton.colorOf(AdminActionIconType.edit),
-                          size: 18,
-                        ),
-                        const SizedBox(width: 8),
-                        const Text('Edit'),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    onTap: onDelete,
-                    child: Row(
-                      children: [
-                        HugeIcon(
-                          icon: AdminActionIconButton.iconOf(AdminActionIconType.delete),
-                          color: AdminActionIconButton.colorOf(AdminActionIconType.delete),
-                          size: 18,
-                        ),
-                        const SizedBox(width: 8),
-                        const Text('Delete'),
-                      ],
-                    ),
-                  ),
-                ],
+              AdminCardPopupMenu(
+                onView: onView,
+                onEdit: onEdit,
+                onDelete: onDelete,
               ),
             ],
           ),

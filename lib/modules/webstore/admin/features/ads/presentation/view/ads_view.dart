@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_card_popup_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
@@ -104,6 +105,7 @@ class AdsView extends ConsumerWidget {
               onDelete: (id) => _confirmAndDelete(context, notifier, id, items.firstWhere((a) => a.id == id).title),
               cardBuilder: (context, a) => _AdCard(
                 ad: a,
+                onView: () => showDialog(context: context, builder: (_) => AdDetailsDialog(ad: a)),
                 onEdit: () => notifier.openEdit(a),
                 onDelete: () => _confirmAndDelete(context, notifier, a.id, a.title),
               ),
@@ -137,11 +139,13 @@ class AdsView extends ConsumerWidget {
 
 class _AdCard extends StatelessWidget {
   final AdRow ad;
+  final VoidCallback onView;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
   const _AdCard({
     required this.ad,
+    required this.onView,
     required this.onEdit,
     required this.onDelete,
   });
@@ -188,29 +192,10 @@ class _AdCard extends StatelessWidget {
                   ],
                 ),
               ),
-              PopupMenuButton(
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    onTap: onEdit,
-                    child: const Row(
-                      children: [
-                        Icon(Icons.edit_outlined),
-                        SizedBox(width: 8),
-                        Text('Edit'),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    onTap: onDelete,
-                    child: const Row(
-                      children: [
-                        Icon(Icons.delete_outline_rounded, color: Colors.red),
-                        SizedBox(width: 8),
-                        Text('Delete'),
-                      ],
-                    ),
-                  ),
-                ],
+              AdminCardPopupMenu(
+                onView: onView,
+                onEdit: onEdit,
+                onDelete: onDelete,
               ),
             ],
           ),

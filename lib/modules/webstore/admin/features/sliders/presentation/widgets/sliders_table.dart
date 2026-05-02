@@ -80,7 +80,7 @@ class SlidersTable extends StatelessWidget {
             onView: (slider) {
               showDialog(
                 context: context,
-                builder: (_) => _SliderDetailsDialog(slider: slider),
+                builder: (_) => SliderDetailsDialog(slider: slider),
               );
             },
             onEdit: onEdit,
@@ -94,9 +94,9 @@ class SlidersTable extends StatelessWidget {
   }
 }
 
-class _SliderDetailsDialog extends StatelessWidget {
+class SliderDetailsDialog extends StatelessWidget {
   final SliderRow slider;
-  const _SliderDetailsDialog({required this.slider});
+  const SliderDetailsDialog({super.key, required this.slider});
 
   @override
   Widget build(BuildContext context) {

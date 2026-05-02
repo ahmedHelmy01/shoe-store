@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_card_popup_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
@@ -104,6 +105,7 @@ class PaymentStatusesView extends ConsumerWidget {
               onDelete: (id) => _confirmAndDelete(context, notifier, id, items.firstWhere((s) => s.id == id).name),
               cardBuilder: (context, s) => _PaymentStatusCard(
                 status: s,
+                onView: () => showDialog(context: context, builder: (_) => PaymentStatusDetailsDialog(status: s)),
                 onEdit: () => notifier.openEdit(s),
                 onDelete: () => _confirmAndDelete(context, notifier, s.id, s.name),
               ),
@@ -136,11 +138,13 @@ class PaymentStatusesView extends ConsumerWidget {
 
 class _PaymentStatusCard extends StatelessWidget {
   final PaymentStatusRow status;
+  final VoidCallback onView;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
   const _PaymentStatusCard({
     required this.status,
+    required this.onView,
     required this.onEdit,
     required this.onDelete,
   });
@@ -182,11 +186,10 @@ class _PaymentStatusCard extends StatelessWidget {
                   ],
                 ),
               ),
-              PopupMenuButton(
-                itemBuilder: (context) => [
-                  PopupMenuItem(onTap: onEdit, child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: 8), Text('Edit')])),
-                  PopupMenuItem(onTap: onDelete, child: const Row(children: [Icon(Icons.delete_outline_rounded, color: Colors.red), SizedBox(width: 8), Text('Delete')])),
-                ],
+              AdminCardPopupMenu(
+                onView: onView,
+                onEdit: onEdit,
+                onDelete: onDelete,
               ),
             ],
           ),

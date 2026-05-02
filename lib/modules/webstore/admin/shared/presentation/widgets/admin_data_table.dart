@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_empty_widget/app_empty_widget.dart';
 import 'package:erp/modules/webstore/admin/shared/export/admin_export.dart';
 import 'package:excel/excel.dart' as ex;
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/services.dart';
+
+import 'package:syncfusion_flutter_pdf/pdf.dart' as sf;
+import 'package:arabic_reshaper/arabic_reshaper.dart';
+import 'package:bidi/bidi.dart' as bidi;
 
 // New modular imports
 import 'data_table/admin_table_models.dart';
@@ -517,76 +520,94 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
     final cols = widget.columns
         .where((c) => c.exportValue != null || c.sortValue != null)
         .toList();
-    final doc = pw.Document();
 
-    final fontData = await rootBundle.load(
-      'assets/common/fonts/Harmattan-Regular.ttf',
+    // Create a new PDF document.
+    final document = sf.PdfDocument();
+    
+    // Load font data
+    final fontData = await rootBundle.load('assets/common/fonts/Harmattan-Regular.ttf');
+    final fontBytes = fontData.buffer.asUint8List();
+    final font = sf.PdfTrueTypeFont(fontBytes, 10);
+    final boldFont = sf.PdfTrueTypeFont(fontBytes, 11, style: sf.PdfFontStyle.bold);
+
+    // Add a page
+    final page = document.pages.add();
+
+    final reshaper = ArabicReshaper();
+    String shape(String text) {
+      if (text.isEmpty) return '';
+      final reshaped = reshaper.reshape(text);
+      final visual = bidi.logicalToVisual(reshaped);
+      return String.fromCharCodes(visual);
+    }
+
+    // Create a PDF grid
+    final grid = sf.PdfGrid();
+    grid.columns.add(count: cols.length);
+
+    // Set grid style font
+    grid.style.font = font;
+
+    // Use a standard format for the grid (avoid Sf's RTL logic which might conflict with manual shaping)
+    final format = sf.PdfStringFormat(
+      alignment: sf.PdfTextAlignment.right,
+      lineAlignment: sf.PdfVerticalAlignment.middle,
     );
-    final ttf = pw.Font.ttf(fontData);
 
-    doc.addPage(
-      pw.MultiPage(
-        pageFormat: PdfPageFormat.a4,
-        theme: pw.ThemeData.withFont(base: ttf),
-        build: (context) {
-          return [
-            pw.Directionality(
-              textDirection: pw.TextDirection.rtl,
-              child: pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-                children: [
-                  pw.Text(
-                    '${widget.exportBaseName.toUpperCase()} (${rows.length})',
-                    style: pw.TextStyle(
-                      fontSize: 18,
-                      fontWeight: pw.FontWeight.bold,
-                      font: ttf,
-                    ),
-                  ),
-                  pw.SizedBox(height: 20),
-                  pw.TableHelper.fromTextArray(
-                    headers: cols.map((c) => c.title).toList(),
-                    data: rows
-                        .map(
-                          (r) => cols
-                              .map(
-                                (c) =>
-                                    c.exportValue?.call(r) ??
-                                    c.sortValue?.call(r)?.toString() ??
-                                    '',
-                              )
-                              .toList(),
-                        )
-                        .toList(),
-                    headerStyle: pw.TextStyle(
-                      fontWeight: pw.FontWeight.bold,
-                      font: ttf,
-                      fontSize: 10,
-                    ),
-                    cellStyle: pw.TextStyle(fontSize: 9, font: ttf),
-                    headerDecoration: const pw.BoxDecoration(
-                      color: PdfColors.grey200,
-                    ),
-                    cellAlignment: pw.Alignment.centerRight,
-                    border: pw.TableBorder.all(
-                      color: PdfColors.grey400,
-                      width: 0.5,
-                    ),
-                    headerAlignment: pw.Alignment.centerRight,
-                  ),
-                ],
-              ),
-            ),
-          ];
-        },
+    for (int i = 0; i < grid.columns.count; i++) {
+      grid.columns[i].format = format;
+    }
+
+    // Add header
+    grid.headers.add(1);
+    final headerRow = grid.headers[0];
+    for (int i = 0; i < cols.length; i++) {
+      headerRow.cells[i].value = shape(cols[i].title);
+      headerRow.cells[i].style.font = boldFont;
+      headerRow.cells[i].style.stringFormat = format;
+      headerRow.cells[i].style.backgroundBrush = sf.PdfBrushes.darkSlateBlue;
+      headerRow.cells[i].style.textBrush = sf.PdfBrushes.white;
+    }
+
+    // Add rows
+    for (final r in rows) {
+      final row = grid.rows.add();
+      for (int i = 0; i < cols.length; i++) {
+        final val = cols[i].exportValue?.call(r) ?? cols[i].sortValue?.call(r)?.toString() ?? '';
+        row.cells[i].value = shape(val);
+        row.cells[i].style.font = font;
+        row.cells[i].style.stringFormat = format;
+      }
+    }
+
+    // Set cell padding and borders for better visibility
+    grid.style.cellPadding = sf.PdfPaddings(left: 8, top: 8, right: 8, bottom: 8);
+    
+    // Draw the grid
+    grid.draw(
+      page: page,
+      bounds: Rect.fromLTWH(0, 60, page.getClientSize().width, page.getClientSize().height - 60),
+    );
+
+    // Add a title on top
+    page.graphics.drawString(
+      shape('${widget.exportBaseName.toUpperCase()} (${rows.length})'),
+      boldFont,
+      bounds: Rect.fromLTWH(0, 10, page.getClientSize().width, 40),
+      format: sf.PdfStringFormat(
+        alignment: sf.PdfTextAlignment.center,
+        lineAlignment: sf.PdfVerticalAlignment.middle,
       ),
     );
 
-    final bytes = await doc.save();
+    // Save the document
+    final bytes = await document.save();
+    document.dispose();
+
     final filename = '${widget.exportBaseName}_$filenameSuffix.pdf';
     await AdminExport.downloadBytes(
       filename: filename,
-      bytes: bytes,
+      bytes: Uint8List.fromList(bytes),
       mimeType: 'application/pdf',
     );
 
@@ -601,6 +622,8 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
       );
     }
   }
+
+
 }
 
 int _cmpNullable(Comparable? a, Comparable? b) {
