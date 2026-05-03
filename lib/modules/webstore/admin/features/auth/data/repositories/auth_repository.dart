@@ -1,5 +1,5 @@
 import 'package:erp/core/network/api_result.dart';
-import 'package:erp/modules/webstore/admin/data/datasource/webstore_admin_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/auth/data/datasource/auth_remote_datasource.dart';
 import 'package:erp/modules/webstore/admin/shared/data/repositories/admin_base_repository.dart';
 import 'package:erp/modules/webstore/admin/features/auth/data/models/admin_user.dart';
 
@@ -8,7 +8,7 @@ abstract class IAuthRepository {
 }
 
 class AuthRepository extends AdminBaseRepository implements IAuthRepository {
-  final WebStoreAdminRemoteDataSource _ds;
+  final AuthRemoteDataSource _ds;
 
   AuthRepository(this._ds);
 

@@ -1,6 +1,6 @@
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/network/endpoints/endpoints_registry.dart';
-import 'package:erp/modules/webstore/admin/data/datasource/webstore_admin_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/customers/customer_groups/data/datasource/customer_groups_remote_datasource.dart';
 import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_response.dart';
 import 'package:erp/modules/webstore/admin/shared/data/repositories/admin_base_repository.dart';
 import 'package:erp/modules/webstore/admin/features/customers/customer_groups/data/models/customer_group_row.dart';
@@ -17,7 +17,7 @@ abstract class ICustomerGroupsRepository {
 }
 
 class CustomerGroupsRepository extends AdminBaseRepository implements ICustomerGroupsRepository {
-  final WebStoreAdminRemoteDataSource _ds;
+  final CustomerGroupsRemoteDataSource _ds;
 
   CustomerGroupsRepository(this._ds);
 

@@ -1,6 +1,6 @@
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/network/endpoints/endpoints_registry.dart';
-import 'package:erp/modules/webstore/admin/data/datasource/webstore_admin_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/catalog/products/data/datasource/products_remote_datasource.dart';
 import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_response.dart';
 import 'package:erp/modules/webstore/admin/shared/data/repositories/admin_base_repository.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/products/data/models/product_row.dart';
@@ -18,7 +18,7 @@ abstract class IProductsRepository {
 }
 
 class ProductsRepository extends AdminBaseRepository implements IProductsRepository {
-  final WebStoreAdminRemoteDataSource _ds;
+  final ProductsRemoteDataSource _ds;
 
   ProductsRepository(this._ds);
 

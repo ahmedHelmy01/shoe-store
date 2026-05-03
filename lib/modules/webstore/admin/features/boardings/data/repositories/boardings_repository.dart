@@ -1,6 +1,6 @@
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/network/endpoints/endpoints_registry.dart';
-import 'package:erp/modules/webstore/admin/data/datasource/webstore_admin_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/boardings/data/datasource/boardings_remote_datasource.dart';
 import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_response.dart';
 import 'package:erp/modules/webstore/admin/shared/data/repositories/admin_base_repository.dart';
 import 'package:erp/modules/webstore/admin/features/boardings/data/models/boarding_row.dart';
@@ -17,7 +17,7 @@ abstract class IBoardingsRepository {
 }
 
 class BoardingsRepository extends AdminBaseRepository implements IBoardingsRepository {
-  final WebStoreAdminRemoteDataSource _ds;
+  final BoardingsRemoteDataSource _ds;
 
   BoardingsRepository(this._ds);
 

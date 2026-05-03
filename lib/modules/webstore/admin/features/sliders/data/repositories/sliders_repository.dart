@@ -1,6 +1,6 @@
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/network/endpoints/endpoints_registry.dart';
-import 'package:erp/modules/webstore/admin/data/datasource/webstore_admin_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/sliders/data/datasource/sliders_remote_datasource.dart';
 import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_response.dart';
 import 'package:erp/modules/webstore/admin/shared/data/repositories/admin_base_repository.dart';
 import 'package:erp/modules/webstore/admin/features/sliders/data/models/slider_row.dart';
@@ -17,7 +17,7 @@ abstract class ISlidersRepository {
 }
 
 class SlidersRepository extends AdminBaseRepository implements ISlidersRepository {
-  final WebStoreAdminRemoteDataSource _ds;
+  final SlidersRemoteDataSource _ds;
 
   SlidersRepository(this._ds);
 

@@ -1,6 +1,6 @@
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/network/endpoints/endpoints_registry.dart';
-import 'package:erp/modules/webstore/admin/data/datasource/webstore_admin_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/warehouses/data/datasource/warehouses_remote_datasource.dart';
 import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_response.dart';
 import 'package:erp/modules/webstore/admin/shared/data/repositories/admin_base_repository.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/data/models/warehouse_row.dart';
@@ -17,7 +17,7 @@ abstract class IWarehousesRepository {
 }
 
 class WarehousesRepository extends AdminBaseRepository implements IWarehousesRepository {
-  final WebStoreAdminRemoteDataSource _ds;
+  final WarehousesRemoteDataSource _ds;
 
   WarehousesRepository(this._ds);
 

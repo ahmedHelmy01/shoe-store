@@ -1,6 +1,28 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/providers/core_providers.dart';
-import 'package:erp/modules/webstore/admin/data/datasource/webstore_admin_remote_datasource.dart';
+
+// Feature DataSources
+import 'package:erp/modules/webstore/admin/features/auth/data/datasource/auth_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/catalog/products/data/datasource/products_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/catalog/categories/data/datasource/categories_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/users/data/datasource/users_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/ads/data/datasource/ads_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/boardings/data/datasource/boardings_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/branches/data/datasource/branches_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/catalog/companies/data/datasource/companies_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/catalog/filters/data/datasource/filters_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/cities/data/datasource/cities_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/coupons/data/datasource/coupons_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/governorates/data/datasource/governorates_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/orders/data/datasource/orders_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/pages/data/datasource/pages_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/payment_methods/data/datasource/payment_methods_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/payment_statuses/data/datasource/payment_statuses_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/properties/data/datasource/properties_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/sliders/data/datasource/sliders_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/order_statuses/data/datasource/order_statuses_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/customers/customer_groups/data/datasource/customer_groups_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/warehouses/data/datasource/warehouses_remote_datasource.dart';
 
 // Feature Repositories
 import 'package:erp/modules/webstore/admin/features/auth/data/repositories/auth_repository.dart';
@@ -25,98 +47,121 @@ import 'package:erp/modules/webstore/admin/features/order_statuses/data/reposito
 import 'package:erp/modules/webstore/admin/features/customers/customer_groups/data/repositories/customer_groups_repository.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/data/repositories/warehouses_repository.dart';
 
-final webStoreAdminRemoteDataSourceProvider = Provider<WebStoreAdminRemoteDataSource>((ref) {
-  return WebStoreAdminRemoteDataSource(ref.read(networkServiceProvider));
-});
+// --- DataSources ---
+
+final authDataSourceProvider = Provider((ref) => AuthRemoteDataSource(ref.read(networkServiceProvider)));
+final productsDataSourceProvider = Provider((ref) => ProductsRemoteDataSource(ref.read(networkServiceProvider)));
+final categoriesDataSourceProvider = Provider((ref) => CategoriesRemoteDataSource(ref.read(networkServiceProvider)));
+final usersDataSourceProvider = Provider((ref) => UsersRemoteDataSource(ref.read(networkServiceProvider)));
+final adsDataSourceProvider = Provider((ref) => AdsRemoteDataSource(ref.read(networkServiceProvider)));
+final boardingsDataSourceProvider = Provider((ref) => BoardingsRemoteDataSource(ref.read(networkServiceProvider)));
+final branchesDataSourceProvider = Provider((ref) => BranchesRemoteDataSource(ref.read(networkServiceProvider)));
+final companiesDataSourceProvider = Provider((ref) => CompaniesRemoteDataSource(ref.read(networkServiceProvider)));
+final filtersDataSourceProvider = Provider((ref) => FiltersRemoteDataSource(ref.read(networkServiceProvider)));
+final citiesDataSourceProvider = Provider((ref) => CitiesRemoteDataSource(ref.read(networkServiceProvider)));
+final couponsDataSourceProvider = Provider((ref) => CouponsRemoteDataSource(ref.read(networkServiceProvider)));
+final governoratesDataSourceProvider = Provider((ref) => GovernoratesRemoteDataSource(ref.read(networkServiceProvider)));
+final ordersDataSourceProvider = Provider((ref) => OrdersRemoteDataSource(ref.read(networkServiceProvider)));
+final pagesDataSourceProvider = Provider((ref) => PagesRemoteDataSource(ref.read(networkServiceProvider)));
+final paymentMethodsDataSourceProvider = Provider((ref) => PaymentMethodsRemoteDataSource(ref.read(networkServiceProvider)));
+final paymentStatusesDataSourceProvider = Provider((ref) => PaymentStatusesRemoteDataSource(ref.read(networkServiceProvider)));
+final propertiesDataSourceProvider = Provider((ref) => PropertiesRemoteDataSource(ref.read(networkServiceProvider)));
+final slidersDataSourceProvider = Provider((ref) => SlidersRemoteDataSource(ref.read(networkServiceProvider)));
+final warehousesDataSourceProvider = Provider((ref) => WarehousesRemoteDataSource(ref.read(networkServiceProvider)));
+final orderStatusesDataSourceProvider = Provider((ref) => OrderStatusesRemoteDataSource(ref.read(networkServiceProvider)));
+final customerGroupsDataSourceProvider = Provider((ref) => CustomerGroupsRemoteDataSource(ref.read(networkServiceProvider)));
+
+// --- Repositories ---
 
 final authRepositoryProvider = Provider<IAuthRepository>((ref) {
-  return AuthRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return AuthRepository(ref.read(authDataSourceProvider));
 });
 
 final productsRepositoryProvider = Provider<IProductsRepository>((ref) {
-  return ProductsRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return ProductsRepository(ref.read(productsDataSourceProvider));
 });
 
 final categoriesRepositoryProvider = Provider<ICategoriesRepository>((ref) {
-  return CategoriesRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return CategoriesRepository(ref.read(categoriesDataSourceProvider));
 });
 
 final usersRepositoryProvider = Provider<IUsersRepository>((ref) {
-  return UsersRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return UsersRepository(ref.read(usersDataSourceProvider));
 });
 
 final adsRepositoryProvider = Provider<IAdsRepository>((ref) {
-  return AdsRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return AdsRepository(ref.read(adsDataSourceProvider));
 });
 
 final boardingsRepositoryProvider = Provider<IBoardingsRepository>((ref) {
-  return BoardingsRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return BoardingsRepository(ref.read(boardingsDataSourceProvider));
 });
 
 final branchesRepositoryProvider = Provider<IBranchesRepository>((ref) {
-  return BranchesRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return BranchesRepository(ref.read(branchesDataSourceProvider));
 });
 
 final companiesRepositoryProvider = Provider<ICompaniesRepository>((ref) {
-  return CompaniesRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return CompaniesRepository(ref.read(companiesDataSourceProvider));
 });
 
 final filtersRepositoryProvider = Provider<IFiltersRepository>((ref) {
-  return FiltersRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return FiltersRepository(ref.read(filtersDataSourceProvider));
 });
 
 final citiesRepositoryProvider = Provider<ICitiesRepository>((ref) {
-  return CitiesRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return CitiesRepository(ref.read(citiesDataSourceProvider));
 });
 
 final couponsRepositoryProvider = Provider<ICouponsRepository>((ref) {
-  return CouponsRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return CouponsRepository(ref.read(couponsDataSourceProvider));
 });
 
 final governoratesRepositoryProvider = Provider<IGovernoratesRepository>((ref) {
-  return GovernoratesRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return GovernoratesRepository(ref.read(governoratesDataSourceProvider));
 });
 
 final ordersRepositoryProvider = Provider<IOrdersRepository>((ref) {
-  return OrdersRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return OrdersRepository(ref.read(ordersDataSourceProvider));
 });
 
 final pagesRepositoryProvider = Provider<IPagesRepository>((ref) {
-  return PagesRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return PagesRepository(ref.read(pagesDataSourceProvider));
 });
 
 final paymentMethodsRepositoryProvider = Provider<IPaymentMethodsRepository>((ref) {
-  return PaymentMethodsRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return PaymentMethodsRepository(ref.read(paymentMethodsDataSourceProvider));
 });
 
 final paymentStatusesRepositoryProvider = Provider<IPaymentStatusesRepository>((ref) {
-  return PaymentStatusesRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return PaymentStatusesRepository(ref.read(paymentStatusesDataSourceProvider));
 });
 
 final propertiesRepositoryProvider = Provider<IPropertiesRepository>((ref) {
-  return PropertiesRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return PropertiesRepository(ref.read(propertiesDataSourceProvider));
 });
 
 final slidersRepositoryProvider = Provider<ISlidersRepository>((ref) {
-  return SlidersRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return SlidersRepository(ref.read(slidersDataSourceProvider));
 });
 
 final warehousesRepositoryProvider = Provider<IWarehousesRepository>((ref) {
-  return WarehousesRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return WarehousesRepository(ref.read(warehousesDataSourceProvider));
 });
 
 final orderStatusesRepositoryProvider = Provider<IOrderStatusesRepository>((ref) {
-  return OrderStatusesRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return OrderStatusesRepository(ref.read(orderStatusesDataSourceProvider));
 });
 
 final customerGroupsRepositoryProvider = Provider<ICustomerGroupsRepository>((ref) {
-  return CustomerGroupsRepository(ref.read(webStoreAdminRemoteDataSourceProvider));
+  return CustomerGroupsRepository(ref.read(customerGroupsDataSourceProvider));
 });
 
-// Dropdown Data Providers
+// --- Dropdown Data Providers ---
+
 final allCategoriesProvider = FutureProvider((ref) async {
   final repo = ref.read(categoriesRepositoryProvider);
-  final res = await repo.getCategories(page: 1, perPage: 1000); // Fetch a large batch for dropdowns
+  final res = await repo.getCategories(page: 1, perPage: 1000);
   return res.when(
     success: (paged) => paged.items,
     failure: (e) => throw e,
@@ -131,4 +176,3 @@ final allCompaniesProvider = FutureProvider((ref) async {
     failure: (e) => throw e,
   );
 });
-
