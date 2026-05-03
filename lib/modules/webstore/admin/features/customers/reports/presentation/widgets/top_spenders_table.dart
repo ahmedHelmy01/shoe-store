@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:erp/core/constants/app_constants.dart';
-import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/features/dashboard/presentation/widgets/glass_panel.dart';
 import '../../data/models/client_report_models.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_row.dart';
 
 class OrdersTable extends StatelessWidget {

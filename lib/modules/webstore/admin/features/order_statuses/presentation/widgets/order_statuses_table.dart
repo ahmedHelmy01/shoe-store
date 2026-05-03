@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_default_badge.dart';

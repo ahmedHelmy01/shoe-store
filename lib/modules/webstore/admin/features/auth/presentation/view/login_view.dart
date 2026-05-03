@@ -6,7 +6,6 @@ import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
-import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_sidebar.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:hugeicons/styles/stroke_rounded.dart';
 import '../view_model/auth_view_model.dart';

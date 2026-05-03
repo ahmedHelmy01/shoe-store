@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/governorates/data/models/governorate_row.dart';
-import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_table_actions_cell.dart';
 
 class GovernoratesTable extends StatelessWidget {
   final List<GovernorateRow> items;

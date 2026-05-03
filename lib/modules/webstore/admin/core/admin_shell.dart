@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/main_layout/webstore_base_scaffold.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/modules/webstore/admin/core/admin_routes.dart';
-import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_sidebar.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/AdminSidebar/AdminSidebar.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_top_bar.dart';
 
 // Feature Views

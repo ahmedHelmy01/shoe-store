@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
-import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_data_table.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/products/data/models/product_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
