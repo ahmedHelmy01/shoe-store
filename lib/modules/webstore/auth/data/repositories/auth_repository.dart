@@ -18,6 +18,7 @@ abstract class IWebStoreAuthRepository {
     required String mobile,
     required String password,
     required String passwordConfirmation,
+    int? branchId,
   });
 
   Future<ApiResult<WebStoreAuthResponse>> login({
@@ -48,6 +49,17 @@ abstract class IWebStoreAuthRepository {
   });
 
   Future<ApiResult<WebStoreAuthResponse>> refreshToken();
+
+  Future<ApiResult<Map<String, dynamic>>> getProfile();
+
+  Future<ApiResult<Map<String, dynamic>>> updateProfile({
+    String? name,
+    String? email,
+    String? mobile,
+    String? password,
+  });
+
+  Future<ApiResult<Map<String, dynamic>>> deleteAccount();
 }
 
 // ─── Implementation ──────────────────────────────────
@@ -65,6 +77,7 @@ class WebStoreAuthRepository extends BaseRepository
     required String mobile,
     required String password,
     required String passwordConfirmation,
+    int? branchId,
   }) {
     return safeApiCall<WebStoreAuthResponse>(() async {
       final response = await _dataSource.register(
@@ -73,6 +86,7 @@ class WebStoreAuthRepository extends BaseRepository
         mobile: mobile,
         password: password,
         passwordConfirmation: passwordConfirmation,
+        branchId: branchId,
       );
       return WebStoreAuthResponse.fromJson(response as Map<String, dynamic>);
     });
@@ -164,6 +178,46 @@ class WebStoreAuthRepository extends BaseRepository
       () async {
         final response = await _dataSource.refreshToken();
         return WebStoreAuthResponse.fromJson(response as Map<String, dynamic>);
+      },
+    );
+  }
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getProfile() {
+    return safeApiCall<Map<String, dynamic>>(
+      () async {
+        final response = await _dataSource.getProfile();
+        return response as Map<String, dynamic>;
+      },
+    );
+  }
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> updateProfile({
+    String? name,
+    String? email,
+    String? mobile,
+    String? password,
+  }) {
+    return safeApiCall<Map<String, dynamic>>(
+      () async {
+        final response = await _dataSource.updateProfile(
+          name: name,
+          email: email,
+          mobile: mobile,
+          password: password,
+        );
+        return response as Map<String, dynamic>;
+      },
+    );
+  }
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> deleteAccount() {
+    return safeApiCall<Map<String, dynamic>>(
+      () async {
+        final response = await _dataSource.deleteAccount();
+        return response as Map<String, dynamic>;
       },
     );
   }

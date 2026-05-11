@@ -1,12 +1,14 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/companies/data/models/company_row.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
 
 class CompanyForm extends StatefulWidget {
   final CompanyRow? initial;
   final bool isSaving;
-  final void Function(Map<String, dynamic> data) onSave;
+  final void Function(Map<String, dynamic> data, XFile? logoFile) onSave;
 
   const CompanyForm({
     super.key,
@@ -24,6 +26,9 @@ class _CompanyFormState extends State<CompanyForm> {
   late final TextEditingController _nameCtrl;
   late final TextEditingController _nameArCtrl;
   bool _isActive = true;
+  XFile? _logoFile;
+  // Removed _uploadedLogoPath as we now use direct file upload
+  bool _removeInitialLogo = false;
 
   @override
   void initState() {
@@ -42,11 +47,18 @@ class _CompanyFormState extends State<CompanyForm> {
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
-      widget.onSave({
+      final data = <String, dynamic>{
         'name': _nameCtrl.text.trim(),
         'name_ar': _nameArCtrl.text.trim(),
         'is_active': _isActive,
-      });
+      };
+
+      if (_removeInitialLogo && _logoFile == null) {
+        data['logo'] = '';
+      }
+
+      // We still pass _logoFile for backward compatibility or if instant upload fails/not used
+      widget.onSave(data, _logoFile);
     }
   }
 
@@ -70,7 +82,14 @@ class _CompanyFormState extends State<CompanyForm> {
             hint: 'e.g. فايزر',
             validator: (v) => v == null || v.isEmpty ? 'Arabic name is required' : null,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
+          AdminImagePicker(
+            label: 'Company Logo',
+            initialImage: widget.initial?.logoUrl,
+            onImageSelected: (file) => setState(() => _logoFile = file),
+            onRemoveInitial: () => setState(() => _removeInitialLogo = true),
+          ),
+          const SizedBox(height: 20),
           SwitchListTile(
             title: const Text('Is Active'),
             value: _isActive,

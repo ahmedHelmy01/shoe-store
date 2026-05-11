@@ -23,6 +23,7 @@ import 'package:erp/modules/webstore/admin/features/sliders/data/datasource/slid
 import 'package:erp/modules/webstore/admin/features/order_statuses/data/datasource/order_statuses_remote_datasource.dart';
 import 'package:erp/modules/webstore/admin/features/customers/customer_groups/data/datasource/customer_groups_remote_datasource.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/data/datasource/warehouses_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/countries/data/datasource/countries_remote_datasource.dart';
 
 // Feature Repositories
 import 'package:erp/modules/webstore/admin/features/auth/data/repositories/auth_repository.dart';
@@ -45,6 +46,8 @@ import 'package:erp/modules/webstore/admin/features/properties/data/repositories
 import 'package:erp/modules/webstore/admin/features/sliders/data/repositories/sliders_repository.dart';
 import 'package:erp/modules/webstore/admin/features/order_statuses/data/repositories/order_statuses_repository.dart';
 import 'package:erp/modules/webstore/admin/features/customers/customer_groups/data/repositories/customer_groups_repository.dart';
+import 'package:erp/modules/webstore/admin/features/countries/data/repositories/countries_repository.dart';
+import 'package:erp/modules/webstore/admin/features/countries/data/models/country_row.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/data/repositories/warehouses_repository.dart';
 
 // --- DataSources ---
@@ -70,6 +73,7 @@ final slidersDataSourceProvider = Provider((ref) => SlidersRemoteDataSource(ref.
 final warehousesDataSourceProvider = Provider((ref) => WarehousesRemoteDataSource(ref.read(networkServiceProvider)));
 final orderStatusesDataSourceProvider = Provider((ref) => OrderStatusesRemoteDataSource(ref.read(networkServiceProvider)));
 final customerGroupsDataSourceProvider = Provider((ref) => CustomerGroupsRemoteDataSource(ref.read(networkServiceProvider)));
+final countriesDataSourceProvider = Provider((ref) => CountriesRemoteDataSource(ref.read(networkServiceProvider)));
 
 // --- Repositories ---
 
@@ -157,6 +161,11 @@ final customerGroupsRepositoryProvider = Provider<ICustomerGroupsRepository>((re
   return CustomerGroupsRepository(ref.read(customerGroupsDataSourceProvider));
 });
 
+final countriesRepositoryProvider = Provider<ICountriesRepository>((ref) {
+  return CountriesRepository(ref.read(countriesDataSourceProvider));
+});
+
+
 // --- Dropdown Data Providers ---
 
 final allCategoriesProvider = FutureProvider((ref) async {
@@ -176,3 +185,42 @@ final allCompaniesProvider = FutureProvider((ref) async {
     failure: (e) => throw e,
   );
 });
+
+final allTagsProvider = FutureProvider((ref) async {
+  final repo = ref.read(filtersRepositoryProvider);
+  final res = await repo.getFilters(page: 1, perPage: 1000);
+  return res.when(
+    success: (paged) => paged.items,
+    failure: (e) => throw e,
+  );
+});
+
+final allPropertiesProvider = FutureProvider((ref) async {
+  final repo = ref.read(propertiesRepositoryProvider);
+  final res = await repo.getProperties(page: 1, perPage: 1000);
+  return res.when(
+    success: (paged) => paged.items,
+    failure: (e) => throw e,
+  );
+});
+
+final allCountriesProvider = FutureProvider((ref) async {
+  final repo = ref.read(countriesRepositoryProvider);
+  final res = await repo.getCountries(page: 1, perPage: 1000);
+  return res.when(
+    success: (paged) => paged.items,
+    failure: (e) => throw e,
+  );
+});
+
+final paymentMethodTypesProvider = FutureProvider((ref) async {
+  final repo = ref.read(paymentMethodsRepositoryProvider);
+  final res = await repo.getPaymentMethodTypes();
+  return res.when(
+    success: (list) => list,
+    failure: (e) => throw e,
+  );
+});
+
+
+

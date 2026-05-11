@@ -12,6 +12,7 @@ import '../view_model/products_view_model.dart';
 import '../widgets/products_table.dart';
 import '../widgets/product_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/products/data/models/product_row.dart';
 
 class ProductsView extends ConsumerWidget {
@@ -38,7 +39,7 @@ class ProductsView extends ConsumerWidget {
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 24),
-              Expanded(child: _buildBody(context, state, isDark, notifier)),
+              Expanded(child: _buildBody(context, ref, state, isDark, notifier)),
             ],
           ),
         ),
@@ -51,10 +52,12 @@ class ProductsView extends ConsumerWidget {
             child: ProductForm(
               initial: state.editingItem,
               isSaving: state.isSaving,
-              onSave: (data) async {
+              onSave: (data, imageFile, gallery) async {
                 final result = await notifier.commitSave(
                   data,
                   id: state.editingItem?.id,
+                  imageFile: imageFile,
+                  extraData: gallery != null ? {'gallery': gallery} : null,
                 );
                 if (!context.mounted) return;
 
@@ -83,6 +86,7 @@ class ProductsView extends ConsumerWidget {
 
   Widget _buildBody(
     BuildContext context,
+    WidgetRef ref,
     AdminCrudState<ProductRow> state,
     bool isDark,
     ProductsVm notifier,
@@ -115,6 +119,14 @@ class ProductsView extends ConsumerWidget {
           clipBehavior: Clip.antiAlias,
           child: ProductsTable(
             state: state,
+            onView: (p) async {
+              final res = await ref.read(productsRepositoryProvider).getProduct(p.id);
+              if (!context.mounted) return;
+              res.when(
+                success: (full) => showDialog(context: context, builder: (_) => ProductDetailsDialog(product: full)),
+                failure: (_) => showDialog(context: context, builder: (_) => ProductDetailsDialog(product: p)),
+              );
+            },
             onEdit: (p) => notifier.openEdit(p),
             onDelete: (id) => _confirmAndDelete(
               context,
@@ -128,7 +140,14 @@ class ProductsView extends ConsumerWidget {
             onServerPageSize: (size) => notifier.fetch(perPage: size, page: 1),
             cardBuilder: (context, p) => _ProductCard(
               product: p,
-              onView: () => showDialog(context: context, builder: (_) => ProductDetailsDialog(product: p)),
+              onView: () async {
+                final res = await ref.read(productsRepositoryProvider).getProduct(p.id);
+                if (!context.mounted) return;
+                res.when(
+                  success: (full) => showDialog(context: context, builder: (_) => ProductDetailsDialog(product: full)),
+                  failure: (_) => showDialog(context: context, builder: (_) => ProductDetailsDialog(product: p)),
+                );
+              },
               onEdit: () => notifier.openEdit(p),
               onDelete: () =>
                   _confirmAndDelete(context, notifier, p.id, p.name),

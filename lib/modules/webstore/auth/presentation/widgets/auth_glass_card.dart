@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 
@@ -11,7 +10,7 @@ class AuthGlassCard extends StatelessWidget {
   const AuthGlassCard({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(20),
+    this.padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
     this.showBrandMark = true,
   });
 
@@ -20,61 +19,59 @@ class AuthGlassCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(24),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-        child: Container(
-          padding: padding,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            color: (isDark ? Colors.white : Colors.black).withValues(alpha: isDark ? 0.06 : 0.03),
-            border: Border.all(
-              color: (isDark ? Colors.white : Colors.black).withValues(alpha: isDark ? 0.14 : 0.08),
-              width: 1,
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.04),
+              blurRadius: 30,
+              offset: const Offset(0, 15),
             ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (showBrandMark) ...[
-                Center(
-                  child: Container(
-                    width: 92,
-                    height: 92,
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: (isDark ? Colors.white : Colors.black).withValues(alpha: isDark ? 0.06 : 0.03),
-                      border: Border.all(
-                        color: (isDark ? Colors.white : Colors.black).withValues(alpha: isDark ? 0.16 : 0.08),
-                        width: 1,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: isDark ? 0.30 : 0.10),
-                          blurRadius: 30,
-                          offset: const Offset(0, 14),
-                        ),
-                      ],
-                    ),
-                    child: ClipOval(
-                      child: Image.asset(
-                        AssetManager.splashTarshouby,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              padding: padding,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                color: isDark 
+                    ? Colors.white.withValues(alpha: 0.05) 
+                    : Colors.white.withValues(alpha: 0.9),
+                border: Border.all(
+                  color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08),
+                  width: 1,
                 ),
-                const SizedBox(height: 16),
-              ],
-              child,
-            ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (showBrandMark) ...[
+                    Center(
+                      child: Container(
+                        height: 60,
+                        padding: const EdgeInsets.all(8),
+                        child: Image.asset(
+                          AssetManager.logoElTarshopy,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  child,
+                ],
+              ),
+            ),
           ),
         ),
       ),
     );
   }
 }
-

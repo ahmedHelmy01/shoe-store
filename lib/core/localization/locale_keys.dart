@@ -50,6 +50,7 @@ class _Common {
   final daily_report = 'common.daily_report';
   final notifications = 'common.notifications';
   final about_us = 'common.about_us';
+  final terms_and_conditions = 'common.terms_and_conditions';
   final contact_us = 'common.contact_us';
   final forgot_password = 'common.forgot_password';
   final no_account = 'common.no_account';
@@ -108,6 +109,7 @@ class _WebStore {
   final points = const _WebStorePoints();
   final more = const _WebStoreMore();
   final checkout = const _WebStoreCheckout();
+  final profile = const _WebStoreProfile();
 }
 
 class _WebStoreAuth {
@@ -140,6 +142,21 @@ class _WebStoreAuth {
   final otp_verified = 'webstore.auth.otp_verified';
   final otp_resent = 'webstore.auth.otp_resent';
   final password_reset_success = 'webstore.auth.password_reset_success';
+  // ─── New keys ──────────────────────────
+  final select_branch = 'webstore.auth.select_branch';
+  final select_branch_hint = 'webstore.auth.select_branch_hint';
+  final branch_required = 'webstore.auth.branch_required';
+  final register_success_title = 'webstore.auth.register_success_title';
+  final register_success_message = 'webstore.auth.register_success_message';
+  final logout_title = 'webstore.auth.logout_title';
+  final logout_confirm = 'webstore.auth.logout_confirm';
+  final logout_button = 'webstore.auth.logout_button';
+  final login_or_register = 'webstore.auth.login_or_register';
+  final welcome_back = 'webstore.auth.welcome_back';
+  final welcome_family = 'webstore.auth.welcome_family';
+  final guest_title = 'webstore.auth.guest_title';
+  final guest_subtitle = 'webstore.auth.guest_subtitle';
+  final resend_timer = 'webstore.auth.resend_timer';
 }
 
 class _WebStoreHome {
@@ -233,6 +250,27 @@ class _WebStorePoints {
   final spent = 'webstore.points.spent';
   final point = 'webstore.points.point';
   final history = 'webstore.points.history';
+}
+
+class _WebStoreProfile {
+  const _WebStoreProfile();
+  final title = 'webstore.profile.title';
+  final personal_info = 'webstore.profile.personal_info';
+  final store_location = 'webstore.profile.store_location';
+  final full_name = 'webstore.profile.full_name';
+  final email_address = 'webstore.profile.email_address';
+  final phone_number = 'webstore.profile.phone_number';
+  final new_password = 'webstore.profile.new_password';
+  final home_address = 'webstore.profile.home_address';
+  final your_branch = 'webstore.profile.your_branch';
+  final select_branch = 'webstore.profile.select_branch';
+  final save_changes = 'webstore.profile.save_changes';
+  final delete_account = 'webstore.profile.delete_account';
+  final delete_confirm = 'webstore.profile.delete_confirm';
+  final delete_button = 'webstore.profile.delete_button';
+  final points = 'webstore.profile.points';
+  final points_earned = 'webstore.profile.points_earned';
+  final update_success = 'webstore.profile.update_success';
 }
 
 class _WebStoreMore {

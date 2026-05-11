@@ -5,6 +5,7 @@
 /// Uses modern Riverpod 3.0 Notifier pattern.
 library;
 
+import 'package:erp/modules/webstore/auth/data/models/webstore_auth_response.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/modules/webstore/auth/data/repositories/auth_repository.dart';
@@ -28,6 +29,7 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
     required String mobile,
     required String password,
     required String passwordConfirmation,
+    int? branchId,
   }) async {
     state = const WebStoreAuthLoading();
 
@@ -37,6 +39,7 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
       mobile: mobile,
       password: password,
       passwordConfirmation: passwordConfirmation,
+      branchId: branchId,
     );
 
     result.when(
@@ -217,6 +220,65 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
       failure: (exception) {
         // Handle token refresh failure (e.g., logout)
         ref.read(authStateProvider.notifier).setUnauthenticated();
+      },
+    );
+  }
+
+  // ─── Profile Operations ────────────────────────────
+
+  Future<void> getProfile() async {
+    state = const WebStoreAuthLoading();
+    final result = await _repository.getProfile();
+    result.when(
+      success: (data) {
+        // We can reuse WebStoreAuthSuccess or create a new state
+        // For simplicity, let's keep it in Success but we need to handle it in UI
+        state = WebStoreAuthSuccess(WebStoreAuthResponse.fromJson(data));
+      },
+      failure: (exception) {
+        state = WebStoreAuthError(exception.message);
+      },
+    );
+  }
+
+  Future<void> updateProfile({
+    String? name,
+    String? email,
+    String? mobile,
+    String? password,
+  }) async {
+    state = const WebStoreAuthLoading();
+    final result = await _repository.updateProfile(
+      name: name,
+      email: email,
+      mobile: mobile,
+      password: password,
+    );
+    result.when(
+      success: (data) async {
+        final message = data['message'] as String? ?? 'Profile updated successfully';
+        // Refresh profile data to get the updated user object
+        await getProfile();
+        // We can show the message using a different mechanism or keep the success state
+        state = WebStoreOtpVerified(message); 
+      },
+      failure: (exception) {
+        state = WebStoreAuthError(exception.message);
+      },
+    );
+  }
+
+  Future<void> deleteAccount() async {
+    state = const WebStoreAuthLoading();
+    final result = await _repository.deleteAccount();
+    result.when(
+      success: (data) async {
+        await ref.read(sessionManagerProvider).clearSession();
+        ref.read(authStateProvider.notifier).setUnauthenticated();
+        state = const WebStoreAuthIdle();
+      },
+      failure: (exception) {
+        state = WebStoreAuthError(exception.message);
       },
     );
   }

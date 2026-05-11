@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
-import 'package:erp/modules/webstore/home/data/models/webstore_mock_data.dart';
+import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/core/common_widget/app_price_text/app_price_text.dart';
 
 class ProductGridCard extends ConsumerWidget {
-  final MockProduct product;
+  final WebStoreProduct product;
   final int? ranking;
   const ProductGridCard({super.key, required this.product, this.ranking});
 
@@ -46,7 +46,7 @@ class ProductGridCard extends ConsumerWidget {
                   ),
                   padding: EdgeInsets.all(12.w),
                   child: AppImage(
-                    imagePath: product.image,
+                    imagePath: product.image ?? '',
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -75,13 +75,14 @@ class ProductGridCard extends ConsumerWidget {
                             ),
                           ),
                           4.verticalSpace,
-                          Text(
-                            product.manufacturer,
-                            style: TextStyle(
-                              fontSize: 11.sp,
-                              color: isDark ? Colors.white.withValues(alpha: 0.5) : theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                          if (product.brand != null)
+                            Text(
+                              product.brand!,
+                              style: TextStyle(
+                                fontSize: 11.sp,
+                                color: isDark ? Colors.white.withValues(alpha: 0.5) : theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                              ),
                             ),
-                          ),
                         ],
                       ),
                       Row(

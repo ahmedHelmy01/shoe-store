@@ -1,13 +1,15 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
 import 'package:erp/modules/webstore/admin/features/coupons/data/models/coupon_row.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
 
 class CouponForm extends StatefulWidget {
   final CouponRow? initial;
   final bool isSaving;
-  final void Function(Map<String, dynamic> data) onSave;
+  final void Function(Map<String, dynamic> data, XFile? imageFile) onSave;
 
   const CouponForm({
     super.key,
@@ -30,6 +32,10 @@ class _CouponFormState extends State<CouponForm> {
   late final TextEditingController _expiresAtCtrl;
   late String _discountType;
   late bool _isActive;
+  
+  XFile? _imageFile;
+  // Removed _uploadedImagePath as we now use direct file upload
+  bool _removeInitialImage = false;
 
   @override
   void initState() {
@@ -88,7 +94,7 @@ class _CouponFormState extends State<CouponForm> {
   }
 
   void _submit() {
-    widget.onSave({
+    final data = <String, dynamic>{
       'code': _codeCtrl.text.trim().toUpperCase(),
       'discount_type': _discountType == 'percentage' ? 1 : 2,
       'discount_value': double.tryParse(_discountCtrl.text.trim()) ?? 0,
@@ -98,126 +104,144 @@ class _CouponFormState extends State<CouponForm> {
       'start_date': _startsAtCtrl.text.trim(),
       'end_date': _expiresAtCtrl.text.trim(),
       'is_active': _isActive,
-    });
+    };
+
+    if (_removeInitialImage && _imageFile == null) {
+      data['image'] = '';
+    } else if (_imageFile == null && widget.initial?.image != null) {
+      // Keep existing image path if not changed or removed
+      data['image'] = widget.initial!.image;
+    }
+
+    widget.onSave(data, _imageFile);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        AppTextField(
-          controller: _codeCtrl,
-          label: 'Coupon Code',
-          hint: 'e.g. SAVE20',
-          borderRadius: 14,
-        ),
-        const SizedBox(height: 18),
-        Row(
-          children: [
-            Expanded(
-              child: AppTextField(
-                controller: _discountCtrl,
-                label: 'Discount Value',
-                hint: '0.0',
-                keyboardType: TextInputType.number,
-                borderRadius: 14,
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AppTextField(
+            controller: _codeCtrl,
+            label: 'Coupon Code',
+            hint: 'e.g. SAVE20',
+            borderRadius: 14,
+          ),
+          const SizedBox(height: 18),
+          Row(
+            children: [
+              Expanded(
+                child: AppTextField(
+                  controller: _discountCtrl,
+                  label: 'Discount Value',
+                  hint: '0.0',
+                  keyboardType: TextInputType.number,
+                  borderRadius: 14,
+                ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: AppDropdown<String>(
-                value: _discountType,
-                label: 'Discount Type',
-                items: const [
-                  DropdownMenuItem(value: 'percentage', child: Text('Percentage %')),
-                  DropdownMenuItem(value: 'fixed', child: Text('Fixed Amount')),
-                ],
-                onChanged: (v) => setState(() => _discountType = v!),
+              const SizedBox(width: 12),
+              Expanded(
+                child: AppDropdown<String>(
+                  value: _discountType,
+                  label: 'Discount Type',
+                  items: const [
+                    DropdownMenuItem(value: 'percentage', child: Text('Percentage %')),
+                    DropdownMenuItem(value: 'fixed', child: Text('Fixed Amount')),
+                  ],
+                  onChanged: (v) => setState(() => _discountType = v!),
+                ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 18),
-        AppTextField(
-          controller: _minOrderCtrl,
-          label: 'Minimum Order Value',
-          hint: '0',
-          keyboardType: TextInputType.number,
-          borderRadius: 14,
-        ),
-        const SizedBox(height: 18),
-        Row(
-          children: [
-            Expanded(
-              child: AppTextField(
-                controller: _maxUsesCtrl,
-                label: 'Max Uses',
-                hint: '100',
-                keyboardType: TextInputType.number,
-                borderRadius: 14,
+            ],
+          ),
+          const SizedBox(height: 18),
+          AppTextField(
+            controller: _minOrderCtrl,
+            label: 'Minimum Order Value',
+            hint: '0',
+            keyboardType: TextInputType.number,
+            borderRadius: 14,
+          ),
+          const SizedBox(height: 18),
+          Row(
+            children: [
+              Expanded(
+                child: AppTextField(
+                  controller: _maxUsesCtrl,
+                  label: 'Max Uses',
+                  hint: '100',
+                  keyboardType: TextInputType.number,
+                  borderRadius: 14,
+                ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: AppTextField(
-                controller: _maxUsesPerCustomerCtrl,
-                label: 'Max Uses Per Customer',
-                hint: '1',
-                keyboardType: TextInputType.number,
-                borderRadius: 14,
+              const SizedBox(width: 12),
+              Expanded(
+                child: AppTextField(
+                  controller: _maxUsesPerCustomerCtrl,
+                  label: 'Max Uses Per Customer',
+                  hint: '1',
+                  keyboardType: TextInputType.number,
+                  borderRadius: 14,
+                ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 18),
-        Row(
-          children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () => _pickDate(_startsAtCtrl),
-                child: AbsorbPointer(
-                  child: AppTextField(
-                    controller: _startsAtCtrl,
-                    label: 'Starts At',
-                    hint: '2026-01-01',
-                    borderRadius: 14,
-                    suffixIcon: const Icon(Icons.calendar_month_rounded, size: 20),
+            ],
+          ),
+          const SizedBox(height: 18),
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => _pickDate(_startsAtCtrl),
+                  child: AbsorbPointer(
+                    child: AppTextField(
+                      controller: _startsAtCtrl,
+                      label: 'Starts At',
+                      hint: '2026-01-01',
+                      borderRadius: 14,
+                      suffixIcon: const Icon(Icons.calendar_month_rounded, size: 20),
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: GestureDetector(
-                onTap: () => _pickDate(_expiresAtCtrl),
-                child: AbsorbPointer(
-                  child: AppTextField(
-                    controller: _expiresAtCtrl,
-                    label: 'Expires At',
-                    hint: '2026-12-31',
-                    borderRadius: 14,
-                    suffixIcon: const Icon(Icons.calendar_month_rounded, size: 20),
+              const SizedBox(width: 12),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => _pickDate(_expiresAtCtrl),
+                  child: AbsorbPointer(
+                    child: AppTextField(
+                      controller: _expiresAtCtrl,
+                      label: 'Expires At',
+                      hint: '2026-12-31',
+                      borderRadius: 14,
+                      suffixIcon: const Icon(Icons.calendar_month_rounded, size: 20),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 18),
-        SwitchListTile(
-          title: const Text('Is Active'),
-          value: _isActive,
-          onChanged: (v) => setState(() => _isActive = v),
-          contentPadding: EdgeInsets.zero,
-        ),
-        const SizedBox(height: 32),
-        AppButton(
-          onPressed: _submit,
-          isLoading: widget.isSaving,
-          child: Text(widget.initial == null ? 'Create Coupon' : 'Save Changes'),
-        ),
-      ],
+            ],
+          ),
+          const SizedBox(height: 24),
+          AdminImagePicker(
+            label: 'Coupon Image',
+            initialImage: widget.initial?.imageUrl,
+            onImageSelected: (file) => setState(() => _imageFile = file),
+            onRemoveInitial: () => setState(() => _removeInitialImage = true),
+          ),
+          const SizedBox(height: 20),
+          SwitchListTile(
+            title: const Text('Is Active'),
+            value: _isActive,
+            onChanged: (v) => setState(() => _isActive = v),
+            contentPadding: EdgeInsets.zero,
+          ),
+          const SizedBox(height: 32),
+          AppButton(
+            onPressed: _submit,
+            isLoading: widget.isSaving,
+            child: Text(widget.initial == null ? 'Create Coupon' : 'Save Changes'),
+          ),
+        ],
+      ),
     );
   }
 }

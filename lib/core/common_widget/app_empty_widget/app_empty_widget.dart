@@ -7,6 +7,7 @@ import 'package:erp/core/utils/asset_manager.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/localization/locale_keys.dart';
+import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 
 class AppEmptyWidget extends StatelessWidget {
   final String? message;
@@ -33,7 +34,7 @@ class AppEmptyWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final glassSize = math.min(180.w, 180.0);
-    final imageSize = math.min(140.w, 140.0);
+    final imageSize = math.min(120.w, 120.0);
     final iconSize = math.min(80.w, 80.0);
     final safePadding = math.min(32.w, 28.0);
     final titleSize = math.min(20.sp, 14.0);
@@ -53,49 +54,51 @@ class AppEmptyWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // ─── Illustration with Glass Circle ────────────────
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                if (showGlassBackground)
-                  ClipOval(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                      child: Container(
-                        width: glassSize,
-                        height: glassSize,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: isDark 
-                              ? Colors.white.withValues(alpha: 0.05) 
-                              : AppColors.primary.withValues(alpha: 0.05),
-                          border: Border.all(
+            AppAnimation.fadeInUp(
+              duration: const Duration(milliseconds: 800),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (showGlassBackground)
+                    ClipOval(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Container(
+                          width: glassSize,
+                          height: glassSize,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
                             color: isDark 
-                                ? Colors.white.withValues(alpha: 0.1) 
-                                : AppColors.primary.withValues(alpha: 0.1),
-                            width: 1.5,
+                                ? Colors.white.withValues(alpha: 0.05) 
+                                : AppColors.primary.withValues(alpha: 0.05),
+                            border: Border.all(
+                              color: isDark 
+                                  ? Colors.white.withValues(alpha: 0.1) 
+                                  : AppColors.primary.withValues(alpha: 0.1),
+                              width: 1.5,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                
-                if (imagePath != null || (imagePath == null && icon == null))
-                  AppImage(
-                    imagePath: imagePath ?? AssetManager.noData,
-                    width: imageSize,
-                    height: imageSize,
-                    fit: BoxFit.contain,
-                  )
-                else
-                  Icon(
-                    icon!,
-                    size: iconSize,
-                    color: isDark 
-                        ? Colors.white.withValues(alpha: 0.3) 
-                        : AppColors.primary.withValues(alpha: 0.5),
-                  ),
-              ],
+                  
+                  if (imagePath != null || (imagePath == null && icon == null))
+                    AppImage(
+                      imagePath: imagePath ?? AssetManager.noData,
+                      width: imageSize * 1.2,
+                      height: imageSize * 1.2,
+                      fit: BoxFit.contain,
+                    )
+                  else
+                    Icon(
+                      icon!,
+                      size: iconSize,
+                      color: isDark 
+                          ? Colors.white.withValues(alpha: 0.3) 
+                          : AppColors.primary.withValues(alpha: 0.5),
+                    ),
+                ],
+              ),
             ),
             
             18.verticalSpace,

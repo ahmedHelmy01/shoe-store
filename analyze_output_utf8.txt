@@ -1,0 +1,332 @@
+﻿Analyzing erp...                                                
+
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\core\common_widget\app_card\app_card.dart:45:33 - deprecated_member_use
+   info - Unnecessary use of multiple underscores - lib\core\common_widget\app_dialog\app_dialog.dart:162:24 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\core\common_widget\app_dialog\app_dialog.dart:162:28 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\core\common_widget\app_dialog\app_dialog.dart:174:41 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\core\common_widget\app_dialog\app_status_dialog.dart:49:41 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\core\common_widget\app_horizontal_loader\app_horizontal_loader.dart:31:31 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\core\common_widget\app_horizontal_loader\app_horizontal_loader.dart:32:26 - unnecessary_underscores
+   info - Constructors in '@immutable' classes should be declared as 'const' - lib\core\common_widget\app_image\app_image.dart:13:3 - prefer_const_constructors_in_immutables
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\core\common_widget\app_section_header\app_section_header.dart:84:42 - deprecated_member_use
+   info - Unnecessary use of multiple underscores - lib\core\common_widget\app_shimmer\app_shimmer.dart:68:31 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\core\common_widget\app_shimmer\app_shimmer.dart:69:26 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\core\common_widget\app_shimmer\app_shimmer.dart:140:31 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\core\common_widget\app_shimmer\app_shimmer.dart:141:26 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\core\common_widget\app_shimmer\app_shimmer.dart:162:31 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\core\common_widget\app_shimmer\app_shimmer.dart:163:26 - unnecessary_underscores
+   info - The variable name 'app_name' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:8:9 - non_constant_identifier_names
+   info - The variable name 'welcome_message' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:9:9 - non_constant_identifier_names
+   info - The variable name 'daily_report' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:50:9 - non_constant_identifier_names
+   info - The variable name 'about_us' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:52:9 - non_constant_identifier_names
+   info - The variable name 'contact_us' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:53:9 - non_constant_identifier_names
+   info - The variable name 'forgot_password' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:54:9 - non_constant_identifier_names
+   info - The variable name 'no_account' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:55:9 - non_constant_identifier_names
+   info - The variable name 'register_now' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:56:9 - non_constant_identifier_names
+   info - The variable name 'get_started' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:59:9 - non_constant_identifier_names
+   info - The variable name 'try_again' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:60:9 - non_constant_identifier_names
+   info - The variable name 'page_not_found' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:62:9 - non_constant_identifier_names
+   info - The variable name 'home_address' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:63:9 - non_constant_identifier_names
+   info - The variable name 'your_message' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:65:9 - non_constant_identifier_names
+   info - The variable name 'send_message' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:66:9 - non_constant_identifier_names
+   info - The variable name 'field_required' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:67:9 - non_constant_identifier_names
+   info - The variable name 'sent_successfully' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:68:9 - non_constant_identifier_names
+   info - The variable name 'contact_thanks' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:69:9 - non_constant_identifier_names
+   info - The variable name 'no_data' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:71:9 - non_constant_identifier_names
+   info - The variable name 'unexpected_error' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:73:9 - non_constant_identifier_names
+   info - The variable name 'check_internet' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:74:9 - non_constant_identifier_names
+   info - The variable name 'server_not_responding' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:75:9 - non_constant_identifier_names
+   info - The variable name 'cart_empty' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:76:9 - non_constant_identifier_names
+   info - The variable name 'cart_empty_subtitle' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:77:9 - non_constant_identifier_names
+   info - The variable name 'browse_products' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:78:9 - non_constant_identifier_names
+   info - The variable name 'no_orders_yet' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:79:9 - non_constant_identifier_names
+   info - The variable name 'no_orders_yet_subtitle' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:80:9 - non_constant_identifier_names
+   info - The variable name 'no_results' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:81:9 - non_constant_identifier_names
+   info - The variable name 'no_results_subtitle' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:82:9 - non_constant_identifier_names
+   info - The variable name 'no_internet' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:83:9 - non_constant_identifier_names
+   info - The variable name 'login_again' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:85:9 - non_constant_identifier_names
+   info - The variable name 'cache_error' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:86:9 - non_constant_identifier_names
+   info - The variable name 'item_not_found' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:87:9 - non_constant_identifier_names
+   info - The variable name 'timeout_server' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:88:9 - non_constant_identifier_names
+   info - The variable name 'not_found_requested' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:91:9 - non_constant_identifier_names
+   info - The variable name 'server_error_try_later' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:93:9 - non_constant_identifier_names
+   info - The variable name 'request_cancelled' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:94:9 - non_constant_identifier_names
+   info - The variable name 'session_expired_login_again' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:95:9 - non_constant_identifier_names
+   info - The variable name 'cache_load_error' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:96:9 - non_constant_identifier_names
+   info - The variable name 'unexpected_error_retry' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:97:9 - non_constant_identifier_names
+   info - The variable name 'login_title' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:115:9 - non_constant_identifier_names
+   info - The variable name 'login_subtitle' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:116:9 - non_constant_identifier_names
+   info - The variable name 'register_title' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:117:9 - non_constant_identifier_names
+   info - The variable name 'register_subtitle' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:118:9 - non_constant_identifier_names
+   info - The variable name 'forgot_password_title' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:119:9 - non_constant_identifier_names
+   info - The variable name 'forgot_password_subtitle' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:120:9 - non_constant_identifier_names
+   info - The variable name 'otp_title' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:121:9 - non_constant_identifier_names
+   info - The variable name 'otp_subtitle' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:122:9 - non_constant_identifier_names
+   info - The variable name 'reset_password_title' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:123:9 - non_constant_identifier_names
+   info - The variable name 'reset_password_subtitle' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:124:9 - non_constant_identifier_names
+   info - The variable name 'mobile_label' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:125:9 - non_constant_identifier_names
+   info - The variable name 'password_label' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:126:9 - non_constant_identifier_names
+   info - The variable name 'confirm_password_label' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:127:9 - non_constant_identifier_names
+   info - The variable name 'name_label' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:128:9 - non_constant_identifier_names
+   info - The variable name 'login_button' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:129:9 - non_constant_identifier_names
+   info - The variable name 'register_button' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:130:9 - non_constant_identifier_names
+   info - The variable name 'send_code_button' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:131:9 - non_constant_identifier_names
+   info - The variable name 'verify_button' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:132:9 - non_constant_identifier_names
+   info - The variable name 'save_password_button' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:133:9 - non_constant_identifier_names
+   info - The variable name 'no_account' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:134:9 - non_constant_identifier_names
+   info - The variable name 'have_account' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:135:9 - non_constant_identifier_names
+   info - The variable name 'register_now' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:136:9 - non_constant_identifier_names
+   info - The variable name 'login_now' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:137:9 - non_constant_identifier_names
+   info - The variable name 'register_success' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:138:9 - non_constant_identifier_names
+   info - The variable name 'otp_sent' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:139:9 - non_constant_identifier_names
+   info - The variable name 'otp_verified' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:140:9 - non_constant_identifier_names
+   info - The variable name 'otp_resent' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:141:9 - non_constant_identifier_names
+   info - The variable name 'password_reset_success' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:142:9 - non_constant_identifier_names
+   info - The variable name 'search_hint' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:147:9 - non_constant_identifier_names
+   info - The variable name 'shop_now' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:148:9 - non_constant_identifier_names
+   info - The variable name 'featured_products' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:150:9 - non_constant_identifier_names
+   info - The variable name 'latest_products' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:151:9 - non_constant_identifier_names
+   info - The variable name 'view_all' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:152:9 - non_constant_identifier_names
+   info - The variable name 'medical_services' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:153:9 - non_constant_identifier_names
+   info - The variable name 'pharmacy_sections' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:154:9 - non_constant_identifier_names
+   info - The variable name 'most_ordered' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:155:9 - non_constant_identifier_names
+   info - The variable name 'exclusive_offers' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:156:9 - non_constant_identifier_names
+   info - The variable name 'trusted_brands' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:157:9 - non_constant_identifier_names
+   info - The variable name 'tarshooby_offers' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:158:9 - non_constant_identifier_names
+   info - The variable name 'vouchers_title' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:159:9 - non_constant_identifier_names
+   info - The variable name 'voucher_first_order' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:160:9 - non_constant_identifier_names
+   info - The variable name 'voucher_skincare' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:161:9 - non_constant_identifier_names
+   info - The variable name 'use_voucher' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:162:9 - non_constant_identifier_names
+   info - The variable name 'select_branch' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:163:9 - non_constant_identifier_names
+   info - The variable name 'no_products' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:164:9 - non_constant_identifier_names
+   info - The variable name 'search_results' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:165:9 - non_constant_identifier_names
+   info - The variable name 'filter_results' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:166:9 - non_constant_identifier_names
+   info - The variable name 'no_search_results' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:167:9 - non_constant_identifier_names
+   info - The variable name 'no_filter_results' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:168:9 - non_constant_identifier_names
+   info - The variable name 'my_points' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:169:9 - non_constant_identifier_names
+   info - The variable name 'no_offers' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:172:9 - non_constant_identifier_names
+   info - The variable name 'wait_for_offers' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:173:9 - non_constant_identifier_names
+   info - The variable name 'explore_now' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:174:9 - non_constant_identifier_names
+   info - The variable name 'feature_products' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:175:9 - non_constant_identifier_names
+   info - The variable name 'feature_categories' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:176:9 - non_constant_identifier_names
+   info - The variable name 'feature_discounts' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:177:9 - non_constant_identifier_names
+   info - The variable name 'feature_new_arrivals' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:178:9 - non_constant_identifier_names
+   info - The variable name 'feature_best_sellers' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:179:9 - non_constant_identifier_names
+   info - The variable name 'feature_special_picks' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:180:9 - non_constant_identifier_names
+   info - The variable name 'no_exclusive_offers' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:181:9 - non_constant_identifier_names
+   info - The variable name 'no_exclusive_offers_subtitle' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:182:9 - non_constant_identifier_names
+   info - The variable name 'exit_confirm' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:196:9 - non_constant_identifier_names
+   info - The variable name 'coming_soon' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:197:9 - non_constant_identifier_names
+   info - The variable name 'status_processing' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:203:9 - non_constant_identifier_names
+   info - The variable name 'status_shipped' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:204:9 - non_constant_identifier_names
+   info - The variable name 'status_delivered' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:205:9 - non_constant_identifier_names
+   info - The variable name 'order_number' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:206:9 - non_constant_identifier_names
+   info - The variable name 'order_items' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:210:9 - non_constant_identifier_names
+   info - The variable name 'payment_summary' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:212:9 - non_constant_identifier_names
+   info - The variable name 'delivery_fee' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:214:9 - non_constant_identifier_names
+   info - The variable name 'rate_order' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:216:9 - non_constant_identifier_names
+   info - The variable name 'added_to_cart' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:217:9 - non_constant_identifier_names
+   info - The variable name 'add_to_cart' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:225:9 - non_constant_identifier_names
+   info - The variable name 'dark_mode' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:241:9 - non_constant_identifier_names
+   info - The variable name 'my_orders' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:246:9 - non_constant_identifier_names
+   info - The variable name 'my_points' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:247:9 - non_constant_identifier_names
+   info - The variable name 'delivery_address' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:253:9 - non_constant_identifier_names
+   info - The variable name 'payment_method' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:254:9 - non_constant_identifier_names
+   info - The variable name 'promo_code' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:255:9 - non_constant_identifier_names
+   info - The variable name 'enter_promo_code' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:256:9 - non_constant_identifier_names
+   info - The variable name 'order_amount' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:258:9 - non_constant_identifier_names
+   info - The variable name 'delivery_fee' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:259:9 - non_constant_identifier_names
+   info - The variable name 'total_amount' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:261:9 - non_constant_identifier_names
+   info - The variable name 'place_order' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:262:9 - non_constant_identifier_names
+   info - The variable name 'visa_mastercard' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:263:9 - non_constant_identifier_names
+   info - The variable name 'cash_on_delivery' isn't a lowerCamelCase identifier - lib\core\localization\locale_keys.dart:265:9 - non_constant_identifier_names
+   info - Parameter 'data' could be a super parameter - lib\core\network\network_exceptions.dart:35:3 - use_super_parameters
+   info - Parameter 'data' could be a super parameter - lib\core\network\network_exceptions.dart:45:3 - use_super_parameters
+   info - Parameter 'data' could be a super parameter - lib\core\network\network_exceptions.dart:55:3 - use_super_parameters
+   info - Parameter 'data' could be a super parameter - lib\core\network\network_exceptions.dart:65:3 - use_super_parameters
+   info - Parameter 'data' could be a super parameter - lib\core\network\network_exceptions.dart:75:3 - use_super_parameters
+   info - Statements in an if should be enclosed in a block - lib\core\repository\base_repository.dart:77:7 - curly_braces_in_flow_control_structures
+warning - Unused import: 'package:erp/core/constants/app_constants.dart' - lib\core\security\security_service.dart:4:8 - unused_import
+warning - Unused import: 'package:erp/modules/webstore/admin/features/countries/data/models/country_row.dart' - lib\modules\webstore\admin\core\di\admin_providers.dart:50:8 - unused_import
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\ads\data\datasource\ads_remote_datasource.dart:1:8 - unused_import
+warning - Unused import: 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart' - lib\modules\webstore\admin\features\ads\presentation\view\ads_view.dart:11:8 - unused_import
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\ads\presentation\widgets\ads_mobile_list.dart:17:29 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\ads\presentation\widgets\ads_table.dart:47:37 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\ads\presentation\widgets\ads_table.dart:47:41 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\ads\presentation\widgets\ads_table.dart:115:35 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\ads\presentation\widgets\ads_table.dart:115:39 - unnecessary_underscores
+warning - The value of the local variable 'isMobile' isn't used - lib\modules\webstore\admin\features\auth\presentation\view\login_view.dart:59:11 - unused_local_variable
+warning - Unused import: 'package:erp/modules/webstore/admin/features/auth/data/models/admin_user.dart' - lib\modules\webstore\admin\features\auth\presentation\view_model\auth_view_model.dart:4:8 - unused_import
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\boardings\data\datasource\boardings_remote_datasource.dart:1:8 - unused_import
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\boardings\presentation\widgets\boardings_table.dart:47:37 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\boardings\presentation\widgets\boardings_table.dart:47:41 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\boardings\presentation\widgets\boardings_table.dart:118:35 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\boardings\presentation\widgets\boardings_table.dart:118:39 - unnecessary_underscores
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\branches\data\datasource\branches_remote_datasource.dart:1:8 - unused_import
+   info - Use the null-aware marker '?' rather than a null check via an 'if' - lib\modules\webstore\admin\features\branches\data\datasource\branches_remote_datasource.dart:18:9 - use_null_aware_elements
+warning - Unused import: 'package:hugeicons/hugeicons.dart' - lib\modules\webstore\admin\features\branches\presentation\view\branches_view.dart:4:8 - unused_import
+warning - Unused import: 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_action_icon_button.dart' - lib\modules\webstore\admin\features\branches\presentation\view\branches_view.dart:8:8 - unused_import
+warning - Unused import: 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_panel.dart' - lib\modules\webstore\admin\features\branches\presentation\view\branches_view.dart:9:8 - unused_import
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\modules\webstore\admin\features\branches\presentation\view\branches_view.dart:73:21 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\modules\webstore\admin\features\branches\presentation\view\branches_view.dart:80:21 - use_build_context_synchronously
+   info - Use the null-aware marker '?' rather than a null check via an 'if' - lib\modules\webstore\admin\features\branches\presentation\widgets\branch_form.dart:101:7 - use_null_aware_elements
+   info - Use the null-aware marker '?' rather than a null check via an 'if' - lib\modules\webstore\admin\features\branches\presentation\widgets\branch_form.dart:102:7 - use_null_aware_elements
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\catalog\categories\data\datasource\categories_remote_datasource.dart:1:8 - unused_import
+   info - Use the null-aware marker '?' rather than a null check via an 'if' - lib\modules\webstore\admin\features\catalog\categories\data\datasource\categories_remote_datasource.dart:18:9 - use_null_aware_elements
+warning - Unused import: 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart' - lib\modules\webstore\admin\features\catalog\categories\presentation\view\categories_view.dart:6:8 - unused_import
+warning - Unnecessary cast - lib\modules\webstore\admin\features\catalog\categories\presentation\view\categories_view.dart:107:22 - unnecessary_cast
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\catalog\categories\presentation\widgets\categories_table.dart:133:35 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\catalog\categories\presentation\widgets\categories_table.dart:133:39 - unnecessary_underscores
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\catalog\companies\data\datasource\companies_remote_datasource.dart:1:8 - unused_import
+   info - Use the null-aware marker '?' rather than a null check via an 'if' - lib\modules\webstore\admin\features\catalog\companies\data\datasource\companies_remote_datasource.dart:18:9 - use_null_aware_elements
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\catalog\companies\presentation\widgets\companies_table.dart:85:47 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\catalog\companies\presentation\widgets\companies_table.dart:85:51 - unnecessary_underscores
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\catalog\filters\data\datasource\filters_remote_datasource.dart:1:8 - unused_import
+   info - Use the null-aware marker '?' rather than a null check via an 'if' - lib\modules\webstore\admin\features\catalog\filters\data\datasource\filters_remote_datasource.dart:18:9 - use_null_aware_elements
+warning - Unused import: 'package:erp/core/common_widget/app_dialog/app_dialog.dart' - lib\modules\webstore\admin\features\catalog\filters\presentation\widgets\filters_table.dart:7:8 - unused_import
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\catalog\products\data\datasource\products_remote_datasource.dart:1:8 - unused_import
+   info - Use the null-aware marker '?' rather than a null check via an 'if' - lib\modules\webstore\admin\features\catalog\products\data\datasource\products_remote_datasource.dart:18:9 - use_null_aware_elements
+   info - Unnecessary braces in a string interpolation - lib\modules\webstore\admin\features\catalog\products\data\repositories\products_repository.dart:54:23 - unnecessary_brace_in_string_interps
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\catalog\products\presentation\view\products_view.dart:239:41 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\catalog\products\presentation\view\products_view.dart:239:45 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\catalog\products\presentation\widgets\products_table.dart:143:33 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\catalog\products\presentation\widgets\products_table.dart:143:37 - unnecessary_underscores
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\cities\data\datasource\cities_remote_datasource.dart:1:8 - unused_import
+   info - Unnecessary use of string interpolation - lib\modules\webstore\admin\features\cities\presentation\view\cities_view.dart:139:23 - unnecessary_string_interpolations
+warning - Unused import: '../../../dashboard/presentation/widgets/glass_panel.dart' - lib\modules\webstore\admin\features\contacts\presentation\view\contacts_view.dart:8:8 - unused_import
+warning - The value of the local variable 'isDark' isn't used - lib\modules\webstore\admin\features\contacts\presentation\view\contacts_view.dart:17:11 - unused_local_variable
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\countries\data\datasource\countries_remote_datasource.dart:1:8 - unused_import
+   info - Use the null-aware marker '?' rather than a null check via an 'if' - lib\modules\webstore\admin\features\countries\data\datasource\countries_remote_datasource.dart:18:9 - use_null_aware_elements
+warning - Unused import: 'package:erp/core/common_widget/app_card/app_card.dart' - lib\modules\webstore\admin\features\countries\presentation\view\countries_view.dart:4:8 - unused_import
+warning - The declaration '_showDeleteDialog' isn't referenced - lib\modules\webstore\admin\features\countries\presentation\view\countries_view.dart:104:6 - unused_element
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\coupons\data\datasource\coupons_remote_datasource.dart:1:8 - unused_import
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\coupons\presentation\widgets\coupons_table.dart:132:35 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\coupons\presentation\widgets\coupons_table.dart:132:39 - unnecessary_underscores
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\customers\customer_groups\data\datasource\customer_groups_remote_datasource.dart:1:8 - unused_import
+warning - Unused import: 'package:intl/intl.dart' - lib\modules\webstore\admin\features\dashboard\presentation\widgets\dashboard_header.dart:2:8 - unused_import
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\governorates\data\datasource\governorates_remote_datasource.dart:1:8 - unused_import
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\order_statuses\data\datasource\order_statuses_remote_datasource.dart:1:8 - unused_import
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\orders\data\datasource\orders_remote_datasource.dart:1:8 - unused_import
+   info - Don't invoke 'print' in production code - lib\modules\webstore\admin\features\orders\presentation\view\order_create\order_create_view.dart:78:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\modules\webstore\admin\features\orders\presentation\view\order_create\order_create_view.dart:88:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\modules\webstore\admin\features\orders\presentation\view\order_create\order_create_view.dart:120:5 - avoid_print
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\pages\data\datasource\pages_remote_datasource.dart:1:8 - unused_import
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\pages\presentation\widgets\pages_table.dart:47:37 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\pages\presentation\widgets\pages_table.dart:47:41 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\pages\presentation\widgets\pages_table.dart:118:35 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\pages\presentation\widgets\pages_table.dart:118:39 - unnecessary_underscores
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\payment_methods\data\datasource\payment_methods_remote_datasource.dart:1:8 - unused_import
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\payment_methods\presentation\widgets\payment_methods_table.dart:47:37 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\payment_methods\presentation\widgets\payment_methods_table.dart:47:41 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\payment_methods\presentation\widgets\payment_methods_table.dart:126:37 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\payment_methods\presentation\widgets\payment_methods_table.dart:126:41 - unnecessary_underscores
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\payment_statuses\data\datasource\payment_statuses_remote_datasource.dart:1:8 - unused_import
+warning - The value of the field '_presetColors' isn't used - lib\modules\webstore\admin\features\payment_statuses\presentation\widgets\payment_status_form.dart:28:16 - unused_field
+warning - The declaration '_colorToHex' isn't referenced - lib\modules\webstore\admin\features\payment_statuses\presentation\widgets\payment_status_form.dart:59:10 - unused_element
+   info - 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion - lib\modules\webstore\admin\features\payment_statuses\presentation\widgets\payment_status_form.dart:60:18 - deprecated_member_use
+warning - The value of the local variable 'theme' isn't used - lib\modules\webstore\admin\features\payment_statuses\presentation\widgets\payment_status_form.dart:74:11 - unused_local_variable
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\properties\data\datasource\properties_remote_datasource.dart:1:8 - unused_import
+   info - Use the null-aware marker '?' rather than a null check via an 'if' - lib\modules\webstore\admin\features\properties\data\datasource\properties_remote_datasource.dart:18:9 - use_null_aware_elements
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\sliders\data\datasource\sliders_remote_datasource.dart:1:8 - unused_import
+warning - Unused import: 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart' - lib\modules\webstore\admin\features\sliders\presentation\view\sliders_view.dart:11:8 - unused_import
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\sliders\presentation\widgets\sliders_table.dart:47:37 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\sliders\presentation\widgets\sliders_table.dart:47:41 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\sliders\presentation\widgets\sliders_table.dart:118:35 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\features\sliders\presentation\widgets\sliders_table.dart:118:39 - unnecessary_underscores
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\users\data\datasource\users_remote_datasource.dart:1:8 - unused_import
+warning - Unused import: 'package:erp/core/network/network_service.dart' - lib\modules\webstore\admin\features\warehouses\data\datasource\warehouses_remote_datasource.dart:1:8 - unused_import
+warning - Unused import: 'package:hugeicons/hugeicons.dart' - lib\modules\webstore\admin\features\warehouses\presentation\view\warehouses_view.dart:4:8 - unused_import
+warning - Unused import: 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_action_icon_button.dart' - lib\modules\webstore\admin\features\warehouses\presentation\view\warehouses_view.dart:11:8 - unused_import
+warning - Unused import: 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_panel.dart' - lib\modules\webstore\admin\features\warehouses\presentation\view\warehouses_view.dart:12:8 - unused_import
+warning - Duplicate import - lib\modules\webstore\admin\features\warehouses\presentation\view\warehouses_view.dart:13:8 - duplicate_import
+warning - Duplicate import - lib\modules\webstore\admin\features\warehouses\presentation\view\warehouses_view.dart:14:8 - duplicate_import
+   info - Don't invoke 'print' in production code - lib\modules\webstore\admin\features\warehouses\presentation\view\warehouses_view.dart:51:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\modules\webstore\admin\features\warehouses\presentation\view\warehouses_view.dart:67:19 - avoid_print
+   info - Don't invoke 'print' in production code - lib\modules\webstore\admin\features\warehouses\presentation\view\warehouses_view.dart:157:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\modules\webstore\admin\features\warehouses\presentation\view\warehouses_view.dart:167:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\modules\webstore\admin\features\warehouses\presentation\view_model\warehouses_view_model.dart:14:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\modules\webstore\admin\features\warehouses\presentation\view_model\warehouses_view_model.dart:16:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\modules\webstore\admin\features\warehouses\presentation\view_model\warehouses_view_model.dart:21:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\modules\webstore\admin\features\warehouses\presentation\view_model\warehouses_view_model.dart:23:5 - avoid_print
+   info - The import of 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/widgets/admin_table_actions_cell.dart' is unnecessary because all of the used elements are also provided by the import of 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart' - lib\modules\webstore\admin\features\warehouses\presentation\widgets\warehouses_table.dart:2:8 - unnecessary_import
+   info - The import of 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/widgets/admin_table_models.dart' is unnecessary because all of the used elements are also provided by the import of 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart' - lib\modules\webstore\admin\features\warehouses\presentation\widgets\warehouses_table.dart:3:8 - unnecessary_import
+warning - The value of the local variable 'countries' isn't used - lib\modules\webstore\admin\shared\data\fake_data.dart:180:11 - unused_local_variable
+warning - The value of the local variable 'options' isn't used - lib\modules\webstore\admin\shared\data\fake_data.dart:211:13 - unused_local_variable
+   info - 'dart:html' is deprecated and shouldn't be used. Use package:web and dart:js_interop instead - lib\modules\webstore\admin\shared\export\admin_export_web.dart:3:1 - deprecated_member_use
+   info - The file name 'AdminSidebar.dart' isn't a lower_case_with_underscores identifier - lib\modules\webstore\admin\shared\presentation\widgets\AdminSidebar\AdminSidebar.dart:1:1 - file_names
+warning - The value of the local variable 'theme' isn't used - lib\modules\webstore\admin\shared\presentation\widgets\admin_page_header.dart:64:11 - unused_local_variable
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\shared\presentation\widgets\admin_state_widget.dart:52:37 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\shared\presentation\widgets\admin_state_widget.dart:52:41 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\admin\shared\presentation\widgets\data_table\widgets\admin_table_content.dart:46:35 - unnecessary_underscores
+   info - The import of 'dart:typed_data' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/services.dart' - lib\modules\webstore\admin\shared\presentation\widgets\data_table\widgets\admin_table_exporter.dart:1:8 - unnecessary_import
+   info - Don't use 'BuildContext's across async gaps - lib\modules\webstore\admin\shared\presentation\widgets\data_table\widgets\admin_table_exporter.dart:46:19 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps - lib\modules\webstore\admin\shared\presentation\widgets\data_table\widgets\admin_table_exporter.dart:77:19 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps - lib\modules\webstore\admin\shared\presentation\widgets\data_table\widgets\admin_table_exporter.dart:164:19 - use_build_context_synchronously
+warning - Unused import: 'package:erp/core/constants/app_constants.dart' - lib\modules\webstore\auth\presentation\view\webstore_login_screen.dart:10:8 - unused_import
+   info - 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre - lib\modules\webstore\cms\presentation\view\webstore_more_view.dart:48:19 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\home\presentation\view\widgets\ads_widget.dart:111:50 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\home\presentation\view\widgets\ads_widget.dart:112:50 - deprecated_member_use
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\home\presentation\view\widgets\company_produce_widget.dart:35:31 - unnecessary_underscores
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\home\presentation\view\widgets\company_produce_widget.dart:48:40 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\home\presentation\view\widgets\company_produce_widget.dart:61:46 - deprecated_member_use
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\home\presentation\view\widgets\company_produce_widget.dart:76:37 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\home\presentation\view\widgets\company_produce_widget.dart:76:41 - unnecessary_underscores
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\home\presentation\view\widgets\company_produce_widget.dart:78:54 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\home\presentation\view\widgets\feature_links_widget.dart:60:48 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\home\presentation\view\widgets\feature_links_widget.dart:60:80 - deprecated_member_use
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\home\presentation\view\widgets\flash_sale_widget.dart:99:39 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\home\presentation\view\widgets\product_grid_widget.dart:26:33 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\home\presentation\view\widgets\product_grid_widget.dart:27:28 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\home\presentation\view\widgets\product_grid_widget.dart:57:33 - unnecessary_underscores
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\home\presentation\view\widgets\slider_widget.dart:133:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\home\presentation\view\widgets\slider_widget.dart:148:47 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\home\presentation\view\widgets\slider_widget.dart:152:50 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\home\presentation\view\widgets\slider_widget.dart:159:36 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\home\presentation\view\widgets\slider_widget.dart:182:47 - deprecated_member_use
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\home\presentation\view\widgets\unified_header_widget.dart:196:47 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\modules\webstore\home\presentation\view\widgets\vouchers_widget.dart:28:37 - unnecessary_underscores
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\animated_background.dart:23:39 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\animated_background.dart:35:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\floating_particles.dart:18:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\onboarding_bottom_controls.dart:33:38 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\onboarding_bottom_controls.dart:74:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\onboarding_bottom_controls.dart:79:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\onboarding_bottom_controls.dart:111:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\onboarding_page_content.dart:63:53 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\onboarding_page_content.dart:70:48 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\onboarding_page_content.dart:71:48 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\onboarding_page_content.dart:77:61 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\onboarding_page_content.dart:78:66 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\onboarding_page_content.dart:107:49 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\onboarding_page_content.dart:108:54 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\onboarding_page_content.dart:140:49 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\onboarding_page_content.dart:141:54 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\onboarding_page_content.dart:169:47 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\onboarding_page_content.dart:192:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\onboarding\widgets\skip_button.dart:30:54 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\splash\animated_splash_screen.dart:155:64 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\splash\animated_splash_screen.dart:187:51 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\splash\animated_splash_screen.dart:192:64 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\splash\animated_splash_screen.dart:233:64 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\splash\animated_splash_screen.dart:258:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\splash\animated_splash_screen.dart:283:48 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\modules\webstore\splash\animated_splash_screen.dart:303:46 - deprecated_member_use
+   info - Don't invoke 'print' in production code - tool\build_flavor.dart:6:5 - avoid_print
+   info - Don't invoke 'print' in production code - tool\build_flavor.dart:19:5 - avoid_print
+   info - Don't invoke 'print' in production code - tool\build_flavor.dart:25:3 - avoid_print
+   info - Don't invoke 'print' in production code - tool\build_flavor.dart:28:5 - avoid_print
+   info - Don't invoke 'print' in production code - tool\build_flavor.dart:39:7 - avoid_print
+   info - Don't invoke 'print' in production code - tool\build_flavor.dart:50:5 - avoid_print
+   info - Don't invoke 'print' in production code - tool\build_flavor.dart:117:7 - avoid_print
+   info - Don't invoke 'print' in production code - tool\build_flavor.dart:122:5 - avoid_print
+   info - Don't invoke 'print' in production code - tool\build_flavor.dart:124:5 - avoid_print
+   info - Don't invoke 'print' in production code - tool\build_flavor.dart:147:9 - avoid_print
+   info - Don't invoke 'print' in production code - tool\build_flavor.dart:153:9 - avoid_print
+
+flutter : 322 issues found. (ran in 18.2s)
+At line:1 char:1
++ flutter analyze > analyze_output.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (322 issues found. (ran in 18.2s):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

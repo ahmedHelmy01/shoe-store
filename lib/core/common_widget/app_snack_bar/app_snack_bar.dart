@@ -8,6 +8,7 @@ class AppSnackBar {
     bool isError = false,
     Duration duration = const Duration(seconds: 3),
   }) {
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(

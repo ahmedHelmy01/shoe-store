@@ -1,15 +1,18 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
+import 'package:erp/core/common_widget/app_dropdown/app_multi_dropdown.dart';
 import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/products/data/models/product_row.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
 
 class ProductForm extends ConsumerStatefulWidget {
   final ProductRow? initial;
   final bool isSaving;
-  final void Function(Map<String, dynamic> data) onSave;
+  final void Function(Map<String, dynamic> data, XFile? imageFile, List<XFile>? galleryFiles) onSave;
 
   const ProductForm({
     super.key,
@@ -35,6 +38,14 @@ class _ProductFormState extends ConsumerState<ProductForm> {
   
   int? _selectedCategoryId;
   int? _selectedCompanyId;
+  List<int> _selectedTagIds = [];
+  List<int> _selectedPropertyIds = [];
+  
+  bool _isActive = true;
+  XFile? _imageFile;
+  List<XFile> _galleryFiles = [];
+  // Removed _uploadedImagePath and _uploadedGalleryPaths as we now use direct file upload
+  bool _removeInitialImage = false;
 
   @override
   void initState() {
@@ -49,6 +60,20 @@ class _ProductFormState extends ConsumerState<ProductForm> {
     
     _selectedCategoryId = widget.initial?.productCategoryId;
     _selectedCompanyId = widget.initial?.companyId;
+    _selectedTagIds = widget.initial?.tags?.map((e) => e.id).toList() ?? [];
+    _selectedPropertyIds = widget.initial?.properties?.map((e) => e.id).toList() ?? [];
+    _isActive = widget.initial?.isActive ?? true;
+  }
+
+  @override
+  void didUpdateWidget(covariant ProductForm oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initial != oldWidget.initial && widget.initial != null) {
+      setState(() {
+        _selectedTagIds = widget.initial!.tags?.map((e) => e.id).toList() ?? [];
+        _selectedPropertyIds = widget.initial!.properties?.map((e) => e.id).toList() ?? [];
+      });
+    }
   }
 
   @override
@@ -65,7 +90,7 @@ class _ProductFormState extends ConsumerState<ProductForm> {
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
-      widget.onSave({
+      final data = <String, dynamic>{
         'name_ar': _nameArCtrl.text.trim(),
         'name_en': _nameEnCtrl.text.trim(),
         'name': _nameEnCtrl.text.trim(),
@@ -75,9 +100,25 @@ class _ProductFormState extends ConsumerState<ProductForm> {
         'description_ar': _descArCtrl.text.trim(),
         'description': _descEnCtrl.text.trim(),
         'product_category_id': _selectedCategoryId,
-        'manufacturer_id': _selectedCompanyId, // Using manufacturer_id as requested
-        'is_active': (widget.initial?.isActive ?? true) ? 1 : 0, // Convert to 1/0
-      });
+        'manufacturer_id': _selectedCompanyId,
+        'tags': _selectedTagIds,
+        'properties': _selectedPropertyIds,
+        'is_active': _isActive ? 1 : 0,
+      };
+
+      if (_removeInitialImage && _imageFile == null) {
+        data['image'] = '';
+      } else if (_imageFile == null && widget.initial?.image != null) {
+        // Keep existing image path if not changed or removed
+        data['image'] = widget.initial!.image;
+      }
+
+      // Handle Gallery - if no new files selected, keep existing paths
+      if (_galleryFiles.isEmpty && widget.initial?.images != null) {
+        data['images'] = widget.initial!.images;
+      }
+
+      widget.onSave(data, _imageFile, _galleryFiles.isEmpty ? null : _galleryFiles);
     }
   }
 
@@ -85,123 +126,207 @@ class _ProductFormState extends ConsumerState<ProductForm> {
   Widget build(BuildContext context) {
     final categoriesAsync = ref.watch(allCategoriesProvider);
     final companiesAsync = ref.watch(allCompaniesProvider);
+    final tagsAsync = ref.watch(allTagsProvider);
+    final propertiesAsync = ref.watch(allPropertiesProvider);
 
     return Form(
       key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: AppTextField(
-                  controller: _nameArCtrl,
-                  label: 'Name (Arabic)',
-                  hint: 'اسم المنتج بالعربي',
-                  validator: (v) => v == null || v.isEmpty ? 'Required' : null,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: AppTextField(
-                  controller: _nameEnCtrl,
-                  label: 'Name (English)',
-                  hint: 'Product name in English',
-                  validator: (v) => v == null || v.isEmpty ? 'Required' : null,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: AppTextField(
-                  controller: _skuCtrl,
-                  label: 'SKU / Barcode',
-                  hint: 'e.g. SKU-12345',
-                  validator: (v) => v == null || v.isEmpty ? 'Required' : null,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: categoriesAsync.when(
-                  data: (list) => AppDropdown<int>(
-                    label: 'Category',
-                    hint: 'Select Category',
-                    value: list.any((c) => c.id == _selectedCategoryId) ? _selectedCategoryId : null,
-                    items: list.map((c) => DropdownMenuItem(
-                      value: c.id,
-                      child: Text(c.name),
-                    )).toList(),
-                    onChanged: (v) => setState(() => _selectedCategoryId = v),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: AppTextField(
+                    controller: _nameArCtrl,
+                    label: 'Name (Arabic)',
+                    hint: 'اسم المنتج بالعربي',
+                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
                   ),
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (e, _) => Text('Error loading categories'),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          companiesAsync.when(
-            data: (list) => AppDropdown<int>(
-              label: 'Company / Manufacturer',
-              hint: 'Select Company',
-              value: list.any((c) => c.id == _selectedCompanyId) ? _selectedCompanyId : null,
-              items: list.map((c) => DropdownMenuItem(
-                value: c.id,
-                child: Text(c.name),
-              )).toList(),
-              onChanged: (v) => setState(() => _selectedCompanyId = v),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: AppTextField(
+                    controller: _nameEnCtrl,
+                    label: 'Name (English)',
+                    hint: 'Product name in English',
+                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                  ),
+                ),
+              ],
             ),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Text('Error loading companies'),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: AppTextField(
-                  controller: _purchasePriceCtrl,
-                  label: 'Purchase Price',
-                  hint: '0.00',
-                  keyboardType: TextInputType.number,
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: AppTextField(
+                    controller: _skuCtrl,
+                    label: 'SKU / Barcode',
+                    hint: 'e.g. SKU-12345',
+                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: AppTextField(
-                  controller: _salePriceCtrl,
-                  label: 'Sale Price',
-                  hint: '0.00',
-                  keyboardType: TextInputType.number,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: categoriesAsync.when(
+                    data: (list) => AppDropdown<int>(
+                      label: 'Category',
+                      hint: 'Select Category',
+                      value: list.any((c) => c.id == _selectedCategoryId) ? _selectedCategoryId : null,
+                      items: list.map((c) => DropdownMenuItem(
+                        value: c.id,
+                        child: Text(c.name),
+                      )).toList(),
+                      onChanged: (v) => setState(() => _selectedCategoryId = v),
+                    ),
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => const Text('Error loading categories'),
+                  ),
                 ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            companiesAsync.when(
+              data: (list) => AppDropdown<int>(
+                label: 'Company / Manufacturer',
+                hint: 'Select Company',
+                value: list.any((c) => c.id == _selectedCompanyId) ? _selectedCompanyId : null,
+                items: list.map((c) => DropdownMenuItem(
+                  value: c.id,
+                  child: Text(c.name),
+                )).toList(),
+                onChanged: (v) => setState(() => _selectedCompanyId = v),
               ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          AppTextField(
-            controller: _descArCtrl,
-            label: 'Description (Arabic)',
-            hint: 'وصف المنتج بالعربي...',
-            maxLines: 3,
-          ),
-          const SizedBox(height: 20),
-          AppTextField(
-            controller: _descEnCtrl,
-            label: 'Description (English)',
-            hint: 'Product description in English...',
-            maxLines: 3,
-          ),
-          const SizedBox(height: 32),
-          AppButton(
-            onPressed: _submit,
-            isLoading: widget.isSaving,
-            child: Text(widget.initial == null ? 'Add Product' : 'Save Changes'),
-          ),
-        ],
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => const Text('Error loading companies'),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: AppTextField(
+                    controller: _purchasePriceCtrl,
+                    label: 'Purchase Price',
+                    hint: '0.00',
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: AppTextField(
+                    controller: _salePriceCtrl,
+                    label: 'Sale Price',
+                    hint: '0.00',
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            AppTextField(
+              controller: _descArCtrl,
+              label: 'Description (Arabic)',
+              hint: 'وصف المنتج بالعربي...',
+              maxLines: 3,
+            ),
+            const SizedBox(height: 20),
+            AppTextField(
+              controller: _descEnCtrl,
+              label: 'Description (English)',
+              hint: 'Product description in English...',
+              maxLines: 3,
+            ),
+            const SizedBox(height: 20),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: tagsAsync.when(
+                    data: (list) => AppMultiDropdown<int>(
+                      label: 'Tags',
+                      hint: 'Select Tags',
+                      selectedValues: _selectedTagIds,
+                      items: list.map((t) => DropdownMenuItem(
+                        value: t.id,
+                        child: Text(t.nameAr ?? t.name),
+                      )).toList(),
+                      onChanged: (v) => setState(() => _selectedTagIds = v),
+                    ),
+                    loading: () => const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+                      ),
+                    ),
+                    error: (e, _) => const Text('Error loading tags'),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: propertiesAsync.when(
+                    data: (list) => AppMultiDropdown<int>(
+                      label: 'Properties',
+                      hint: 'Select Properties',
+                      selectedValues: _selectedPropertyIds,
+                      items: list.map((p) => DropdownMenuItem(
+                        value: p.id,
+                        child: Text(p.titleAr ?? p.title),
+                      )).toList(),
+                      onChanged: (v) => setState(() => _selectedPropertyIds = v),
+                    ),
+                    loading: () => const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+                      ),
+                    ),
+                    error: (e, _) => const Text('Error loading properties'),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 32),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: AdminImagePicker(
+                      label: 'Product Image',
+                      initialImage: widget.initial?.imageUrl,
+                      onImageSelected: (file) => setState(() => _imageFile = file),
+                      onRemoveInitial: () => setState(() => _removeInitialImage = true),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    flex: 2,
+                    child: AdminImagePicker(
+                      label: 'Gallery Images',
+                      isMultiple: true,
+                      initialGallery: widget.initial?.imageUrls,
+                      onGallerySelected: (files) => setState(() => _galleryFiles = files),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            SwitchListTile(
+              title: const Text('Is Active'),
+              value: _isActive,
+              onChanged: (v) => setState(() => _isActive = v),
+              contentPadding: EdgeInsets.zero,
+            ),
+            const SizedBox(height: 32),
+            AppButton(
+              onPressed: _submit,
+              isLoading: widget.isSaving,
+              child: Text(widget.initial == null ? 'Add Product' : 'Save Changes'),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-

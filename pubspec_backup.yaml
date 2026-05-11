@@ -19,6 +19,10 @@ dependencies:
   flutter_staggered_grid_view: ^0.7.0
   smooth_page_indicator: ^2.0.1
   badges: ^3.1.2
+  flutter_html: ^3.0.0-alpha.3
+  flutter_screenutil: ^5.9.3
+  hugeicons: ^1.1.0
+  freerasp: ^7.5.0
 
   # State Management
   flutter_riverpod: ^3.1.0
@@ -32,7 +36,7 @@ dependencies:
 
   # Storage
   shared_preferences: ^2.5.3
-  flutter_secure_storage: ^10.0.0
+  # flutter_secure_storage removed (tokens stored in SharedPreferences)
 
   # Localization
   easy_localization: ^3.0.7
@@ -43,6 +47,12 @@ dependencies:
   intl: ^0.20.2
   logger: ^2.5.0
   http: ^1.6.0
+  flutter_native_splash: ^2.4.0
+  excel: ^4.0.6
+  syncfusion_flutter_charts: ^33.1.47
+  syncfusion_flutter_pdf: ^33.1.47
+  arabic_reshaper: ^0.0.1
+  bidi: ^2.0.13
 
 dev_dependencies:
   flutter_test:
@@ -53,7 +63,6 @@ dev_dependencies:
   auto_route_generator: ^10.0.1
   riverpod_generator: ^4.0.0+1
   easy_localization_generator: ^0.3.5
-  flutter_native_splash: ^2.4.0
   flutter_launcher_icons: ^0.14.1
 
 flutter:
@@ -64,11 +73,11 @@ flutter:
     - assets/common/images/
     - assets/common/fonts/
     - assets/common/translations/
-    - assets/webstore/icons/
-    - assets/webstore/images/
-    - assets/webstore/fonts/
-    - assets/webstore/data_webstore.json
+    - assets/the_delegates/icons/
+    - assets/the_delegates/images/
+    - assets/the_delegates/fonts/
+    - assets/the_delegates/data_the_delegates.json
   fonts:
     - family: store
       fonts:
-        - asset: assets/webstore/fonts/store-Regular.otf
+        - asset: assets/the_delegates/fonts/store-Regular.otf

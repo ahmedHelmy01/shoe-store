@@ -51,9 +51,10 @@ class CategoriesView extends ConsumerWidget {
             child: CategoryForm(
               initial: state.editingItem,
               isSaving: state.isSaving,
+              uploadProgress: state.uploadProgress,
               categories: state is AdminCrudData ? (state as AdminCrudData<CategoryRow>).items : [],
-              onSave: (data) async {
-                final result = await notifier.commitSave(data, id: state.editingItem?.id);
+              onSave: (data, imageFile) async {
+                final result = await notifier.commitSave(data, id: state.editingItem?.id, imageFile: imageFile);
                 if (!context.mounted) return;
                 
                 if (result) {

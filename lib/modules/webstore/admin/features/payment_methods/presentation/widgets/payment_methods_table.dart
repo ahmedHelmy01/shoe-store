@@ -37,12 +37,25 @@ class PaymentMethodsTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<PaymentMethodRow>(
+          title: 'Icon',
+          cell: (_, p) => p.imageUrl != null
+              ? Image.network(
+                  p.imageUrl!,
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => const Icon(Icons.payment, size: 20),
+                )
+              : const Icon(Icons.payment, size: 20),
+          width: 80,
+        ),
+        AdminColumn<PaymentMethodRow>(
           title: 'Name',
           sortable: true,
           sortValue: (p) => p.name,
           exportValue: (p) => p.name,
           cell: (_, p) => Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-          width: 200,
+          width: 160,
         ),
         AdminColumn<PaymentMethodRow>(
           title: 'Arabic Name',
@@ -50,7 +63,7 @@ class PaymentMethodsTable extends StatelessWidget {
           sortValue: (p) => p.nameAr ?? '',
           exportValue: (p) => p.nameAr ?? '',
           cell: (_, p) => Text(p.nameAr ?? '-', style: const TextStyle(fontWeight: FontWeight.w600)),
-          width: 200,
+          width: 160,
         ),
         AdminColumn<PaymentMethodRow>(
           title: 'Order',
@@ -100,6 +113,21 @@ class PaymentMethodDetailsDialog extends StatelessWidget {
       id: method.id.toString(),
       icon: Icons.payment_rounded,
       children: [
+        if (method.imageUrl != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  method.imageUrl!,
+                  height: 100,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                ),
+              ),
+            ),
+          ),
         Row(
           children: [
             Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', method.name, Icons.language_rounded, bottomPadding: 0)),
@@ -116,6 +144,8 @@ class PaymentMethodDetailsDialog extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 20),
+        AdminDetailsDialog.buildDetailRow(context, 'Type', method.type.toUpperCase(), Icons.category_rounded),
+        const SizedBox(height: 12),
         AdminDetailsDialog.buildDetailRow(context, 'Note (EN)', method.note ?? 'No notes', Icons.note_rounded),
         AdminDetailsDialog.buildDetailRow(context, 'Note (AR)', method.noteAr ?? 'لا توجد ملاحظات', Icons.note_alt_rounded),
       ],

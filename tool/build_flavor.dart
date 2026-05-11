@@ -135,6 +135,7 @@ void _ensureAssetFolders(String flavor) {
     'assets/$flavor/images/',
     'assets/$flavor/fonts/',
     'assets/$flavor/data_$flavor.json',
+    'assets/config/',
   ];
 
   for (var path in requiredPaths) {
@@ -192,6 +193,7 @@ List<String> _updateYamlForFlavor(List<String> yamlLines, String flavor) {
       '    - assets/$flavor/images/',
       '    - assets/$flavor/fonts/',
       '    - assets/$flavor/data_$flavor.json',
+      '    - assets/config/',
     ]);
   }
 

@@ -14,8 +14,15 @@
     "webstore_profile"
   ],
   "assets": {
-    "logo": "assets/common/images/app_icon.png",
-    "placeholder": "assets/webstore/images/no-data-6.png"
+    "assetsBase": "assets/webstore/",
+    "appLogo": "assets/common/images/logo.png",
+    "splashLogo": "assets/common/images/splash_logo.png",
+    "appIcon": "assets/common/icons/app_icon.png",
+    "notificationIcon": "assets/common/icons/notification.png",
+    "splashBackground": "#FFFFFF",
+    "placeholderImage": "assets/webstore/images/no-data-6.png",
+    "noDataImage": "assets/common/images/no_data.png",
+    "errorImage": "assets/common/images/error.png"
   },
   "fireBaseConfig": {
     "apiKey": "",

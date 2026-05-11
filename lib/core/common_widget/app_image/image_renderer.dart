@@ -1,8 +1,7 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:erp/core/common_widget/app_loader/app_loader.dart';
 import 'package:erp/core/extension/image_type_extension.dart';
-import 'package:erp/core/localization/locale_keys.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -18,16 +17,28 @@ class ImageRenderer {
     String? placeHolderImage,
     String? placeHolderText,
   }) {
-    final String fallbackText = placeHolderText ?? LocaleKeys.common.noImage;
-
+    // If imagePath is empty, show placeholder immediately
     if (imagePath.isEmpty) {
-      return _buildPlaceholder(fallbackText, height, width, fit);
+      return _buildPlaceholder(height, width, fit);
     }
 
-    switch (imagePath.imageType) {
+    // Clean the image path from any double slashes if they exist
+    String cleanPath = imagePath.replaceAll('//', '/').replaceFirst('https:/', 'https://');
+
+    switch (cleanPath.imageType) {
       case ImageType.network:
+        if (kIsWeb) {
+          return Image.network(
+            cleanPath,
+            height: height,
+            width: width,
+            fit: fit,
+            color: color,
+            errorBuilder: (context, error, stackTrace) => _buildPlaceholder(height, width, fit),
+          );
+        }
         return CachedNetworkImage(
-          imageUrl: imagePath,
+          imageUrl: cleanPath,
           height: height,
           width: width,
           fit: fit,
@@ -35,32 +46,20 @@ class ImageRenderer {
           placeholder: (context, url) => Center(
             child: SizedBox(height: 20, width: 20, child: AppLoader(size: 20)),
           ),
-          errorWidget: (context, url, error) => _buildPlaceholder(
-            (fallbackText).tr(context: context),
-            height,
-            width,
-            fit,
-          ),
+          errorWidget: (context, url, error) => _buildPlaceholder(height, width, fit),
         );
       case ImageType.file:
         return Image.file(
-          File(imagePath),
+          File(cleanPath),
           height: height,
           width: width,
           fit: fit,
           color: color,
-          errorBuilder: (context, error, stackTrace) {
-            return _buildPlaceholder(
-              (fallbackText).tr(context: context),
-              height,
-              width,
-              fit,
-            );
-          },
+          errorBuilder: (context, error, stackTrace) => _buildPlaceholder(height, width, fit),
         );
       case ImageType.svg:
         return SvgPicture.asset(
-          imagePath,
+          cleanPath,
           height: height,
           width: width,
           fit: fit,
@@ -69,62 +68,30 @@ class ImageRenderer {
       case ImageType.png:
       case ImageType.unknown:
         return Image.asset(
-          imagePath,
+          cleanPath,
           height: height,
           width: width,
           fit: fit,
           color: color,
-          errorBuilder: (context, error, stackTrace) {
-            return _buildPlaceholder(
-              (fallbackText).tr(context: context),
-              height,
-              width,
-              fit,
-            );
-          },
+          errorBuilder: (context, error, stackTrace) => _buildPlaceholder(height, width, fit),
         );
     }
   }
 
   static Widget _buildPlaceholder(
-    String text,
     double? height,
     double? width,
     BoxFit fit,
   ) {
-    final bool isSmall =
-        (height != null && height <= 40) || (width != null && width <= 40);
-
-    return Center(
-      child: isSmall
-          ? const Icon(
-              Icons.image_not_supported_outlined,
-              size: 18,
-              color: Colors.grey,
-            )
-          : SingleChildScrollView(
-              physics: const NeverScrollableScrollPhysics(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.image_not_supported_outlined,
-                    color: Colors.grey,
-                    size: 20,
-                  ),
-                  const SizedBox(height: 4),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: Text(
-                      text,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.grey, fontSize: 10),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+    return Container(
+      color: Colors.grey.withValues(alpha: 0.05),
+      child: Center(
+        child: Icon(
+          Icons.image_not_supported_outlined,
+          color: Colors.grey.withValues(alpha: 0.3),
+          size: (height != null && height < 50) ? 18 : 24,
+        ),
+      ),
     );
   }
 }

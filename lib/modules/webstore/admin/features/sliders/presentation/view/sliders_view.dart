@@ -8,7 +8,6 @@ import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
-import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import '../view_model/sliders_view_model.dart';
 import '../widgets/sliders_table.dart';
 import '../widgets/slider_form.dart';
@@ -52,8 +51,8 @@ class SlidersView extends ConsumerWidget {
               key: ValueKey(state.isAdding ? 'slider-add' : 'slider-edit-${state.editingItem?.id ?? 0}'),
               initial: state.editingItem,
               isSaving: state.isSaving,
-              onSave: (data) async {
-                final result = await notifier.commitSave(data, id: state.editingItem?.id);
+              onSave: (data, imageFile) async {
+                final result = await notifier.commitSave(data, id: state.editingItem?.id, imageFile: imageFile);
                 if (!context.mounted) return;
 
                 if (result) {

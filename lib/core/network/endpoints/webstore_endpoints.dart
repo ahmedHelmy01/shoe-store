@@ -37,12 +37,13 @@ class _WebStoreAuth {
 
 class _WebStoreCatalog {
   const _WebStoreCatalog();
-  final String products = '/api/store/catalog/products';
-  final String productDetail = '/api/store/catalog/products/{id}';
-  final String categories = '/api/store/catalog/categories';
-  final String categoryDetail = '/api/store/catalog/categories/{id}';
-  final String search = '/api/store/catalog/search';
-  final String filters = '/api/store/catalog/properties';
+  final String products = '/api/store/products';
+  final String productDetail = '/api/store/products/{id}';
+  final String categories = '/api/store/categories';
+  final String categoryTree = '/api/store/categories/tree';
+  final String categoryDetail = '/api/store/categories/{id}';
+  final String search = '/api/store/search';
+  final String filters = '/api/store/properties';
 }
 
 class _WebStoreCart {
@@ -58,7 +59,7 @@ class _WebStoreCart {
 class _WebStoreCheckout {
   const _WebStoreCheckout();
   final String summary = '/api/store/checkout/summary';
-  final String confirm = '/api/store/checkout/confirm';
+  final String confirm = '/api/store/checkout/place-order';
 }
 
 class _WebStoreOrders {
@@ -73,7 +74,7 @@ class _WebStoreOrders {
 
 class _WebStoreProfile {
   const _WebStoreProfile();
-  final String get = '/api/store/profile';
+  final String profile = '/api/store/profile';
   final String update = '/api/store/profile/update';
   final String changePassword = '/api/store/profile/change-password';
   final String avatar = '/api/store/profile/avatar';
@@ -134,18 +135,23 @@ class _WebStoreAdmin {
   // Localize
   final String governorates = '/api/store/admin/governorates';
   final String cities = '/api/store/admin/cities';
+  final String countries = '/api/core/countries';
+
 
   // Configuration
   final String branches = '/api/store/admin/branches';
   final String warehouses = '/api/store/admin/warehouses';
   String warehouseReport(int id) => '/api/store/admin/warehouses/$id/report';
   final String paymentMethods = '/api/store/admin/payment-methods';
+  final String paymentMethodTypes = '/api/store/admin/payment-methods/types';
   final String paymentStatuses = '/api/store/admin/payment-statuses';
+
   final String settings = '/api/store/admin/settings';
 
   // Customers
   final String clients = '/api/store/admin/clients';
-  String clientReport(int id) => '/api/store/admin/clients/$id/report';
+  String clientAddresses(dynamic customerId) => '/api/store/admin/clients/$customerId/addresses';
+  final String addresses = '/api/store/admin/addresses';
   final String customerGroups = '/api/store/admin/customer-groups';
 
   // Marketing

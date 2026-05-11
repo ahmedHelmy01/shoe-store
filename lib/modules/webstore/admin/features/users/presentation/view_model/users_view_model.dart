@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_response.dart';
@@ -14,7 +15,7 @@ class UsersVm extends AdminCrudVm<UserRow> {
   }
 
   @override
-  Future<ApiResult<UserRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
+  Future<ApiResult<UserRow>> saveItem(Map<String, dynamic> data, {dynamic id, XFile? imageFile, Map<String, dynamic>? extraData, void Function(double)? onProgress}) {
     // For now, we don't have a saveClient API in the repo.
     return Future.value(const ApiFailure(ApiException(
       message: 'Not implemented yet',

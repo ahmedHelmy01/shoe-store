@@ -38,9 +38,9 @@ class AdsTable extends StatelessWidget {
         ),
         AdminColumn<AdRow>(
           title: 'Image',
-          cell: (_, a) => a.image != null
+          cell: (_, a) => a.imageUrl != null
               ? Image.network(
-                  a.image!,
+                  a.imageUrl!,
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
@@ -102,13 +102,13 @@ class AdDetailsDialog extends StatelessWidget {
       id: ad.id.toString(),
       icon: Icons.ads_click_rounded,
       children: [
-        if (ad.image != null)
+        if (ad.imageUrl != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
-                ad.image!,
+                ad.imageUrl!,
                 height: 180,
                 width: double.infinity,
                 fit: BoxFit.cover,

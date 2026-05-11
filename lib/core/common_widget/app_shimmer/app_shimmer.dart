@@ -98,6 +98,7 @@ class AppShimmer extends StatelessWidget {
     return AppShimmer(
       child: Container(
         width: 150.w,
+        height: 200.h,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16.r),
@@ -109,18 +110,21 @@ class AppShimmer extends StatelessWidget {
               height: 120.h,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+                borderRadius: BorderRadius.circular(16.r),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.all(10.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(height: 12.h, width: 80.w, color: Colors.white),
-                  10.verticalSpace,
-                  Container(height: 10.h, width: 50.w, color: Colors.white),
-                ],
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(10.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(height: 10.h, width: 80.w, color: Colors.white),
+                    8.verticalSpace,
+                    Container(height: 8.h, width: 40.w, color: Colors.white),
+                  ],
+                ),
               ),
             ),
           ],
@@ -185,7 +189,7 @@ class AppShimmer extends StatelessWidget {
           crossAxisCount: 3,
           mainAxisSpacing: 4.h,
           crossAxisSpacing: 0.w,
-          childAspectRatio: 0.92,
+          childAspectRatio: 0.8,
         ),
         itemCount: 6,
         itemBuilder: (context, index) {
@@ -214,6 +218,20 @@ class AppShimmer extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  /// Specialized shimmer for Ads Carousel
+  static Widget adsCarousel() {
+    return AppShimmer(
+      child: Container(
+        height: 180.h,
+        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20.r),
+        ),
       ),
     );
   }

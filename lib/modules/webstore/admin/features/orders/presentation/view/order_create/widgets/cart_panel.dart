@@ -128,8 +128,9 @@ class CartPanel extends StatelessWidget {
           const SizedBox(height: 12),
           AppButton(
             onPressed: b.onSubmit,
+            isLoading: b.isSubmitting,
             height: 54,
-            child: const Text('تأكيد إنشاء الطلب', style: TextStyle(fontWeight: FontWeight.w800)),
+            child: const Text('Confirm Order Creation', style: TextStyle(fontWeight: FontWeight.w800)),
           ),
         ],
       ),

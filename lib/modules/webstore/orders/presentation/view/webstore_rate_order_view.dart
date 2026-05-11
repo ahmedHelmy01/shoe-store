@@ -5,7 +5,6 @@ import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/core/router/app_navigator.dart';
-import 'package:erp/modules/webstore/home/data/models/webstore_mock_data.dart';
 import 'package:erp/core/constants/app_constants.dart';
 
 class WebStoreRateOrderView extends StatefulWidget {
@@ -84,45 +83,6 @@ class _WebStoreRateOrderViewState extends State<WebStoreRateOrderView> {
               ),
             ),
             
-            32.verticalSpace,
-
-            // ─── Product Ratings ─────────────────────────
-            _sectionHeader('Rate Products'),
-            12.verticalSpace,
-            ...WebStoreMockData.featuredProducts.take(2).map((product) {
-              return Column(
-                children: [
-                   AppCard(
-                    padding: EdgeInsets.all(12.w),
-                    child: Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8.r),
-                          child: Image.network(product.image, width: 60.w, height: 60.w, fit: BoxFit.cover),
-                        ),
-                        16.horizontalSpace,
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(product.name, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700)),
-                              8.verticalSpace,
-                              _starRatingRow(
-                                rating: productRatings[product.id] ?? 0,
-                                onRatingUpdate: (val) => setState(() => productRatings[product.id] = val),
-                                size: 20.sp,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  12.verticalSpace,
-                ],
-              );
-            }),
-
             32.verticalSpace,
 
             // ─── Feedback Field ──────────────────────────

@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
 import 'package:erp/core/network/api_result.dart';
@@ -14,7 +15,7 @@ class PropertiesVm extends AdminCrudVm<PropertyRow> {
   }
 
   @override
-  Future<ApiResult<PropertyRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
+  Future<ApiResult<PropertyRow>> saveItem(Map<String, dynamic> data, {dynamic id, XFile? imageFile, Map<String, dynamic>? extraData, void Function(double)? onProgress}) {
     return ref.read(propertiesRepositoryProvider).saveProperty(data, id: id as int?);
   }
 

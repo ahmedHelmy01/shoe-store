@@ -1,12 +1,14 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/modules/webstore/admin/features/boardings/data/models/boarding_row.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
 
 class BoardingForm extends StatefulWidget {
   final BoardingRow? initial;
   final bool isSaving;
-  final void Function(Map<String, dynamic> data) onSave;
+  final void Function(Map<String, dynamic> data, XFile? imageFile) onSave;
 
   const BoardingForm({
     super.key,
@@ -25,9 +27,12 @@ class _BoardingFormState extends State<BoardingForm> {
   late final TextEditingController _titleArCtrl;
   late final TextEditingController _contentCtrl;
   late final TextEditingController _contentArCtrl;
-  late final TextEditingController _imageCtrl;
   late final TextEditingController _positionCtrl;
   late bool _isActive;
+
+  XFile? _imageFile;
+  // Removed _uploadedImagePath as we now use direct file upload
+  bool _removeInitialImage = false;
 
   @override
   void initState() {
@@ -36,7 +41,6 @@ class _BoardingFormState extends State<BoardingForm> {
     _titleArCtrl = TextEditingController(text: widget.initial?.titleAr ?? '');
     _contentCtrl = TextEditingController(text: widget.initial?.content ?? '');
     _contentArCtrl = TextEditingController(text: widget.initial?.contentAr ?? '');
-    _imageCtrl = TextEditingController(text: widget.initial?.image ?? '');
     _positionCtrl = TextEditingController(text: widget.initial?.position.toString() ?? '1');
     _isActive = widget.initial?.isActive ?? true;
   }
@@ -47,22 +51,29 @@ class _BoardingFormState extends State<BoardingForm> {
     _titleArCtrl.dispose();
     _contentCtrl.dispose();
     _contentArCtrl.dispose();
-    _imageCtrl.dispose();
     _positionCtrl.dispose();
     super.dispose();
   }
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
-      widget.onSave({
+      final data = <String, dynamic>{
         'title': _titleCtrl.text.trim(),
         'title_ar': _titleArCtrl.text.trim(),
         'content': _contentCtrl.text.trim(),
         'content_ar': _contentArCtrl.text.trim(),
-        'image': _imageCtrl.text.trim(),
         'position': int.tryParse(_positionCtrl.text.trim()) ?? 1,
         'is_active': _isActive,
-      });
+      };
+
+      if (_removeInitialImage && _imageFile == null) {
+        data['image'] = '';
+      } else if (_imageFile == null && widget.initial?.image != null) {
+        // Keep existing image path if not changed or removed
+        data['image'] = widget.initial!.image;
+      }
+
+      widget.onSave(data, _imageFile);
     }
   }
 
@@ -115,18 +126,16 @@ class _BoardingFormState extends State<BoardingForm> {
                 ),
               ],
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 20),
+            AdminImagePicker(
+              label: 'Onboarding Image',
+              initialImage: widget.initial?.imageUrl,
+              onImageSelected: (file) => setState(() => _imageFile = file),
+              onRemoveInitial: () => setState(() => _removeInitialImage = true),
+            ),
+            const SizedBox(height: 20),
             Row(
               children: [
-                Expanded(
-                  flex: 2,
-                  child: AppTextField(
-                    controller: _imageCtrl,
-                    label: 'Image Path/URL',
-                    hint: 'uploads/boardings/welcome.jpg',
-                  ),
-                ),
-                const SizedBox(width: 16),
                 Expanded(
                   flex: 1,
                   child: AppTextField(
@@ -135,14 +144,17 @@ class _BoardingFormState extends State<BoardingForm> {
                     keyboardType: TextInputType.number,
                   ),
                 ),
+                const SizedBox(width: 16),
+                Expanded(
+                  flex: 2,
+                  child: SwitchListTile(
+                    title: const Text('Is Active'),
+                    value: _isActive,
+                    onChanged: (v) => setState(() => _isActive = v),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
               ],
-            ),
-            const SizedBox(height: 18),
-            SwitchListTile(
-              title: const Text('Is Active'),
-              value: _isActive,
-              onChanged: (v) => setState(() => _isActive = v),
-              contentPadding: EdgeInsets.zero,
             ),
             const SizedBox(height: 32),
             AppButton(
@@ -156,4 +168,3 @@ class _BoardingFormState extends State<BoardingForm> {
     );
   }
 }
-

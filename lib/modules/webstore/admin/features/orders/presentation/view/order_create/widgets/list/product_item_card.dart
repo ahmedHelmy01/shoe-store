@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:erp/core/constants/app_constants.dart';
-import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
+import 'package:erp/modules/webstore/admin/features/catalog/products/data/models/product_row.dart';
 import 'package:erp/modules/webstore/admin/features/orders/presentation/view_model/order_create_view_model.dart';
 
 class ProductItemCard extends StatelessWidget {
-  final WebStoreProduct p;
+  final ProductRow p;
   final OrderCreateVm b;
   final bool isDark;
   final Color border;
@@ -22,9 +22,10 @@ class ProductItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pid = p.id;
-    if (pid == null) return const SizedBox.shrink();
     final inCart = b.cart.containsKey(pid);
     final selected = b.selectedCatalogIds.contains(pid);
+    
+    final price = double.tryParse(p.salePrice ?? '0') ?? 0;
 
     final card = Card(
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -47,7 +48,7 @@ class ProductItemCard extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         subtitle: Text(
-          '${p.price.toStringAsFixed(2)} • مخزون ${p.stock}',
+          '${price.toStringAsFixed(2)} — SKU: ${p.sku}',
           style: theme.textTheme.bodySmall,
         ),
         trailing: Row(
@@ -63,7 +64,7 @@ class ProductItemCard extends StatelessWidget {
                 ),
               ),
             Tooltip(
-              message: 'سحب لإضافة الطلب',
+              message: 'Drag to add',
               child: Icon(
                 Icons.drag_indicator_rounded,
                 color: theme.hintColor.withValues(alpha: 0.5),
@@ -118,7 +119,7 @@ class ProductItemCard extends StatelessWidget {
                 ),
               ),
               Text(
-                p.price.toStringAsFixed(2),
+                price.toStringAsFixed(2),
                 style: const TextStyle(
                   color: Colors.white70,
                   fontWeight: FontWeight.bold,

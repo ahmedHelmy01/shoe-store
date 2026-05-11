@@ -8,6 +8,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_sta
 class ProductsTable extends StatelessWidget {
   final AdminCrudData<ProductRow> state;
   final Function(ProductRow p) onEdit;
+  final Function(ProductRow p) onView;
   final Function(int id) onDelete;
   final VoidCallback? onNextPage;
   final VoidCallback? onPrevPage;
@@ -19,6 +20,7 @@ class ProductsTable extends StatelessWidget {
     super.key,
     required this.state,
     required this.onEdit,
+    required this.onView,
     required this.onDelete,
     this.onNextPage,
     this.onPrevPage,
@@ -106,12 +108,7 @@ class ProductsTable extends StatelessWidget {
           title: 'Actions',
           cell: (context, p) => AdminTableActionsCell<ProductRow>(
             row: p,
-            onView: (p) {
-              showDialog(
-                context: context,
-                builder: (context) => ProductDetailsDialog(product: p),
-              );
-            },
+            onView: onView,
             onEdit: onEdit,
             onDelete: (item) => onDelete(item.id),
             confirmBeforeDelete: false,
@@ -166,11 +163,89 @@ class ProductDetailsDialog extends StatelessWidget {
         ),
         AdminDetailsDialog.buildDetailRow(context, 'Description (EN)', product.description ?? 'N/A', Icons.description_rounded),
         AdminDetailsDialog.buildDetailRow(context, 'Description (AR)', product.descriptionAr ?? 'N/A', Icons.description_rounded),
+        if (product.tags != null && product.tags!.isNotEmpty) ...[
+          _buildBadgesRow(
+            context,
+            'Tags',
+            product.tags!.map((t) => t.nameAr ?? t.name).toList(),
+            Icons.label_important_outline_rounded,
+            Theme.of(context).primaryColor,
+          ),
+        ],
+        if (product.properties != null && product.properties!.isNotEmpty) ...[
+          _buildBadgesRow(
+            context,
+            'Properties',
+            product.properties!.map((p) => p.titleAr ?? p.title).toList(),
+            Icons.settings_input_component_rounded,
+            Colors.blue,
+          ),
+        ],
         const SizedBox(height: 12),
         AdminDetailsDialog.buildStatusRow(context, product.isActive),
       ],
     );
   }
+
+  Widget _buildBadgesRow(BuildContext context, String label, List<String> values, IconData icon, Color color) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 20, color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.4)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.5),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: values.map((v) => _buildBadge(context, v, color)).toList(),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBadge(BuildContext context, String label, Color color) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: isDark ? 0.15 : 0.08),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: color.withValues(alpha: isDark ? 0.3 : 0.2),
+          width: 1,
+        ),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: isDark ? color.withValues(alpha: 0.9) : color.withValues(alpha: 0.8),
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
 }
+
+
 
 

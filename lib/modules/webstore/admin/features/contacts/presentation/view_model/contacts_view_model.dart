@@ -38,17 +38,11 @@ class AdminContactsNotifier extends Notifier<AdminContactsState> {
     state = state.copyWith(isLoading: true);
     try {
       final repo = ref.read(adminContactsRepositoryProvider);
-      var list = await repo.getContacts();
-      
-      // Smart Fallback: If API returns empty, use demo data
-      if (list.isEmpty) {
-        list = ContactModel.demo();
-      }
-      
+      final list = await repo.getContacts();
       state = state.copyWith(contacts: list, isLoading: false);
     } catch (e) {
       state = state.copyWith(
-        contacts: ContactModel.demo(), // Fallback to demo even on error for design preview
+        contacts: [], 
         isLoading: false,
         error: e.toString(),
       );

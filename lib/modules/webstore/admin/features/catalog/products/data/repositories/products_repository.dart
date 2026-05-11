@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/network/endpoints/endpoints_registry.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/products/data/datasource/products_remote_datasource.dart';
@@ -12,9 +13,11 @@ abstract class IProductsRepository {
     int? perPage,
   });
 
-  Future<ApiResult<ProductRow>> saveProduct(Map<String, dynamic> data, {int? id});
+  Future<ApiResult<ProductRow>> saveProduct(Map<String, dynamic> data, {int? id, XFile? imageFile, List<XFile>? galleryFiles, void Function(double)? onProgress});
 
   Future<ApiResult<void>> deleteProduct(int id);
+
+  Future<ApiResult<ProductRow>> getProduct(int id);
 }
 
 class ProductsRepository extends AdminBaseRepository implements IProductsRepository {
@@ -35,14 +38,31 @@ class ProductsRepository extends AdminBaseRepository implements IProductsReposit
   }
 
   @override
-  Future<ApiResult<ProductRow>> saveProduct(Map<String, dynamic> data, {int? id}) {
+  Future<ApiResult<ProductRow>> saveProduct(Map<String, dynamic> data, {int? id, XFile? imageFile, List<XFile>? galleryFiles, void Function(double)? onProgress}) {
     return safeApiCall(() async {
-      final json = id == null
-          ? await _ds.postData(ApiEndpoints.webstore.admin.products, data)
-          : await _ds.putData(
-              ApiEndpoints.withId(ApiEndpoints.webstore.admin.products, id),
-              data,
-            );
+      final path = id == null
+          ? ApiEndpoints.webstore.admin.products
+          : ApiEndpoints.withId(ApiEndpoints.webstore.admin.products, id);
+
+      final Map<String, dynamic> json;
+      if (imageFile != null || galleryFiles != null) {
+        // Convert all fields to strings for multipart
+        final fields = toMultipartFields(data);
+
+        final Map<String, XFile> files = {};
+        if (imageFile != null) files['image'] = imageFile;
+
+        final multiFiles = <String, List<XFile>>{};
+        if (galleryFiles != null) {
+          multiFiles['images[]'] = galleryFiles;
+        }
+
+        json = id == null
+            ? await _ds.postMultipart(path, fields: fields, files: files, multiFiles: multiFiles, onProgress: onProgress)
+            : await _ds.putMultipart(path, fields: fields, files: files, multiFiles: multiFiles, onProgress: onProgress);
+      } else {
+        json = id == null ? await _ds.postData(path, data) : await _ds.putData(path, data);
+      }
       return parseSingle(json, (j) => ProductRow.fromJson(j));
     });
   }
@@ -55,4 +75,13 @@ class ProductsRepository extends AdminBaseRepository implements IProductsReposit
       );
     });
   }
+
+  @override
+  Future<ApiResult<ProductRow>> getProduct(int id) {
+    return safeApiCall(() async {
+      final json = await _ds.getProduct(id);
+      return parseSingle(json, (j) => ProductRow.fromJson(j));
+    });
+  }
 }
+

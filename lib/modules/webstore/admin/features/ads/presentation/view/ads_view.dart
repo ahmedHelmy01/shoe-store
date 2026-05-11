@@ -52,8 +52,8 @@ class AdsView extends ConsumerWidget {
               key: ValueKey(state.isAdding ? 'ad-add' : 'ad-edit-${state.editingItem?.id ?? 0}'),
               initial: state.editingItem,
               isSaving: state.isSaving,
-              onSave: (data) async {
-                final result = await notifier.commitSave(data, id: state.editingItem?.id);
+              onSave: (data, imageFile) async {
+                final result = await notifier.commitSave(data, id: state.editingItem?.id, imageFile: imageFile);
                 if (!context.mounted) return;
 
                 if (result) {

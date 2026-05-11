@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/modules/webstore/admin/features/orders/presentation/view_model/order_create_view_model.dart';
 import 'product_item_card.dart';
 
-class ProductCatalog extends StatelessWidget {
+class ProductCatalog extends StatefulWidget {
   final OrderCreateVm b;
   final ThemeData theme;
   final bool isDark;
@@ -21,7 +20,35 @@ class ProductCatalog extends StatelessWidget {
   });
 
   @override
+  State<ProductCatalog> createState() => _ProductCatalogState();
+}
+
+class _ProductCatalogState extends State<ProductCatalog> {
+  final _scrollCtrl = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollCtrl.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollCtrl.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollCtrl.position.pixels >= _scrollCtrl.position.maxScrollExtent - 200) {
+      if (!widget.b.isLoadingProducts && widget.b.hasMoreProducts) {
+        widget.b.onFetchMoreProducts();
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final b = widget.b;
     final selectedCount = b.selectedCatalogIds.length;
     final showSelection = selectedCount > 0;
 
@@ -31,11 +58,11 @@ class ProductCatalog extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: AppTextField(
             controller: b.searchController,
-            label: 'البحث عن المنتجات',
-            hint: 'ابحث بالاسم أو الماركة…',
+            label: 'Search Products',
+            hint: 'Search by name or SKU...',
             prefixIcon: const Icon(Icons.search_rounded),
             borderRadius: 14,
-            onChanged: (_) => onSearchChanged(),
+            onChanged: (_) => widget.onSearchChanged(),
           ),
         ),
         
@@ -49,21 +76,33 @@ class ProductCatalog extends StatelessWidget {
             ),
           ),
           child: showSelection 
-            ? _SelectionToolbar(b: b, count: selectedCount, theme: theme)
+            ? _SelectionToolbar(b: b, count: selectedCount, theme: widget.theme)
             : const SizedBox.shrink(),
         ),
 
         Expanded(
           child: ListView.builder(
+            controller: _scrollCtrl,
             padding: const EdgeInsets.only(bottom: 12),
-            itemCount: b.filteredProducts.length,
-            itemBuilder: (context, i) => ProductItemCard(
-              p: b.filteredProducts[i],
-              b: b,
-              isDark: isDark,
-              border: border,
-              theme: theme,
-            ),
+            itemCount: b.filteredProducts.length + (b.hasMoreProducts ? 1 : 0),
+            itemBuilder: (context, i) {
+              if (i < b.filteredProducts.length) {
+                return ProductItemCard(
+                  p: b.filteredProducts[i],
+                  b: b,
+                  isDark: widget.isDark,
+                  border: widget.border,
+                  theme: widget.theme,
+                );
+              } else {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+            },
           ),
         ),
       ],
@@ -98,7 +137,7 @@ class _SelectionToolbar extends StatelessWidget {
         children: [
           const SizedBox(width: 8),
           Text(
-            'تم تحديد $count',
+            '$count Selected',
             style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(width: 12),
@@ -110,20 +149,20 @@ class _SelectionToolbar extends StatelessWidget {
               foregroundColor: theme.colorScheme.error,
               visualDensity: VisualDensity.compact,
             ),
-            child: const Text('إلغاء', style: TextStyle(fontWeight: FontWeight.w700)),
+            child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.w700)),
           ),
           const Spacer(),
           ElevatedButton(
             onPressed: b.onCommitSelected,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryOrange,
+              backgroundColor: Colors.orange,
               foregroundColor: Colors.white,
               elevation: 0,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
             ),
             child: const Text(
-               'إضافة للسلة', 
+               'Add to Cart', 
                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13),
             ),
           ),

@@ -1,3 +1,5 @@
+import 'package:erp/core/network/network_url.dart';
+
 class CouponRow {
   final int id;
   final String code;
@@ -8,6 +10,8 @@ class CouponRow {
   final int maxUsesPerCustomer;
   final String? startsAt;
   final String? expiresAt;
+  final String? image;
+  final String? imageUrl;
   final bool isActive;
 
   const CouponRow({
@@ -20,6 +24,8 @@ class CouponRow {
     required this.maxUsesPerCustomer,
     this.startsAt,
     this.expiresAt,
+    this.image,
+    this.imageUrl,
     required this.isActive,
   });
 
@@ -33,6 +39,9 @@ class CouponRow {
       typeStr = 'fixed';
     }
 
+    final imagePath = json['image'] as String?;
+    final providedUrl = json['image_url'] as String?;
+
     return CouponRow(
       id: json['id'] as int? ?? 0,
       code: json['code'] as String? ?? '',
@@ -43,6 +52,10 @@ class CouponRow {
       maxUsesPerCustomer: json['per_user_limit'] as int? ?? 0,
       startsAt: json['start_date'] as String?,
       expiresAt: json['end_date'] as String?,
+      image: imagePath,
+      imageUrl: (providedUrl != null && providedUrl.isNotEmpty)
+          ? providedUrl
+          : (imagePath != null ? NetworkUrl.fullUrl(imagePath) : null),
       isActive: json['is_active'] == true || json['is_active'] == 1,
     );
   }
@@ -57,6 +70,7 @@ class CouponRow {
       'max_uses_per_customer': maxUsesPerCustomer,
       'starts_at': startsAt,
       'expires_at': expiresAt,
+      'image': image,
       'is_active': isActive,
     };
   }

@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
 import 'package:erp/core/network/api_result.dart';
@@ -28,7 +29,7 @@ class WarehousesVm extends AdminCrudVm<WarehouseRow> {
   }
 
   @override
-  Future<ApiResult<WarehouseRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
+  Future<ApiResult<WarehouseRow>> saveItem(Map<String, dynamic> data, {dynamic id, XFile? imageFile, Map<String, dynamic>? extraData, void Function(double)? onProgress}) {
     return ref.read(warehousesRepositoryProvider).saveWarehouse(data, id: id as int?);
   }
 

@@ -1,3 +1,5 @@
+import 'package:erp/core/network/network_url.dart';
+
 class AdRow {
   final int id;
   final String title;
@@ -5,6 +7,7 @@ class AdRow {
   final String? content;
   final String? contentAr;
   final String? image;
+  final String? imageUrl;
   final String? location;
   final String? linkUrl;
   final bool isActive;
@@ -19,6 +22,7 @@ class AdRow {
     this.content,
     this.contentAr,
     this.image,
+    this.imageUrl,
     this.location,
     this.linkUrl,
     required this.isActive,
@@ -28,13 +32,17 @@ class AdRow {
   });
 
   factory AdRow.fromJson(Map<String, dynamic> json) {
+    final imagePath = json['image'] as String?;
+    final providedUrl = json['image_url'] as String?;
+
     return AdRow(
       id: json['id'] as int? ?? 0,
       title: json['title'] as String? ?? '',
       titleAr: json['title_ar'] as String?,
       content: json['content'] as String?,
       contentAr: json['content_ar'] as String?,
-      image: json['image'] as String?,
+      image: imagePath,
+      imageUrl: providedUrl ?? (imagePath != null ? NetworkUrl.fullUrl(imagePath) : null),
       location: json['location'] as String?,
       linkUrl: json['link_url'] as String?,
       isActive: json['is_active'] is bool

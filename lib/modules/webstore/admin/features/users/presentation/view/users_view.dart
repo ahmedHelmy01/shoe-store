@@ -1,15 +1,15 @@
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/widgets/admin_table_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
-import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
-
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_card_popup_menu.dart';
 import '../view_model/users_view_model.dart';
 import '../../data/models/user_row.dart';
 import '../widgets/users_table.dart';
-import '../widgets/user_form.dart';
+
 
 class UsersView extends ConsumerWidget {
   const UsersView({super.key});
@@ -21,43 +21,19 @@ class UsersView extends ConsumerWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return Stack(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AdminPageHeader(
-                title: 'Users',
-                primaryActionLabel: 'Add User',
-                onPrimaryAction: () => notifier.openAdd(),
-                onRefresh: () => notifier.fetch(),
-              ),
-              const SizedBox(height: 24),
-              Expanded(child: _buildBody(context, state, isDark, notifier)),
-            ],
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AdminPageHeader(
+            title: 'Users',
+            onRefresh: () => notifier.fetch(),
           ),
-        ),
-        if (state.isAdding || state.editingItem != null)
-          AdminDialogForm(
-            isOpen: state.isAdding || state.editingItem != null,
-            onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Add User' : 'Edit User',
-            child: UserForm(
-              initial: state.editingItem,
-              isSaving: state.isSaving,
-              onSave: (data) async {
-                if (await notifier.commitSave(
-                  data,
-                  id: state.editingItem?.id,
-                )) {
-                  notifier.closePanel();
-                }
-              },
-            ),
-          ),
-      ],
+          const SizedBox(height: 24),
+          Expanded(child: _buildBody(context, state, isDark, notifier)),
+        ],
+      ),
     );
   }
 
@@ -95,11 +71,148 @@ class UsersView extends ConsumerWidget {
           clipBehavior: Clip.antiAlias,
           child: UsersTable(
             items: items,
-            onEdit: (item) => notifier.openEdit(item),
             onDelete: (item) => notifier.commitDelete(item.id),
+            cardBuilder: (context, item) => _UserCard(
+              user: item,
+              onView: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => UserDetailsDialog(user: item),
+                );
+              },
+              onDelete: () => notifier.commitDelete(item.id),
+            ),
           ),
         ),
       ),
     };
+  }
+}
+
+class _UserCard extends StatelessWidget {
+  final UserRow user;
+  final VoidCallback onView;
+  final VoidCallback onDelete;
+
+  const _UserCard({
+    required this.user,
+    required this.onView,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF162231) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.05),
+        ),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              _UserAvatar(name: user.name),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      user.name,
+                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    if (user.email != null)
+                      Text(
+                        user.email!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              AdminCardPopupMenu(
+                onView: onView,
+                onDelete: onDelete,
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _InfoItem(label: 'Orders', value: '${user.ordersCount}', color: theme.primaryColor),
+              _InfoItem(label: 'Total Spent', value: '${user.totalSpent.toStringAsFixed(0)} EGP', color: Colors.green),
+              _InfoItem(label: 'Mobile', value: user.mobile ?? '—'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _UserAvatar extends StatelessWidget {
+  final String name;
+  const _UserAvatar({required this.name});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final initials = name.split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join().toUpperCase();
+
+    return CircleAvatar(
+      radius: 20,
+      backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.1),
+      child: Text(
+        initials,
+        style: TextStyle(
+          color: theme.colorScheme.primary,
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoItem extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color? color;
+
+  const _InfoItem({required this.label, required this.value, this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+            fontSize: 10,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          value,
+          style: theme.textTheme.bodySmall?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+      ],
+    );
   }
 }

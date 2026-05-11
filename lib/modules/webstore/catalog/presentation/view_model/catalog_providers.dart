@@ -22,29 +22,43 @@ final catalogRepositoryProvider = Provider<ICatalogRepository>((ref) {
 });
 
 // ═══════════════════════════════════════════════════════════════
-// 📦 VIEW MODEL / STATE NOTIFIERS
+// 📦 STATE MODELS
 // ═══════════════════════════════════════════════════════════════
 
-/// List of all categories
-final catalogCategoriesProvider = AsyncNotifierProvider<CategoriesNotifier, List<WebStoreCategory>>(() {
-  return CategoriesNotifier();
-});
+class CategoriesState {
+  final List<WebStoreCategory> items;
+  final bool isLoading;
+  final bool isLoadingMore;
+  final String? errorMessage;
+  final PaginationMeta? meta;
+  final int? selectedCategoryId;
 
-class CategoriesNotifier extends AsyncNotifier<List<WebStoreCategory>> {
-  @override
-  Future<List<WebStoreCategory>> build() async {
-    final repository = ref.watch(catalogRepositoryProvider);
-    final result = await repository.getCategories();
+  const CategoriesState({
+    this.items = const [],
+    this.isLoading = false,
+    this.isLoadingMore = false,
+    this.errorMessage,
+    this.meta,
+    this.selectedCategoryId,
+  });
 
-    return result.when(
-      success: (data) {
-        final list = (data['data'] as List?)
-                ?.map((e) => WebStoreCategory.fromJson(e))
-                .toList() ??
-            [];
-        return list;
-      },
-      failure: (failure) => throw failure,
+  bool get hasMore => meta != null && meta!.currentPage < meta!.lastPage;
+
+  CategoriesState copyWith({
+    List<WebStoreCategory>? items,
+    bool? isLoading,
+    bool? isLoadingMore,
+    String? errorMessage,
+    PaginationMeta? meta,
+    int? selectedCategoryId,
+  }) {
+    return CategoriesState(
+      items: items ?? this.items,
+      isLoading: isLoading ?? this.isLoading,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      errorMessage: errorMessage ?? this.errorMessage,
+      meta: meta ?? this.meta,
+      selectedCategoryId: selectedCategoryId ?? this.selectedCategoryId,
     );
   }
 }
@@ -83,6 +97,74 @@ class ProductsState {
   }
 }
 
+// ═══════════════════════════════════════════════════════════════
+// 📦 VIEW MODEL / STATE NOTIFIERS
+// ═══════════════════════════════════════════════════════════════
+
+/// Paginated list of categories
+final catalogCategoriesProvider = NotifierProvider<CategoriesNotifier, CategoriesState>(() {
+  return CategoriesNotifier();
+});
+
+class CategoriesNotifier extends Notifier<CategoriesState> {
+  PaginationParams _params = const PaginationParams(page: 1);
+
+  @override
+  CategoriesState build() {
+    Future.microtask(() => getCategories());
+    return const CategoriesState();
+  }
+
+  Future<void> getCategories({bool isRefresh = false}) async {
+    if (isRefresh) {
+      _params = _params.copyWith(page: 1);
+      state = state.copyWith(isLoading: true, items: []);
+    } else if (state.items.isEmpty) {
+      state = state.copyWith(isLoading: true);
+    } else if (state.isLoadingMore || !state.hasMore) {
+      return;
+    } else {
+      state = state.copyWith(isLoadingMore: true);
+    }
+
+    final repository = ref.read(catalogRepositoryProvider);
+    final result = await repository.getCategories(queryParams: _params.toQueryParameters());
+
+    result.when(
+      success: (data) {
+        final List<dynamic> list = data['data'] ?? [];
+        final categories = list.map((e) => WebStoreCategory.fromJson(e)).toList();
+        
+        state = state.copyWith(
+          isLoading: false,
+          isLoadingMore: false,
+          items: isRefresh ? categories : [...state.items, ...categories],
+          errorMessage: null,
+          selectedCategoryId: state.selectedCategoryId ?? (categories.isNotEmpty ? categories.first.id : null),
+        );
+
+        // Auto-select first category if none selected
+        if (state.selectedCategoryId != null) {
+          ref.read(catalogProductsProvider.notifier).filterByCategory(state.selectedCategoryId);
+        }
+      },
+      failure: (failure) {
+        state = state.copyWith(
+          isLoading: false,
+          isLoadingMore: false,
+          errorMessage: failure.message,
+        );
+      },
+    );
+  }
+
+  void selectCategory(int? categoryId) {
+    if (categoryId == null || state.selectedCategoryId == categoryId) return;
+    state = state.copyWith(selectedCategoryId: categoryId);
+    ref.read(catalogProductsProvider.notifier).filterByCategory(categoryId);
+  }
+}
+
 /// Paginated list of products
 final catalogProductsProvider = NotifierProvider<ProductsNotifier, ProductsState>(() {
   return ProductsNotifier();
@@ -93,7 +175,7 @@ class ProductsNotifier extends Notifier<ProductsState> {
 
   @override
   ProductsState build() {
-    Future.microtask(() => getProducts());
+    // Initial fetch is triggered by category selection
     return const ProductsState();
   }
 

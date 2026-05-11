@@ -33,7 +33,9 @@ enum AdminRouteId {
   contacts,
   settings,
   clientReports,
+  countries,
   login,
+  addresses,
 }
 
 class AdminNavNode {
@@ -122,6 +124,12 @@ class AdminRoutes {
           title: 'Cities',
           icon: Icons.location_city_rounded,
         ),
+        AdminNavNode(
+          id: AdminRouteId.countries,
+          routeName: AppRouteNames.webstoreAdminCountries,
+          title: 'Countries',
+          icon: Icons.public_rounded,
+        ),
       ],
     ),
     AdminNavNode(
@@ -134,12 +142,6 @@ class AdminRoutes {
           routeName: AppRouteNames.webstoreAdminOrders,
           title: 'All orders',
           icon: Icons.list_alt_rounded,
-        ),
-        AdminNavNode(
-          id: AdminRouteId.orderCreate,
-          routeName: AppRouteNames.webstoreAdminOrderCreate,
-          title: 'New order',
-          icon: Icons.add_shopping_cart_rounded,
         ),
         AdminNavNode(
           id: AdminRouteId.orderStatuses,
@@ -227,6 +229,12 @@ class AdminRoutes {
           title: 'Clients Reports',
           icon: Icons.analytics_rounded,
         ),
+        AdminNavNode(
+          id: AdminRouteId.addresses,
+          routeName: AppRouteNames.webstoreAdminAddresses,
+          title: 'Addresses',
+          icon: Icons.location_on_rounded,
+        ),
       ],
     ),
     AdminNavNode(
@@ -278,6 +286,8 @@ class AdminRoutes {
       AppRouteNames.webstoreAdminSettings => AdminRouteId.settings,
       AppRouteNames.webstoreAdminClientReports => AdminRouteId.clientReports,
       AppRouteNames.webstoreAdminContacts => AdminRouteId.contacts,
+      AppRouteNames.webstoreAdminCountries => AdminRouteId.countries,
+      AppRouteNames.webstoreAdminAddresses => AdminRouteId.addresses,
       'login' => AdminRouteId.login,
       _ => AdminRouteId.dashboard,
     };
@@ -312,6 +322,8 @@ class AdminRoutes {
       AdminRouteId.settings => AppRouteNames.webstoreAdminSettings,
       AdminRouteId.clientReports => AppRouteNames.webstoreAdminClientReports,
       AdminRouteId.contacts => AppRouteNames.webstoreAdminContacts,
+      AdminRouteId.countries => AppRouteNames.webstoreAdminCountries,
+      AdminRouteId.addresses => AppRouteNames.webstoreAdminAddresses,
       AdminRouteId.catalog => AppRouteNames.webstoreAdminProducts,
       AdminRouteId.operations => AdminRouteId.governorates.toString(),
       AdminRouteId.storefront => AdminRouteId.sliders.toString(),

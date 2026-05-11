@@ -18,4 +18,14 @@ class PaymentMethodsRemoteDataSource extends AdminRemoteDataSource {
     );
     return (res as Map).cast<String, dynamic>();
   }
+
+  Future<List<dynamic>> getPaymentMethodTypes() async {
+    final res = await network.get(ApiEndpoints.webstore.admin.paymentMethodTypes);
+    if (res is Map && res.containsKey('data')) {
+      return res['data'] as List<dynamic>;
+    }
+    return res as List<dynamic>;
+  }
 }
+
+

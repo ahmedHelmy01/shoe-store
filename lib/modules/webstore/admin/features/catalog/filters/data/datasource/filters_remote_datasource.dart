@@ -8,12 +8,14 @@ class FiltersRemoteDataSource extends AdminRemoteDataSource {
   Future<Map<String, dynamic>> getFilters({
     int page = 1,
     String? search,
+    int? perPage,
   }) async {
     final res = await network.get(
       ApiEndpoints.webstore.admin.tags,
       query: {
         'page': page,
         if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
+        if (perPage != null) 'per_page': perPage,
       },
     );
     return (res as Map).cast<String, dynamic>();

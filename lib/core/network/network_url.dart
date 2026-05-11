@@ -13,8 +13,15 @@ class NetworkUrl {
 
   /// Full URL combined with base
   static String fullUrl(String path) {
+    if (path.isEmpty) return '';
     if (path.startsWith('http')) return path;
     
+    // ONLY add /storage if it's explicitly a media path starting with uploads/
+    // Do NOT match if it's an API path containing the words
+    if (path.startsWith('uploads/')) {
+      path = 'storage/$path';
+    }
+
     final cleanPath = path.startsWith('/') ? path : '/$path';
     return '$baseUrl$cleanPath';
   }

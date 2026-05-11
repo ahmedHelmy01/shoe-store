@@ -9,6 +9,7 @@ abstract class IPropertiesRepository {
   Future<ApiResult<AdminPagedResponse<PropertyRow>>> getProperties({
     int page = 1,
     String? search,
+    int? perPage,
   });
 
   Future<ApiResult<PropertyRow>> saveProperty(Map<String, dynamic> data, {int? id});
@@ -25,9 +26,10 @@ class PropertiesRepository extends AdminBaseRepository implements IPropertiesRep
   Future<ApiResult<AdminPagedResponse<PropertyRow>>> getProperties({
     int page = 1,
     String? search,
+    int? perPage,
   }) {
     return safeApiCall(() async {
-      final json = await _ds.getProperties(page: page, search: search);
+      final json = await _ds.getProperties(page: page, search: search, perPage: perPage);
       return parsePaged(json, page, (j) => PropertyRow.fromJson(j));
     });
   }

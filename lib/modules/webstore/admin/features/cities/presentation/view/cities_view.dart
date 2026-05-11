@@ -6,6 +6,8 @@ import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
+import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
 import '../view_model/cities_view_model.dart';
 import '../widgets/cities_table.dart';
 import '../widgets/city_form.dart';
@@ -41,7 +43,7 @@ class CitiesView extends ConsumerWidget {
         ),
         if (state.isAdding || state.editingItem != null)
           AdminDialogForm(
-            isOpen: state.isAdding || state.editingItem != null,
+            isOpen: true,
             onClose: () => notifier.closePanel(),
             title: state.isAdding ? 'Create City' : 'Edit City',
             size: AdminDialogSize.small,
@@ -49,8 +51,17 @@ class CitiesView extends ConsumerWidget {
               initial: state.editingItem,
               isSaving: state.isSaving,
               onSave: (data) async {
-                if (await notifier.commitSave(data, id: state.editingItem?.id)) {
+                final success = await notifier.commitSave(data, id: state.editingItem?.id);
+                if (success && context.mounted) {
+                  AppStatusDialog.showSuccess(
+                    context,
+                    message: state.isAdding 
+                        ? 'City created successfully'
+                        : 'City updated successfully',
+                  );
                   notifier.closePanel();
+                } else if (!success && context.mounted) {
+                  AppStatusDialog.showError(context, message: 'Failed to save city');
                 }
               },
             ),
@@ -82,12 +93,45 @@ class CitiesView extends ConsumerWidget {
             child: CitiesTable(
               items: items,
               onEdit: (c) => notifier.openEdit(c),
-              onDelete: (id) => notifier.commitDelete(id),
+              onDelete: (id) async {
+                final success = await notifier.commitDelete(id);
+                if (context.mounted) {
+                  if (success) {
+                    AppStatusDialog.showSuccess(context, message: 'City deleted successfully');
+                  } else {
+                    AppStatusDialog.showError(context, message: 'Failed to delete city');
+                  }
+                }
+              },
               cardBuilder: (context, c) => _CityCard(
                 city: c,
-                onView: () => notifier.openEdit(c),
+                onView: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => CityDetailsDialog(city: c),
+                  );
+                },
                 onEdit: () => notifier.openEdit(c),
-                onDelete: () => notifier.commitDelete(c.id),
+                onDelete: () {
+                  AppDialog.show(
+                    context,
+                    title: 'Delete City',
+                    message: 'Are you sure you want to delete this city?',
+                    confirmText: 'Delete',
+                    cancelText: 'Cancel',
+                    onConfirm: () async {
+                      Navigator.pop(context);
+                      final success = await notifier.commitDelete(c.id);
+                      if (context.mounted) {
+                        if (success) {
+                          AppStatusDialog.showSuccess(context, message: 'City deleted successfully');
+                        } else {
+                          AppStatusDialog.showError(context, message: 'Failed to delete city');
+                        }
+                      }
+                    },
+                  );
+                },
               ),
             ),
           ),

@@ -20,3 +20,17 @@ class AdminColumn<T> {
     this.exportValue,
   });
 }
+
+class AdminTableCustomAction<T> {
+  final IconData icon;
+  final String tooltip;
+  final Color? color;
+  final void Function(T row) onPressed;
+
+  const AdminTableCustomAction({
+    required this.icon,
+    required this.tooltip,
+    this.color,
+    required this.onPressed,
+  });
+}

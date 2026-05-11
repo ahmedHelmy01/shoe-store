@@ -4,15 +4,16 @@
 /// Separated from view models for clean architecture.
 library;
 
-import 'package:erp/modules/webstore/home/data/models/webstore_mock_data.dart';
+import 'package:erp/modules/webstore/catalog/data/models/category_model.dart';
+import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 
 // ─── Home State ──────────────────────────────────────
 
 class HomeState {
-  final List<MockProduct> products;
-  final List<MockProduct> searchProducts;
-  final List<MockProduct> filteredProducts;
-  final List<MockCategory> categories;
+  final List<WebStoreProduct> products;
+  final List<WebStoreProduct> searchProducts;
+  final List<WebStoreProduct> filteredProducts;
+  final List<WebStoreCategory> categories;
   final bool isLoading;
 
   HomeState({
@@ -24,10 +25,10 @@ class HomeState {
   });
 
   HomeState copyWith({
-    List<MockProduct>? products,
-    List<MockProduct>? searchProducts,
-    List<MockProduct>? filteredProducts,
-    List<MockCategory>? categories,
+    List<WebStoreProduct>? products,
+    List<WebStoreProduct>? searchProducts,
+    List<WebStoreProduct>? filteredProducts,
+    List<WebStoreCategory>? categories,
     bool? isLoading,
   }) {
     return HomeState(

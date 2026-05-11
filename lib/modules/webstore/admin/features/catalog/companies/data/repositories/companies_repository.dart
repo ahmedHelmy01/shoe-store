@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/network/endpoints/endpoints_registry.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/companies/data/datasource/companies_remote_datasource.dart';
@@ -12,7 +13,7 @@ abstract class ICompaniesRepository {
     int? perPage,
   });
 
-  Future<ApiResult<CompanyRow>> saveCompany(Map<String, dynamic> data, {int? id});
+  Future<ApiResult<CompanyRow>> saveCompany(Map<String, dynamic> data, {int? id, XFile? logoFile, void Function(double)? onProgress});
 
   Future<ApiResult<void>> deleteCompany(int id);
 }
@@ -35,14 +36,21 @@ class CompaniesRepository extends AdminBaseRepository implements ICompaniesRepos
   }
 
   @override
-  Future<ApiResult<CompanyRow>> saveCompany(Map<String, dynamic> data, {int? id}) {
+  Future<ApiResult<CompanyRow>> saveCompany(Map<String, dynamic> data, {int? id, XFile? logoFile, void Function(double)? onProgress}) {
     return safeApiCall(() async {
-      final json = id == null
-          ? await _ds.postData(ApiEndpoints.webstore.admin.companies, data)
-          : await _ds.putData(
-              ApiEndpoints.withId(ApiEndpoints.webstore.admin.companies, id),
-              data,
-            );
+      final path = id == null
+          ? ApiEndpoints.webstore.admin.companies
+          : ApiEndpoints.withId(ApiEndpoints.webstore.admin.companies, id);
+
+      final Map<String, dynamic> json;
+      if (logoFile != null) {
+        final fields = toMultipartFields(data);
+        json = id == null
+            ? await _ds.postMultipart(path, fields: fields, files: {'logo': logoFile}, onProgress: onProgress)
+            : await _ds.putMultipart(path, fields: fields, files: {'logo': logoFile}, onProgress: onProgress);
+      } else {
+        json = id == null ? await _ds.postData(path, data) : await _ds.putData(path, data);
+      }
       return parseSingle(json, (j) => CompanyRow.fromJson(j));
     });
   }

@@ -47,21 +47,36 @@ class WebStoreProduct extends BaseEntity with JsonSerializable {
   });
 
   factory WebStoreProduct.fromJson(Map<String, dynamic> json) {
+    // Robust parsing for prices which can come as String or Num
+    double parsePrice(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is num) return value.toDouble();
+      return double.tryParse(value.toString()) ?? 0.0;
+    }
+
+    // Handle Brand which can be a String or a Map
+    String? parseBrand(dynamic value) {
+      if (value == null) return null;
+      if (value is String) return value;
+      if (value is Map) return value['name']?.toString();
+      return null;
+    }
+
     return WebStoreProduct(
       id: json['id'],
-      name: json['name'] ?? json['title'] ?? 'بدون اسم',
+      name: json['name'] ?? json['title'] ?? json['name_ar'] ?? json['name_en'] ?? 'بدون اسم',
       slug: json['slug'],
       description: json['description'],
-      price: (json['price'] ?? 0.0).toDouble(),
-      oldPrice: (json['old_price'] ?? json['compare_at_price'])?.toDouble(),
-      discount: (json['discount'])?.toDouble(),
-      stock: json['stock'] ?? json['quantity'],
+      price: parsePrice(json['price'] ?? json['sale_price']),
+      oldPrice: parsePrice(json['old_price'] ?? json['compare_at_price']),
+      discount: parsePrice(json['discount']),
+      stock: json['stock'] ?? json['quantity'] ?? 0,
       image: json['image'] ?? json['thumb'] ?? json['main_image'],
       images: json['images'] != null ? List<String>.from(json['images']) : null,
       category: json['category'] != null ? WebStoreCategory.fromJson(json['category']) : null,
-      brand: json['brand']?['name'] ?? json['brand_name'],
-      rating: (json['rating'] ?? 0.0).toDouble(),
-      reviewsCount: json['reviews_count'],
+      brand: parseBrand(json['brand'] ?? json['brand_name']),
+      rating: parsePrice(json['rating']),
+      reviewsCount: json['reviews_count'] ?? json['review_count'] ?? 0,
       isFeatured: json['is_featured'] ?? false,
       isNew: json['is_new'] ?? false,
       attributes: json['attributes'],

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
-import 'package:erp/modules/webstore/home/data/models/webstore_mock_data.dart';
-import 'package:erp/core/common_widget/app_card/app_card.dart';
-import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
-import 'package:erp/core/common_widget/app_animation/app_animation.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
+import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/modules/webstore/catalog/data/models/manufacturer_model.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CompanyProduceWidget extends ConsumerWidget {
   const CompanyProduceWidget({super.key});
@@ -14,113 +13,99 @@ class CompanyProduceWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final companies = ref.watch(companyProducesVmProvider);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     if (companies.isEmpty) {
-      return AppShimmer.list(height: 120.h, width: 140.w);
+      return SizedBox(
+        height: 100.h,
+        child: const Center(child: CircularProgressIndicator.adaptive()),
+      );
     }
 
-    return AppAnimation.fadeInUp(
-      child: _buildBrandsList(companies),
-    );
-  }
-
-  Widget _buildBrandsList(List<MockCompany> brands) {
-    return SizedBox(
-      height: 120.h,
-      child: ListView.separated(
-        physics: const BouncingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-        itemCount: brands.length,
-        separatorBuilder: (_, __) => SizedBox(width: 16.w),
-        itemBuilder: (context, index) {
-          final item = brands[index];
-          return _buildAdvancedBrandCard(context, item);
-        },
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+      child: Row(
+        children: companies.map((company) => _buildCompanyItem(context, company, isDark, theme)).toList(),
       ),
     );
   }
 
-  Widget _buildAdvancedBrandCard(BuildContext context, dynamic item) {
-    return AppCard(
-      width: 140.w,
-      border: Border.all(
-        color: AppColors.primaryOrange.withOpacity(0.08),
-        width: 1.5,
-      ),
-      onTap: () {},
-      child: Stack(
-        children: [
-          // Subtle background decoration
-          Positioned(
-            right: -10,
-            bottom: -10,
-            child: Icon(
-              Icons.verified_user_outlined,
-              size: 40,
-              color: AppColors.primaryOrange.withOpacity(0.03),
-            ),
+  Widget _buildCompanyItem(BuildContext context, ManufacturerModel company, bool isDark, ThemeData theme) {
+    final String name = context.locale.languageCode == 'ar' 
+        ? (company.nameAr ?? company.name) 
+        : (company.nameEn ?? company.name);
+
+    // Filter out potential empty names
+    if (name.trim().isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      width: 130.w,
+      margin: EdgeInsets.only(right: 16.w),
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        color: isDark ? theme.cardColor : Colors.white,
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+            blurRadius: 15,
+            spreadRadius: 0,
+            offset: const Offset(0, 5),
           ),
-          
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Logo Container
-              Container(
-                height: 55.h,
-                width: 90.w,
-                padding: EdgeInsets.all(8.w),
-                child: Image.network(
-                  item.logo,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryOrange.withOpacity(0.08),
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    child: Center(
+        ],
+        border: Border.all(
+          color: isDark ? Colors.white.withValues(alpha: 0.1) : AppColors.primaryOrange.withValues(alpha: 0.08),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Unified Logo/Avatar Container
+          Container(
+            height: 55.w,
+            width: 55.w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.primaryOrange.withValues(alpha: 0.05),
+            ),
+            child: ClipOval(
+              child: company.logo != null && company.logo!.isNotEmpty
+                  ? AppImage(
+                      imagePath: company.logo!,
+                      fit: BoxFit.contain,
+                      width: 55.w,
+                      height: 55.w,
+                    )
+                  : Center(
                       child: Text(
-                        item.name.isNotEmpty ? item.name[0].toUpperCase() : '?',
+                        name.isNotEmpty ? name[0].toUpperCase() : 'B',
                         style: TextStyle(
-                          fontSize: 26.sp,
-                          fontWeight: FontWeight.w900,
                           color: AppColors.primaryOrange,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 22.sp,
+                          fontFamily: 'store',
                         ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-              
-              4.verticalSpace,
-              
-              // Name with specialized styling
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Text(
-                      item.name,
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w900,
-                        color: Theme.of(context).textTheme.bodyMedium?.color,
-                        fontFamily: 'Harmattan',
-                        letterSpacing: -0.5,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  4.horizontalSpace,
-                  Icon(
-                    Icons.verified,
-                    size: 14.sp,
-                    color: AppColors.primaryOrange,
-                  ),
-                ],
-              ),
-            ],
+            ),
+          ),
+          12.verticalSpace,
+          Text(
+            name,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w700,
+              color: isDark ? Colors.white : AppColors.textMain,
+              letterSpacing: -0.2,
+            ),
           ),
         ],
       ),

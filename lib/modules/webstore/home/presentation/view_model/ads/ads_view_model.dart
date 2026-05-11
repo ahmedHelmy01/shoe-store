@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_model/content_management_model.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/ads/ads_state.dart';
 import 'package:erp/modules/webstore/shared/data/providers/webstore_providers.dart';
-import 'package:erp/modules/webstore/cms/data/models/ad_model.dart';
+import 'package:erp/modules/webstore/home/data/models/ad_model.dart';
 
 class AdsVm extends Notifier<AdsState> {
   @override
@@ -26,11 +26,11 @@ class AdsVm extends Notifier<AdsState> {
               .map(
                 (ad) => ContentManagementItem(
                   id: ad.id,
-                  title: ad.titleAr, // Use Arabic title as default for this project
-                  image: ad.image,
-                  content: ad.title, // Or some other field if available
+                  title: ad.titleAr,
+                  image: ad.image ?? '',
+                  content: ad.title,
                 ),
-              )
+               )
               .toList(),
         );
 
@@ -44,4 +44,3 @@ class AdsVm extends Notifier<AdsState> {
 }
 
 final adsVmProvider = NotifierProvider<AdsVm, AdsState>(AdsVm.new);
-

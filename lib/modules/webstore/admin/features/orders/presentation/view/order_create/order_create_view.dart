@@ -1,12 +1,20 @@
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
+import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
-import 'package:erp/modules/webstore/admin/shared/data/fake_data.dart';
-import 'package:erp/modules/webstore/auth/data/models/webstore_user_model.dart';
-import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
+import 'package:erp/modules/webstore/admin/features/users/presentation/view_model/users_view_model.dart';
+import 'package:erp/modules/webstore/admin/features/users/data/models/user_row.dart';
+import 'package:erp/modules/webstore/admin/features/catalog/products/data/models/product_row.dart';
+import 'package:erp/modules/webstore/admin/features/catalog/products/presentation/view_model/products_view_model.dart';
+import 'package:erp/modules/webstore/admin/features/addresses/data/models/address_row.dart';
+import 'package:erp/modules/webstore/admin/features/payment_methods/presentation/view_model/payment_methods_view_model.dart';
+import 'package:erp/modules/webstore/admin/features/payment_methods/data/models/payment_method_row.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_cart_line.dart';
 import 'package:erp/modules/webstore/admin/features/orders/presentation/view_model/order_create_view_model.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
+import '../../../../addresses/presentation/view_model/addresses_view_model.dart';
 import 'widgets/order_form_panel.dart';
 import 'widgets/cart_panel.dart';
 import 'widgets/list/product_catalog.dart';
@@ -26,17 +34,24 @@ class _OrderCreateViewState extends ConsumerState<OrderCreateView> {
   final Set<int> _selectedCatalogIds = {};
   int _discountPercent = 0;
   int? _customerId;
-  String? _addressLine;
-  String _payment = 'Cash';
+  int? _addressId;
+  int? _paymentMethodId;
   
-  late List<WebStoreProduct> _allProducts;
-  late List<WebStoreUser> _customers;
+  List<AddressRow> _customerAddresses = [];
+  bool _isLoadingAddresses = false;
 
   @override
   void initState() {
     super.initState();
-    _allProducts = FakeData.products();
-    _customers = FakeData.users();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(usersVmProvider.notifier).fetch();
+      ref.read(paymentMethodsVmProvider.notifier).fetch();
+      ref.read(productsVmProvider.notifier).fetch();
+    });
+
+    _searchCtrl.addListener(() {
+      ref.read(productsVmProvider.notifier).fetch(search: _searchCtrl.text);
+    });
   }
 
   @override
@@ -46,48 +61,156 @@ class _OrderCreateViewState extends ConsumerState<OrderCreateView> {
     super.dispose();
   }
 
-  List<WebStoreProduct> get _filteredProducts {
-    final q = _searchCtrl.text.trim().toLowerCase();
-    if (q.isEmpty) return _allProducts;
-    return _allProducts.where((p) => p.name.toLowerCase().contains(q)).toList();
+  Future<void> _fetchCustomerAddresses(int customerId) async {
+    setState(() {
+      _isLoadingAddresses = true;
+      _customerAddresses = [];
+      _addressId = null;
+    });
+
+    final repo = ref.read(addressesRepositoryProvider);
+    final result = await repo.getAddresses(customerId: customerId);
+
+    if (mounted) {
+      result.when(
+        success: (paged) {
+          print('DEBUG: Fetched ${paged.items.length} addresses for customer $customerId');
+          setState(() {
+            _customerAddresses = paged.items;
+            _isLoadingAddresses = false;
+          });
+        },
+        failure: (e) {
+          print('DEBUG: Failed to fetch addresses: ${e.message}');
+          setState(() => _isLoadingAddresses = false);
+        },
+      );
+    }
   }
 
   double get _subtotal => _cart.values.fold(0, (sum, item) => sum + item.lineTotal);
   double get _discountAmount => _subtotal * (_discountPercent / 100);
   double get _total => _subtotal - _discountAmount;
 
+  bool _isSubmitting = false;
+
+  void _submitOrder(OrderCreateVm b) async {
+    if (b.customerId == null || b.addressId == null || b.paymentMethodId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please complete order information (Customer, Address, Payment)')),
+      );
+      return;
+    }
+
+    if (b.cart.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Your cart is empty')),
+      );
+      return;
+    }
+
+    setState(() => _isSubmitting = true);
+
+    final repo = ref.read(ordersRepositoryProvider);
+    
+    // Prepare items for API
+    final items = b.cart.values.map((l) => {
+      'product_id': l.productId,
+      'quantity': l.qty,
+    }).toList();
+
+    final data = {
+      'customer_id': b.customerId,
+      'address_id': b.addressId,
+      'payment_method_id': b.paymentMethodId,
+      'notes': _notesCtrl.text.trim(),
+      'items': items,
+      'discount': b.discountPercent,
+    };
+
+    final result = await repo.saveOrder(data);
+
+    if (mounted) {
+      setState(() => _isSubmitting = false);
+      
+      result.when(
+        success: (order) {
+          AppStatusDialog.show(
+            context,
+            status: AppDialogStatus.success,
+            title: 'Success',
+            message: 'Order #${order.id} created successfully',
+          );
+          // Clear cart and state after success
+          setState(() {
+            _cart.clear();
+            _customerId = null;
+            _addressId = null;
+            _customerAddresses = [];
+            _notesCtrl.clear();
+          });
+        },
+        failure: (e) {
+          AppStatusDialog.show(
+            context,
+            status: AppDialogStatus.error,
+            title: 'Failed',
+            message: e.message,
+          );
+        },
+      );
+    }
+  }
+
   OrderCreateVm _getVm() {
+    final usersState = ref.watch(usersVmProvider);
+    final paymentMethodsState = ref.watch(paymentMethodsVmProvider);
+    final productsState = ref.watch(productsVmProvider);
+
+    List<UserRow> customers = [];
+    if (usersState is AdminCrudData<UserRow>) customers = usersState.items;
+
+    List<PaymentMethodRow> paymentMethods = [];
+    if (paymentMethodsState is AdminCrudData<PaymentMethodRow>) paymentMethods = paymentMethodsState.items;
+
+    List<ProductRow> products = [];
+    bool hasMore = false;
+    bool loadingProducts = false;
+    if (productsState is AdminCrudData<ProductRow>) {
+      products = productsState.items;
+      hasMore = productsState.hasMore;
+    } else if (productsState is AdminCrudLoading) {
+      loadingProducts = true;
+    }
+
     return OrderCreateVm(
-      filteredProducts: _filteredProducts,
+      filteredProducts: products,
       cart: _cart,
       selectedCatalogIds: _selectedCatalogIds,
       searchController: _searchCtrl,
       notesController: _notesCtrl,
       discountPercent: _discountPercent,
       customerId: _customerId,
-      addressLine: _addressLine,
-      payment: _payment,
-      customers: _customers,
-      addressChoices: _customerId == null ? [] : ['Cairo, Abbasia', 'Giza, Pyramids', 'Alexandria, Corniche'],
+      addressId: _addressId,
+      paymentMethodId: _paymentMethodId,
+      customers: customers,
+      addressChoices: _customerAddresses,
+      paymentMethods: paymentMethods,
       subtotal: _subtotal,
       discountAmount: _discountAmount,
       total: _total,
-      productById: (id) => _allProducts.cast<WebStoreProduct?>().firstWhere((p) => p?.id == id, orElse: () => null),
+      productById: (id) => products.cast<ProductRow?>().firstWhere((p) => p?.id == id, orElse: () => null),
       onCatalogSelect: (id, s) => setState(() => s ? _selectedCatalogIds.add(id) : _selectedCatalogIds.remove(id)),
       onCommitSelected: () {
-        print('DEBUG: onCommitSelected called. Selected IDs: $_selectedCatalogIds');
         setState(() {
           for (final id in _selectedCatalogIds) {
-            final p = _allProducts.firstWhere((p) => p.id == id);
+            final p = products.firstWhere((p) => p.id == id);
             _addProduct(p);
           }
           _selectedCatalogIds.clear();
         });
       },
-      onAddProduct: (p) {
-        print('DEBUG: onAddProduct called for ${p.name}');
-        setState(() => _addProduct(p));
-      },
+      onAddProduct: (p) => setState(() => _addProduct(p)),
       onIncrement: (l) => setState(() => _cart[l.productId] = l.copyWith(qty: l.qty + 1)),
       onDecrement: (l) {
         if (l.qty > 1) {
@@ -95,30 +218,34 @@ class _OrderCreateViewState extends ConsumerState<OrderCreateView> {
         }
       },
       onRemoveLine: (id) => setState(() => _cart.remove(id)),
-      onCustomerChanged: (v) => setState(() {
-        _customerId = v;
-        _addressLine = null;
-      }),
-      onAddressChanged: (v) => setState(() => _addressLine = v),
-      onPaymentChanged: (v) => setState(() => _payment = v),
+      onCustomerChanged: (v) {
+        setState(() {
+          _customerId = v;
+          _addressId = null;
+        });
+        if (v != null) _fetchCustomerAddresses(v);
+      },
+      onAddressChanged: (v) => setState(() => _addressId = v),
+      onPaymentChanged: (v) => setState(() => _paymentMethodId = v),
       onDiscountChanged: (v) => setState(() => _discountPercent = v),
       onDropProduct: (id) {
-         final p = _allProducts.firstWhere((p) => p.id == id);
+         final p = products.firstWhere((p) => p.id == id);
          setState(() => _addProduct(p));
       },
       onClearSelection: () => setState(() => _selectedCatalogIds.clear()),
-      onSubmit: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم إنشاء الطلب بنجاح (Simulation)')),
-        );
+      onSubmit: () => _submitOrder(_getVm()),
+      isLoadingProducts: loadingProducts,
+      isSubmitting: _isSubmitting,
+      hasMoreProducts: hasMore,
+      onFetchMoreProducts: () {
+        ref.read(productsVmProvider.notifier).fetchMore();
       },
     );
   }
 
-  void _addProduct(WebStoreProduct p) {
+  void _addProduct(ProductRow p) {
     final pid = p.id;
-    print('DEBUG: _addProduct called for ID: $pid');
-    if (pid == null) return;
+    final price = double.tryParse(p.salePrice ?? '0') ?? 0;
     if (_cart.containsKey(pid)) {
       final old = _cart[pid]!;
       _cart[pid] = old.copyWith(qty: old.qty + 1);
@@ -126,7 +253,7 @@ class _OrderCreateViewState extends ConsumerState<OrderCreateView> {
       _cart[pid] = OrderCartLine(
         productId: pid,
         name: p.name,
-        unitPrice: p.price,
+        unitPrice: price,
         qty: 1,
       );
     }
@@ -259,12 +386,12 @@ class _OrderCreateViewState extends ConsumerState<OrderCreateView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (wide) ...[
-            Text('طلب جديد', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900)),
+            Text('New Order', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900)),
             const SizedBox(height: 16),
           ] else ...[
              Padding(
                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-               child: Text('طلب جديد', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900)),
+               child: Text('New Order', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900)),
              ),
           ],
           Expanded(

@@ -9,7 +9,7 @@ import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/modules/webstore/home/presentation/state/slider_state.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
-import 'package:erp/modules/webstore/cms/data/models/slider_model.dart';
+import 'package:erp/modules/webstore/home/data/models/slider_model.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/common_widget/app_empty_widget/app_empty_widget.dart';
 
@@ -82,7 +82,9 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
         padding: EdgeInsets.symmetric(vertical: 24.h),
         child: AppEmptyWidget(
           message: LocaleKeys.webstore.home.no_offers.tr(context: context),
-          subtitle: LocaleKeys.webstore.home.wait_for_offers.tr(context: context),
+          subtitle: LocaleKeys.webstore.home.wait_for_offers.tr(
+            context: context,
+          ),
           showGlassBackground: false,
         ),
       );
@@ -92,21 +94,21 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
       duration: const Duration(milliseconds: 600),
       child: Column(
         children: [
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 200.h,
-              child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: (index) => setState(() => _currentPage = index),
-                itemCount: sliders.length,
-                itemBuilder: (context, index) {
-                  final data = sliders[index];
-                  return _buildSliderItem(
-                    image: data.image,
-                    title: context.locale.languageCode == 'ar' ? data.titleAr : data.title,
-                  );
-                },
-              ),
+          SizedBox(
+            height: 200.h,
+            child: PageView.builder(
+              controller: _pageController,
+              onPageChanged: (index) => setState(() => _currentPage = index),
+              itemCount: sliders.length,
+              itemBuilder: (context, index) {
+                final data = sliders[index];
+                return _buildSliderItem(
+                  image: data.image,
+                  title: (context.locale.languageCode == 'ar'
+                      ? data.titleAr
+                      : data.title) ?? '',
+                );
+              },
             ),
           ),
           12.verticalSpace,
@@ -122,7 +124,11 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
     );
   }
 
-  Widget _buildSliderItem({required String image, required String title, bool isDefault = false}) {
+  Widget _buildSliderItem({
+    required String image,
+    required String title,
+    bool isDefault = false,
+  }) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 12.w),
       height: 200.h,
@@ -144,10 +150,10 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
               imagePath: image,
               width: double.infinity,
               height: double.infinity,
-              fit: isDefault? BoxFit.contain : BoxFit.cover,
+              fit: isDefault ? BoxFit.contain : BoxFit.cover,
               color: isDefault ? Colors.white.withOpacity(0.9) : null,
             ),
-            
+
             if (isDefault)
               Container(color: AppColors.primary.withOpacity(0.02)),
 
@@ -155,10 +161,7 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [
-                      Colors.black.withOpacity(0.7),
-                      Colors.transparent,
-                    ],
+                    colors: [Colors.black.withOpacity(0.7), Colors.transparent],
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                   ),
@@ -199,8 +202,12 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
                     ),
                     child: Text(
                       isDefault
-                          ? LocaleKeys.webstore.home.explore_now.tr(context: context)
-                          : LocaleKeys.webstore.home.view_all.tr(context: context),
+                          ? LocaleKeys.webstore.home.explore_now.tr(
+                              context: context,
+                            )
+                          : LocaleKeys.webstore.home.view_all.tr(
+                              context: context,
+                            ),
                     ),
                   ),
                 ],
@@ -219,7 +226,9 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
       height: 6.h,
       width: _currentPage == index ? 20.w : 6.w,
       decoration: BoxDecoration(
-        color: _currentPage == index ? AppColors.primaryOrange : Colors.grey[300],
+        color: _currentPage == index
+            ? AppColors.primaryOrange
+            : Colors.grey[300],
         borderRadius: BorderRadius.circular(3.r),
       ),
     );

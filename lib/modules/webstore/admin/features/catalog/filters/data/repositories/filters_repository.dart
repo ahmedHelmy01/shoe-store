@@ -9,6 +9,7 @@ abstract class IFiltersRepository {
   Future<ApiResult<AdminPagedResponse<FilterRow>>> getFilters({
     int page = 1,
     String? search,
+    int? perPage,
   });
 
   Future<ApiResult<FilterRow>> saveFilter(Map<String, dynamic> data, {int? id});
@@ -25,9 +26,10 @@ class FiltersRepository extends AdminBaseRepository implements IFiltersRepositor
   Future<ApiResult<AdminPagedResponse<FilterRow>>> getFilters({
     int page = 1,
     String? search,
+    int? perPage,
   }) {
     return safeApiCall(() async {
-      final json = await _ds.getFilters(page: page, search: search);
+      final json = await _ds.getFilters(page: page, search: search, perPage: perPage);
       return parsePaged(json, page, (j) => FilterRow.fromJson(j));
     });
   }

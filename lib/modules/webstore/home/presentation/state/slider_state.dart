@@ -1,4 +1,4 @@
-import 'package:erp/modules/webstore/cms/data/models/slider_model.dart';
+import 'package:erp/modules/webstore/home/data/models/slider_model.dart';
 
 /// Slider ViewModel State definitions
 sealed class SliderState {

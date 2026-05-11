@@ -56,6 +56,40 @@ class AppStatusDialog extends StatelessWidget {
     );
   }
 
+  static Future<void> showSuccess(
+    BuildContext context, {
+    String title = 'Success',
+    required String message,
+    String actionText = 'OK',
+    VoidCallback? onActionPressed,
+  }) {
+    return show(
+      context,
+      status: AppDialogStatus.success,
+      title: title,
+      message: message,
+      actionText: actionText,
+      onActionPressed: onActionPressed,
+    );
+  }
+
+  static Future<void> showError(
+    BuildContext context, {
+    String title = 'Error',
+    required String message,
+    String actionText = 'OK',
+    VoidCallback? onActionPressed,
+  }) {
+    return show(
+      context,
+      status: AppDialogStatus.error,
+      title: title,
+      message: message,
+      actionText: actionText,
+      onActionPressed: onActionPressed,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -135,7 +169,10 @@ class AppStatusDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppConstants.borderRadius),
                   ),
                 ),
-                onPressed: onActionPressed ?? () => Navigator.of(context).pop(),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Always close dialog first
+                  onActionPressed?.call(); // Then execute callback if provided
+                },
                 child: Text(
                   actionText,
                   style: const TextStyle(fontWeight: FontWeight.w600),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'admin_action_icon_button.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/widgets/admin_table_models.dart';
 
 /// A standardized popup menu for mobile admin cards.
 ///
@@ -17,8 +18,10 @@ class AdminCardPopupMenu extends StatelessWidget {
   /// Label for the edit action (defaults to 'Edit').
   final String editLabel;
 
-  /// Label for the delete action (defaults to 'Delete').
+   /// Label for the delete action (defaults to 'Delete').
   final String deleteLabel;
+
+  final List<AdminTableCustomAction>? customActions;
 
   const AdminCardPopupMenu({
     super.key,
@@ -28,6 +31,7 @@ class AdminCardPopupMenu extends StatelessWidget {
     this.viewLabel = 'Details',
     this.editLabel = 'Edit',
     this.deleteLabel = 'Delete',
+    this.customActions,
   });
 
   @override
@@ -52,6 +56,8 @@ class AdminCardPopupMenu extends StatelessWidget {
             type: AdminActionIconType.delete,
             label: deleteLabel,
           ),
+        if (customActions != null)
+          ...customActions!.map((action) => _buildCustomItem(action)),
       ],
     );
   }
@@ -72,6 +78,22 @@ class AdminCardPopupMenu extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(label),
+        ],
+      ),
+    );
+  }
+  PopupMenuItem _buildCustomItem(AdminTableCustomAction action) {
+    return PopupMenuItem(
+      onTap: () => action.onPressed(null),
+      child: Row(
+        children: [
+          Icon(
+            action.icon,
+            color: action.color,
+            size: 18,
+          ),
+          const SizedBox(width: 8),
+          Text(action.tooltip),
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
 import 'package:erp/core/network/api_result.dart';
@@ -14,8 +15,8 @@ class CouponsVm extends AdminCrudVm<CouponRow> {
   }
 
   @override
-  Future<ApiResult<CouponRow>> saveItem(Map<String, dynamic> data, {dynamic id}) {
-    return ref.read(couponsRepositoryProvider).saveCoupon(data, id: id as int?);
+  Future<ApiResult<CouponRow>> saveItem(Map<String, dynamic> data, {dynamic id, XFile? imageFile, Map<String, dynamic>? extraData, void Function(double)? onProgress}) {
+    return ref.read(couponsRepositoryProvider).saveCoupon(data, id: id as int?, imageFile: imageFile);
   }
 
   @override

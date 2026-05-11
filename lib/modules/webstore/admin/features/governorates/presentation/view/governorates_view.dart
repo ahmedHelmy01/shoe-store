@@ -6,6 +6,8 @@ import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
+import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
 import '../view_model/governorates_view_model.dart';
 import '../widgets/governorates_table.dart';
 import '../widgets/governorate_form.dart';
@@ -41,7 +43,7 @@ class GovernoratesView extends ConsumerWidget {
         ),
         if (state.isAdding || state.editingItem != null)
           AdminDialogForm(
-            isOpen: state.isAdding || state.editingItem != null,
+            isOpen: true,
             onClose: () => notifier.closePanel(),
             title: state.isAdding ? 'Create Governorate' : 'Edit Governorate',
             size: AdminDialogSize.small,
@@ -49,8 +51,17 @@ class GovernoratesView extends ConsumerWidget {
               initial: state.editingItem,
               isSaving: state.isSaving,
               onSave: (data) async {
-                if (await notifier.commitSave(data, id: state.editingItem?.id)) {
+                final success = await notifier.commitSave(data, id: state.editingItem?.id);
+                if (success && context.mounted) {
+                  AppStatusDialog.showSuccess(
+                    context,
+                    message: state.isAdding 
+                        ? 'Governorate created successfully'
+                        : 'Governorate updated successfully',
+                  );
                   notifier.closePanel();
+                } else if (!success && context.mounted) {
+                  AppStatusDialog.showError(context, message: 'Failed to save governorate');
                 }
               },
             ),
@@ -82,12 +93,45 @@ class GovernoratesView extends ConsumerWidget {
             child: GovernoratesTable(
               items: items,
               onEdit: (g) => notifier.openEdit(g),
-              onDelete: (id) => notifier.commitDelete(id),
+              onDelete: (id) async {
+                final success = await notifier.commitDelete(id);
+                if (context.mounted) {
+                  if (success) {
+                    AppStatusDialog.showSuccess(context, message: 'Governorate deleted successfully');
+                  } else {
+                    AppStatusDialog.showError(context, message: 'Failed to delete governorate');
+                  }
+                }
+              },
               cardBuilder: (context, g) => _GovernorateCard(
                 gov: g,
-                onView: () => notifier.openEdit(g),
+                onView: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => GovernorateDetailsDialog(gov: g),
+                  );
+                },
                 onEdit: () => notifier.openEdit(g),
-                onDelete: () => notifier.commitDelete(g.id),
+                onDelete: () {
+                  AppDialog.show(
+                    context,
+                    title: 'Delete Governorate',
+                    message: 'Are you sure you want to delete this governorate?',
+                    confirmText: 'Delete',
+                    cancelText: 'Cancel',
+                    onConfirm: () async {
+                      Navigator.pop(context);
+                      final success = await notifier.commitDelete(g.id);
+                      if (context.mounted) {
+                        if (success) {
+                          AppStatusDialog.showSuccess(context, message: 'Governorate deleted successfully');
+                        } else {
+                          AppStatusDialog.showError(context, message: 'Failed to delete governorate');
+                        }
+                      }
+                    },
+                  );
+                },
               ),
             ),
           ),

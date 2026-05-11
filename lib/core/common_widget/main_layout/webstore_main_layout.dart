@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/modules/webstore/home/presentation/view/webstore_home_screen.dart';
-import 'package:erp/modules/webstore/catalog/presentation/view/webstore_categories_view.dart';
+import 'package:erp/modules/webstore/catalog/presentation/view/webstore_catalog_view.dart';
 import 'package:erp/modules/webstore/cart/presentation/view/webstore_cart_view.dart';
 import 'package:erp/modules/webstore/profile/presentation/view/webstore_profile_view.dart';
-import 'package:erp/modules/webstore/cms/presentation/view/webstore_more_view.dart';
+import 'package:erp/modules/webstore/more/presentation/view/webstore_more_view.dart';
 import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/core/router/app_navigator.dart';
 
@@ -34,7 +34,7 @@ class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
 
   List<Widget> get _pages => [
         const WebStoreHomeScreen(),
-        const WebStoreCategoriesView(),
+        const WebStoreCatalogView(),
         const WebStoreCartView(),
         WebStoreProfileView(key: ValueKey(_currentIndex == 3)),
         const WebStoreMoreView(),

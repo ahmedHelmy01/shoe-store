@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import '../../data/models/user_row.dart';
 
 class UsersTable extends StatelessWidget {
   final List<UserRow> items;
-  final Function(UserRow) onEdit;
   final Function(UserRow) onDelete;
+  final Widget Function(BuildContext context, UserRow item)? cardBuilder;
 
   const UsersTable({
     super.key,
     required this.items,
-    required this.onEdit,
     required this.onDelete,
+    this.cardBuilder,
   });
 
   @override
@@ -25,6 +26,7 @@ class UsersTable extends StatelessWidget {
       exportBaseName: 'users',
       searchHint: 'Search users...',
       searchText: (item) => '${item.name} ${item.email ?? ""} ${item.mobile ?? ""}',
+      cardBuilder: cardBuilder,
       columns: [
         AdminColumn<UserRow>(
           title: 'User',
@@ -109,11 +111,117 @@ class UsersTable extends StatelessWidget {
           width: 120,
           cell: (_, item) => AdminTableActionsCell<UserRow>(
             row: item,
-            onEdit: onEdit,
+            onView: (row) {
+              showDialog(
+                context: context,
+                builder: (_) => UserDetailsDialog(user: row),
+              );
+            },
             onDelete: onDelete,
           ),
         ),
       ],
+    );
+  }
+}
+
+class UserDetailsDialog extends StatelessWidget {
+  final UserRow user;
+  const UserDetailsDialog({super.key, required this.user});
+
+  @override
+  Widget build(BuildContext context) {
+    return AdminDetailsDialog(
+      title: 'User Details',
+      id: user.id.toString(),
+      icon: Icons.person_rounded,
+      children: [
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Full Name', user.name, Icons.person_outline_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Mobile', user.mobile ?? 'N/A', Icons.phone_android_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 24),
+        AdminDetailsDialog.buildDetailRow(context, 'Email Address', user.email ?? 'No email provided', Icons.email_outlined),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: _buildMetricTile(
+                context,
+                'Total Orders',
+                '${user.ordersCount}',
+                Icons.shopping_bag_outlined,
+                Colors.blue,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildMetricTile(
+                context,
+                'Total Spent',
+                '${user.totalSpent.toStringAsFixed(2)} EGP',
+                Icons.account_balance_wallet_outlined,
+                Colors.green,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        Row(
+          children: [
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context,
+                'Joined On',
+                user.createdAt != null ? DateFormat('MMMM dd, yyyy').format(user.createdAt!) : 'N/A',
+                Icons.calendar_today_rounded,
+                bottomPadding: 0,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildStatusRow(context, user.isActive)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMetricTile(BuildContext context, String label, String value, IconData icon, Color color) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: isDark ? 0.12 : 0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withValues(alpha: isDark ? 0.2 : 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 20, color: color),
+          const SizedBox(height: 12),
+          Text(
+            label,
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w900,
+              color: color.withValues(alpha: 0.9),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

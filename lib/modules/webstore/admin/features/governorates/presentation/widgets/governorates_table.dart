@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/governorates/data/models/governorate_row.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 
 class GovernoratesTable extends StatelessWidget {
   final List<GovernorateRow> items;
@@ -55,8 +57,8 @@ class GovernoratesTable extends StatelessWidget {
           sortable: true,
           sortValue: (g) => g.isActive ? 1 : 0,
           exportValue: (g) => g.isActive ? 'Yes' : 'No',
-          cell: (_, g) => Text(g.isActive ? 'Yes' : 'No'),
-          width: 100,
+          cell: (_, g) => AdminStatusBadge(isActive: g.isActive),
+          width: 120,
         ),
         AdminColumn<GovernorateRow>(
           title: 'Actions',
@@ -64,10 +66,70 @@ class GovernoratesTable extends StatelessWidget {
             row: g,
             onEdit: onEdit,
             onDelete: (item) => onDelete(item.id),
-            confirmBeforeDelete: false,
+            onView: (it) {
+              showDialog(
+                context: context,
+                builder: (_) => GovernorateDetailsDialog(gov: it),
+              );
+            },
           ),
           width: 130,
         ),
+      ],
+    );
+  }
+}
+
+class GovernorateDetailsDialog extends StatelessWidget {
+  final GovernorateRow gov;
+  const GovernorateDetailsDialog({super.key, required this.gov});
+
+  @override
+  Widget build(BuildContext context) {
+    return AdminDetailsDialog(
+      title: 'Governorate Details',
+      id: gov.id.toString(),
+      icon: Icons.map_rounded,
+      children: [
+        Align(
+          alignment: Alignment.centerRight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                gov.nameAr ?? gov.name,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                gov.name,
+                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.6)),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 32),
+        Row(
+          children: [
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context,
+                'Country',
+                gov.countryName ?? 'N/A',
+                Icons.public_rounded,
+              ),
+            ),
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context,
+                'Status',
+                gov.isActive ? 'Active' : 'Inactive',
+                gov.isActive ? Icons.check_circle_outline : Icons.error_outline,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        AdminDetailsDialog.buildStatusRow(context, gov.isActive),
       ],
     );
   }

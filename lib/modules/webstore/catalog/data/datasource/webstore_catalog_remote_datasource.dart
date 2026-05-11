@@ -28,7 +28,7 @@ class WebStoreCatalogRemoteDataSource {
     Map<String, dynamic>? queryParams,
   }) {
     return _networkService.get(
-      ApiEndpoints.webstore.catalog.categories,
+      ApiEndpoints.webstore.catalog.categoryTree,
       query: queryParams,
     );
   }
@@ -42,6 +42,10 @@ class WebStoreCatalogRemoteDataSource {
       ApiEndpoints.webstore.catalog.search,
       query: {'q': query},
     );
+  }
+
+  Future<dynamic> getManufacturers() {
+    return _networkService.get('/api/store/manufacturers');
   }
 
   // ─── Wishlist (kept under Catalog domain) ───────────

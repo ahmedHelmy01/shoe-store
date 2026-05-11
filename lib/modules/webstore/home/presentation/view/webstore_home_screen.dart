@@ -1,3 +1,4 @@
+import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,7 +40,7 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
 
     await Future.wait<void>([
       ref.read(homeVmProvider.notifier).getLatestProducts(),
-      ref.read(homeVmProvider.notifier).getCategories(),
+      ref.read(catalogCategoriesProvider.notifier).getCategories(),
       ref.read(sliderVmProvider.notifier).getSliders(),
       ref.read(adsVmProvider.notifier).getAds(),
       ref.read(companyProducesVmProvider.notifier).getCompanyProduces(),

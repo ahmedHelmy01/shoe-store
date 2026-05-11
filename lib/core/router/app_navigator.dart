@@ -15,6 +15,7 @@ class AppRouteNames {
   static const String webstoreWishlist = '/webstore/wishlist';
   static const String webstorePoints = '/webstore/points';
   static const String webstoreOrderDetails = '/webstore/order-details';
+  static const String webstorePage = '/webstore/page';
 
   // ─── WebStore Admin ───────────────────────────────
   static const String webstoreAdmin = '/webstore/admin';
@@ -43,6 +44,8 @@ class AppRouteNames {
   static const String webstoreAdminClientReports = '/webstore/admin/client-reports';
   static const String webstoreAdminSettings = '/webstore/admin/settings';
   static const String webstoreAdminContacts = '/webstore/admin/contacts';
+  static const String webstoreAdminCountries = '/webstore/admin/countries';
+  static const String webstoreAdminAddresses = '/webstore/admin/addresses';
 }
 
 class AppNavigator {

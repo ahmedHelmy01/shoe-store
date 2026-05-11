@@ -45,6 +45,7 @@
     "daily_report": "Daily Report",
     "notifications": "Notifications",
     "about_us": "About Us",
+    "terms_and_conditions": "Terms and Conditions",
     "contact_us": "Contact Us",
     "forgot_password": "Forgot password?",
     "no_account": "Don't have an account?",
@@ -121,7 +122,25 @@
       "have_account": "Already have an account?",
       "register_now": "Register Now",
       "login_now": "Login Now",
-      "register_success": "Account created successfully"
+      "register_success": "Account created successfully",
+      "otp_sent": "Verification code sent",
+      "otp_verified": "Verification successful",
+      "otp_resent": "Code resent successfully",
+      "password_reset_success": "Password changed successfully",
+      "select_branch": "Your Branch",
+      "select_branch_hint": "Choose the nearest branch",
+      "branch_required": "Please select a branch",
+      "register_success_title": "Account Created Successfully",
+      "register_success_message": "Welcome to El-Tarshooby family! You can start shopping now.",
+      "logout_title": "Logout",
+      "logout_confirm": "Are you sure you want to logout?",
+      "logout_button": "Logout",
+      "login_or_register": "Login / Create Account",
+      "welcome_back": "Welcome Back",
+      "welcome_family": "Welcome to El-Tarshooby Family",
+      "guest_title": "New Visitor?",
+      "guest_subtitle": "Login for a better experience",
+      "resend_timer": "Resend in"
     },
     "home": {
       "search_hint": "Search for a product...",
@@ -224,6 +243,25 @@
       "visa_mastercard": "Visa / Mastercard",
       "instapay": "InstaPay",
       "cash_on_delivery": "Cash on Delivery"
+    },
+    "profile": {
+      "title": "My Account",
+      "personal_info": "Personal Information",
+      "store_location": "Store & Location",
+      "full_name": "Full Name",
+      "email_address": "Email Address",
+      "phone_number": "Phone Number",
+      "new_password": "New Password (Optional)",
+      "home_address": "Home Address",
+      "your_branch": "Your Branch",
+      "select_branch": "Select Branch",
+      "save_changes": "Save Changes",
+      "delete_account": "Delete Account",
+      "delete_confirm": "Are you sure you want to delete your account? This action is permanent.",
+      "delete_button": "Delete Now",
+      "points": "Points",
+      "points_earned": "points earned",
+      "update_success": "Profile updated successfully"
     }
   }
 }

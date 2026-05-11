@@ -119,6 +119,20 @@ class CouponDetailsDialog extends StatelessWidget {
       id: coupon.id.toString(),
       icon: Icons.confirmation_number_rounded,
       children: [
+        if (coupon.imageUrl != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                coupon.imageUrl!,
+                height: 180,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+              ),
+            ),
+          ),
         AdminDetailsDialog.buildDetailRow(context, 'Code', coupon.code, Icons.qr_code_rounded),
         Row(
           children: [

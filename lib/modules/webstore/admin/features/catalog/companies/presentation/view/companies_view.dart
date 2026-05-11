@@ -51,10 +51,11 @@ class CompaniesView extends ConsumerWidget {
             child: CompanyForm(
               initial: state.editingItem,
               isSaving: state.isSaving,
-              onSave: (data) async {
+              onSave: (data, imageFile) async {
                 final isSuccess = await notifier.commitSave(
                   data,
                   id: state.editingItem?.id,
+                  imageFile: imageFile,
                 );
                 if (!context.mounted) return;
 

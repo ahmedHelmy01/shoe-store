@@ -1,3 +1,5 @@
+import 'package:erp/core/network/network_url.dart';
+
 class SliderRow {
   final int id;
   final String title;
@@ -5,6 +7,7 @@ class SliderRow {
   final String? content;
   final String? contentAr;
   final String? image;
+  final String? imageUrl;
   final String? titleUrl;
   final String? openTarget;
   final String? location;
@@ -21,6 +24,7 @@ class SliderRow {
     this.content,
     this.contentAr,
     this.image,
+    this.imageUrl,
     this.titleUrl,
     this.openTarget,
     this.location,
@@ -32,13 +36,19 @@ class SliderRow {
   });
 
   factory SliderRow.fromJson(Map<String, dynamic> json) {
+    final imagePath = json['image'] as String?;
+    final providedUrl = json['image_url'] as String?;
+
     return SliderRow(
       id: json['id'] as int? ?? 0,
       title: json['title'] as String? ?? '',
       titleAr: json['title_ar'] as String?,
       content: json['content'] as String?,
       contentAr: json['content_ar'] as String?,
-      image: json['image'] as String?,
+      image: imagePath,
+      imageUrl: (providedUrl != null && providedUrl.isNotEmpty)
+          ? providedUrl
+          : (imagePath != null ? NetworkUrl.fullUrl(imagePath) : null),
       titleUrl: json['title_url'] as String?,
       openTarget: json['open_target'] as String?,
       location: json['location'] as String?,
@@ -52,4 +62,3 @@ class SliderRow {
     );
   }
 }
-

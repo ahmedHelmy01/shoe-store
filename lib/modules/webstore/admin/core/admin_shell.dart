@@ -9,6 +9,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_top
 import 'package:erp/modules/webstore/admin/features/dashboard/presentation/view/dashboard_view.dart';
 import 'package:erp/modules/webstore/admin/features/settings/presentation/view/settings_view.dart';
 import 'package:erp/modules/webstore/admin/features/users/presentation/view/users_view.dart';
+import 'package:erp/modules/webstore/admin/features/addresses/presentation/view/addresses_view.dart';
 import 'package:erp/modules/webstore/admin/features/orders/presentation/view/orders_management/orders_view.dart';
 
 import 'package:erp/modules/webstore/admin/features/catalog/products/presentation/view/products_view.dart';
@@ -37,6 +38,7 @@ import 'package:erp/modules/webstore/admin/features/customers/customer_groups/pr
 import 'package:erp/modules/webstore/admin/features/customers/reports/presentation/view/client_reports_view.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/presentation/view/warehouses_view.dart';
 import 'package:erp/modules/webstore/admin/features/contacts/presentation/view/contacts_view.dart';
+import 'package:erp/modules/webstore/admin/features/countries/presentation/view/countries_view.dart';
 
 class AdminShell extends ConsumerStatefulWidget {
   final AdminRouteId initial;
@@ -179,6 +181,8 @@ class _AdminShellState extends ConsumerState<AdminShell> {
       AdminRouteId.paymentMethods => const PaymentMethodsView(),
       AdminRouteId.cities => const CitiesView(),
       AdminRouteId.governorates => const GovernoratesView(),
+      AdminRouteId.countries => const CountriesView(),
+      AdminRouteId.addresses => const AddressesView(),
       AdminRouteId.settings => SettingsView(
           key: key,
           title: 'Settings',

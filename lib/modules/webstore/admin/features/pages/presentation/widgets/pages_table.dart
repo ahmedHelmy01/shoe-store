@@ -38,9 +38,9 @@ class PagesTable extends StatelessWidget {
         ),
         AdminColumn<PageRow>(
           title: 'Image',
-          cell: (_, p) => p.image != null
+          cell: (_, p) => p.imageUrl != null
               ? Image.network(
-                  p.image!,
+                  p.imageUrl!,
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
@@ -105,13 +105,13 @@ class PageDetailsDialog extends StatelessWidget {
       id: page.id.toString(),
       icon: Icons.article_rounded,
       children: [
-        if (page.image != null)
+        if (page.imageUrl != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
-                page.image!,
+                page.imageUrl!,
                 height: 180,
                 width: double.infinity,
                 fit: BoxFit.cover,

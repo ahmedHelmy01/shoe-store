@@ -38,9 +38,9 @@ class SlidersTable extends StatelessWidget {
         ),
         AdminColumn<SliderRow>(
           title: 'Image',
-          cell: (_, s) => s.image != null
+          cell: (_, s) => s.imageUrl != null
               ? Image.network(
-                  s.image!,
+                  s.imageUrl!,
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
@@ -105,17 +105,36 @@ class SliderDetailsDialog extends StatelessWidget {
       id: slider.id.toString(),
       icon: Icons.slideshow_rounded,
       children: [
-        if (slider.image != null)
+        if (slider.imageUrl != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
-                slider.image!,
+                slider.imageUrl!,
                 height: 180,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                errorBuilder: (_, __, ___) => Container(
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.image_outlined, size: 36, color: Colors.grey.withValues(alpha: 0.5)),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Image saved on server',
+                          style: TextStyle(color: Colors.grey.withValues(alpha: 0.7), fontSize: 12, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -137,14 +156,6 @@ class SliderDetailsDialog extends StatelessWidget {
         const SizedBox(height: 20),
         AdminDetailsDialog.buildDetailRow(context, 'Content (EN)', slider.content ?? 'N/A', Icons.description_rounded),
         AdminDetailsDialog.buildDetailRow(context, 'Content (AR)', slider.contentAr ?? 'N/A', Icons.description_outlined),
-        AdminDetailsDialog.buildDetailRow(context, 'Title URL', slider.titleUrl ?? 'N/A', Icons.link_rounded),
-        Row(
-          children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Open Target', slider.openTarget ?? '_self', Icons.open_in_new_rounded, bottomPadding: 0)),
-            const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Location', slider.location ?? 'N/A', Icons.location_on_rounded, bottomPadding: 0)),
-          ],
-        ),
       ],
     );
   }

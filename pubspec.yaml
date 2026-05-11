@@ -36,7 +36,6 @@ dependencies:
 
   # Storage
   shared_preferences: ^2.5.3
-  # flutter_secure_storage removed (tokens stored in SharedPreferences)
 
   # Localization
   easy_localization: ^3.0.7
@@ -53,6 +52,7 @@ dependencies:
   syncfusion_flutter_pdf: ^33.1.47
   arabic_reshaper: ^0.0.1
   bidi: ^2.0.13
+  image_picker: ^1.2.2
 
 dev_dependencies:
   flutter_test:
@@ -77,10 +77,8 @@ flutter:
     - assets/webstore/images/
     - assets/webstore/fonts/
     - assets/config/
+
   fonts:
     - family: store
       fonts:
         - asset: assets/webstore/fonts/store-Regular.otf
-    - family: Harmattan
-      fonts:
-        - asset: assets/common/fonts/Harmattan-Regular.ttf

@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/network/endpoints/endpoints_registry.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/categories/data/datasource/categories_remote_datasource.dart';
@@ -12,7 +13,7 @@ abstract class ICategoriesRepository {
     int? perPage,
   });
 
-  Future<ApiResult<CategoryRow>> saveCategory(Map<String, dynamic> data, {int? id});
+  Future<ApiResult<CategoryRow>> saveCategory(Map<String, dynamic> data, {int? id, XFile? imageFile, void Function(double)? onProgress});
 
   Future<ApiResult<void>> deleteCategory(int id);
 }
@@ -35,14 +36,21 @@ class CategoriesRepository extends AdminBaseRepository implements ICategoriesRep
   }
 
   @override
-  Future<ApiResult<CategoryRow>> saveCategory(Map<String, dynamic> data, {int? id}) {
+  Future<ApiResult<CategoryRow>> saveCategory(Map<String, dynamic> data, {int? id, XFile? imageFile, void Function(double)? onProgress}) {
     return safeApiCall(() async {
-      final json = id == null
-          ? await _ds.postData(ApiEndpoints.webstore.admin.categories, data)
-          : await _ds.putData(
-              ApiEndpoints.withId(ApiEndpoints.webstore.admin.categories, id),
-              data,
-            );
+      final path = id == null
+          ? ApiEndpoints.webstore.admin.categories
+          : ApiEndpoints.withId(ApiEndpoints.webstore.admin.categories, id);
+
+      final Map<String, dynamic> json;
+      if (imageFile != null) {
+        final fields = toMultipartFields(data);
+        json = id == null
+            ? await _ds.postMultipart(path, fields: fields, files: {'image': imageFile}, onProgress: onProgress)
+            : await _ds.putMultipart(path, fields: fields, files: {'image': imageFile}, onProgress: onProgress);
+      } else {
+        json = id == null ? await _ds.postData(path, data) : await _ds.putData(path, data);
+      }
       return parseSingle(json, (j) => CategoryRow.fromJson(j));
     });
   }

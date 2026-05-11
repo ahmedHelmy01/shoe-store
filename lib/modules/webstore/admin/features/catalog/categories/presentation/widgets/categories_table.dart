@@ -120,6 +120,20 @@ class CategoryDetailsDialog extends StatelessWidget {
       id: category.id.toString(),
       icon: Icons.category_rounded,
       children: [
+        if (category.imageUrl != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                category.imageUrl!,
+                height: 180,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+              ),
+            ),
+          ),
         AdminDetailsDialog.buildDetailRow(context, 'Name (English)', category.name, Icons.language_rounded),
         AdminDetailsDialog.buildDetailRow(context, 'Name (Arabic)', category.nameAr ?? 'N/A', Icons.translate_rounded),
         AdminDetailsDialog.buildDetailRow(context, 'Code', category.code ?? 'N/A', Icons.qr_code_rounded),

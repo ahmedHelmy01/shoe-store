@@ -1,6 +1,6 @@
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/repository/base_repository.dart';
-import 'package:erp/modules/webstore/cms/data/datasource/webstore_cms_remote_datasource.dart';
+import 'package:erp/modules/webstore/home/data/webstore_cms_remote_datasource.dart';
 
 abstract class IBoardingRepository {
   Future<ApiResult<Map<String, dynamic>>> getBoardings();

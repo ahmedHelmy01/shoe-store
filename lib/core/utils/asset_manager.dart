@@ -2,7 +2,7 @@
 /// Instead of hardcoding asset paths, this class provides a centralized way
 /// to access assets across the application.
 class AssetManager {
-  static const String _images = "assets/images/";
+  static const String _images = "assets/common/images/";
   static const String _webstoreImages = "assets/webstore/images/";
 
   // ---------------- General Images ----------------
@@ -21,21 +21,19 @@ class AssetManager {
       "${_webstoreImages}WhatsApp_Image_2025-12-25_at_17.23.37-removebg-preview.png";
 
   static String get drugs => "${_webstoreImages}drugs.png";
-  static String get medicine => "${_webstoreImages}medicine.png";
   static String get syringe => "${_webstoreImages}syringe.png";
   static String get discount => "${_webstoreImages}discount.png";
   static String get bestSeller => "${_webstoreImages}best-seller.png";
   static String get bestSale => "${_webstoreImages}bestsale.png";
-  static String get promotionCard => "${_webstoreImages}promotion_card.png";
   static String get splashTarshouby => "${_webstoreImages}splash_tarshouby.png";
-  static String get frameTarshoby => "${_webstoreImages}frametarshoby.png";
   static String get done => "${_webstoreImages}done.png";
   static String get face => "${_webstoreImages}face.png";
-  static String get sale => "${_webstoreImages}sale.png";
   static String get car => "${_webstoreImages}car.png";
+  static String get medicine => "${_webstoreImages}medicine.png";
+  static String get medicalServices => "${_webstoreImages}medical-services.png";
+  static String get information => "${_images}information.png";
 
   // Icons/Labels
-  static String get ratingLabel => "${_webstoreImages}rating_label.png";
   static String get camera => "${_webstoreImages}camera.png";
   static String get shopping => "${_webstoreImages}shopping.png";
   static String get specialTag => "${_webstoreImages}special-tag.png";

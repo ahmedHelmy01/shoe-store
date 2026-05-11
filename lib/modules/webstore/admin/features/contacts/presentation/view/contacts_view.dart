@@ -277,6 +277,11 @@ class _ContactListItem extends ConsumerWidget {
                           contact.email,
                           style: TextStyle(color: Colors.black.withValues(alpha: 0.5), fontSize: 13),
                         ),
+                        if (contact.mobile != null)
+                          Text(
+                            contact.mobile!,
+                            style: TextStyle(color: Colors.black.withValues(alpha: 0.5), fontSize: 13),
+                          ),
                       ],
                     ),
                   ),

@@ -2,6 +2,7 @@ class ContactModel {
   final int id;
   final String name;
   final String email;
+  final String? mobile;
   final String subject;
   final String message;
   final bool isRead;
@@ -11,6 +12,7 @@ class ContactModel {
     required this.id,
     required this.name,
     required this.email,
+    this.mobile,
     required this.subject,
     required this.message,
     required this.isRead,
@@ -22,6 +24,7 @@ class ContactModel {
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       email: json['email'] ?? '',
+      mobile: json['mobile']?.toString(),
       subject: json['subject'] ?? '',
       message: json['message'] ?? '',
       isRead: json['is_read'] == true || json['is_read'] == 1,

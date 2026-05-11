@@ -1,12 +1,14 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/modules/webstore/admin/features/ads/data/models/ad_row.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
 
 class AdForm extends StatefulWidget {
   final AdRow? initial;
   final bool isSaving;
-  final void Function(Map<String, dynamic> data) onSave;
+  final void Function(Map<String, dynamic> data, XFile? imageFile) onSave;
 
   const AdForm({
     super.key,
@@ -25,10 +27,13 @@ class _AdFormState extends State<AdForm> {
   late final TextEditingController _titleArCtrl;
   late final TextEditingController _contentCtrl;
   late final TextEditingController _contentArCtrl;
-  late final TextEditingController _imageCtrl;
   late final TextEditingController _locationCtrl;
   late final TextEditingController _linkUrlCtrl;
   late bool _isActive;
+  
+  XFile? _imageFile;
+  // Removed _uploadedImagePath as we now use direct file upload
+  bool _removeInitialImage = false;
 
   @override
   void initState() {
@@ -37,7 +42,6 @@ class _AdFormState extends State<AdForm> {
     _titleArCtrl = TextEditingController(text: widget.initial?.titleAr ?? '');
     _contentCtrl = TextEditingController(text: widget.initial?.content ?? '');
     _contentArCtrl = TextEditingController(text: widget.initial?.contentAr ?? '');
-    _imageCtrl = TextEditingController(text: widget.initial?.image ?? '');
     _locationCtrl = TextEditingController(text: widget.initial?.location ?? 'home');
     _linkUrlCtrl = TextEditingController(text: widget.initial?.linkUrl ?? '');
     _isActive = widget.initial?.isActive ?? true;
@@ -49,7 +53,6 @@ class _AdFormState extends State<AdForm> {
     _titleArCtrl.dispose();
     _contentCtrl.dispose();
     _contentArCtrl.dispose();
-    _imageCtrl.dispose();
     _locationCtrl.dispose();
     _linkUrlCtrl.dispose();
     super.dispose();
@@ -57,16 +60,21 @@ class _AdFormState extends State<AdForm> {
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
-      widget.onSave({
+      final data = <String, dynamic>{
         'title': _titleCtrl.text.trim(),
         'title_ar': _titleArCtrl.text.trim(),
         'content': _contentCtrl.text.trim(),
         'content_ar': _contentArCtrl.text.trim(),
-        'image': _imageCtrl.text.trim(),
         'location': _locationCtrl.text.trim(),
         'link_url': _linkUrlCtrl.text.trim(),
         'is_active': _isActive,
-      });
+      };
+
+      if (_removeInitialImage && _imageFile == null) {
+        data['image'] = '';
+      }
+
+      widget.onSave(data, _imageFile);
     }
   }
 
@@ -120,12 +128,6 @@ class _AdFormState extends State<AdForm> {
               ],
             ),
             const SizedBox(height: 18),
-            AppTextField(
-              controller: _imageCtrl,
-              label: 'Image Path/URL',
-              hint: 'uploads/ads/offer.jpg',
-            ),
-            const SizedBox(height: 18),
             Row(
               children: [
                 Expanded(
@@ -145,7 +147,14 @@ class _AdFormState extends State<AdForm> {
                 ),
               ],
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 20),
+            AdminImagePicker(
+              label: 'Ad Image',
+              initialImage: widget.initial?.imageUrl,
+              onImageSelected: (file) => setState(() => _imageFile = file),
+              onRemoveInitial: () => setState(() => _removeInitialImage = true),
+            ),
+            const SizedBox(height: 20),
             SwitchListTile(
               title: const Text('Is Active'),
               subtitle: const Text('Hide or show this ad on the storefront'),
@@ -165,4 +174,3 @@ class _AdFormState extends State<AdForm> {
     );
   }
 }
-

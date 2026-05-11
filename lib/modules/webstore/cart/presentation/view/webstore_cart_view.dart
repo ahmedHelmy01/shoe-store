@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/common_widget/app_bar/common_app_bar.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
-import 'package:erp/modules/webstore/home/data/models/webstore_mock_data.dart';
 import 'package:erp/core/router/app_navigator.dart';
+import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import '../widgets/cart_item_card.dart';
 
 class WebStoreCartView extends StatefulWidget {
@@ -14,22 +14,18 @@ class WebStoreCartView extends StatefulWidget {
 }
 
 class _WebStoreCartViewState extends State<WebStoreCartView> {
-  // Mock Cart State
+  // Mock Cart State - Starting empty to avoid mock dependency
   late List<Map<String, dynamic>> cartItems;
 
   @override
   void initState() {
     super.initState();
-    cartItems = [
-      {'product': WebStoreMockData.featuredProducts[0], 'quantity': 1},
-      {'product': WebStoreMockData.featuredProducts[1], 'quantity': 1},
-      {'product': WebStoreMockData.featuredProducts[2], 'quantity': 1},
-    ];
+    cartItems = [];
   }
 
   double get subtotal => cartItems.fold(
-      0, (sum, item) => sum + (item['product'] as MockProduct).price * item['quantity']);
-  double get shipping => 25.0;
+      0, (sum, item) => sum + (item['product'] as WebStoreProduct).price * item['quantity']);
+  double get shipping => cartItems.isEmpty ? 0 : 25.0;
   double get tax => 0.0;
   double get total => subtotal + shipping + tax;
 
@@ -41,17 +37,10 @@ class _WebStoreCartViewState extends State<WebStoreCartView> {
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: CommonAppBar(
         titleText: 'Cart (${cartItems.length})',
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: Text(
-              'Edit',
-              style: TextStyle(color: theme.primaryColor, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ],
       ),
-      body: Column(
+      body: cartItems.isEmpty 
+          ? _buildEmptyState(context)
+          : Column(
         children: [
           Expanded(
             child: ListView.builder(
@@ -74,6 +63,30 @@ class _WebStoreCartViewState extends State<WebStoreCartView> {
           
           // Summary Section
           _buildSummary(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.shopping_cart_outlined, size: 80.sp, color: Colors.grey.withOpacity(0.5)),
+          24.verticalSpace,
+          Text(
+            'Your cart is empty',
+            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: Colors.grey),
+          ),
+          12.verticalSpace,
+          AppButton(
+            width: 150.w,
+            onPressed: () {
+              // Maybe go back to home or catalog
+            },
+            child: const Text('Shop Now'),
+          ),
         ],
       ),
     );

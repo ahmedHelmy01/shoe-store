@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/network/endpoints/endpoints_registry.dart';
 import 'package:erp/modules/webstore/admin/features/ads/data/datasource/ads_remote_datasource.dart';
@@ -11,7 +12,7 @@ abstract class IAdsRepository {
     String? search,
   });
 
-  Future<ApiResult<AdRow>> saveAd(Map<String, dynamic> data, {int? id});
+  Future<ApiResult<AdRow>> saveAd(Map<String, dynamic> data, {int? id, XFile? imageFile, void Function(double)? onProgress});
 
   Future<ApiResult<void>> deleteAd(int id);
 }
@@ -33,14 +34,21 @@ class AdsRepository extends AdminBaseRepository implements IAdsRepository {
   }
 
   @override
-  Future<ApiResult<AdRow>> saveAd(Map<String, dynamic> data, {int? id}) {
+  Future<ApiResult<AdRow>> saveAd(Map<String, dynamic> data, {int? id, XFile? imageFile, void Function(double)? onProgress}) {
     return safeApiCall(() async {
-      final json = id == null
-          ? await _ds.postData(ApiEndpoints.webstore.admin.ads, data)
-          : await _ds.putData(
-              ApiEndpoints.withId(ApiEndpoints.webstore.admin.ads, id),
-              data,
-            );
+      final path = id == null
+          ? ApiEndpoints.webstore.admin.ads
+          : ApiEndpoints.withId(ApiEndpoints.webstore.admin.ads, id);
+
+      final Map<String, dynamic> json;
+      if (imageFile != null) {
+        final fields = toMultipartFields(data);
+        json = id == null
+            ? await _ds.postMultipart(path, fields: fields, files: {'image': imageFile}, onProgress: onProgress)
+            : await _ds.putMultipart(path, fields: fields, files: {'image': imageFile}, onProgress: onProgress);
+      } else {
+        json = id == null ? await _ds.postData(path, data) : await _ds.putData(path, data);
+      }
       return parseSingle(json, (j) => AdRow.fromJson(j));
     });
   }

@@ -20,6 +20,7 @@ class WebStoreAuthRemoteDataSource {
     required String mobile,
     required String password,
     required String passwordConfirmation,
+    int? branchId,
   }) {
     return _networkService.post(
       ApiEndpoints.webstore.auth.register,
@@ -29,6 +30,7 @@ class WebStoreAuthRemoteDataSource {
         'mobile': mobile,
         'password': password,
         'password_confirmation': passwordConfirmation,
+        if (branchId != null) 'branch_id': branchId,
       },
     );
   }
@@ -118,6 +120,37 @@ class WebStoreAuthRemoteDataSource {
   Future<dynamic> refreshToken() {
     return _networkService.post(
       ApiEndpoints.webstore.auth.refreshToken,
+    );
+  }
+
+  // ─── Profile Operations ────────────────────────────
+
+  Future<dynamic> getProfile() {
+    return _networkService.get(
+      ApiEndpoints.webstore.profile.profile,
+    );
+  }
+
+  Future<dynamic> updateProfile({
+    String? name,
+    String? email,
+    String? mobile,
+    String? password,
+  }) {
+    return _networkService.put(
+      ApiEndpoints.webstore.profile.profile,
+      body: {
+        if (name != null) 'name': name,
+        if (email != null) 'email': email,
+        if (mobile != null) 'mobile': mobile,
+        if (password != null) 'password': password,
+      },
+    );
+  }
+
+  Future<dynamic> deleteAccount() {
+    return _networkService.delete(
+      ApiEndpoints.webstore.profile.profile,
     );
   }
 }

@@ -1,12 +1,14 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/modules/webstore/admin/features/pages/data/models/page_row.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
 
 class PageForm extends StatefulWidget {
   final PageRow? initial;
   final bool isSaving;
-  final void Function(Map<String, dynamic> data) onSave;
+  final void Function(Map<String, dynamic> data, XFile? imageFile) onSave;
 
   const PageForm({
     super.key,
@@ -26,8 +28,10 @@ class _PageFormState extends State<PageForm> {
   late final TextEditingController _contentCtrl;
   late final TextEditingController _contentArCtrl;
   late final TextEditingController _slugCtrl;
-  late final TextEditingController _imageCtrl;
   bool _isActive = true;
+  XFile? _imageFile;
+  // Removed _uploadedImagePath as we now use direct file upload
+  bool _removeInitialImage = false;
 
   @override
   void initState() {
@@ -37,7 +41,6 @@ class _PageFormState extends State<PageForm> {
     _contentCtrl = TextEditingController(text: widget.initial?.content ?? '');
     _contentArCtrl = TextEditingController(text: widget.initial?.contentAr ?? '');
     _slugCtrl = TextEditingController(text: widget.initial?.slug ?? '');
-    _imageCtrl = TextEditingController(text: widget.initial?.image ?? '');
     _isActive = widget.initial?.isActive ?? true;
   }
 
@@ -48,21 +51,28 @@ class _PageFormState extends State<PageForm> {
     _contentCtrl.dispose();
     _contentArCtrl.dispose();
     _slugCtrl.dispose();
-    _imageCtrl.dispose();
     super.dispose();
   }
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
-      widget.onSave({
+      final data = <String, dynamic>{
         'title': _titleCtrl.text.trim(),
         'title_ar': _titleArCtrl.text.trim(),
         'content': _contentCtrl.text.trim(),
         'content_ar': _contentArCtrl.text.trim(),
         'slug': _slugCtrl.text.trim(),
-        'image': _imageCtrl.text.trim(),
         'is_active': _isActive,
-      });
+      };
+
+      if (_removeInitialImage && _imageFile == null) {
+        data['image'] = '';
+      } else if (_imageFile == null && widget.initial?.image != null) {
+        // Keep existing image path if not changed or removed
+        data['image'] = widget.initial!.image;
+      }
+
+      widget.onSave(data, _imageFile);
     }
   }
 
@@ -106,13 +116,6 @@ class _PageFormState extends State<PageForm> {
             ),
             const SizedBox(height: 18),
             AppTextField(
-              controller: _imageCtrl,
-              label: 'Banner Image Path/URL',
-              hint: 'uploads/pages/about.jpg',
-              borderRadius: 14,
-            ),
-            const SizedBox(height: 18),
-            AppTextField(
               controller: _contentCtrl,
               label: 'Page Content (EN)',
               hint: 'Enter page content in English...',
@@ -127,7 +130,14 @@ class _PageFormState extends State<PageForm> {
               maxLines: 6,
               borderRadius: 14,
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 20),
+            AdminImagePicker(
+              label: 'Featured Image',
+              initialImage: widget.initial?.imageUrl,
+              onImageSelected: (file) => setState(() => _imageFile = file),
+              onRemoveInitial: () => setState(() => _removeInitialImage = true),
+            ),
+            const SizedBox(height: 20),
             SwitchListTile(
               title: const Text('Published', style: TextStyle(fontWeight: FontWeight.bold)),
               subtitle: const Text('Make this page visible to customers'),

@@ -8,6 +8,7 @@ abstract class ICatalogRepository {
   Future<ApiResult<Map<String, dynamic>>> getCategories({Map<String, dynamic>? queryParams});
   Future<ApiResult<Map<String, dynamic>>> getCategoryDetail(int id);
   Future<ApiResult<Map<String, dynamic>>> searchProducts(String query);
+  Future<ApiResult<Map<String, dynamic>>> getManufacturers();
 }
 
 class CatalogRepository extends BaseRepository implements ICatalogRepository {
@@ -34,4 +35,8 @@ class CatalogRepository extends BaseRepository implements ICatalogRepository {
   @override
   Future<ApiResult<Map<String, dynamic>>> searchProducts(String query) =>
       safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.searchProducts(query));
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getManufacturers() =>
+      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.getManufacturers());
 }

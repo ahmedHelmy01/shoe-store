@@ -48,4 +48,27 @@ abstract class AdminBaseRepository extends BaseRepository {
     final data = json['data'] as Map<String, dynamic>? ?? json;
     return fromJson(data);
   }
+
+  /// Converts a data map to multipart-compatible string fields.
+  /// Booleans → '1'/'0', nulls → '', Lists → indexed keys.
+  Map<String, String> toMultipartFields(Map<String, dynamic> data) {
+    final fields = <String, String>{};
+    data.forEach((key, value) {
+      if (value is bool) {
+        fields[key] = value ? '1' : '0';
+      } else if (value is List) {
+        for (var i = 0; i < value.length; i++) {
+          final item = value[i];
+          if (item is bool) {
+            fields['$key[$i]'] = item ? '1' : '0';
+          } else {
+            fields['$key[$i]'] = item?.toString() ?? '';
+          }
+        }
+      } else {
+        fields[key] = value?.toString() ?? '';
+      }
+    });
+    return fields;
+  }
 }

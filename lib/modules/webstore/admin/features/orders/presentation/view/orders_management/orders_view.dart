@@ -7,20 +7,30 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_pag
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_row.dart';
 import 'package:erp/modules/webstore/admin/features/orders/presentation/view_model/orders_view_model.dart';
+import 'package:erp/modules/webstore/admin/features/users/presentation/view_model/users_view_model.dart';
+import 'package:erp/modules/webstore/admin/features/users/data/models/user_row.dart';
 
 import 'widgets/orders_table.dart';
 import 'widgets/order_form.dart';
 import 'widgets/order_card.dart';
 
-class OrdersView extends ConsumerWidget {
+class OrdersView extends ConsumerStatefulWidget {
   const OrdersView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<OrdersView> createState() => _OrdersViewState();
+}
+
+class _OrdersViewState extends ConsumerState<OrdersView> {
+  int? _selectedCustomerId;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final state = ref.watch(ordersVmProvider);
     final notifier = ref.read(ordersVmProvider.notifier);
+    final usersState = ref.watch(usersVmProvider);
 
     return Stack(
       children: [
@@ -33,7 +43,11 @@ class OrdersView extends ConsumerWidget {
                 title: 'Customer Orders',
                 onRefresh: () => notifier.fetch(),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
+              
+              _buildCustomerSelector(usersState, notifier),
+              
+              const SizedBox(height: 24),
               Expanded(child: _buildBody(context, state, isDark, notifier)),
             ],
           ),
@@ -58,6 +72,45 @@ class OrdersView extends ConsumerWidget {
     );
   }
 
+  Widget _buildCustomerSelector(AdminCrudState<UserRow> usersState, OrdersVm notifier) {
+    if (usersState is! AdminCrudData<UserRow>) {
+      return const CircularProgressIndicator();
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<int>(
+          isExpanded: true,
+          hint: const Text('Filter by Customer (Optional)'),
+          value: _selectedCustomerId,
+          items: [
+            const DropdownMenuItem<int>(
+              value: null,
+              child: Text('All Customers'),
+            ),
+            ...usersState.items.map((user) {
+              return DropdownMenuItem<int>(
+                value: user.id,
+                child: Text('${user.name} (${user.mobile ?? "No Mobile"})'),
+              );
+            }),
+          ],
+          onChanged: (val) {
+            setState(() => _selectedCustomerId = val);
+            notifier.setCustomerId(val);
+            notifier.fetch();
+          },
+        ),
+      ),
+    );
+  }
+
   Widget _buildBody(BuildContext context, AdminCrudState<OrderRow> state, bool isDark, OrdersVm notifier) {
     return switch (state) {
       AdminCrudLoading() => const Center(child: CircularProgressIndicator()),
@@ -78,16 +131,21 @@ class OrdersView extends ConsumerWidget {
               ],
             ),
             clipBehavior: Clip.antiAlias,
-            child: OrdersTable(
-              items: items,
-              onEdit: (o) => notifier.openEdit(o),
-              onDelete: (id) => notifier.commitDelete(id),
-              cardBuilder: (context, o) => OrderCard(
-                order: o,
-                onEdit: () => notifier.openEdit(o),
-                onDelete: () => notifier.commitDelete(o.id),
-              ),
-            ),
+            child: items.isEmpty 
+              ? const Center(child: Padding(
+                  padding: EdgeInsets.all(40.0),
+                  child: Text('No orders found for this selection.'),
+                ))
+              : OrdersTable(
+                  items: items,
+                  onEdit: (o) => notifier.openEdit(o),
+                  onDelete: (id) => notifier.commitDelete(id),
+                  cardBuilder: (context, o) => OrderCard(
+                    order: o,
+                    onEdit: () => notifier.openEdit(o),
+                    onDelete: () => notifier.commitDelete(o.id),
+                  ),
+                ),
           ),
         ),
     };

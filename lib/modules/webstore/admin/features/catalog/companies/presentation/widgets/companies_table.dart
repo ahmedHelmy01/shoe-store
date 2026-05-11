@@ -72,6 +72,20 @@ class CompaniesTable extends StatelessWidget {
                   id: c.id.toString(),
                   icon: Icons.business_rounded,
                   children: [
+                    if (c.logoUrl != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            c.logoUrl!,
+                            height: 120,
+                            width: double.infinity,
+                            fit: BoxFit.contain,
+                            errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                          ),
+                        ),
+                      ),
                     Row(
                       children: [
                         Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', c.name, Icons.language_rounded, bottomPadding: 0)),

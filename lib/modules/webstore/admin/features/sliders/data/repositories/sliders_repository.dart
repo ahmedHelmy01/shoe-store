@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/network/endpoints/endpoints_registry.dart';
 import 'package:erp/modules/webstore/admin/features/sliders/data/datasource/sliders_remote_datasource.dart';
@@ -11,7 +12,7 @@ abstract class ISlidersRepository {
     String? search,
   });
 
-  Future<ApiResult<SliderRow>> saveSlider(Map<String, dynamic> data, {int? id});
+  Future<ApiResult<SliderRow>> saveSlider(Map<String, dynamic> data, {int? id, XFile? imageFile, void Function(double)? onProgress});
 
   Future<ApiResult<void>> deleteSlider(int id);
 }
@@ -33,14 +34,25 @@ class SlidersRepository extends AdminBaseRepository implements ISlidersRepositor
   }
 
   @override
-  Future<ApiResult<SliderRow>> saveSlider(Map<String, dynamic> data, {int? id}) {
+  Future<ApiResult<SliderRow>> saveSlider(Map<String, dynamic> data, {int? id, XFile? imageFile, void Function(double)? onProgress}) {
     return safeApiCall(() async {
-      final json = id == null
-          ? await _ds.postData(ApiEndpoints.webstore.admin.sliders, data)
-          : await _ds.putData(
-              ApiEndpoints.withId(ApiEndpoints.webstore.admin.sliders, id),
-              data,
-            );
+      final path = id == null
+          ? ApiEndpoints.webstore.admin.sliders
+          : ApiEndpoints.withId(ApiEndpoints.webstore.admin.sliders, id);
+
+      final Map<String, dynamic> json;
+      if (imageFile != null) {
+        final fields = toMultipartFields(data);
+        if (id != null) {
+          // Laravel/PHP workaround: use POST with _method=PUT to handle files in updates
+          fields['_method'] = 'PUT';
+          json = await _ds.postMultipart(path, fields: fields, files: {'image': imageFile}, onProgress: onProgress);
+        } else {
+          json = await _ds.postMultipart(path, fields: fields, files: {'image': imageFile}, onProgress: onProgress);
+        }
+      } else {
+        json = id == null ? await _ds.postData(path, data) : await _ds.putData(path, data);
+      }
       return parseSingle(json, (j) => SliderRow.fromJson(j));
     });
   }

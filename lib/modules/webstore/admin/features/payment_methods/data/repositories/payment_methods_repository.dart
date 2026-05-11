@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/network/endpoints/endpoints_registry.dart';
 import 'package:erp/modules/webstore/admin/features/payment_methods/data/datasource/payment_methods_remote_datasource.dart';
@@ -11,9 +12,11 @@ abstract class IPaymentMethodsRepository {
     String? search,
   });
 
-  Future<ApiResult<PaymentMethodRow>> savePaymentMethod(Map<String, dynamic> data, {int? id});
+  Future<ApiResult<PaymentMethodRow>> savePaymentMethod(Map<String, dynamic> data, {int? id, XFile? imageFile, void Function(double)? onProgress});
 
   Future<ApiResult<void>> deletePaymentMethod(int id);
+
+  Future<ApiResult<List<Map<String, dynamic>>>> getPaymentMethodTypes();
 }
 
 class PaymentMethodsRepository extends AdminBaseRepository implements IPaymentMethodsRepository {
@@ -33,14 +36,21 @@ class PaymentMethodsRepository extends AdminBaseRepository implements IPaymentMe
   }
 
   @override
-  Future<ApiResult<PaymentMethodRow>> savePaymentMethod(Map<String, dynamic> data, {int? id}) {
+  Future<ApiResult<PaymentMethodRow>> savePaymentMethod(Map<String, dynamic> data, {int? id, XFile? imageFile, void Function(double)? onProgress}) {
     return safeApiCall(() async {
-      final json = id == null
-          ? await _ds.postData(ApiEndpoints.webstore.admin.paymentMethods, data)
-          : await _ds.putData(
-              ApiEndpoints.withId(ApiEndpoints.webstore.admin.paymentMethods, id),
-              data,
-            );
+      final path = id == null
+          ? ApiEndpoints.webstore.admin.paymentMethods
+          : ApiEndpoints.withId(ApiEndpoints.webstore.admin.paymentMethods, id);
+
+      final Map<String, dynamic> json;
+      if (imageFile != null) {
+        final fields = toMultipartFields(data);
+        json = id == null
+            ? await _ds.postMultipart(path, fields: fields, files: {'image': imageFile}, onProgress: onProgress)
+            : await _ds.putMultipart(path, fields: fields, files: {'image': imageFile}, onProgress: onProgress);
+      } else {
+        json = id == null ? await _ds.postData(path, data) : await _ds.putData(path, data);
+      }
       return parseSingle(json, (j) => PaymentMethodRow.fromJson(j));
     });
   }
@@ -51,6 +61,14 @@ class PaymentMethodsRepository extends AdminBaseRepository implements IPaymentMe
       await _ds.deleteData(
         ApiEndpoints.withId(ApiEndpoints.webstore.admin.paymentMethods, id),
       );
+    });
+  }
+
+  @override
+  Future<ApiResult<List<Map<String, dynamic>>>> getPaymentMethodTypes() {
+    return safeApiCall(() async {
+      final list = await _ds.getPaymentMethodTypes();
+      return list.map((e) => (e as Map).cast<String, dynamic>()).toList();
     });
   }
 }

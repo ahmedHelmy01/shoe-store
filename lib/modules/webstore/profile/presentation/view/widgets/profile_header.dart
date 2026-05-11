@@ -20,40 +20,30 @@ class ProfileHeader extends StatelessWidget {
     
     return Column(
       children: [
-        Stack(
-          children: [
-            Container(
-              width: 100.w,
-              height: 100.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.primaryOrange, width: 2),
-                image: const DecorationImage(
-                  image: NetworkImage('https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200&auto=format&fit=crop'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            if (isEditing)
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  padding: EdgeInsets.all(6.w),
-                  decoration: const BoxDecoration(color: AppColors.primaryOrange, shape: BoxShape.circle),
-                  child: Icon(Icons.camera_alt_rounded, color: Colors.white, size: 16.sp),
-                ),
-              ),
-          ],
+        // Replacement for the image with a stylish icon or just a cleaner look
+        Container(
+          width: 80.w,
+          height: 80.w,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.primaryOrange.withValues(alpha: 0.1),
+            border: Border.all(color: AppColors.primaryOrange.withValues(alpha: 0.2), width: 2),
+          ),
+          child: Icon(
+            Icons.person_rounded,
+            size: 45.sp,
+            color: AppColors.primaryOrange,
+          ),
         ),
         16.verticalSpace,
         Text(
           name,
-          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w800),
+          style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w900, letterSpacing: -0.5),
         ),
+        4.verticalSpace,
         Text(
           email,
-          style: TextStyle(fontSize: 13.sp, color: theme.hintColor),
+          style: TextStyle(fontSize: 14.sp, color: theme.hintColor, fontWeight: FontWeight.w500),
         ),
       ],
     );

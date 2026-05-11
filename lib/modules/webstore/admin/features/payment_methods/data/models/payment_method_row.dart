@@ -1,3 +1,5 @@
+import 'package:erp/core/network/network_url.dart';
+
 class PaymentMethodRow {
   final int id;
   final String name;
@@ -5,6 +7,7 @@ class PaymentMethodRow {
   final String? note;
   final String? noteAr;
   final String? image;
+  final String? imageUrl;
   final String type;
   final bool isActive;
   final int sortOrder;
@@ -16,19 +19,26 @@ class PaymentMethodRow {
     this.note,
     this.noteAr,
     this.image,
+    this.imageUrl,
     required this.type,
     required this.isActive,
     required this.sortOrder,
   });
 
   factory PaymentMethodRow.fromJson(Map<String, dynamic> json) {
+    final imagePath = json['image'] as String?;
+    final providedUrl = json['image_url'] as String?;
+
     return PaymentMethodRow(
       id: json['id'] as int? ?? 0,
       name: (json['name'] ?? json['title']) as String? ?? '',
       nameAr: (json['name_ar'] ?? json['title_ar']) as String?,
       note: json['note'] as String?,
       noteAr: json['note_ar'] as String?,
-      image: json['image'] as String?,
+      image: imagePath,
+      imageUrl: (providedUrl != null && providedUrl.isNotEmpty)
+          ? providedUrl
+          : (imagePath != null ? NetworkUrl.fullUrl(imagePath) : null),
       type: json['type'] as String? ?? 'cod',
       isActive: json['is_active'] == true || json['is_active'] == 1,
       sortOrder: json['sort_order'] as int? ?? 0,

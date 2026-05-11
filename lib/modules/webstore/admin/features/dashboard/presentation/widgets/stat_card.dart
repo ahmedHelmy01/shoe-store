@@ -30,7 +30,7 @@ class StatCard extends StatelessWidget {
     final activeColor = color ?? AppColors.primary;
 
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
         color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(18),
@@ -38,10 +38,9 @@ class StatCard extends StatelessWidget {
           color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08),
         ),
       ),
-      constraints: const BoxConstraints(minHeight: 80),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,9 +85,9 @@ class StatCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
               color: (positive ? Colors.green : Colors.red).withValues(
                 alpha: 0.1,

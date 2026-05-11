@@ -9,9 +9,12 @@ abstract class IOrdersRepository {
   Future<ApiResult<AdminPagedResponse<OrderRow>>> getOrders({
     int page = 1,
     String? search,
+    int? customerId,
   });
 
   Future<ApiResult<OrderRow>> saveOrder(Map<String, dynamic> data, {int? id});
+  
+  Future<ApiResult<void>> updateOrderStatus(int id, int statusId, {String? notes});
 
   Future<ApiResult<void>> deleteOrder(int id);
 }
@@ -25,9 +28,10 @@ class OrdersRepository extends AdminBaseRepository implements IOrdersRepository 
   Future<ApiResult<AdminPagedResponse<OrderRow>>> getOrders({
     int page = 1,
     String? search,
+    int? customerId,
   }) {
     return safeApiCall(() async {
-      final json = await _ds.getOrders(page: page, search: search);
+      final json = await _ds.getOrders(page: page, search: search, customerId: customerId);
       return parsePaged(json, page, (j) => OrderRow.fromJson(j));
     });
   }
@@ -35,13 +39,28 @@ class OrdersRepository extends AdminBaseRepository implements IOrdersRepository 
   @override
   Future<ApiResult<OrderRow>> saveOrder(Map<String, dynamic> data, {int? id}) {
     return safeApiCall(() async {
+      final endpoint = id == null
+          ? ApiEndpoints.webstore.admin.orders
+          : ApiEndpoints.withId(ApiEndpoints.webstore.admin.orders, id);
+
       final json = id == null
-          ? await _ds.postData(ApiEndpoints.webstore.admin.orders, data)
-          : await _ds.putData(
-              ApiEndpoints.withId(ApiEndpoints.webstore.admin.orders, id),
-              data,
-            );
+          ? await _ds.postData(endpoint, data)
+          : await _ds.putData(endpoint, data);
+
       return parseSingle(json, (j) => OrderRow.fromJson(j));
+    });
+  }
+
+  @override
+  Future<ApiResult<void>> updateOrderStatus(int id, int statusId, {String? notes}) {
+    return safeApiCall(() async {
+      await _ds.putData(
+        ApiEndpoints.webstore.admin.orderStatusUpdate(id),
+        {
+          'order_status_id': statusId,
+          if (notes != null) 'notes': notes,
+        },
+      );
     });
   }
 

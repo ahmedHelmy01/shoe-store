@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+import 'dart:io' show HttpHeaders, SocketException;
+import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart' show XFile;
 
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/network/endpoints/webstore_endpoints.dart';
 import 'package:erp/core/network/network_exceptions.dart';
 import 'package:erp/core/network/network_url.dart';
+import 'package:erp/core/network/progress_multipart_request.dart';
 import 'package:erp/core/services/session_manager.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,27 +20,30 @@ class UploadService {
   UploadService(
     this._client,
     this._session, {
-    WebStoreEndpoints endpoints = const WebStoreEndpoints(),
+    WebStoreEndpoints endpoints = const _WebStoreEndpoints(),
   }) : _endpoints = endpoints;
 
   /// Uploads a single file and returns the uploaded image path from API response.
   Future<String> uploadSingle({
-    required String filePath,
+    required XFile file,
     required String uploadFolder,
     String fileFieldName = 'file',
     String uploadFolderFieldName = 'upload_folder',
+    void Function(double)? onProgress,
   }) async {
-    final file = File(filePath);
-    if (!await file.exists()) {
-      throw NetworkException(message: 'Selected file does not exist: $filePath');
-    }
+    final bytes = await file.readAsBytes();
 
     final responseData = await _sendMultipart(
       endpoint: _endpoints.upload.single,
       fields: {uploadFolderFieldName: uploadFolder},
       files: [
-        await http.MultipartFile.fromPath(fileFieldName, file.path),
+        http.MultipartFile.fromBytes(
+          fileFieldName,
+          bytes,
+          filename: file.name,
+        ),
       ],
+      onProgress: onProgress,
     );
 
     return _extractPathOrThrow(responseData);
@@ -45,28 +51,33 @@ class UploadService {
 
   /// Uploads multiple files and returns the extracted image paths.
   Future<List<String>> uploadMultiple({
-    required List<String> filePaths,
+    required List<XFile> xFiles,
     required String uploadFolder,
     String filesFieldName = 'files[]',
     String uploadFolderFieldName = 'upload_folder',
+    void Function(double)? onProgress,
   }) async {
-    if (filePaths.isEmpty) {
+    if (xFiles.isEmpty) {
       throw NetworkException(message: 'Please provide at least one file to upload');
     }
 
     final files = <http.MultipartFile>[];
-    for (final path in filePaths) {
-      final file = File(path);
-      if (!await file.exists()) {
-        throw NetworkException(message: 'Selected file does not exist: $path');
-      }
-      files.add(await http.MultipartFile.fromPath(filesFieldName, file.path));
+    for (final file in xFiles) {
+      final bytes = await file.readAsBytes();
+      files.add(
+        http.MultipartFile.fromBytes(
+          filesFieldName,
+          bytes,
+          filename: file.name,
+        ),
+      );
     }
 
     final responseData = await _sendMultipart(
       endpoint: _endpoints.upload.multiple,
       fields: {uploadFolderFieldName: uploadFolder},
       files: files,
+      onProgress: onProgress,
     );
 
     final extracted = _extractMultiplePaths(responseData);
@@ -109,11 +120,19 @@ class UploadService {
     required String endpoint,
     required Map<String, String> fields,
     required List<http.MultipartFile> files,
+    void Function(double)? onProgress,
   }) async {
-    final uri = Uri.parse(NetworkUrl.fullUrl(endpoint));
+    final urlStr = NetworkUrl.fullUrl(endpoint);
+    final uri = Uri.parse(urlStr);
     final headers = await _authHeaders(contentTypeJson: false);
 
-    final request = http.MultipartRequest('POST', uri)
+    if (kDebugMode) {
+      print('🚀 [UploadService] Starting Upload...');
+      print('   📍 URL: $urlStr');
+      print('   📂 Request Headers: $headers');
+    }
+
+    final request = ProgressMultipartRequest('POST', uri, onProgress: onProgress)
       ..headers.addAll(headers)
       ..fields.addAll(fields)
       ..files.addAll(files);
@@ -122,6 +141,13 @@ class UploadService {
       final streamed = await _client.send(request).timeout(AppConstants.apiTimeout);
       final response = await http.Response.fromStream(streamed);
       final bodyData = _decodeBody(response.body);
+
+      if (kDebugMode) {
+        print('✅ [UploadService] Response Received!');
+        print('   🚥 Status: ${response.statusCode}');
+        print('   📜 Response Headers: ${response.headers}'); // Added this
+        print('   📦 Body: $bodyData');
+      }
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return bodyData;
@@ -136,20 +162,28 @@ class UploadService {
       throw NoInternetException();
     } on TimeoutException {
       throw DeadlineExceededException();
+    } catch (e) {
+      rethrow;
     }
   }
 
   Future<Map<String, String>> _authHeaders({required bool contentTypeJson}) async {
     final headers = <String, String>{
-      HttpHeaders.acceptHeader: 'application/json',
+      'Accept': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
     };
     if (contentTypeJson) {
-      headers[HttpHeaders.contentTypeHeader] = 'application/json';
+      headers['Content-Type'] = 'application/json';
     }
 
     final token = await _session.getAccessToken();
     if (token != null && token.isNotEmpty) {
-      headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
+      headers['Authorization'] = 'Bearer $token';
+    } else {
+      throw NetworkException(
+        message: 'Session expired or invalid. Please login again.',
+        statusCode: 401,
+      );
     }
 
     return headers;
@@ -241,3 +275,5 @@ class UploadService {
     return null;
   }
 }
+
+typedef _WebStoreEndpoints = WebStoreEndpoints;

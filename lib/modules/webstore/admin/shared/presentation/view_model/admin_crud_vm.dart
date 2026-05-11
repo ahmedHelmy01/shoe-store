@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_response.dart';
@@ -7,17 +8,20 @@ sealed class AdminCrudState<T> {
   final T? editingItem;
   final bool isAdding;
   final bool isSaving;
+  final double uploadProgress;
 
   const AdminCrudState({
     this.editingItem,
     this.isAdding = false,
     this.isSaving = false,
+    this.uploadProgress = 0,
   });
 
   AdminCrudState<T> copyWithUi({
     T? editingItem,
     bool? isAdding,
     bool? isSaving,
+    double? uploadProgress,
     bool clearEditing = false,
   });
 }
@@ -27,6 +31,7 @@ class AdminCrudLoading<T> extends AdminCrudState<T> {
     super.editingItem,
     super.isAdding,
     super.isSaving,
+    super.uploadProgress,
   });
 
   @override
@@ -34,23 +39,27 @@ class AdminCrudLoading<T> extends AdminCrudState<T> {
     T? editingItem,
     bool? isAdding,
     bool? isSaving,
+    double? uploadProgress,
     bool clearEditing = false,
   }) {
     return AdminCrudLoading<T>(
       editingItem: clearEditing ? null : (editingItem ?? this.editingItem),
       isAdding: isAdding ?? (clearEditing ? false : this.isAdding),
       isSaving: isSaving ?? this.isSaving,
+      uploadProgress: uploadProgress ?? this.uploadProgress,
     );
   }
 }
 
 class AdminCrudError<T> extends AdminCrudState<T> {
   final String message;
+
   const AdminCrudError(
     this.message, {
     super.editingItem,
     super.isAdding,
     super.isSaving,
+    super.uploadProgress,
   });
 
   @override
@@ -58,6 +67,7 @@ class AdminCrudError<T> extends AdminCrudState<T> {
     T? editingItem,
     bool? isAdding,
     bool? isSaving,
+    double? uploadProgress,
     bool clearEditing = false,
   }) {
     return AdminCrudError<T>(
@@ -65,6 +75,7 @@ class AdminCrudError<T> extends AdminCrudState<T> {
       editingItem: clearEditing ? null : (editingItem ?? this.editingItem),
       isAdding: isAdding ?? (clearEditing ? false : this.isAdding),
       isSaving: isSaving ?? this.isSaving,
+      uploadProgress: uploadProgress ?? this.uploadProgress,
     );
   }
 }
@@ -87,22 +98,29 @@ class AdminCrudData<T> extends AdminCrudState<T> {
     super.editingItem,
     super.isAdding = false,
     super.isSaving = false,
+    super.uploadProgress = 0,
   });
 
   bool get canPrev => page > 1;
-  bool get canNext => lastPage == null ? items.isNotEmpty : page < (lastPage ?? page);
+
+  bool get canNext =>
+      lastPage == null ? items.isNotEmpty : page < (lastPage ?? page);
+
+  bool get hasMore => canNext;
 
   @override
   AdminCrudData<T> copyWithUi({
     T? editingItem,
     bool? isAdding,
     bool? isSaving,
+    double? uploadProgress,
     bool clearEditing = false,
   }) {
     return copyWith(
       editingItem: editingItem,
       isAdding: isAdding,
       isSaving: isSaving,
+      uploadProgress: uploadProgress,
       clearEditing: clearEditing,
     );
   }
@@ -117,6 +135,7 @@ class AdminCrudData<T> extends AdminCrudState<T> {
     T? editingItem,
     bool? isAdding,
     bool? isSaving,
+    double? uploadProgress,
     bool clearEditing = false,
   }) {
     return AdminCrudData<T>(
@@ -129,6 +148,7 @@ class AdminCrudData<T> extends AdminCrudState<T> {
       editingItem: clearEditing ? null : (editingItem ?? this.editingItem),
       isAdding: isAdding ?? (clearEditing ? false : this.isAdding),
       isSaving: isSaving ?? this.isSaving,
+      uploadProgress: uploadProgress ?? this.uploadProgress,
     );
   }
 }
@@ -143,13 +163,24 @@ abstract class AdminCrudVm<T> extends Notifier<AdminCrudState<T>> {
 
   String _search = '';
   int _page = 1;
-  int _perPage = 10; // Default to 10 to match UI dropdown default, or 25. Let's use 10.
+  int _perPage = 10;
 
   /// Implement this to call the specific repository method.
-  Future<ApiResult<AdminPagedResponse<T>>> getItems({required int page, String? search, int? perPage});
+  Future<ApiResult<AdminPagedResponse<T>>> getItems({
+    required int page,
+    String? search,
+    int? perPage,
+  });
 
   /// Implement this to save (create or update) an item.
-  Future<ApiResult<T>> saveItem(Map<String, dynamic> data, {dynamic id});
+  /// Pass onProgress if you want to support progress tracking.
+  Future<ApiResult<T>> saveItem(
+    Map<String, dynamic> data, {
+    dynamic id,
+    XFile? imageFile,
+    Map<String, dynamic>? extraData,
+    void Function(double)? onProgress,
+  });
 
   /// Implement this to delete an item.
   Future<ApiResult<void>> deleteItem(dynamic id);
@@ -159,14 +190,14 @@ abstract class AdminCrudVm<T> extends Notifier<AdminCrudState<T>> {
     if (page != null) _page = page;
     if (perPage != null) _perPage = perPage;
 
-    // Preserving UI flags during transitions
     final s = state;
     state = AdminCrudLoading<T>(
       editingItem: s.editingItem,
       isAdding: s.isAdding,
       isSaving: s.isSaving,
+      uploadProgress: s.uploadProgress,
     );
-    
+
     final res = await getItems(page: _page, search: _search, perPage: _perPage);
 
     res.when(
@@ -181,6 +212,7 @@ abstract class AdminCrudVm<T> extends Notifier<AdminCrudState<T>> {
           editingItem: state.editingItem,
           isAdding: state.isAdding,
           isSaving: state.isSaving,
+          uploadProgress: state.uploadProgress,
         );
       },
       failure: (e) {
@@ -189,28 +221,53 @@ abstract class AdminCrudVm<T> extends Notifier<AdminCrudState<T>> {
           editingItem: state.editingItem,
           isAdding: state.isAdding,
           isSaving: state.isSaving,
+          uploadProgress: state.uploadProgress,
         );
       },
     );
   }
 
   void openAdd() {
-    state = state.copyWithUi(clearEditing: true, isAdding: true);
+    state = state.copyWithUi(
+      clearEditing: true,
+      isAdding: true,
+      uploadProgress: 0,
+    );
   }
 
   void openEdit(T item) {
-    state = state.copyWithUi(editingItem: item, isAdding: false);
+    state = state.copyWithUi(
+      editingItem: item,
+      isAdding: false,
+      uploadProgress: 0,
+    );
   }
 
   void closePanel() {
-    state = state.copyWithUi(clearEditing: true, isAdding: false, isSaving: false);
+    state = state.copyWithUi(
+      clearEditing: true,
+      isAdding: false,
+      isSaving: false,
+      uploadProgress: 0,
+    );
   }
 
-  Future<bool> commitSave(Map<String, dynamic> body, {dynamic id}) async {
+  Future<bool> commitSave(
+    Map<String, dynamic> body, {
+    dynamic id,
+    XFile? imageFile,
+    Map<String, dynamic>? extraData,
+  }) async {
     final s = state;
-    state = s.copyWithUi(isSaving: true);
-    
-    final res = await saveItem(body, id: id);
+    state = s.copyWithUi(isSaving: true, uploadProgress: 0);
+
+    final res = await saveItem(
+      body,
+      id: id,
+      imageFile: imageFile,
+      extraData: extraData,
+      onProgress: (p) => state = state.copyWithUi(uploadProgress: p),
+    );
 
     return res.when(
       success: (_) {
@@ -218,7 +275,7 @@ abstract class AdminCrudVm<T> extends Notifier<AdminCrudState<T>> {
         return true;
       },
       failure: (e) {
-        state = state.copyWithUi(isSaving: false);
+        state = state.copyWithUi(isSaving: false, uploadProgress: 0);
         return false;
       },
     );
@@ -245,5 +302,25 @@ abstract class AdminCrudVm<T> extends Notifier<AdminCrudState<T>> {
     final s = state;
     if (s is! AdminCrudData<T> || !s.canPrev) return;
     await fetch(page: s.page - 1);
+  }
+
+  Future<void> fetchMore() async {
+    final s = state;
+    if (s is! AdminCrudData<T> || !s.canNext || s is AdminCrudLoading) return;
+    
+    _page = s.page + 1;
+    final res = await getItems(page: _page, search: _search, perPage: _perPage);
+
+    res.when(
+      success: (paged) {
+        state = s.copyWith(
+          items: [...s.items, ...paged.items],
+          page: paged.page,
+          lastPage: paged.lastPage,
+          total: paged.total,
+        );
+      },
+      failure: (_) {},
+    );
   }
 }

@@ -51,7 +51,7 @@ class AdminDetailsDialog extends StatelessWidget {
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
               padding: const EdgeInsets.all(24.0),
@@ -100,6 +100,7 @@ class AdminDetailsDialog extends StatelessWidget {
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: children,
                 ),
               ),

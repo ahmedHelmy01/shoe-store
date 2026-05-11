@@ -8,7 +8,7 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
-      fontFamily: 'Harmattan',
+      fontFamily: 'store',
       brightness: Brightness.light,
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.primary,
@@ -30,7 +30,7 @@ class AppTheme {
           color: AppColors.textMain,
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          fontFamily: 'Harmattan',
+          fontFamily: 'store',
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -52,8 +52,8 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
-        labelStyle: const TextStyle(color: AppColors.textSecondary, fontFamily: 'Harmattan'),
-        hintStyle: const TextStyle(color: AppColors.textHint, fontFamily: 'Harmattan'),
+        labelStyle: const TextStyle(color: AppColors.textSecondary, fontFamily: 'store'),
+        hintStyle: const TextStyle(color: AppColors.textHint, fontFamily: 'store'),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -66,7 +66,7 @@ class AppTheme {
           textStyle: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            fontFamily: 'Harmattan',
+            fontFamily: 'store',
           ),
           padding: const EdgeInsets.symmetric(
             vertical: AppConstants.paddingUnit * 2,
@@ -96,7 +96,7 @@ class AppTheme {
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,
-      fontFamily: 'Harmattan',
+      fontFamily: 'store',
       brightness: Brightness.dark,
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.primary,
@@ -118,7 +118,7 @@ class AppTheme {
           color: Colors.white,
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          fontFamily: 'Harmattan',
+          fontFamily: 'store',
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -140,8 +140,8 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
-        labelStyle: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontFamily: 'Harmattan'),
-        hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontFamily: 'Harmattan'),
+        labelStyle: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontFamily: 'store'),
+        hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontFamily: 'store'),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(

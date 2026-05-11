@@ -8,12 +8,14 @@ class OrdersRemoteDataSource extends AdminRemoteDataSource {
   Future<Map<String, dynamic>> getOrders({
     int page = 1,
     String? search,
+    int? customerId,
   }) async {
     final res = await network.get(
       ApiEndpoints.webstore.admin.orders,
       query: {
         'page': page,
         if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
+        if (customerId != null) 'customer_id': customerId,
       },
     );
     return (res as Map).cast<String, dynamic>();

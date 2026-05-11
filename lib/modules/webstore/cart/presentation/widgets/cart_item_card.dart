@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
-import 'package:erp/modules/webstore/home/data/models/webstore_mock_data.dart';
+import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/core/constants/app_constants.dart';
 
 class CartItemCard extends StatelessWidget {
-  final MockProduct product;
+  final WebStoreProduct product;
   final int quantity;
   final VoidCallback? onRemove;
   final VoidCallback? onIncrement;
@@ -56,7 +56,7 @@ class CartItemCard extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12.r),
                 child: AppImage(
-                  imagePath: product.image,
+                  imagePath: product.image ?? '',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -121,7 +121,7 @@ class CartItemCard extends StatelessWidget {
                       
                       // Price
                       Text(
-                        '${(product.price * quantity).toStringAsFixed(2)} \$',
+                        '${(product.price * quantity).toStringAsFixed(2)} ${AppConstants.currency}',
                         style: TextStyle(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w800,

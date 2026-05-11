@@ -38,9 +38,9 @@ class BoardingsTable extends StatelessWidget {
         ),
         AdminColumn<BoardingRow>(
           title: 'Image',
-          cell: (_, b) => b.image != null
+          cell: (_, b) => b.imageUrl != null
               ? Image.network(
-                  b.image!,
+                  b.imageUrl!,
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
@@ -105,13 +105,13 @@ class BoardingDetailsDialog extends StatelessWidget {
       id: boarding.id.toString(),
       icon: Icons.info_outline_rounded,
       children: [
-        if (boarding.image != null)
+        if (boarding.imageUrl != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
-                boarding.image!,
+                boarding.imageUrl!,
                 height: 180,
                 width: double.infinity,
                 fit: BoxFit.cover,

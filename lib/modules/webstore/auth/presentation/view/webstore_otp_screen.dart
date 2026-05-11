@@ -257,7 +257,7 @@ class _WebStoreOtpScreenState extends ConsumerState<WebStoreOtpScreen> {
                         ),
                       )
                     : Text(
-                        '${LocaleKeys.webstore.auth.otp_subtitle.tr(context: context)} $_resendCountdown ${LocaleKeys.common.back.tr(context: context)}', // Simplified timer text
+                        '${LocaleKeys.webstore.auth.resend_timer.tr(context: context)} $_resendCountdown',
                         style: const TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 14,

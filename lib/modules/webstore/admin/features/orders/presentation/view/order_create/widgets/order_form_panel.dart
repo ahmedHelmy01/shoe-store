@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
 import 'package:erp/modules/webstore/admin/features/orders/presentation/view_model/order_create_view_model.dart';
 
-const _kPayments = ['Cash', 'Card', 'InstaPay'];
-
 class OrderFormPanel extends StatelessWidget {
   final OrderCreateVm b;
   final ThemeData theme;
@@ -22,42 +20,51 @@ class OrderFormPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'بيانات الطلب',
+            'Order Information',
             style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 10),
           AppDropdown<int>(
-            label: 'العميل',
-            hint: 'اختر العميل',
+            label: 'Customer',
+            hint: 'Select Customer',
             value: b.customerId,
             borderRadius: 12,
             items: b.customers
                 .map((u) => DropdownMenuItem(
                       value: u.id,
-                      child: Text('${u.name} — ${u.mobile ?? u.email ?? '—'}'),
+                      child: Text('${u.name} (${u.mobile ?? "No Mobile"})'),
                     ))
                 .toList(),
             onChanged: b.onCustomerChanged,
           ),
           const SizedBox(height: 10),
-          AppDropdown<String>(
-            label: 'عنوان التوصيل',
-            hint: 'اختر العنوان بعد اختيار العميل',
-            enabled: b.customerId != null,
-            value: b.addressLine != null && b.addressChoices.contains(b.addressLine) ? b.addressLine : null,
+          AppDropdown<int>(
+            label: 'Delivery Address',
+            hint: b.customerId == null ? 'Select customer first' : 'Select Address',
+            enabled: b.customerId != null && b.addressChoices.isNotEmpty,
+            value: b.addressId,
             borderRadius: 12,
-            items: b.addressChoices.map((a) => DropdownMenuItem(value: a, child: Text(a))).toList(),
-            onChanged: b.customerId == null ? null : b.onAddressChanged,
+            items: b.addressChoices
+                .map((a) => DropdownMenuItem(
+                      value: a.id,
+                      child: Text('${a.name}: ${a.addressDetails}'),
+                    ))
+                .toList(),
+            onChanged: b.onAddressChanged,
           ),
           const SizedBox(height: 10),
-          AppDropdown<String>(
-            label: 'طريقة الدفع',
-            value: b.payment,
+          AppDropdown<int>(
+            label: 'Payment Method',
+            hint: 'Select Payment Method',
+            value: b.paymentMethodId,
             borderRadius: 12,
-            items: _kPayments.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
-            onChanged: (v) {
-              if (v != null) b.onPaymentChanged(v);
-            },
+            items: b.paymentMethods
+                .map((pm) => DropdownMenuItem(
+                      value: pm.id,
+                      child: Text(pm.name),
+                    ))
+                .toList(),
+            onChanged: b.onPaymentChanged,
           ),
         ],
       ),
