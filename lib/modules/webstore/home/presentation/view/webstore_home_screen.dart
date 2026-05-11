@@ -21,6 +21,8 @@ import 'package:erp/core/common_widget/app_section_header/app_section_header.dar
 import 'package:erp/modules/webstore/home/presentation/view_model/ads/ads_view_model.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
+import 'package:erp/core/router/app_navigator.dart';
+import 'package:erp/core/router/route_generator.dart';
 
 class WebStoreHomeScreen extends ConsumerStatefulWidget {
   const WebStoreHomeScreen({super.key});
@@ -87,7 +89,9 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                           height: 120.h,
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: isDark ? theme.scaffoldBackgroundColor : Colors.white,
+                            color: isDark
+                                ? theme.scaffoldBackgroundColor
+                                : Colors.white,
                             borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(32.r),
                               bottomRight: Radius.circular(32.r),
@@ -112,8 +116,14 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                     delay: const Duration(milliseconds: 300),
                     child: Column(
                       children: [
-                        AppSectionHeader(title: LocaleKeys.webstore.home.medical_services.tr(context: context)),
-                        isLoading ? AppShimmer.featureLinksGrid() : const FeatureLinksWidget(),
+                        AppSectionHeader(
+                          title: LocaleKeys.webstore.home.medical_services.tr(
+                            context: context,
+                          ),
+                        ),
+                        isLoading
+                            ? AppShimmer.featureLinksGrid()
+                            : const FeatureLinksWidget(),
                       ],
                     ),
                   ),
@@ -124,7 +134,11 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                     delay: const Duration(milliseconds: 400),
                     child: Column(
                       children: [
-                        AppSectionHeader(title: LocaleKeys.webstore.home.pharmacy_sections.tr(context: context)),
+                        AppSectionHeader(
+                          title: LocaleKeys.webstore.home.pharmacy_sections.tr(
+                            context: context,
+                          ),
+                        ),
                         const CategorySection(),
                       ],
                     ),
@@ -150,7 +164,18 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                     delay: const Duration(milliseconds: 700),
                     child: Column(
                       children: [
-                        AppSectionHeader(title: LocaleKeys.webstore.home.most_ordered.tr(context: context), onViewAllTap: () {}),
+                        AppSectionHeader(
+                          title: LocaleKeys.webstore.home.most_ordered.tr(
+                            context: context,
+                          ),
+                          onViewAllTap: () {
+                            AppNavigator.push(
+                              context,
+                              AppRouteNames.webstoreCatalogProducts,
+                              arguments: {'preset': 'best_seller'},
+                            );
+                          },
+                        ),
                         12.verticalSpace,
                         const ProductGridSection(),
                       ],
@@ -170,7 +195,11 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                     delay: const Duration(milliseconds: 900),
                     child: Column(
                       children: [
-                        AppSectionHeader(title: LocaleKeys.webstore.home.trusted_brands.tr(context: context)),
+                        AppSectionHeader(
+                          title: LocaleKeys.webstore.home.trusted_brands.tr(
+                            context: context,
+                          ),
+                        ),
                         12.verticalSpace,
                         const CompanyProduceWidget(),
                       ],

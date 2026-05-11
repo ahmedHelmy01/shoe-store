@@ -6,6 +6,7 @@ import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/core/common_widget/app_price_text/app_price_text.dart';
+import 'package:erp/modules/webstore/catalog/presentation/view/product_details/product_details_view.dart';
 
 class ProductGridCard extends ConsumerWidget {
   final WebStoreProduct product;
@@ -25,7 +26,14 @@ class ProductGridCard extends ConsumerWidget {
         : 0;
 
     return AppCard(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ProductDetailsView(product: product),
+          ),
+        );
+      },
       child: Stack(
         children: [
           Column(

@@ -9,6 +9,8 @@ import 'package:erp/modules/webstore/home/presentation/view/widgets/product_card
 import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 import 'package:erp/core/common_widget/app_section_header/app_section_header.dart';
+import 'package:erp/core/router/app_navigator.dart';
+import 'package:erp/core/router/route_generator.dart';
 
 class FlashSaleWidget extends StatefulWidget {
   const FlashSaleWidget({super.key});
@@ -56,7 +58,13 @@ class _FlashSaleWidgetState extends State<FlashSaleWidget> {
       children: [
         AppSectionHeader(
           title: LocaleKeys.webstore.home.tarshooby_offers.tr(context: context),
-          onViewAllTap: () {},
+          onViewAllTap: () {
+            AppNavigator.push(
+              context,
+              AppRouteNames.webstoreCatalogProducts,
+              arguments: {'preset': 'latest'},
+            );
+          },
           child: Row(
             children: [
               AppImage(imagePath: AssetManager.bestSale, height: 24.h),
@@ -66,12 +74,16 @@ class _FlashSaleWidgetState extends State<FlashSaleWidget> {
                 decoration: BoxDecoration(
                   color: isDark ? theme.cardColor : Colors.black,
                   borderRadius: BorderRadius.circular(4.r),
-                  border: isDark ? Border.all(color: Colors.white.withValues(alpha: 0.1)) : null,
+                  border: isDark
+                      ? Border.all(color: Colors.white.withValues(alpha: 0.1))
+                      : null,
                 ),
                 child: Text(
                   _formatDuration(_duration),
                   style: TextStyle(
-                    color: isDark ? theme.textTheme.bodyMedium?.color : Colors.white,
+                    color: isDark
+                        ? theme.textTheme.bodyMedium?.color
+                        : Colors.white,
                     fontSize: 12.sp,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'monospace',
@@ -84,12 +96,14 @@ class _FlashSaleWidgetState extends State<FlashSaleWidget> {
         10.verticalSpace,
         Consumer(
           builder: (context, ref, _) {
-            final products = ref.watch(homeVmProvider.select((s) => s.products));
+            final products = ref.watch(
+              homeVmProvider.select((s) => s.products),
+            );
             if (products.isEmpty) return const SizedBox.shrink();
-            
+
             // Show only a subset for flash sale
             final flashProducts = products.take(4).toList();
-            
+
             return SizedBox(
               height: 240.h,
               child: ListView.separated(

@@ -21,7 +21,7 @@ import 'package:erp/modules/webstore/wishlist/presentation/view/webstore_wishlis
 import 'package:erp/modules/webstore/points/presentation/view/webstore_points_view.dart';
 import 'package:erp/modules/webstore/pages/presentation/view/webstore_page_view.dart';
 import 'package:erp/modules/webstore/pages/data/models/cms_page_model.dart';
-
+import 'package:erp/modules/webstore/catalog/presentation/view/products/catalog_products_view.dart';
 
 // Models for type casting in arguments
 
@@ -31,11 +31,17 @@ class RouteGenerator {
       case AppRouteNames.webstoreLogin:
         return MaterialPageRoute(builder: (_) => const WebStoreLoginScreen());
       case AppRouteNames.webstoreRegister:
-        return MaterialPageRoute(builder: (_) => const WebStoreRegisterScreen());
+        return MaterialPageRoute(
+          builder: (_) => const WebStoreRegisterScreen(),
+        );
       case AppRouteNames.webstoreForgotPassword:
-        return MaterialPageRoute(builder: (_) => const WebStoreForgotPasswordScreen());
+        return MaterialPageRoute(
+          builder: (_) => const WebStoreForgotPasswordScreen(),
+        );
       case AppRouteNames.webstoreOtp:
-        final args = (settings.arguments is Map) ? (settings.arguments as Map) : const <String, dynamic>{};
+        final args = (settings.arguments is Map)
+            ? (settings.arguments as Map)
+            : const <String, dynamic>{};
         final identifier = args['identifier'] as String?;
         final type = args['type'] as String?;
         if (identifier == null || type == null) return _errorRoute();
@@ -43,15 +49,24 @@ class RouteGenerator {
           builder: (_) => WebStoreOtpScreen(identifier: identifier, type: type),
         );
       case AppRouteNames.webstoreResetPassword:
-        final args = (settings.arguments is Map) ? (settings.arguments as Map) : const <String, dynamic>{};
+        final args = (settings.arguments is Map)
+            ? (settings.arguments as Map)
+            : const <String, dynamic>{};
         final identifier = args['identifier'] as String?;
         final code = args['code'] as String?;
         if (identifier == null || code == null) return _errorRoute();
         return MaterialPageRoute(
-          builder: (_) => WebStoreResetPasswordScreen(identifier: identifier, code: code),
+          builder: (_) =>
+              WebStoreResetPasswordScreen(identifier: identifier, code: code),
         );
       case AppRouteNames.webstoreMain:
-        return MaterialPageRoute(builder: (_) => const WebStoreMainLayout());
+        final args = (settings.arguments is Map)
+            ? (settings.arguments as Map)
+            : const <String, dynamic>{};
+        final initialIndex = args['initialIndex'] as int? ?? 0;
+        return MaterialPageRoute(
+          builder: (_) => WebStoreMainLayout(initialIndex: initialIndex),
+        );
       case AppRouteNames.webstoreCheckout:
         return _guarded(const WebStoreCheckoutView());
       case AppRouteNames.webstoreOrderTrack:
@@ -67,17 +82,28 @@ class RouteGenerator {
       case AppRouteNames.webstorePoints:
         return _guarded(const WebStorePointsView());
       case AppRouteNames.webstorePage:
-        final args = (settings.arguments is Map) ? (settings.arguments as Map) : const <String, dynamic>{};
+        final args = (settings.arguments is Map)
+            ? (settings.arguments as Map)
+            : const <String, dynamic>{};
         final slug = args['slug'] as String?;
         final title = args['title'] as String?;
         if (slug == null || title == null) return _errorRoute();
         return MaterialPageRoute(
           builder: (_) => WebStorePageView(slug: slug, initialTitle: title),
         );
+      case AppRouteNames.webstoreCatalogProducts:
+        final args = (settings.arguments is Map)
+            ? (settings.arguments as Map)
+            : const <String, dynamic>{};
+        final preset = args['preset'] as String?;
+        return MaterialPageRoute(
+          builder: (_) => CatalogProductsView(initialPreset: preset),
+        );
 
       // ─── WebStore Admin ─────────────────────────────
       default:
-        if (settings.name != null && settings.name!.startsWith(AppRouteNames.webstoreAdmin)) {
+        if (settings.name != null &&
+            settings.name!.startsWith(AppRouteNames.webstoreAdmin)) {
           final id = AdminRoutes.fromRouteName(settings.name);
           return MaterialPageRoute(
             settings: settings,
@@ -102,8 +128,12 @@ class RouteGenerator {
     return MaterialPageRoute(
       builder: (context) {
         return Scaffold(
-          appBar: AppBar(title: Text(LocaleKeys.common.error.tr(context: context))),
-          body: Center(child: Text(LocaleKeys.common.page_not_found.tr(context: context))),
+          appBar: AppBar(
+            title: Text(LocaleKeys.common.error.tr(context: context)),
+          ),
+          body: Center(
+            child: Text(LocaleKeys.common.page_not_found.tr(context: context)),
+          ),
         );
       },
     );

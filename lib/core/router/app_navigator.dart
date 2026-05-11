@@ -16,6 +16,7 @@ class AppRouteNames {
   static const String webstorePoints = '/webstore/points';
   static const String webstoreOrderDetails = '/webstore/order-details';
   static const String webstorePage = '/webstore/page';
+  static const String webstoreCatalogProducts = '/webstore/catalog/products';
 
   // ─── WebStore Admin ───────────────────────────────
   static const String webstoreAdmin = '/webstore/admin';
@@ -35,13 +36,19 @@ class AppRouteNames {
   static const String webstoreAdminBoardings = '/webstore/admin/boardings';
   static const String webstoreAdminPages = '/webstore/admin/pages';
   static const String webstoreAdminProperties = '/webstore/admin/properties';
-  static const String webstoreAdminPaymentStatuses = '/webstore/admin/payment-statuses';
-  static const String webstoreAdminPaymentMethods = '/webstore/admin/payment-methods';
+  static const String webstoreAdminPaymentStatuses =
+      '/webstore/admin/payment-statuses';
+  static const String webstoreAdminPaymentMethods =
+      '/webstore/admin/payment-methods';
   static const String webstoreAdminCities = '/webstore/admin/cities';
-  static const String webstoreAdminGovernorates = '/webstore/admin/governorates';
-  static const String webstoreAdminOrderStatuses = '/webstore/admin/order-statuses';
-  static const String webstoreAdminCustomerGroups = '/webstore/admin/customer-groups';
-  static const String webstoreAdminClientReports = '/webstore/admin/client-reports';
+  static const String webstoreAdminGovernorates =
+      '/webstore/admin/governorates';
+  static const String webstoreAdminOrderStatuses =
+      '/webstore/admin/order-statuses';
+  static const String webstoreAdminCustomerGroups =
+      '/webstore/admin/customer-groups';
+  static const String webstoreAdminClientReports =
+      '/webstore/admin/client-reports';
   static const String webstoreAdminSettings = '/webstore/admin/settings';
   static const String webstoreAdminContacts = '/webstore/admin/contacts';
   static const String webstoreAdminCountries = '/webstore/admin/countries';

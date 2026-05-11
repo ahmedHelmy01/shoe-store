@@ -1,10 +1,10 @@
+import 'package:erp/modules/webstore/catalog/presentation/view/products/widgets/product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/common_widget/app_bar/common_app_bar.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
-import 'package:erp/modules/webstore/catalog/presentation/view/product_card.dart';
 
 class WebStoreWishlistView extends StatefulWidget {
   const WebStoreWishlistView({super.key});

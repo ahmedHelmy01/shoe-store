@@ -8,6 +8,9 @@ import 'package:erp/modules/webstore/catalog/data/models/category_model.dart';
 
 class WebStoreProduct extends BaseEntity with JsonSerializable {
   final String name;
+  final String? code;
+  final String? sku;
+  final String? barcode;
   final String? slug;
   final String? description;
   final double price;
@@ -17,6 +20,8 @@ class WebStoreProduct extends BaseEntity with JsonSerializable {
   final String? image;
   final List<String>? images;
   final WebStoreCategory? category;
+  final Map<String, dynamic>? manufacturer;
+  final List<String>? tags;
   final String? brand;
   final double? rating;
   final int? reviewsCount;
@@ -27,6 +32,9 @@ class WebStoreProduct extends BaseEntity with JsonSerializable {
   const WebStoreProduct({
     super.id,
     required this.name,
+    this.code,
+    this.sku,
+    this.barcode,
     this.slug,
     this.description,
     required this.price,
@@ -36,6 +44,8 @@ class WebStoreProduct extends BaseEntity with JsonSerializable {
     this.image,
     this.images,
     this.category,
+    this.manufacturer,
+    this.tags,
     this.brand,
     this.rating,
     this.reviewsCount,
@@ -47,36 +57,65 @@ class WebStoreProduct extends BaseEntity with JsonSerializable {
   });
 
   factory WebStoreProduct.fromJson(Map<String, dynamic> json) {
-    // Robust parsing for prices which can come as String or Num
     double parsePrice(dynamic value) {
       if (value == null) return 0.0;
       if (value is num) return value.toDouble();
       return double.tryParse(value.toString()) ?? 0.0;
     }
 
-    // Handle Brand which can be a String or a Map
     String? parseBrand(dynamic value) {
       if (value == null) return null;
       if (value is String) return value;
-      if (value is Map) return value['name']?.toString();
+      if (value is Map) return value['name']?.toString() ?? value['name_ar']?.toString();
       return null;
+    }
+
+    // Handle nested images array
+    List<String> parseImages(dynamic value) {
+      if (value == null) return [];
+      if (value is List) {
+        return value.map((e) {
+          if (e is String) return e;
+          if (e is Map) return e['image']?.toString() ?? '';
+          return '';
+        }).where((element) => element.isNotEmpty).toList();
+      }
+      return [];
+    }
+
+    // Handle tags array
+    List<String> parseTags(dynamic value) {
+      if (value == null) return [];
+      if (value is List) {
+        return value.map((e) {
+          if (e is String) return e;
+          if (e is Map) return e['name_ar']?.toString() ?? e['name']?.toString() ?? '';
+          return '';
+        }).where((e) => e.isNotEmpty).toList();
+      }
+      return [];
     }
 
     return WebStoreProduct(
       id: json['id'],
-      name: json['name'] ?? json['title'] ?? json['name_ar'] ?? json['name_en'] ?? 'بدون اسم',
+      name: json['name_ar'] ?? json['name'] ?? json['title'] ?? 'بدون اسم',
+      code: json['code'],
+      sku: json['sku'],
+      barcode: json['barcode'],
       slug: json['slug'],
-      description: json['description'],
-      price: parsePrice(json['price'] ?? json['sale_price']),
+      description: json['description_ar'] ?? json['description'],
+      price: parsePrice(json['sale_price'] ?? json['price']),
       oldPrice: parsePrice(json['old_price'] ?? json['compare_at_price']),
       discount: parsePrice(json['discount']),
-      stock: json['stock'] ?? json['quantity'] ?? 0,
-      image: json['image'] ?? json['thumb'] ?? json['main_image'],
-      images: json['images'] != null ? List<String>.from(json['images']) : null,
+      stock: json['available_quantity'] ?? json['stock'] ?? json['quantity'] ?? 0,
+      image: json['image'],
+      images: parseImages(json['images']),
       category: json['category'] != null ? WebStoreCategory.fromJson(json['category']) : null,
+      manufacturer: json['manufacturer'] is Map<String, dynamic> ? json['manufacturer'] : null,
+      tags: parseTags(json['tags']),
       brand: parseBrand(json['brand'] ?? json['brand_name']),
       rating: parsePrice(json['rating']),
-      reviewsCount: json['reviews_count'] ?? json['review_count'] ?? 0,
+      reviewsCount: json['review_count'] ?? json['reviews_count'] ?? 0,
       isFeatured: json['is_featured'] ?? false,
       isNew: json['is_new'] ?? false,
       attributes: json['attributes'],
@@ -90,10 +129,7 @@ class WebStoreProduct extends BaseEntity with JsonSerializable {
     'id': id,
     'name': name,
     'price': price,
-    'old_price': oldPrice,
     'stock': stock,
-    'image': image,
-    'category_id': category?.id,
   };
 
   bool get hasDiscount => oldPrice != null && oldPrice! > price;

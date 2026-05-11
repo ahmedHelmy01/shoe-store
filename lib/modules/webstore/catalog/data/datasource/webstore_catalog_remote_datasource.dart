@@ -11,9 +11,7 @@ class WebStoreCatalogRemoteDataSource {
 
   WebStoreCatalogRemoteDataSource(this._networkService);
 
-  Future<dynamic> getProducts({
-    Map<String, dynamic>? queryParams,
-  }) {
+  Future<dynamic> getProducts({Map<String, dynamic>? queryParams}) {
     return _networkService.get(
       ApiEndpoints.webstore.catalog.products,
       query: queryParams,
@@ -21,12 +19,12 @@ class WebStoreCatalogRemoteDataSource {
   }
 
   Future<dynamic> getProductDetail(int id) {
-    return _networkService.get(ApiEndpoints.withId(ApiEndpoints.webstore.catalog.productDetail, id));
+    return _networkService.get(
+      ApiEndpoints.withId(ApiEndpoints.webstore.catalog.productDetail, id),
+    );
   }
 
-  Future<dynamic> getCategories({
-    Map<String, dynamic>? queryParams,
-  }) {
+  Future<dynamic> getCategories({Map<String, dynamic>? queryParams}) {
     return _networkService.get(
       ApiEndpoints.webstore.catalog.categoryTree,
       query: queryParams,
@@ -34,7 +32,9 @@ class WebStoreCatalogRemoteDataSource {
   }
 
   Future<dynamic> getCategoryDetail(int id) {
-    return _networkService.get(ApiEndpoints.withId(ApiEndpoints.webstore.catalog.categoryDetail, id));
+    return _networkService.get(
+      ApiEndpoints.withId(ApiEndpoints.webstore.catalog.categoryDetail, id),
+    );
   }
 
   Future<dynamic> searchProducts(String query) {
@@ -46,6 +46,10 @@ class WebStoreCatalogRemoteDataSource {
 
   Future<dynamic> getManufacturers() {
     return _networkService.get('/api/store/manufacturers');
+  }
+
+  Future<dynamic> getTags() {
+    return _networkService.get('/api/store/tags');
   }
 
   // ─── Wishlist (kept under Catalog domain) ───────────
@@ -68,4 +72,3 @@ class WebStoreCatalogRemoteDataSource {
     );
   }
 }
-

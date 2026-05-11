@@ -13,6 +13,8 @@ class AppDropdown<T> extends StatelessWidget {
   final Color? borderColor;
   final Color? focusedBorderColor;
   final EdgeInsetsGeometry contentPadding;
+  final double? fieldHeight;
+  final double? menuMaxHeight;
 
   const AppDropdown({
     super.key,
@@ -29,6 +31,8 @@ class AppDropdown<T> extends StatelessWidget {
       horizontal: 16,
       vertical: 12,
     ),
+    this.fieldHeight,
+    this.menuMaxHeight,
   });
 
   @override
@@ -55,60 +59,63 @@ class AppDropdown<T> extends StatelessWidget {
             ),
           ),
         Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(br),
-          ),
-          child: InputDecorator(
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: fill,
-              contentPadding: contentPadding,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(br),
-                borderSide: borderColor != null
-                    ? BorderSide(color: borderColor!)
-                    : BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(br),
-                borderSide: borderColor != null
-                    ? BorderSide(color: borderColor!)
-                    : (isDark
-                        ? BorderSide(
-                            color: Colors.white.withValues(alpha: 0.1),
-                            width: 1,
-                          )
-                        : BorderSide.none),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(br),
-                borderSide: BorderSide(
-                  color: focusedBorderColor ?? AppColors.primary,
-                  width: 1.5,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(br)),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: fieldHeight ?? 0),
+            child: InputDecorator(
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: fill,
+                contentPadding: contentPadding,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(br),
+                  borderSide: borderColor != null
+                      ? BorderSide(color: borderColor!)
+                      : BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(br),
+                  borderSide: borderColor != null
+                      ? BorderSide(color: borderColor!)
+                      : (isDark
+                            ? BorderSide(
+                                color: Colors.white.withValues(alpha: 0.1),
+                                width: 1,
+                              )
+                            : BorderSide.none),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(br),
+                  borderSide: BorderSide(
+                    color: focusedBorderColor ?? AppColors.primary,
+                    width: 1.5,
+                  ),
+                ),
+                disabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(br),
+                  borderSide: BorderSide(
+                    color: (isDark ? Colors.white : Colors.black).withValues(
+                      alpha: 0.08,
+                    ),
+                  ),
                 ),
               ),
-              disabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(br),
-                borderSide: BorderSide(
-                  color: (isDark ? Colors.white : Colors.black)
-                      .withValues(alpha: 0.08),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<T>(
+                  isExpanded: true,
+                  value: value,
+                  hint: hint != null
+                      ? Text(
+                          hint!,
+                          style: const TextStyle(color: AppColors.textHint),
+                        )
+                      : null,
+                  items: items,
+                  onChanged: enabled ? onChanged : null,
+                  style: theme.textTheme.bodyLarge,
+                  borderRadius: BorderRadius.circular(br),
+                  menuMaxHeight: menuMaxHeight,
                 ),
-              ),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<T>(
-                isExpanded: true,
-                value: value,
-                hint: hint != null
-                    ? Text(
-                        hint!,
-                        style: const TextStyle(color: AppColors.textHint),
-                      )
-                    : null,
-                items: items,
-                onChanged: enabled ? onChanged : null,
-                style: theme.textTheme.bodyLarge,
-                borderRadius: BorderRadius.circular(br),
               ),
             ),
           ),

@@ -62,10 +62,18 @@ class FeatureLinksWidget extends ConsumerWidget {
         );
         break;
       case 'عروض حصرية':
-        // TODO: Navigate to catalog with offers filter
-        break;
+      case 'الأكثر مبيعاً':
       case 'تسوق الآن':
-        // TODO: Navigate to main catalog tab
+        final preset = switch (feature.title) {
+          'عروض حصرية' => 'exclusive',
+          'الأكثر مبيعاً' => 'best_seller',
+          _ => 'shop_now',
+        };
+        AppNavigator.push(
+          context,
+          AppRouteNames.webstoreCatalogProducts,
+          arguments: {'preset': preset},
+        );
         break;
     }
   }
