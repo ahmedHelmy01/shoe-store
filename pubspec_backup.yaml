@@ -36,7 +36,6 @@ dependencies:
 
   # Storage
   shared_preferences: ^2.5.3
-  # flutter_secure_storage removed (tokens stored in SharedPreferences)
 
   # Localization
   easy_localization: ^3.0.7
@@ -53,6 +52,13 @@ dependencies:
   syncfusion_flutter_pdf: ^33.1.47
   arabic_reshaper: ^0.0.1
   bidi: ^2.0.13
+  image_picker: ^1.2.2
+
+  # Map
+  flutter_map: ^8.1.1
+  latlong2: ^0.9.0
+  geolocator: ^14.0.0
+  geocoding: ^4.0.0
 
 dev_dependencies:
   flutter_test:
@@ -73,11 +79,12 @@ flutter:
     - assets/common/images/
     - assets/common/fonts/
     - assets/common/translations/
-    - assets/the_delegates/icons/
-    - assets/the_delegates/images/
-    - assets/the_delegates/fonts/
-    - assets/the_delegates/data_the_delegates.json
+    - assets/webstore/icons/
+    - assets/webstore/images/
+    - assets/webstore/fonts/
+    - assets/webstore/data_webstore.json
+    - assets/config/
   fonts:
     - family: store
       fonts:
-        - asset: assets/the_delegates/fonts/store-Regular.otf
+        - asset: assets/webstore/fonts/store-Regular.otf

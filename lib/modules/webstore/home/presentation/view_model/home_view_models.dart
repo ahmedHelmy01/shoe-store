@@ -5,9 +5,9 @@ import 'package:erp/modules/webstore/home/presentation/state/home_state.dart';
 import 'package:erp/modules/webstore/home/presentation/state/slider_state.dart';
 import 'package:erp/modules/webstore/shared/data/providers/webstore_providers.dart';
 import 'package:erp/modules/webstore/home/data/models/slider_model.dart';
-import 'package:erp/modules/webstore/catalog/data/models/category_model.dart';
 import 'package:erp/modules/webstore/catalog/data/models/manufacturer_model.dart';
 import 'package:erp/core/providers/core_providers.dart';
+import 'package:erp/core/services/location_service.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/ads/ads_view_model.dart';
 
@@ -22,7 +22,6 @@ class HomeVm extends Notifier<HomeState> {
   HomeState build() {
     Future.microtask(() {
       getLatestProducts();
-      getCategories();
       // Initialize other components
       ref.read(sliderVmProvider.notifier).getSliders();
       ref.read(adsVmProvider.notifier).getAds();
@@ -32,20 +31,22 @@ class HomeVm extends Notifier<HomeState> {
 
   Future<void> getLatestProducts() async {
     state = state.copyWith(isLoading: true);
-    
+
     // Attempt 1
     var result = await ref.read(catalogRepositoryProvider).getProducts();
-    
+
     // Retry Logic
     if (result.isFailure) {
       await Future.delayed(const Duration(seconds: 1));
       result = await ref.read(catalogRepositoryProvider).getProducts();
     }
-    
+
     result.when(
       success: (data) {
         final List<dynamic> productsJson = data['data'] ?? [];
-        final products = productsJson.map((j) => WebStoreProduct.fromJson(j)).toList();
+        final products = productsJson
+            .map((j) => WebStoreProduct.fromJson(j))
+            .toList();
         state = state.copyWith(products: products, isLoading: false);
       },
       failure: (error) {
@@ -55,34 +56,18 @@ class HomeVm extends Notifier<HomeState> {
     );
   }
 
-  Future<void> getCategories() async {
-    // Attempt 1
-    var result = await ref.read(catalogRepositoryProvider).getCategories();
-    
-    // Retry Logic
-    if (result.isFailure) {
-      await Future.delayed(const Duration(seconds: 1));
-      result = await ref.read(catalogRepositoryProvider).getCategories();
-    }
-
-    result.when(
-      success: (data) {
-        final List<dynamic> categoryJson = data['data'] is List ? data['data'] : (data is List ? data : []);
-        final categories = categoryJson.map((j) => WebStoreCategory.fromJson(j)).toList();
-        state = state.copyWith(categories: categories);
-      },
-      failure: (error) => debugPrint('❌ HomeVm: Categories fetch failed'),
-    );
-  }
-
   Future<void> searchProducts(String keyword) async {
     state = state.copyWith(isLoading: true);
-    final result = await ref.read(catalogRepositoryProvider).getProducts(queryParams: {'search': keyword});
-    
+    final result = await ref
+        .read(catalogRepositoryProvider)
+        .getProducts(queryParams: {'search': keyword});
+
     result.when(
       success: (data) {
         final List<dynamic> productsJson = data['data'] ?? [];
-        final products = productsJson.map((j) => WebStoreProduct.fromJson(j)).toList();
+        final products = productsJson
+            .map((j) => WebStoreProduct.fromJson(j))
+            .toList();
         state = state.copyWith(searchProducts: products, isLoading: false);
       },
       failure: (error) => state = state.copyWith(isLoading: false),
@@ -96,17 +81,23 @@ class HomeVm extends Notifier<HomeState> {
     int? manufacturerId,
   }) async {
     state = state.copyWith(isLoading: true);
-    final result = await ref.read(catalogRepositoryProvider).getProducts(queryParams: {
-      'price_from': priceFrom,
-      'price_to': priceTo,
-      'category_id': categoryId,
-      'manufacturer_id': manufacturerId,
-    });
-    
+    final result = await ref
+        .read(catalogRepositoryProvider)
+        .getProducts(
+          queryParams: {
+            'price_from': priceFrom,
+            'price_to': priceTo,
+            'category_id': categoryId,
+            'manufacturer_id': manufacturerId,
+          },
+        );
+
     result.when(
       success: (data) {
         final List<dynamic> productsJson = data['data'] ?? [];
-        final products = productsJson.map((j) => WebStoreProduct.fromJson(j)).toList();
+        final products = productsJson
+            .map((j) => WebStoreProduct.fromJson(j))
+            .toList();
         state = state.copyWith(filteredProducts: products, isLoading: false);
       },
       failure: (error) => state = state.copyWith(isLoading: false),
@@ -124,10 +115,10 @@ class SliderVm extends Notifier<SliderState> {
 
   Future<void> getSliders() async {
     state = SliderLoading();
-    
+
     // Attempt 1
     var result = await ref.read(cmsRepositoryProvider).getSliders();
-    
+
     // Retry Logic
     if (result.isFailure) {
       await Future.delayed(const Duration(seconds: 1));
@@ -158,10 +149,12 @@ class CompanyProducesVm extends Notifier<List<ManufacturerModel>> {
 
   Future<void> getCompanyProduces() async {
     final result = await ref.read(catalogRepositoryProvider).getManufacturers();
-    
+
     result.when(
       success: (data) {
-        final List<dynamic> json = data['data'] is List ? data['data'] : (data is List ? data : []);
+        final List<dynamic> json = data['data'] is List
+            ? data['data']
+            : (data is List ? data : []);
         state = json.map((j) => ManufacturerModel.fromJson(j)).toList();
       },
       failure: (error) => debugPrint('❌ HomeVm: Manufacturers fetch failed'),
@@ -170,7 +163,9 @@ class CompanyProducesVm extends Notifier<List<ManufacturerModel>> {
 }
 
 final companyProducesVmProvider =
-    NotifierProvider<CompanyProducesVm, List<ManufacturerModel>>(CompanyProducesVm.new);
+    NotifierProvider<CompanyProducesVm, List<ManufacturerModel>>(
+      CompanyProducesVm.new,
+    );
 
 // ─── Location View Model ────────────────────────────
 
@@ -184,14 +179,26 @@ class LocationVm extends Notifier<LocationState> {
   Future<void> _initLocation() async {
     final branch = await ref.read(sessionManagerProvider).getBranchName();
     if (branch != null) {
-      state = LocationState(selectedBranch: branch);
+      state = state.copyWith(selectedBranch: branch);
+    }
+  }
+
+  Future<void> requestLocation() async {
+    final position = await LocationService.getCurrentLocation();
+    if (position != null) {
+      state = state.copyWith(
+        latitude: position.latitude,
+        longitude: position.longitude,
+      );
     }
   }
 
   void updateSelectedBranch(String branch) async {
-    state = LocationState(selectedBranch: branch);
+    state = state.copyWith(selectedBranch: branch);
     await ref.read(sessionManagerProvider).setBranchName(branch);
   }
 }
 
-final locationProvider = NotifierProvider<LocationVm, LocationState>(LocationVm.new);
+final locationProvider = NotifierProvider<LocationVm, LocationState>(
+  LocationVm.new,
+);

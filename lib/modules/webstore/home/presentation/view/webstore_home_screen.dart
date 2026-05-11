@@ -22,7 +22,6 @@ import 'package:erp/modules/webstore/home/presentation/view_model/ads/ads_view_m
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
 import 'package:erp/core/router/app_navigator.dart';
-import 'package:erp/core/router/route_generator.dart';
 
 class WebStoreHomeScreen extends ConsumerStatefulWidget {
   const WebStoreHomeScreen({super.key});
@@ -42,7 +41,9 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
 
     await Future.wait<void>([
       ref.read(homeVmProvider.notifier).getLatestProducts(),
-      ref.read(catalogCategoriesProvider.notifier).getCategories(),
+      ref
+          .read(catalogCategoriesProvider.notifier)
+          .getCategories(isRefresh: true),
       ref.read(sliderVmProvider.notifier).getSliders(),
       ref.read(adsVmProvider.notifier).getAds(),
       ref.read(companyProducesVmProvider.notifier).getCompanyProduces(),

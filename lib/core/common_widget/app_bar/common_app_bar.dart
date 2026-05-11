@@ -11,6 +11,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   final PreferredSizeWidget? bottom;
   final VoidCallback? onPressBack;
   final Color? backgroundColor;
+  final Color? foregroundColor;
 
   const CommonAppBar({
     super.key,
@@ -24,16 +25,35 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.bottom,
     this.onPressBack,
     this.backgroundColor,
+    this.foregroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final appBarTheme = theme.appBarTheme;
+    final resolvedForeground = foregroundColor ??
+        appBarTheme.foregroundColor ??
+        theme.colorScheme.onSurface;
+    final mergedTitleStyle = appBarTheme.titleTextStyle?.copyWith(
+          color: resolvedForeground,
+        ) ??
+        theme.textTheme.titleLarge?.copyWith(color: resolvedForeground);
+
     return AppBar(
-      backgroundColor: backgroundColor ?? Colors.transparent,
+      backgroundColor: backgroundColor ??
+          appBarTheme.backgroundColor ??
+          theme.colorScheme.surface,
+      foregroundColor: foregroundColor ?? appBarTheme.foregroundColor,
+      titleTextStyle: mergedTitleStyle,
       elevation: 0,
+      scrolledUnderElevation: 0,
       centerTitle: centerTitle,
       automaticallyImplyLeading: false,
-      title: title ?? (titleText != null ? Text(titleText!) : null),
+      title: title ??
+          (titleText != null
+              ? Text(titleText!, style: mergedTitleStyle)
+              : null),
       leading:
           leading ??
           (showBackButton
@@ -45,6 +65,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: actions ?? (trailing != null ? [trailing!] : null),
       bottom: bottom,
       surfaceTintColor: Colors.transparent,
+      systemOverlayStyle: appBarTheme.systemOverlayStyle,
     );
   }
 

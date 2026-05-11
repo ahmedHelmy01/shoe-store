@@ -23,7 +23,11 @@ class CategoriesState {
     this.selectedCategoryId,
   });
 
-  bool get hasMore => meta != null && meta!.currentPage < meta!.lastPage;
+  bool get hasMore {
+    if (meta == null) return false;
+    if (meta!.total > 0 && items.length >= meta!.total) return false;
+    return meta!.currentPage < meta!.lastPage;
+  }
 
   CategoriesState copyWith({
     List<WebStoreCategory>? items,
@@ -31,6 +35,7 @@ class CategoriesState {
     bool? isLoadingMore,
     String? errorMessage,
     PaginationMeta? meta,
+    bool clearMeta = false,
     int? selectedCategoryId,
   }) {
     return CategoriesState(
@@ -38,7 +43,7 @@ class CategoriesState {
       isLoading: isLoading ?? this.isLoading,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       errorMessage: errorMessage ?? this.errorMessage,
-      meta: meta ?? this.meta,
+      meta: clearMeta ? null : (meta ?? this.meta),
       selectedCategoryId: selectedCategoryId ?? this.selectedCategoryId,
     );
   }

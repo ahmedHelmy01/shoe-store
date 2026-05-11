@@ -11,8 +11,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CatalogProductsView extends ConsumerStatefulWidget {
   final String? initialPreset;
+  final int? initialCategoryId;
+  final String? initialScreenTitle;
 
-  const CatalogProductsView({super.key, this.initialPreset});
+  const CatalogProductsView({
+    super.key,
+    this.initialPreset,
+    this.initialCategoryId,
+    this.initialScreenTitle,
+  });
 
   @override
   ConsumerState<CatalogProductsView> createState() =>
@@ -36,6 +43,7 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
   @override
   void initState() {
     super.initState();
+    _selectedCategoryId = widget.initialCategoryId;
     _scrollController.addListener(_onScroll);
     _applyPreset(widget.initialPreset);
     Future.microtask(_applyFiltersToApi);
@@ -66,6 +74,10 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
   }
 
   String _screenTitle() {
+    final custom = widget.initialScreenTitle?.trim();
+    if (custom != null && custom.isNotEmpty) {
+      return custom;
+    }
     switch (widget.initialPreset) {
       case 'exclusive':
         return 'عروض حصرية';
@@ -129,6 +141,8 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final appBarTheme = theme.appBarTheme;
     final productsState = ref.watch(catalogProductsProvider);
     final categoriesState = ref.watch(catalogCategoriesProvider);
     final manufacturers = ref
@@ -140,10 +154,13 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
 
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: CommonAppBar(
         titleText: _screenTitle(),
-        backgroundColor: Colors.white,
+        backgroundColor:
+            appBarTheme.backgroundColor ?? theme.colorScheme.surface,
+        foregroundColor:
+            appBarTheme.foregroundColor ?? theme.colorScheme.onSurface,
         showBackButton: true,
         actions: [
           CatalogProductsFilterAction(

@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/router/route_generator.dart';
+import 'package:erp/modules/webstore/branches/presentation/view/branches_map_view.dart';
 import 'feature_item_data.dart';
 import 'feature_item_card.dart';
-import 'branch_selection_sheet.dart';
 
 /// Grid of quick-access feature links on the home screen.
 class FeatureLinksWidget extends ConsumerWidget {
@@ -31,21 +31,19 @@ class FeatureLinksWidget extends ConsumerWidget {
           final feature = features[index];
           return FeatureItemCard(
             feature: feature,
-            onTap: () => _handleFeatureTap(context, ref, feature),
+            onTap: () => _handleFeatureTap(context, feature),
           );
         },
       ),
     );
   }
 
-  void _handleFeatureTap(
-    BuildContext context,
-    WidgetRef ref,
-    FeatureItemData feature,
-  ) {
+  void _handleFeatureTap(BuildContext context, FeatureItemData feature) {
     switch (feature.title) {
       case 'فروعنا':
-        BranchSelectionSheet.show(context, ref);
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => const BranchesMapView()));
         break;
       case 'الروشتة':
         AppNavigator.push(

@@ -54,6 +54,12 @@ dependencies:
   bidi: ^2.0.13
   image_picker: ^1.2.2
 
+  # Map
+  flutter_map: ^8.1.1
+  latlong2: ^0.9.0
+  geolocator: ^14.0.0
+  geocoding: ^4.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -76,8 +82,8 @@ flutter:
     - assets/webstore/icons/
     - assets/webstore/images/
     - assets/webstore/fonts/
+    - assets/webstore/data_webstore.json
     - assets/config/
-
   fonts:
     - family: store
       fonts:

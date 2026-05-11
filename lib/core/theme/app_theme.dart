@@ -1,5 +1,6 @@
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AppTheme {
   static const Color darkBackground = Color(0xFF0D1B2A);
@@ -15,6 +16,7 @@ class AppTheme {
         primary: AppColors.primary,
         secondary: AppColors.secondary,
         surface: Colors.white,
+        surfaceTint: Colors.white,
         error: AppColors.error,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
@@ -26,6 +28,13 @@ class AppTheme {
         foregroundColor: AppColors.textMain,
         centerTitle: true,
         elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.white,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+        ),
         titleTextStyle: TextStyle(
           color: AppColors.textMain,
           fontSize: 20,
@@ -52,8 +61,14 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
-        labelStyle: const TextStyle(color: AppColors.textSecondary, fontFamily: 'store'),
-        hintStyle: const TextStyle(color: AppColors.textHint, fontFamily: 'store'),
+        labelStyle: const TextStyle(
+          color: AppColors.textSecondary,
+          fontFamily: 'store',
+        ),
+        hintStyle: const TextStyle(
+          color: AppColors.textHint,
+          fontFamily: 'store',
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -64,13 +79,39 @@ class AppTheme {
             borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           ),
           textStyle: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
             fontFamily: 'store',
           ),
-          padding: const EdgeInsets.symmetric(
-            vertical: AppConstants.paddingUnit * 2,
+          minimumSize: const Size.fromHeight(48),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.textMain,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           ),
+          side: const BorderSide(color: Color(0xFFE6E6E6)),
+          minimumSize: const Size.fromHeight(48),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'store',
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.primary,
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'store',
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         ),
       ),
       cardTheme: CardThemeData(
@@ -80,8 +121,12 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
         ),
       ),
-      popupMenuTheme: const PopupMenuThemeData(
+      popupMenuTheme: PopupMenuThemeData(
         color: Colors.white,
+        surfaceTintColor: Colors.white,
+      ),
+      dialogTheme: const DialogThemeData(
+        backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
       ),
       dividerTheme: const DividerThemeData(
@@ -89,6 +134,33 @@ class AppTheme {
         thickness: 1,
         indent: 16,
         endIndent: 16,
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: Colors.white,
+        selectedItemColor: AppColors.primaryOrange,
+        unselectedItemColor: AppColors.textHint,
+        showUnselectedLabels: true,
+        selectedLabelStyle: TextStyle(
+          fontFamily: 'store',
+          fontWeight: FontWeight.w700,
+          fontSize: 12,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontFamily: 'store',
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
+        ),
+      ),
+      navigationBarTheme: const NavigationBarThemeData(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        labelTextStyle: WidgetStatePropertyAll(
+          TextStyle(
+            fontFamily: 'store',
+            fontWeight: FontWeight.w700,
+            fontSize: 12,
+          ),
+        ),
       ),
     );
   }
@@ -114,6 +186,15 @@ class AppTheme {
         foregroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+          systemNavigationBarColor: darkBackground,
+          systemNavigationBarIconBrightness: Brightness.light,
+        ),
         titleTextStyle: TextStyle(
           color: Colors.white,
           fontSize: 20,
@@ -140,8 +221,14 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
-        labelStyle: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontFamily: 'store'),
-        hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontFamily: 'store'),
+        labelStyle: TextStyle(
+          color: Colors.white.withValues(alpha: 0.7),
+          fontFamily: 'store',
+        ),
+        hintStyle: TextStyle(
+          color: Colors.white.withValues(alpha: 0.5),
+          fontFamily: 'store',
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -172,6 +259,33 @@ class AppTheme {
         thickness: 1,
         indent: 16,
         endIndent: 16,
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: darkBackground,
+        selectedItemColor: AppColors.primaryOrange,
+        unselectedItemColor: Colors.white.withValues(alpha: 0.65),
+        showUnselectedLabels: true,
+        selectedLabelStyle: const TextStyle(
+          fontFamily: 'store',
+          fontWeight: FontWeight.w700,
+          fontSize: 12,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontFamily: 'store',
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
+        ),
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: darkBackground,
+        surfaceTintColor: darkBackground,
+        labelTextStyle: const WidgetStatePropertyAll(
+          TextStyle(
+            fontFamily: 'store',
+            fontWeight: FontWeight.w700,
+            fontSize: 12,
+          ),
+        ),
       ),
     );
   }

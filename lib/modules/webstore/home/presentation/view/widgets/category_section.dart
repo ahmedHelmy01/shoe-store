@@ -1,31 +1,91 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
 import 'package:erp/core/common_widget/app_horizontal_loader/app_horizontal_loader.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/modules/webstore/catalog/data/models/category_model.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/core/router/app_navigator.dart';
+import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
 
-class CategorySection extends ConsumerWidget {
+class CategorySection extends ConsumerStatefulWidget {
   const CategorySection({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final categories = ref.watch(homeVmProvider.select((s) => s.categories));
-    
-    if (categories.isEmpty) {
-      return AppHorizontalLoader(height: 90.h, itemWidth: 70.w, borderRadius: 35);
+  ConsumerState<CategorySection> createState() => _CategorySectionState();
+}
+
+class _CategorySectionState extends ConsumerState<CategorySection> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()..addListener(_onHorizontalScroll);
+  }
+
+  void _onHorizontalScroll() {
+    if (!_scrollController.hasClients) return;
+    final pos = _scrollController.position;
+    if (!pos.hasContentDimensions || pos.maxScrollExtent <= 0) return;
+    if (pos.pixels < pos.maxScrollExtent - 56) return;
+
+    final state = ref.read(catalogCategoriesProvider);
+    if (state.hasMore && !state.isLoadingMore && !state.isLoading) {
+      ref.read(catalogCategoriesProvider.notifier).getCategories();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(catalogCategoriesProvider);
+
+    if (state.isLoading && state.items.isEmpty) {
+      return AppHorizontalLoader(
+        height: 90.h,
+        itemWidth: 70.w,
+        borderRadius: 35,
+      );
+    }
+
+    if (state.items.isEmpty) {
+      return const SizedBox.shrink();
     }
 
     return AppAnimation.fadeInUp(
       child: SingleChildScrollView(
+        controller: _scrollController,
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
         child: Row(
-          children: categories.map((cat) => _CategoryItem(cat: cat)).toList(),
+          children: [
+            ...state.items.map((cat) => _CategoryItem(cat: cat)),
+            if (state.isLoadingMore)
+              Padding(
+                padding: EdgeInsetsDirectional.only(start: 12.w),
+                child: SizedBox(
+                  width: 42.w,
+                  height: 90.h,
+                  child: Center(
+                    child: SizedBox(
+                      width: 22.w,
+                      height: 22.w,
+                      child: const CircularProgressIndicator.adaptive(
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
@@ -40,15 +100,23 @@ class _CategoryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    // Define a consistent color scheme for categories if not provided by API
-    final Color categoryColor = AppColors.primaryOrange; 
+    final Color categoryColor = AppColors.primaryOrange;
 
     return Padding(
       padding: EdgeInsets.only(right: 16.w),
       child: InkWell(
-        onTap: () {
-          // Navigate to category products
-        },
+        onTap: cat.id == null
+            ? null
+            : () {
+                AppNavigator.push(
+                  context,
+                  AppRouteNames.webstoreCatalogProducts,
+                  arguments: {
+                    'category_id': cat.id,
+                    'category_title': cat.name,
+                  },
+                );
+              },
         borderRadius: BorderRadius.circular(40.r),
         child: Column(
           children: [
@@ -73,25 +141,26 @@ class _CategoryItem extends StatelessWidget {
                   ),
                 ],
                 border: Border.all(
-                  color: categoryColor.withValues(alpha: isDark ? 0.3 : 0.15), 
+                  color:
+                      categoryColor.withValues(alpha: isDark ? 0.3 : 0.15),
                   width: 1,
                 ),
               ),
               child: ClipOval(
                 child: cat.image != null && cat.image!.isNotEmpty
-                  ? AppImage(
-                      imagePath: cat.image!,
-                      width: 40.w,
-                      height: 40.w,
-                      fit: BoxFit.contain,
-                    )
-                  : Center(
-                      child: Icon(
-                        Icons.category_outlined,
-                        color: categoryColor,
-                        size: 30.sp,
+                    ? AppImage(
+                        imagePath: cat.image!,
+                        width: 40.w,
+                        height: 40.w,
+                        fit: BoxFit.contain,
+                      )
+                    : Center(
+                        child: Icon(
+                          Icons.category_outlined,
+                          color: categoryColor,
+                          size: 30.sp,
+                        ),
                       ),
-                    ),
               ),
             ),
             8.verticalSpace,
@@ -105,7 +174,10 @@ class _CategoryItem extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
-                  color: isDark ? Colors.white.withValues(alpha: 0.9) : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.9)
+                      : theme.textTheme.bodyMedium?.color
+                          ?.withValues(alpha: 0.8),
                   letterSpacing: -0.2,
                 ),
               ),

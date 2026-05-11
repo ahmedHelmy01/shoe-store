@@ -35,16 +35,11 @@ class AppDialog extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(18, 16, 18, 14),
         decoration: BoxDecoration(
           borderRadius: radius,
-          gradient: LinearGradient(
-            colors: [
-              isDark ? const Color(0xFF13233D) : Colors.white,
-              isDark ? const Color(0xFF0D1A2E) : const Color(0xFFFFF7F1),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: isDark ? const Color(0xFF13233D) : Colors.white,
           border: Border.all(
-            color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08),
+            color: (isDark ? Colors.white : Colors.black).withValues(
+              alpha: 0.08,
+            ),
           ),
           boxShadow: [
             BoxShadow(
@@ -64,10 +59,20 @@ class AppDialog extends StatelessWidget {
                   height: 40,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.primaryOrange.withValues(alpha: 0.18),
-                    border: Border.all(color: AppColors.primaryOrange.withValues(alpha: 0.35)),
+                    color: (isDark ? Colors.white : Colors.black).withValues(
+                      alpha: 0.06,
+                    ),
+                    border: Border.all(
+                      color: (isDark ? Colors.white : Colors.black).withValues(
+                        alpha: 0.12,
+                      ),
+                    ),
                   ),
-                  child: const Icon(Icons.warning_amber_rounded, size: 22, color: AppColors.primaryOrange),
+                  child: Icon(
+                    Icons.warning_amber_rounded,
+                    size: 22,
+                    color: isDark ? Colors.white : AppColors.primary,
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -87,7 +92,9 @@ class AppDialog extends StatelessWidget {
               child: Text(
                 message,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.82),
+                  color: (isDark ? Colors.white : Colors.black).withValues(
+                    alpha: 0.82,
+                  ),
                   height: 1.45,
                 ),
               ),
@@ -103,24 +110,29 @@ class AppDialog extends StatelessWidget {
                         onPressed: onCancel ?? () => Navigator.pop(context),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(
-                            color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.18),
+                            color: (isDark ? Colors.white : Colors.black)
+                                .withValues(alpha: 0.18),
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+                            borderRadius: BorderRadius.circular(
+                              AppConstants.borderRadius,
+                            ),
                           ),
                         ),
                         child: Text(
                           cancelText!,
                           style: TextStyle(
-                            color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.74),
+                            color: (isDark ? Colors.white : Colors.black)
+                                .withValues(alpha: 0.74),
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ),
                   ),
-                if (cancelText != null && confirmText != null) const SizedBox(width: 10),
+                if (cancelText != null && confirmText != null)
+                  const SizedBox(width: 10),
                 if (confirmText != null)
                   Expanded(
                     child: SizedBox(
@@ -130,7 +142,10 @@ class AppDialog extends StatelessWidget {
                         type: ButtonType.primary,
                         child: Text(
                           confirmText!,
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ),
@@ -172,10 +187,16 @@ class AppDialog extends StatelessWidget {
         ),
       ),
       transitionBuilder: (_, animation, __, child) {
-        final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+        final curved = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+        );
         return FadeTransition(
           opacity: animation,
-          child: ScaleTransition(scale: Tween<double>(begin: 0.96, end: 1).animate(curved), child: child),
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.96, end: 1).animate(curved),
+            child: child,
+          ),
         );
       },
     );

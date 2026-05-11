@@ -20,7 +20,6 @@ import 'package:erp/modules/webstore/orders/presentation/view/webstore_order_det
 import 'package:erp/modules/webstore/wishlist/presentation/view/webstore_wishlist_view.dart';
 import 'package:erp/modules/webstore/points/presentation/view/webstore_points_view.dart';
 import 'package:erp/modules/webstore/pages/presentation/view/webstore_page_view.dart';
-import 'package:erp/modules/webstore/pages/data/models/cms_page_model.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view/products/catalog_products_view.dart';
 
 // Models for type casting in arguments
@@ -96,8 +95,20 @@ class RouteGenerator {
             ? (settings.arguments as Map)
             : const <String, dynamic>{};
         final preset = args['preset'] as String?;
+        final categoryIdArg = args['category_id'];
+        final int? initialCategoryId = switch (categoryIdArg) {
+          int v => v,
+          num v => v.toInt(),
+          String v => int.tryParse(v),
+          _ => null,
+        };
+        final categoryTitle = args['category_title'] as String?;
         return MaterialPageRoute(
-          builder: (_) => CatalogProductsView(initialPreset: preset),
+          builder: (_) => CatalogProductsView(
+            initialPreset: preset,
+            initialCategoryId: initialCategoryId,
+            initialScreenTitle: categoryTitle,
+          ),
         );
 
       // ─── WebStore Admin ─────────────────────────────

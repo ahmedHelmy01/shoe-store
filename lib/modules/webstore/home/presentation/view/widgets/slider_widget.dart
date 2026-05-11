@@ -104,9 +104,11 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
                 final data = sliders[index];
                 return _buildSliderItem(
                   image: data.image,
-                  title: (context.locale.languageCode == 'ar'
-                      ? data.titleAr
-                      : data.title) ?? '',
+                  title:
+                      (context.locale.languageCode == 'ar'
+                          ? data.titleAr
+                          : data.title) ??
+                      '',
                 );
               },
             ),
@@ -187,27 +189,6 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
                           offset: const Offset(0, 2),
                         ),
                       ],
-                    ),
-                  ),
-                  12.verticalSpace,
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryOrange,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.r),
-                      ),
-                    ),
-                    child: Text(
-                      isDefault
-                          ? LocaleKeys.webstore.home.explore_now.tr(
-                              context: context,
-                            )
-                          : LocaleKeys.webstore.home.view_all.tr(
-                              context: context,
-                            ),
                     ),
                   ),
                 ],

@@ -20,6 +20,9 @@ class _CatalogViewState extends ConsumerState<CatalogView> {
   void initState() {
     super.initState();
     _productScrollController.addListener(_onScroll);
+    _searchController.addListener(() {
+      if (mounted) setState(() {});
+    });
   }
 
   void _onScroll() {
@@ -53,6 +56,7 @@ class _CatalogViewState extends ConsumerState<CatalogView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isSearching = _searchController.text.trim().isNotEmpty;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -70,7 +74,7 @@ class _CatalogViewState extends ConsumerState<CatalogView> {
               child: Row(
                 children: [
                   // 🏷️ Side Category Navigation
-                  const SideCategoryList(),
+                  if (!isSearching) const SideCategoryList(),
 
                   // 📦 Products Display
                   Expanded(

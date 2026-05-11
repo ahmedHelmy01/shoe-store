@@ -4,6 +4,7 @@ import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/core/common_widget/main_layout/webstore_main_layout.dart';
 import 'package:erp/modules/webstore/onboarding/onboarding_view.dart';
 import 'package:erp/modules/webstore/splash/animated_splash_screen.dart';
+import 'package:erp/modules/webstore/splash/splash_logic.dart';
 
 class SplashRouter extends ConsumerStatefulWidget {
   const SplashRouter({super.key});
@@ -12,7 +13,8 @@ class SplashRouter extends ConsumerStatefulWidget {
   ConsumerState<SplashRouter> createState() => _SplashRouterState();
 }
 
-class _SplashRouterState extends ConsumerState<SplashRouter> {
+class _SplashRouterState extends ConsumerState<SplashRouter>
+    with SplashLogic<SplashRouter> {
   bool _splashDone = false;
   bool? _isOnboardingDone;
 
@@ -29,7 +31,9 @@ class _SplashRouterState extends ConsumerState<SplashRouter> {
     }
   }
 
-  void _onSplashComplete() {
+  Future<void> _onSplashComplete() async {
+    if (!mounted) return;
+    await initializeSplash();
     if (!mounted) return;
     setState(() => _splashDone = true);
   }

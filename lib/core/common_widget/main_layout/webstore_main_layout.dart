@@ -9,7 +9,6 @@ import 'package:erp/modules/webstore/catalog/presentation/view/catalog/catalog_v
 import 'package:erp/modules/webstore/cart/presentation/view/webstore_cart_view.dart';
 import 'package:erp/modules/webstore/profile/presentation/view/webstore_profile_view.dart';
 import 'package:erp/modules/webstore/more/presentation/view/webstore_more_view.dart';
-import 'package:erp/modules/webstore/catalog/presentation/view/product_details/product_details_view.dart';
 import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/core/router/app_navigator.dart';
 
@@ -34,42 +33,42 @@ class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
   // ─── Tab Screens ───────────────────────────────────
 
   List<Widget> get _pages => [
-        const WebStoreHomeScreen(),
-        const CatalogView(),
-        const WebStoreCartView(),
-        WebStoreProfileView(key: ValueKey(_currentIndex == 3)),
-        const WebStoreMoreView(),
-      ];
+    const WebStoreHomeScreen(),
+    const CatalogView(),
+    const WebStoreCartView(),
+    WebStoreProfileView(key: ValueKey(_currentIndex == 3)),
+    const WebStoreMoreView(),
+  ];
 
   // ─── Tab Config ────────────────────────────────────
 
   List<_TabItem> _tabs(BuildContext context) => [
-        _TabItem(
-          icon: Icons.home_rounded,
-          activeIcon: Icons.home,
-          label: LocaleKeys.webstore.nav.home.tr(context: context),
-        ),
-        _TabItem(
-          icon: Icons.grid_view_rounded,
-          activeIcon: Icons.grid_view,
-          label: LocaleKeys.webstore.nav.store.tr(context: context),
-        ),
-        _TabItem(
-          icon: Icons.shopping_cart_outlined,
-          activeIcon: Icons.shopping_cart,
-          label: LocaleKeys.webstore.nav.cart.tr(context: context),
-        ),
-        _TabItem(
-          icon: Icons.person_outline_rounded,
-          activeIcon: Icons.person,
-          label: LocaleKeys.webstore.nav.profile.tr(context: context),
-        ),
-        _TabItem(
-          icon: Icons.menu_rounded,
-          activeIcon: Icons.menu_open_rounded,
-          label: LocaleKeys.webstore.nav.more.tr(context: context),
-        ),
-      ];
+    _TabItem(
+      icon: Icons.home_rounded,
+      activeIcon: Icons.home,
+      label: LocaleKeys.webstore.nav.home.tr(context: context),
+    ),
+    _TabItem(
+      icon: Icons.grid_view_rounded,
+      activeIcon: Icons.grid_view,
+      label: LocaleKeys.webstore.nav.store.tr(context: context),
+    ),
+    _TabItem(
+      icon: Icons.shopping_cart_outlined,
+      activeIcon: Icons.shopping_cart,
+      label: LocaleKeys.webstore.nav.cart.tr(context: context),
+    ),
+    _TabItem(
+      icon: Icons.person_outline_rounded,
+      activeIcon: Icons.person,
+      label: LocaleKeys.webstore.nav.profile.tr(context: context),
+    ),
+    _TabItem(
+      icon: Icons.menu_rounded,
+      activeIcon: Icons.menu_open_rounded,
+      label: LocaleKeys.webstore.nav.more.tr(context: context),
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -92,11 +91,14 @@ class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
           _lastPressed = now;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(LocaleKeys.webstore.general.exit_confirm.tr(context: context)),
+              content: Text(
+                LocaleKeys.webstore.general.exit_confirm.tr(context: context),
+              ),
               duration: const Duration(seconds: 2),
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           );
           return;
@@ -104,10 +106,7 @@ class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
         SystemNavigator.pop();
       },
       child: Scaffold(
-        body: IndexedStack(
-          index: _currentIndex,
-          children: _pages,
-        ),
+        body: IndexedStack(index: _currentIndex, children: _pages),
         bottomNavigationBar: _buildBottomNavBar(auth),
       ),
     );
@@ -118,7 +117,7 @@ class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
   Widget _buildBottomNavBar(AuthState auth) {
     final theme = Theme.of(context);
     final tabs = _tabs(context);
-    
+
     return Container(
       decoration: BoxDecoration(
         color: theme.cardColor,
@@ -143,7 +142,8 @@ class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
               return Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    final requiresAuth = index == 2 || index == 3; // Cart, Profile
+                    final requiresAuth =
+                        index == 2 || index == 3; // Cart, Profile
                     final isAuthed = auth.status == AuthStatus.authenticated;
                     if (requiresAuth && !isAuthed) {
                       AppNavigator.push(context, AppRouteNames.webstoreLogin);
@@ -154,7 +154,10 @@ class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
                   behavior: HitTestBehavior.opaque,
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 250),
-                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 6,
+                      horizontal: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: isActive
                           ? AppColors.primary.withValues(alpha: 0.1)
@@ -180,8 +183,10 @@ class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
                           tab.label,
                           style: TextStyle(
                             fontSize: 11,
-                            fontFamily: 'Harmattan',
-                            fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                            fontFamily: 'store',
+                            fontWeight: isActive
+                                ? FontWeight.w700
+                                : FontWeight.w500,
                             color: isActive
                                 ? AppColors.primary
                                 : theme.hintColor,

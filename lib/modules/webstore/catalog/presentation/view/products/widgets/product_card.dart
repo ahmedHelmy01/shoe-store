@@ -50,26 +50,31 @@ class ProductCard extends StatelessWidget {
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(16),
                     ),
-                    child: Image.network(
-                      product.image ?? '',
-                      width: double.infinity,
-                      height: double.infinity,
-                      fit: BoxFit.cover,
-                      loadingBuilder: (context, child, progress) {
-                        if (progress == null) return child;
-                        return Shimmer.fromColors(
-                          baseColor: Colors.grey.shade200,
-                          highlightColor: Colors.grey.shade100,
-                          child: Container(color: Colors.white),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: Theme.of(
-                          context,
-                        ).hintColor.withValues(alpha: 0.1),
-                        child: Icon(
-                          Icons.image_not_supported_outlined,
-                          color: Theme.of(context).hintColor,
+                    child: Container(
+                      color: Theme.of(
+                        context,
+                      ).hintColor.withValues(alpha: 0.05),
+                      child: Image.network(
+                        product.image ?? '',
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.contain,
+                        loadingBuilder: (context, child, progress) {
+                          if (progress == null) return child;
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey.shade200,
+                            highlightColor: Colors.grey.shade100,
+                            child: Container(color: Colors.white),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: Theme.of(
+                            context,
+                          ).hintColor.withValues(alpha: 0.1),
+                          child: Icon(
+                            Icons.image_not_supported_outlined,
+                            color: Theme.of(context).hintColor,
+                          ),
                         ),
                       ),
                     ),
@@ -173,49 +178,66 @@ class ProductCard extends StatelessWidget {
                       ],
                     ),
 
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
 
                   // Price & Add to Cart
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (product.hasDiscount)
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (product.hasDiscount)
+                              Text(
+                                '${product.oldPrice} ${AppConstants.currency}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  decoration: TextDecoration.lineThrough,
+                                  color: AppColors.textHint,
+                                  fontSize: 10,
+                                ),
+                              ),
                             Text(
-                              '${product.oldPrice} ${AppConstants.currency}',
-                              style: const TextStyle(
-                                decoration: TextDecoration.lineThrough,
-                                color: AppColors.textHint,
-                                fontSize: 10,
+                              '${product.price} ${AppConstants.currency}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.bodyLarge?.color,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          Text(
-                            '${product.price} ${AppConstants.currency}',
-                            style: TextStyle(
-                              color: Theme.of(
-                                context,
-                              ).textTheme.bodyLarge?.color,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
 
                       // Add Button
-                      IconButton.filled(
-                        onPressed: product.isInStock ? onAddToCart : null,
-                        iconSize: 20,
-                        icon: const Icon(Icons.add_shopping_cart_rounded),
-                        style: IconButton.styleFrom(
-                          backgroundColor: product.isInStock
-                              ? AppColors.primary
-                              : Colors.grey,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                      const SizedBox(width: 8),
+                      SizedBox(
+                        width: 38,
+                        height: 38,
+                        child: IconButton.filled(
+                          onPressed: product.isInStock ? onAddToCart : null,
+                          iconSize: 18,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints.tightFor(
+                            width: 38,
+                            height: 38,
                           ),
+                          style: IconButton.styleFrom(
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            backgroundColor: product.isInStock
+                                ? AppColors.primary
+                                : Colors.grey,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          icon: const Icon(Icons.add_shopping_cart_rounded),
                         ),
                       ),
                     ],

@@ -68,7 +68,11 @@ final catalogCategoriesProvider =
     });
 
 class CategoriesNotifier extends Notifier<CategoriesState> {
-  PaginationParams _params = const PaginationParams(page: 1);
+  PaginationParams _params = const PaginationParams(page: 1, perPage: 20);
+
+  /// Page number sent on the next categories API call (1-based). Driven locally
+  /// so we never repeat the same `page` when the server omits or misreports meta.
+  int _nextCategoriesApiPage = 1;
 
   @override
   CategoriesState build() {
@@ -77,9 +81,18 @@ class CategoriesNotifier extends Notifier<CategoriesState> {
   }
 
   Future<void> getCategories({bool isRefresh = false}) async {
+    final hadItemsPriorToFetch = state.items.isNotEmpty;
+
     if (isRefresh) {
+      _nextCategoriesApiPage = 1;
       _params = _params.copyWith(page: 1);
-      state = state.copyWith(isLoading: true, items: []);
+      state = state.copyWith(
+        isLoading: true,
+        isLoadingMore: false,
+        items: [],
+        clearMeta: true,
+        errorMessage: null,
+      );
     } else if (state.items.isEmpty) {
       state = state.copyWith(isLoading: true);
     } else if (state.isLoadingMore || !state.hasMore) {
@@ -88,33 +101,78 @@ class CategoriesNotifier extends Notifier<CategoriesState> {
       state = state.copyWith(isLoadingMore: true);
     }
 
+    final pageSent = _nextCategoriesApiPage;
+    final query = Map<String, dynamic>.from(_params.toQueryParameters());
+    query['page'] = pageSent;
+
     final repository = ref.read(catalogRepositoryProvider);
     final result = await repository.getCategories(
-      queryParams: _params.toQueryParameters(),
+      queryParams: query,
     );
 
     result.when(
       success: (data) {
-        final List<dynamic> list = data['data'] ?? [];
-        final categories = list
-            .map((e) => WebStoreCategory.fromJson(e))
-            .toList();
+        final isPaginationAppend = hadItemsPriorToFetch && !isRefresh;
+
+        final paginated = PaginatedResponse.fromJson(
+          data,
+          (item) => WebStoreCategory.fromJson(
+            Map<String, dynamic>.from(item as Map),
+          ),
+        );
+
+        final chunk = paginated.data;
+        final perPage = _params.perPage;
+        final serverTotal = paginated.meta.total;
+
+        final mergedItems =
+            isRefresh ? chunk : [...state.items, ...chunk];
+        final loadedCount = mergedItems.length;
+
+        final totalKnown = serverTotal > 0 ? serverTotal : null;
+        final reachedTotal =
+            totalKnown != null && loadedCount >= totalKnown;
+
+        final bool hasMorePages;
+        if (chunk.isEmpty) {
+          hasMorePages = false;
+        } else if (reachedTotal) {
+          hasMorePages = false;
+        } else if (chunk.length < perPage) {
+          hasMorePages = false;
+        } else {
+          hasMorePages = true;
+        }
+
+        final reportedTotal = totalKnown ?? loadedCount;
+
+        final metaForState = PaginationMeta(
+          currentPage: pageSent,
+          lastPage: hasMorePages ? pageSent + 1 : pageSent,
+          perPage: perPage,
+          total: reportedTotal,
+        );
+
+        final newSelectedId = state.selectedCategoryId ??
+            (chunk.isNotEmpty ? chunk.first.id : null);
 
         state = state.copyWith(
           isLoading: false,
           isLoadingMore: false,
-          items: isRefresh ? categories : [...state.items, ...categories],
+          items: mergedItems,
+          meta: metaForState,
           errorMessage: null,
-          selectedCategoryId:
-              state.selectedCategoryId ??
-              (categories.isNotEmpty ? categories.first.id : null),
+          selectedCategoryId: newSelectedId,
         );
 
-        // Auto-select first category if none selected
-        if (state.selectedCategoryId != null) {
+        if (hasMorePages) {
+          _nextCategoriesApiPage = pageSent + 1;
+        }
+
+        if (!isPaginationAppend && newSelectedId != null) {
           ref
               .read(catalogProductsProvider.notifier)
-              .filterByCategory(state.selectedCategoryId);
+              .filterByCategory(newSelectedId);
         }
       },
       failure: (failure) {
@@ -231,7 +289,25 @@ class ProductsNotifier extends Notifier<ProductsState> {
   }
 
   void search(String query) {
-    _params = _params.copyWith(search: query, page: 1);
+    final trimmed = query.trim();
+    final newFilters = Map<String, dynamic>.from(_params.filters ?? {});
+
+    // When searching, do not constrain results by category.
+    // When clearing search, restore currently selected category (if any).
+    if (trimmed.isNotEmpty) {
+      newFilters.remove('category_id');
+    } else {
+      final selectedCategoryId = ref
+          .read(catalogCategoriesProvider)
+          .selectedCategoryId;
+      if (selectedCategoryId != null) {
+        newFilters['category_id'] = selectedCategoryId;
+      } else {
+        newFilters.remove('category_id');
+      }
+    }
+
+    _params = _params.copyWith(filters: newFilters, search: trimmed, page: 1);
     getProducts(isRefresh: true);
   }
 }

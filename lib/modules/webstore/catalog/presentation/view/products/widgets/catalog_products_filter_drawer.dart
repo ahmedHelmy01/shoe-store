@@ -62,11 +62,9 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(14.w),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFF6EE),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(14.r),
-                border: Border.all(
-                  color: AppColors.primaryOrange.withValues(alpha: 0.18),
-                ),
+                border: Border.all(color: const Color(0xFFEAEAEA)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -301,11 +299,11 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
       label: Text(label),
       selected: selected,
       onSelected: (_) => onSelected(),
-      selectedColor: AppColors.primaryOrange.withValues(alpha: 0.16),
+      selectedColor: const Color(0xFFF3F4F6),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
       side: BorderSide(
         color: selected
-            ? AppColors.primaryOrange.withValues(alpha: 0.3)
+            ? AppColors.primaryOrange.withValues(alpha: 0.6)
             : const Color(0xFFE5E5E5),
       ),
       labelStyle: TextStyle(
