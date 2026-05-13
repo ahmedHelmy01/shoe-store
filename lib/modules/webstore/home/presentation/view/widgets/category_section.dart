@@ -60,32 +60,36 @@ class _CategorySectionState extends ConsumerState<CategorySection> {
     }
 
     return AppAnimation.fadeInUp(
-      child: SingleChildScrollView(
-        controller: _scrollController,
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-        child: Row(
-          children: [
-            ...state.items.map((cat) => _CategoryItem(cat: cat)),
-            if (state.isLoadingMore)
-              Padding(
-                padding: EdgeInsetsDirectional.only(start: 12.w),
-                child: SizedBox(
-                  width: 42.w,
-                  height: 90.h,
-                  child: Center(
-                    child: SizedBox(
-                      width: 22.w,
-                      height: 22.w,
-                      child: const CircularProgressIndicator.adaptive(
-                        strokeWidth: 2,
-                      ),
+      child: SizedBox(
+        height: 120.h,
+        child: ListView.builder(
+          controller: _scrollController,
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+          itemCount: state.items.length + (state.isLoadingMore ? 1 : 0),
+          itemBuilder: (context, index) {
+            if (index < state.items.length) {
+              return _CategoryItem(cat: state.items[index]);
+            }
+            
+            return Padding(
+              padding: EdgeInsetsDirectional.only(start: 12.w),
+              child: SizedBox(
+                width: 42.w,
+                height: 90.h,
+                child: Center(
+                  child: SizedBox(
+                    width: 22.w,
+                    height: 22.w,
+                    child: const CircularProgressIndicator.adaptive(
+                      strokeWidth: 2,
                     ),
                   ),
                 ),
               ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -119,6 +123,7 @@ class _CategoryItem extends StatelessWidget {
               },
         borderRadius: BorderRadius.circular(40.r),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               width: 70.w,
@@ -153,6 +158,8 @@ class _CategoryItem extends StatelessWidget {
                         width: 40.w,
                         height: 40.w,
                         fit: BoxFit.contain,
+                        memCacheWidth: 150,
+                        memCacheHeight: 150,
                       )
                     : Center(
                         child: Icon(

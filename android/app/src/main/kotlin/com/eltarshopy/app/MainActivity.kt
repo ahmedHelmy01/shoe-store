@@ -1,4 +1,4 @@
-package com.example.erp
+package com.eltarshopy.app
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -4,10 +4,12 @@ import 'package:erp/modules/webstore/home/data/webstore_cms_remote_datasource.da
 import 'package:erp/modules/webstore/branches/data/branch_model.dart';
 import 'package:erp/modules/webstore/home/data/models/store_settings_model.dart';
 import 'package:erp/modules/webstore/support/data/models/contact_request_model.dart';
+import 'package:erp/modules/webstore/home/data/models/coupon_model.dart';
 
 abstract class ICMSRepository {
   Future<ApiResult<Map<String, dynamic>>> getSliders();
   Future<ApiResult<Map<String, dynamic>>> getAds();
+  Future<ApiResult<List<StoreCouponModel>>> getCoupons();
   Future<ApiResult<Map<String, dynamic>>> getPages();
   Future<ApiResult<Map<String, dynamic>>> getPageBySlug(String slug);
   
@@ -28,6 +30,14 @@ class CMSRepository extends BaseRepository implements ICMSRepository {
   @override
   Future<ApiResult<Map<String, dynamic>>> getAds() => 
       safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.getAds());
+
+  @override
+  Future<ApiResult<List<StoreCouponModel>>> getCoupons() =>
+      safeApiCall<List<StoreCouponModel>>(() async {
+        final response = await _remoteDataSource.getCoupons();
+        final List<dynamic> data = response['data'] ?? [];
+        return data.map((e) => StoreCouponModel.fromJson(e as Map<String, dynamic>)).toList();
+      });
 
   @override
   Future<ApiResult<Map<String, dynamic>>> getPages() => 

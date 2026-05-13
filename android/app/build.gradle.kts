@@ -1,12 +1,13 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    id("com.google.gms.google-services")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
 
 android {
-    namespace = "com.example.erp"
+    namespace = "com.eltarshopy.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -20,7 +21,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.erp"
+        applicationId = "com.eltarshopy.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -50,8 +51,6 @@ android {
         }
         create("webstore") {
             dimension = "version"
-            applicationIdSuffix = ".webstore"
-            versionNameSuffix = "-webstore"
             resValue("string", "app_name", "متجر الويب")
         }
         create("sales") {

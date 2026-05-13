@@ -11,6 +11,11 @@ import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/router/route_generator.dart';
 import 'package:erp/app/splash_router.dart';
+import 'package:erp/core/network/network_check_internet.dart';
+import 'package:erp/core/common_widget/network_listener.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:erp/firebase_options.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 /// Central entry point for the ERP application
 class ErpAppRoot extends ConsumerStatefulWidget {
@@ -37,7 +42,7 @@ class _ErpAppRootState extends ConsumerState<ErpAppRoot> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(isConnectedProvider);
+    ref.watch(networkStatusProvider);
 
     // Avoid building the app with the wrong locale for 1 frame.
     if (_startLocale == null) {
@@ -55,21 +60,21 @@ class _ErpAppRootState extends ConsumerState<ErpAppRoot> {
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context, child) {
-          return Builder(
-            builder: (context) {
-              return MaterialApp(
-                title: FlavorConfig.appName,
-                debugShowCheckedModeBanner: false,
-                navigatorKey: AppNavigator.navigatorKey,
-                localizationsDelegates: context.localizationDelegates,
-                supportedLocales: context.supportedLocales,
-                locale: context.locale,
-                theme: AppTheme.lightTheme,
-                darkTheme: AppTheme.darkTheme,
-                themeMode: ref.watch(themeProvider),
-                home: const SplashRouter(),
-                onGenerateRoute: RouteGenerator.onGenerateRoute,
-              );
+          return MaterialApp(
+            title: FlavorConfig.appName,
+            debugShowCheckedModeBanner: false,
+            navigatorKey: AppNavigator.navigatorKey,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: ref.watch(themeProvider),
+            home: const SplashRouter(),
+            onGenerateRoute: RouteGenerator.onGenerateRoute,
+            // Use builder to inject NetworkListener so it has access to Directionality
+            builder: (context, child) {
+              return NetworkListener(child: child!);
             },
           );
         },
@@ -80,6 +85,14 @@ class _ErpAppRootState extends ConsumerState<ErpAppRoot> {
 
 /// Global dynamic bootstrap function
 Future<void> bootstrap(AppFlavor flavor) async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await GoogleSignIn.instance.initialize(
+    serverClientId: '364936943793-6gp5u8ceave53mcmdgvtb87sjv95j62g.apps.googleusercontent.com',
+  );
   final prefs = await AppInitializer.init(flavor);
 
   runApp(

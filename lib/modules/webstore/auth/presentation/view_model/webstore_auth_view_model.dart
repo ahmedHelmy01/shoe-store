@@ -14,12 +14,17 @@ import 'package:erp/modules/webstore/auth/presentation/view_model/webstore_auth_
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+
 class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
   @override
   WebStoreAuthState build() => const WebStoreAuthIdle();
 
   IWebStoreAuthRepository get _repository =>
       ref.read(webStoreAuthRepositoryProvider);
+
+  GoogleSignIn get _googleSignIn => GoogleSignIn.instance;
 
   // ─── Register ──────────────────────────────────────
 
@@ -45,15 +50,17 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
     result.when(
       success: (authResponse) async {
         // Save token to session storage
-        await ref.read(sessionManagerProvider).saveTokens(
-              accessToken: authResponse.token,
-            );
-        await ref.read(sessionManagerProvider).saveUserId(
-              authResponse.user.id.toString(),
-            );
+        await ref
+            .read(sessionManagerProvider)
+            .saveTokens(accessToken: authResponse.token);
+        await ref
+            .read(sessionManagerProvider)
+            .saveUserId(authResponse.user.id.toString());
 
         // Update global auth state
-        ref.read(authStateProvider.notifier).setAuthenticated(
+        ref
+            .read(authStateProvider.notifier)
+            .setAuthenticated(
               token: authResponse.token,
               userId: authResponse.user.id.toString(),
             );
@@ -81,40 +88,114 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
 
     result.when(
       success: (authResponse) async {
-        // Save token to session storage
-        await ref.read(sessionManagerProvider).saveTokens(
-              accessToken: authResponse.token,
-            );
-        await ref.read(sessionManagerProvider).saveUserId(
-              authResponse.user.id.toString(),
-            );
-
-        // Update global auth state
-        ref.read(authStateProvider.notifier).setAuthenticated(
+        await ref
+            .read(sessionManagerProvider)
+            .saveTokens(accessToken: authResponse.token);
+        await ref
+            .read(sessionManagerProvider)
+            .saveUserId(authResponse.user.id.toString());
+        ref
+            .read(authStateProvider.notifier)
+            .setAuthenticated(
               token: authResponse.token,
               userId: authResponse.user.id.toString(),
             );
-
         state = WebStoreAuthSuccess(authResponse);
       },
-      failure: (exception) {
-        state = WebStoreAuthError(exception.message);
-      },
+      failure: (exception) => state = WebStoreAuthError(exception.message),
     );
+  }
+
+  // ─── Social Login ────────────────────────────────────
+
+  Future<void> socialLogin({
+    required String providerType,
+    required String
+    providerIdentifier, // This will be ignored for real login if handled here
+    String? name,
+    String? email,
+    String? mobile,
+    int? branchId,
+  }) async {
+    state = const WebStoreAuthLoading();
+
+    try {
+      String? realId = providerIdentifier;
+      String? realName = name;
+      String? realEmail = email;
+
+      if (providerType == 'google') {
+        final GoogleSignInAccount? googleUser = await _googleSignIn
+            .authenticate();
+        if (googleUser == null) {
+          state = const WebStoreAuthIdle();
+          return; // User cancelled
+        }
+        realId = googleUser.id;
+        realName = googleUser.displayName;
+        realEmail = googleUser.email;
+      } else if (providerType == 'facebook') {
+        final LoginResult fbResult = await FacebookAuth.instance.login();
+        if (fbResult.status == LoginStatus.success) {
+          final userData = await FacebookAuth.instance.getUserData();
+          realId = userData['id'];
+          realName = userData['name'];
+          realEmail = userData['email'];
+        } else {
+          state = const WebStoreAuthIdle();
+          return; // User cancelled or error
+        }
+      }
+
+      if (realId == null) {
+        state = const WebStoreAuthIdle();
+        return;
+      }
+
+      final result = await _repository.socialLogin(
+        providerType: providerType,
+        providerIdentifier: realId,
+        name: realName,
+        email: realEmail,
+        mobile: mobile,
+        branchId: branchId,
+      );
+
+      result.when(
+        success: (authResponse) async {
+          await ref
+              .read(sessionManagerProvider)
+              .saveTokens(accessToken: authResponse.token);
+          await ref
+              .read(sessionManagerProvider)
+              .saveUserId(authResponse.user.id.toString());
+          ref
+              .read(authStateProvider.notifier)
+              .setAuthenticated(
+                token: authResponse.token,
+                userId: authResponse.user.id.toString(),
+              );
+          state = WebStoreAuthSuccess(authResponse);
+        },
+        failure: (exception) => state = WebStoreAuthError(exception.message),
+      );
+    } catch (e) {
+      state = WebStoreAuthError(e.toString());
+    }
   }
 
   // ─── Forgot Password ──────────────────────────────
 
-  Future<void> forgotPassword({
-    required String username,
-  }) async {
+  Future<void> forgotPassword({required String username}) async {
     state = const WebStoreAuthLoading();
 
     final result = await _repository.forgotPassword(username: username);
 
     result.when(
       success: (data) {
-        final message = data['message'] as String? ?? LocaleKeys.webstore.auth.otp_sent.tr();
+        final message =
+            data['message'] as String? ??
+            LocaleKeys.webstore.auth.otp_sent.tr();
         state = WebStoreOtpSent(
           message: message,
           identifier: username,
@@ -144,7 +225,9 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
 
     result.when(
       success: (data) {
-        final message = data['message'] as String? ?? LocaleKeys.webstore.auth.otp_verified.tr();
+        final message =
+            data['message'] as String? ??
+            LocaleKeys.webstore.auth.otp_verified.tr();
         state = WebStoreOtpVerified(message);
       },
       failure: (exception) {
@@ -168,7 +251,9 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
 
     result.when(
       success: (data) {
-        final message = data['message'] as String? ?? LocaleKeys.webstore.auth.otp_resent.tr();
+        final message =
+            data['message'] as String? ??
+            LocaleKeys.webstore.auth.otp_resent.tr();
         state = WebStoreOtpResent(message);
       },
       failure: (exception) {
@@ -196,7 +281,9 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
 
     result.when(
       success: (data) {
-        final message = data['message'] as String? ?? LocaleKeys.webstore.auth.password_reset_success.tr();
+        final message =
+            data['message'] as String? ??
+            LocaleKeys.webstore.auth.password_reset_success.tr();
         state = WebStoreAuthPasswordResetSuccess(message);
       },
       failure: (exception) {
@@ -212,9 +299,9 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
 
     result.when(
       success: (authResponse) async {
-        await ref.read(sessionManagerProvider).saveTokens(
-              accessToken: authResponse.token,
-            );
+        await ref
+            .read(sessionManagerProvider)
+            .saveTokens(accessToken: authResponse.token);
         state = WebStoreAuthSuccess(authResponse);
       },
       failure: (exception) {
@@ -256,11 +343,12 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
     );
     result.when(
       success: (data) async {
-        final message = data['message'] as String? ?? 'Profile updated successfully';
+        final message =
+            data['message'] as String? ?? 'Profile updated successfully';
         // Refresh profile data to get the updated user object
         await getProfile();
         // We can show the message using a different mechanism or keep the success state
-        state = WebStoreOtpVerified(message); 
+        state = WebStoreOtpVerified(message);
       },
       failure: (exception) {
         state = WebStoreAuthError(exception.message);

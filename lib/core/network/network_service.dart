@@ -147,6 +147,12 @@ class NetworkService {
       throw DeadlineExceededException();
     } catch (e) {
       if (e is NetworkException) rethrow;
+      final errorStr = e.toString().toLowerCase();
+      if (errorStr.contains('clientexception') || 
+          errorStr.contains('connection closed') ||
+          errorStr.contains('handshake')) {
+        throw NoInternetException();
+      }
       throw NetworkException(message: e.toString());
     }
   }
@@ -226,6 +232,12 @@ class NetworkService {
       throw DeadlineExceededException();
     } catch (e) {
       if (e is NetworkException) rethrow;
+      final errorStr = e.toString().toLowerCase();
+      if (errorStr.contains('clientexception') || 
+          errorStr.contains('connection closed') ||
+          errorStr.contains('handshake')) {
+        throw NoInternetException();
+      }
       throw NetworkException(message: e.toString());
     }
   }

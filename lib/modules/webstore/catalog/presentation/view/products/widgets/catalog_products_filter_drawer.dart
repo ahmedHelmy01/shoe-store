@@ -53,8 +53,10 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Drawer(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       child: SafeArea(
         child: ListView(
           padding: EdgeInsets.all(16.w),
@@ -62,9 +64,11 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(14.w),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: theme.cardColor,
                 borderRadius: BorderRadius.circular(14.r),
-                border: Border.all(color: const Color(0xFFEAEAEA)),
+                border: Border.all(
+                  color: isDark ? Colors.white10 : const Color(0xFFEAEAEA),
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,14 +77,13 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
                     'فلترة متقدمة',
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w800,
-                      color: Colors.black87,
                     ),
                   ),
                   6.verticalSpace,
                   Text(
                     'اختر القسم، نطاق السعر، التاج، والأولوية للحصول على نتائج أدق',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.black54,
+                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
                     ),
                   ),
                 ],
@@ -91,7 +94,7 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
               label: 'القسم',
               hint: 'اختر القسم',
               value: selectedCategoryId,
-              borderColor: const Color(0xFFE8E8E8),
+              borderColor: isDark ? Colors.white10 : const Color(0xFFE8E8E8),
               focusedBorderColor: AppColors.primaryOrange,
               fieldHeight: 48.h,
               menuMaxHeight: 320.h,
@@ -118,7 +121,7 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
               label: 'الشركة المصنعة',
               hint: 'اختر الشركة',
               value: selectedManufacturerId,
-              borderColor: const Color(0xFFE8E8E8),
+              borderColor: isDark ? Colors.white10 : const Color(0xFFE8E8E8),
               focusedBorderColor: AppColors.primaryOrange,
               fieldHeight: 48.h,
               menuMaxHeight: 320.h,
@@ -145,7 +148,7 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
               label: 'التاج',
               hint: 'اختر التاج',
               value: selectedTagId,
-              borderColor: const Color(0xFFE8E8E8),
+              borderColor: isDark ? Colors.white10 : const Color(0xFFE8E8E8),
               focusedBorderColor: AppColors.primaryOrange,
               fieldHeight: 48.h,
               menuMaxHeight: 320.h,
@@ -172,16 +175,19 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
               title: 'الترتيب حسب',
               children: [
                 _choiceChip(
+                  context: context,
                   label: 'الاسم',
                   selected: sortBy == 'name',
                   onSelected: () => onSortByChanged('name'),
                 ),
                 _choiceChip(
+                  context: context,
                   label: 'السعر',
                   selected: sortBy == 'sale_price',
                   onSelected: () => onSortByChanged('sale_price'),
                 ),
                 _choiceChip(
+                  context: context,
                   label: 'تاريخ الإضافة',
                   selected: sortBy == 'created_at',
                   onSelected: () => onSortByChanged('created_at'),
@@ -193,11 +199,13 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
               title: 'اتجاه الترتيب',
               children: [
                 _choiceChip(
+                  context: context,
                   label: 'تصاعدي',
                   selected: sortDir == 'asc',
                   onSelected: () => onSortDirChanged('asc'),
                 ),
                 _choiceChip(
+                  context: context,
                   label: 'تنازلي',
                   selected: sortDir == 'desc',
                   onSelected: () => onSortDirChanged('desc'),
@@ -208,7 +216,7 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
               decoration: BoxDecoration(
-                color: const Color(0xFFF9F9F9),
+                color: isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFF9F9F9),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Column(
@@ -224,6 +232,8 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
                     values: priceValues,
                     min: 0,
                     max: 1000,
+                    activeColor: AppColors.primaryOrange,
+                    inactiveColor: AppColors.primaryOrange.withOpacity(0.2),
                     divisions: 20,
                     labels: RangeLabels(
                       priceValues.start.toStringAsFixed(0),
@@ -236,14 +246,15 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
             ),
             12.verticalSpace,
             SwitchListTile(
-              tileColor: const Color(0xFFF9F9F9),
+              tileColor: isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFF9F9F9),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
               ),
+              activeColor: AppColors.primaryOrange,
               value: onlyInStock,
-              title: const Text('المتاح فقط'),
+              title: Text('المتاح فقط', style: theme.textTheme.bodyMedium),
               onChanged: onOnlyInStockChanged,
-              contentPadding: EdgeInsets.zero,
+              contentPadding: EdgeInsets.symmetric(horizontal: 12.w),
             ),
             24.verticalSpace,
             Row(
@@ -257,13 +268,14 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
                           borderRadius: BorderRadius.circular(14.r),
                         ),
                         side: BorderSide(
-                          color: AppColors.primaryOrange.withValues(
-                            alpha: 0.35,
-                          ),
+                          color: AppColors.primaryOrange.withOpacity(0.35),
                         ),
                       ),
                       onPressed: onReset,
-                      child: const Text('إعادة تعيين'),
+                      child: const FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text('إعادة تعيين'),
+                      ),
                     ),
                   ),
                 ),
@@ -273,12 +285,18 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
                     height: 48.h,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryOrange,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14.r),
                         ),
                       ),
                       onPressed: onApply,
-                      child: const Text('عرض النتائج'),
+                      child: const FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text('عرض النتائج'),
+                      ),
                     ),
                   ),
                 ),
@@ -291,26 +309,31 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
   }
 
   Widget _choiceChip({
+    required BuildContext context,
     required String label,
     required bool selected,
     required VoidCallback onSelected,
   }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return ChoiceChip(
       label: Text(label),
       selected: selected,
       onSelected: (_) => onSelected(),
-      selectedColor: const Color(0xFFF3F4F6),
+      selectedColor: AppColors.primaryOrange.withOpacity(isDark ? 0.2 : 0.05),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
       side: BorderSide(
         color: selected
-            ? AppColors.primaryOrange.withValues(alpha: 0.6)
-            : const Color(0xFFE5E5E5),
+            ? AppColors.primaryOrange.withOpacity(0.6)
+            : (isDark ? Colors.white10 : const Color(0xFFE5E5E5)),
       ),
       labelStyle: TextStyle(
-        color: selected ? AppColors.primaryOrange : Colors.black87,
+        color: selected ? AppColors.primaryOrange : theme.textTheme.bodyMedium?.color,
         fontWeight: FontWeight.w600,
+        fontSize: 12.sp,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
     );
   }
 }
@@ -323,11 +346,14 @@ class _ChipSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
       decoration: BoxDecoration(
-        color: const Color(0xFFF9F9F9),
+        color: isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFF9F9F9),
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
@@ -338,7 +364,7 @@ class _ChipSection extends StatelessWidget {
             style: TextStyle(
               fontSize: 13.sp,
               fontWeight: FontWeight.w700,
-              color: Colors.black87,
+              color: theme.textTheme.bodyMedium?.color,
             ),
           ),
           8.verticalSpace,

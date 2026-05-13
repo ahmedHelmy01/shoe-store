@@ -7,6 +7,7 @@ import 'package:erp/modules/webstore/home/presentation/view_model/home_view_mode
 import 'package:erp/modules/webstore/home/presentation/view/widgets/product_card_widget.dart';
 import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
+import 'package:erp/core/common_widget/app_error_widget/app_error_widget.dart';
 
 class ProductGridSection extends ConsumerWidget {
   const ProductGridSection({super.key});
@@ -26,6 +27,13 @@ class ProductGridSection extends ConsumerWidget {
           separatorBuilder: (_, __) => 12.horizontalSpace,
           itemBuilder: (_, __) => AppShimmer.productCard(),
         ),
+      );
+    }
+
+    if (homeState.errorMessage != null && products.isEmpty) {
+      return AppErrorWidget(
+        errorMessage: homeState.errorMessage,
+        onRetry: () => ref.read(homeVmProvider.notifier).getLatestProducts(),
       );
     }
 

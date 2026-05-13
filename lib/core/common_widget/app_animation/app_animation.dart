@@ -26,29 +26,31 @@ class AppAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0.0, end: 1.0),
-      duration: duration,
-      curve: Curves.easeOutQuart,
-      builder: (context, value, child) {
-        Widget content = child!;
-        
-        if (type == AnimationType.fadeZoomIn) {
-          content = Transform.scale(
-            scale: 0.8 + (0.2 * value),
-            child: content,
-          );
-        }
+    return RepaintBoundary(
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0.0, end: 1.0),
+        duration: duration,
+        curve: Curves.easeOutQuart,
+        builder: (context, value, child) {
+          Widget content = child!;
+          
+          if (type == AnimationType.fadeZoomIn) {
+            content = Transform.scale(
+              scale: 0.8 + (0.2 * value),
+              child: content,
+            );
+          }
 
-        return Opacity(
-          opacity: value,
-          child: Transform.translate(
-            offset: _getOffset(value),
-            child: content,
-          ),
-        );
-      },
-      child: child,
+          return Opacity(
+            opacity: value,
+            child: Transform.translate(
+              offset: _getOffset(value),
+              child: content,
+            ),
+          );
+        },
+        child: child,
+      ),
     );
   }
 

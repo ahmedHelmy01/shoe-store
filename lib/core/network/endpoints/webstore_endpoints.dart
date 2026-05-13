@@ -89,6 +89,7 @@ class _WebStoreCms {
   const _WebStoreCms();
   final String sliders = '/api/store/sliders';
   final String ads = '/api/store/ads';
+  final String coupons = '/api/store/coupons';
   final String boardings = '/api/store/boardings';
   final String pages = '/api/store/pages';
   final String pageDetail = '/api/store/pages/{slug}';

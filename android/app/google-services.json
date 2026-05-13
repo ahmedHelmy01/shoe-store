@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "364936943793",
+    "project_id": "erp-webstore",
+    "storage_bucket": "erp-webstore.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:364936943793:android:5fc8143e93a51fbf66aa90",
+        "android_client_info": {
+          "package_name": "com.eltarshopy.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "364936943793-23b3ch1g19ioidbnnp2u2cn8ucl3c173.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eltarshopy.app",
+            "certificate_hash": "a86a41b87fed95e8524a0a8677d4413d76f70b45"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEZ701DjCtqyx4QM67GJ7PxDHiaC_PvM0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

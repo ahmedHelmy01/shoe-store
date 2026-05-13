@@ -9,14 +9,18 @@ class AppImage extends StatelessWidget {
   final double? width;
   final Color? color;
   final BoxFit fit;
+  final int? memCacheWidth;
+  final int? memCacheHeight;
 
-  AppImage({
+  const AppImage({
     super.key,
     required this.imagePath,
     this.height,
     this.width,
     this.color,
     this.fit = BoxFit.cover,
+    this.memCacheWidth,
+    this.memCacheHeight,
   });
 
   @override
@@ -27,6 +31,8 @@ class AppImage extends StatelessWidget {
       width: width,
       fit: fit,
       color: color,
+      memCacheWidth: memCacheWidth,
+      memCacheHeight: memCacheHeight,
       placeHolderText: LocaleKeys.common.noImage.tr(context: context),
     );
   }

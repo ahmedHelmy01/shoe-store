@@ -13,6 +13,8 @@ import 'package:erp/modules/webstore/auth/presentation/view_model/webstore_auth_
 import 'package:erp/modules/webstore/auth/presentation/widgets/webstore_auth_scaffold.dart';
 import 'package:erp/modules/webstore/auth/presentation/widgets/auth_glass_card.dart';
 import 'package:erp/modules/webstore/auth/presentation/widgets/auth_ui_components.dart';
+import 'package:erp/modules/webstore/auth/presentation/widgets/social_login_section.dart';
+import 'package:erp/core/common_widget/app_bottom_sheet/branch_selection_sheet.dart';
 
 class WebStoreLoginScreen extends ConsumerStatefulWidget {
   const WebStoreLoginScreen({super.key});
@@ -40,6 +42,26 @@ class _WebStoreLoginScreenState extends ConsumerState<WebStoreLoginScreen> {
             password: _passwordController.text,
           );
     }
+  }
+
+  void _onSocialLogin(String provider) async {
+    // 1. Show Branch Selection Sheet first
+    final branchId = await showModalBottomSheet<int>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const BranchSelectionSheet(),
+    );
+
+    if (branchId == null) return; // User cancelled
+
+    // 2. Proceed with social login using selected branch
+    ref.read(webStoreAuthViewModelProvider.notifier).socialLogin(
+          providerType: provider,
+          providerIdentifier: 'dummy-id-${DateTime.now().millisecondsSinceEpoch}',
+          name: 'Social User',
+          branchId: branchId,
+        );
   }
 
   @override
@@ -79,7 +101,13 @@ class _WebStoreLoginScreenState extends ConsumerState<WebStoreLoginScreen> {
                     _buildFormFields(),
                     const SizedBox(height: 20),
                     _buildLoginButton(isLoading),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 32),
+                    SocialLoginSection(
+                      onGoogleTap: () => _onSocialLogin('google'),
+                      onFacebookTap: () => _onSocialLogin('facebook'),
+                      onAppleTap: () => _onSocialLogin('apple'),
+                    ),
+                    const SizedBox(height: 32),
                     AuthFooter(
                       text: LocaleKeys.webstore.auth.no_account.tr(context: context),
                       actionText: LocaleKeys.webstore.auth.register_now.tr(context: context),

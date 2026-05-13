@@ -14,6 +14,8 @@ class ImageRenderer {
     double? width,
     BoxFit fit = BoxFit.cover,
     Color? color,
+    int? memCacheWidth,
+    int? memCacheHeight,
     String? placeHolderImage,
     String? placeHolderText,
   }) {
@@ -43,6 +45,8 @@ class ImageRenderer {
           width: width,
           fit: fit,
           color: color,
+          memCacheWidth: memCacheWidth,
+          memCacheHeight: memCacheHeight,
           placeholder: (context, url) => Center(
             child: SizedBox(height: 20, width: 20, child: AppLoader(size: 20)),
           ),

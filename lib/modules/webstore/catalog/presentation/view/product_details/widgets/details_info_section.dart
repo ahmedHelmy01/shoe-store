@@ -24,9 +24,16 @@ class DetailsInfoSection extends StatelessWidget {
         _buildRating(),
         
         // 📋 Technical Details (SKU, Barcode)
-        _buildTechnicalInfo(isDark),
+        _buildTechnicalInfo(theme, isDark),
 
-        Divider(height: 32.h, thickness: 8, color: isDark ? Colors.white10 : Colors.grey[100]),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.h),
+          child: Divider(
+            height: 1,
+            thickness: 1,
+            color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.withOpacity(0.1),
+          ),
+        ),
         _buildStock(),
       ],
     );
@@ -80,15 +87,15 @@ class DetailsInfoSection extends StatelessWidget {
     );
   }
 
-  Widget _buildTechnicalInfo(bool isDark) {
+  Widget _buildTechnicalInfo(ThemeData theme, bool isDark) {
     if (product.sku == null && product.barcode == null) return const SizedBox.shrink();
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        color: isDark ? Colors.white.withValues(alpha: 0.03) : Colors.grey[50],
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: isDark ? Colors.white10 : Colors.grey.shade200),
+        color: isDark ? Colors.white.withOpacity(0.03) : theme.primaryColor.withOpacity(0.03),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: isDark ? Colors.white.withOpacity(0.05) : theme.primaryColor.withOpacity(0.08)),
       ),
       child: Column(
         children: [

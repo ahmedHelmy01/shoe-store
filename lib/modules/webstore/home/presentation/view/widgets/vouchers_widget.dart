@@ -1,4 +1,6 @@
+import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -6,11 +8,16 @@ import 'package:erp/core/common_widget/app_section_header/app_section_header.dar
 import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 
-class VouchersWidget extends StatelessWidget {
+class VouchersWidget extends ConsumerWidget {
   const VouchersWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final homeState = ref.watch(homeVmProvider);
+    final coupons = homeState.coupons;
+
+    if (coupons.isEmpty) return const SizedBox.shrink();
+
     return AppAnimation.fadeInUp(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,9 +31,10 @@ class VouchersWidget extends StatelessWidget {
             child: ListView.separated(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               scrollDirection: Axis.horizontal,
-              itemCount: 4,
+              itemCount: coupons.length,
               separatorBuilder: (_, __) => 12.horizontalSpace,
               itemBuilder: (context, index) {
+                final coupon = coupons[index];
                 final theme = Theme.of(context);
                 final isDark = theme.brightness == Brightness.dark;
 
@@ -51,10 +59,8 @@ class VouchersWidget extends StatelessWidget {
                 ];
                 
                 return _buildVoucherCard(
-                  index == 0 ? "50 LE" : "20 LE",
-                  index == 0
-                      ? LocaleKeys.webstore.home.voucher_first_order.tr(context: context)
-                      : LocaleKeys.webstore.home.voucher_skincare.tr(context: context),
+                  coupon.valueLabel,
+                  coupon.description,
                   isDark ? darkColors[index % darkColors.length] : lightColors[index % lightColors.length],
                   textColors[index % textColors.length],
                 );

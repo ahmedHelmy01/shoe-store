@@ -19,6 +19,10 @@ class WebStoreCmsRemoteDataSource {
     return _networkService.get(ApiEndpoints.webstore.cms.ads);
   }
 
+  Future<dynamic> getCoupons() {
+    return _networkService.get(ApiEndpoints.webstore.cms.coupons);
+  }
+
   Future<dynamic> getBoardings() {
     return _networkService.get(ApiEndpoints.webstore.cms.boardings);
   }

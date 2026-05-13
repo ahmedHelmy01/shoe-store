@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,27 +16,70 @@ export 'package:erp/modules/webstore/home/presentation/state/home_state.dart';
 export 'package:erp/modules/webstore/branches/presentation/view_model/branch_view_model.dart';
 export 'package:erp/modules/webstore/branches/presentation/state/branch_state.dart';
 
+import 'package:erp/modules/webstore/home/data/models/coupon_model.dart';
+
 // ─── Home View Model ────────────────────────────────
 
 class HomeVm extends Notifier<HomeState> {
   @override
   HomeState build() {
-    Future.microtask(() {
-      getLatestProducts();
-      // Initialize other components
-      ref.read(sliderVmProvider.notifier).getSliders();
-      ref.read(adsVmProvider.notifier).getAds();
-    });
+    Future.microtask(() => initHome());
     return HomeState();
   }
 
+  /// Initial loading sequence optimized for slow networks
+  Future<void> initHome() async {
+    // 1. Prioritize Coupons (Smallest but important for user)
+    await getCoupons();
+    
+    // 2. Fetch Latest Products
+    await getLatestProducts();
+    
+    // Note: SliderVm and AdsVm handle their own initialization on build
+  }
+
+  Future<void> getCoupons() async {
+    final prefs = ref.read(sharedPreferencesProvider);
+    final cacheKey = 'webstore_coupons_cache';
+
+    final result = await ref.read(cmsRepositoryProvider).getCoupons();
+    result.when(
+      success: (coupons) {
+        state = state.copyWith(coupons: coupons);
+        // Cache the successful result
+        final jsonList = coupons.map((c) => c.toJson()).toList();
+        prefs.setString(cacheKey, jsonEncode(jsonList));
+      },
+      failure: (error) {
+        debugPrint('❌ HomeVm: Coupons fetch failed: ${error.message}');
+        
+        // Try to load from cache on failure
+        final cachedData = prefs.getString(cacheKey);
+        if (cachedData != null) {
+          try {
+            final List<dynamic> json = jsonDecode(cachedData);
+            final cachedCoupons = json.map((j) => StoreCouponModel.fromJson(j)).toList();
+            state = state.copyWith(coupons: cachedCoupons);
+          } catch (e) {
+            debugPrint('Error parsing cached coupons: $e');
+          }
+        }
+
+        if (error.message.contains('timeout')) {
+          Future.delayed(const Duration(seconds: 3), () => getCoupons());
+        }
+      },
+    );
+  }
+
   Future<void> getLatestProducts() async {
+    final prefs = ref.read(sharedPreferencesProvider);
+    final cacheKey = 'webstore_latest_products_cache';
+    
     state = state.copyWith(isLoading: true);
 
-    // Attempt 1
     var result = await ref.read(catalogRepositoryProvider).getProducts();
 
-    // Retry Logic
     if (result.isFailure) {
       await Future.delayed(const Duration(seconds: 1));
       result = await ref.read(catalogRepositoryProvider).getProducts();
@@ -47,11 +91,39 @@ class HomeVm extends Notifier<HomeState> {
         final products = productsJson
             .map((j) => WebStoreProduct.fromJson(j))
             .toList();
-        state = state.copyWith(products: products, isLoading: false);
+        state = state.copyWith(
+          products: products, 
+          isLoading: false,
+          errorMessage: null, // Clear error on success
+        );
+        
+        // Cache the successful result
+        prefs.setString(cacheKey, jsonEncode(data));
       },
       failure: (error) {
         debugPrint('❌ HomeVm: Products fetch failed: ${error.message}');
-        state = state.copyWith(isLoading: false);
+        
+        // Try to load from cache on failure
+        final cachedData = prefs.getString(cacheKey);
+        if (cachedData != null) {
+          try {
+            final Map<String, dynamic> data = jsonDecode(cachedData);
+            final List<dynamic> productsJson = data['data'] ?? [];
+            final products = productsJson
+                .map((j) => WebStoreProduct.fromJson(j))
+                .toList();
+            state = state.copyWith(
+              products: products, 
+              isLoading: false,
+              errorMessage: null, // If we have cache, don't show error banner
+            );
+          } catch (e) {
+            debugPrint('Error parsing cached products: $e');
+            state = state.copyWith(isLoading: false, errorMessage: error.message);
+          }
+        } else {
+          state = state.copyWith(isLoading: false, errorMessage: error.message);
+        }
       },
     );
   }
@@ -111,9 +183,15 @@ final homeVmProvider = NotifierProvider<HomeVm, HomeState>(HomeVm.new);
 
 class SliderVm extends Notifier<SliderState> {
   @override
-  SliderState build() => SliderInitial();
+  SliderState build() {
+    Future.microtask(() => getSliders());
+    return SliderInitial();
+  }
 
   Future<void> getSliders() async {
+    final prefs = ref.read(sharedPreferencesProvider);
+    final cacheKey = 'webstore_sliders_cache';
+
     state = SliderLoading();
 
     // Attempt 1
@@ -130,8 +208,29 @@ class SliderVm extends Notifier<SliderState> {
         final List<dynamic> sliderJson = data['data'] ?? [];
         final sliders = sliderJson.map((j) => SliderModel.fromJson(j)).toList();
         state = SliderSuccess(sliders);
+        
+        // Cache successful result
+        prefs.setString(cacheKey, jsonEncode(data));
       },
-      failure: (error) => state = SliderError(error.message),
+      failure: (error) {
+        debugPrint('❌ SliderVm: Fetch failed: ${error.message}');
+        
+        // Try cache
+        final cachedData = prefs.getString(cacheKey);
+        if (cachedData != null) {
+          try {
+            final Map<String, dynamic> data = jsonDecode(cachedData);
+            final List<dynamic> sliderJson = data['data'] ?? [];
+            final sliders = sliderJson.map((j) => SliderModel.fromJson(j)).toList();
+            state = SliderSuccess(sliders);
+          } catch (e) {
+            debugPrint('Error parsing cached sliders: $e');
+            state = SliderError(error.message);
+          }
+        } else {
+          state = SliderError(error.message);
+        }
+      },
     );
   }
 }

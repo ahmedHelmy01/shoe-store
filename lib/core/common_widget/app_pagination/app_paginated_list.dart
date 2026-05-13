@@ -79,7 +79,7 @@ class _AppPaginatedListState<T> extends State<AppPaginatedList<T>> {
     // Error state
     if (widget.errorMessage != null && widget.items.isEmpty) {
       return AppErrorWidget(
-        message: widget.errorMessage,
+        errorMessage: widget.errorMessage,
         onRetry: widget.onRetry,
       );
     }

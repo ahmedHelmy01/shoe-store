@@ -1,11 +1,14 @@
 import 'package:erp/core/common_widget/app_empty_widget/app_empty_widget.dart';
+import 'package:erp/core/common_widget/app_error_widget/app_error_widget.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view/products/widgets/product_card.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_state.dart';
+import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CatalogProductsBody extends StatelessWidget {
+class CatalogProductsBody extends ConsumerWidget {
   final ProductsState productsState;
   final List<WebStoreProduct> products;
   final ScrollController scrollController;
@@ -20,7 +23,7 @@ class CatalogProductsBody extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
     if (productsState.isLoading && products.isEmpty) {
@@ -28,7 +31,12 @@ class CatalogProductsBody extends StatelessWidget {
     }
 
     if (productsState.errorMessage != null && products.isEmpty) {
-      return Center(child: Text(productsState.errorMessage!));
+      return AppErrorWidget(
+        errorMessage: productsState.errorMessage,
+        onRetry: () {
+          ref.read(catalogProductsProvider.notifier).getProducts(isRefresh: true);
+        },
+      );
     }
 
     if (products.isEmpty) {

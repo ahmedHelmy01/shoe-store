@@ -26,6 +26,15 @@ abstract class IWebStoreAuthRepository {
     required String password,
   });
 
+  Future<ApiResult<WebStoreAuthResponse>> socialLogin({
+    required String providerType,
+    required String providerIdentifier,
+    String? name,
+    String? email,
+    String? mobile,
+    int? branchId,
+  });
+
   Future<ApiResult<Map<String, dynamic>>> forgotPassword({
     required String username,
   });
@@ -101,6 +110,28 @@ class WebStoreAuthRepository extends BaseRepository
       final response = await _dataSource.login(
         loginName: loginName,
         password: password,
+      );
+      return WebStoreAuthResponse.fromJson(response as Map<String, dynamic>);
+    });
+  }
+
+  @override
+  Future<ApiResult<WebStoreAuthResponse>> socialLogin({
+    required String providerType,
+    required String providerIdentifier,
+    String? name,
+    String? email,
+    String? mobile,
+    int? branchId,
+  }) {
+    return safeApiCall<WebStoreAuthResponse>(() async {
+      final response = await _dataSource.socialLogin(
+        providerType: providerType,
+        providerIdentifier: providerIdentifier,
+        name: name,
+        email: email,
+        mobile: mobile,
+        branchId: branchId,
       );
       return WebStoreAuthResponse.fromJson(response as Map<String, dynamic>);
     });

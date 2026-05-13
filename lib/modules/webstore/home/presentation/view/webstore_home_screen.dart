@@ -34,20 +34,14 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Future<void> _refreshHomeData() async {
+    // Simply invalidate all home-related providers. 
+    // They will automatically re-fetch data upon rebuild due to our build() microtask logic.
     ref.invalidate(homeVmProvider);
     ref.invalidate(adsVmProvider);
     ref.invalidate(sliderVmProvider);
     ref.invalidate(companyProducesVmProvider);
-
-    await Future.wait<void>([
-      ref.read(homeVmProvider.notifier).getLatestProducts(),
-      ref
-          .read(catalogCategoriesProvider.notifier)
-          .getCategories(isRefresh: true),
-      ref.read(sliderVmProvider.notifier).getSliders(),
-      ref.read(adsVmProvider.notifier).getAds(),
-      ref.read(companyProducesVmProvider.notifier).getCompanyProduces(),
-    ]);
+    ref.invalidate(branchVmProvider);
+    ref.invalidate(catalogCategoriesProvider);
   }
 
   @override

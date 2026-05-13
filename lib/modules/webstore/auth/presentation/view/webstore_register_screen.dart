@@ -5,7 +5,6 @@ import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
-import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
 import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/localization/locale_keys.dart';
@@ -15,6 +14,8 @@ import 'package:erp/modules/webstore/auth/presentation/view_model/webstore_auth_
 import 'package:erp/modules/webstore/auth/presentation/widgets/webstore_auth_scaffold.dart';
 import 'package:erp/modules/webstore/auth/presentation/widgets/auth_glass_card.dart';
 import 'package:erp/modules/webstore/auth/presentation/widgets/auth_ui_components.dart';
+import 'package:erp/modules/webstore/auth/presentation/widgets/social_login_section.dart';
+import 'package:erp/core/common_widget/app_bottom_sheet/branch_selection_sheet.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
 
 class WebStoreRegisterScreen extends ConsumerStatefulWidget {
@@ -32,6 +33,7 @@ class _WebStoreRegisterScreenState extends ConsumerState<WebStoreRegisterScreen>
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   int? _selectedBranchId;
+  String? _selectedBranchName;
 
   @override
   void dispose() {
@@ -60,11 +62,48 @@ class _WebStoreRegisterScreenState extends ConsumerState<WebStoreRegisterScreen>
     }
   }
 
+  void _onSocialLogin(String provider) async {
+    final branchId = await showModalBottomSheet<int>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const BranchSelectionSheet(),
+    );
+
+    if (branchId == null) return;
+
+    ref.read(webStoreAuthViewModelProvider.notifier).socialLogin(
+          providerType: provider,
+          providerIdentifier: 'dummy-id-${DateTime.now().millisecondsSinceEpoch}',
+          name: 'Social User',
+          branchId: branchId,
+        );
+  }
+
+  void _selectBranch() async {
+    final branchId = await showModalBottomSheet<int>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const BranchSelectionSheet(),
+    );
+
+    if (branchId != null) {
+      final branchState = ref.read(branchVmProvider);
+      if (branchState is BranchLoaded) {
+        final branch = branchState.branches.firstWhere((b) => b.id == branchId);
+        setState(() {
+          _selectedBranchId = branchId;
+          _selectedBranchName = context.locale.languageCode == 'ar' ? branch.nameAr : branch.name;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(webStoreAuthViewModelProvider);
     final isLoading = state is WebStoreAuthLoading;
-    final branchState = ref.watch(branchVmProvider);
 
     ref.listen<WebStoreAuthState>(webStoreAuthViewModelProvider, (prev, next) {
       if (next is WebStoreAuthError) {
@@ -103,9 +142,16 @@ class _WebStoreRegisterScreenState extends ConsumerState<WebStoreRegisterScreen>
                       subtitle: LocaleKeys.webstore.auth.register_subtitle.tr(context: context),
                     ),
                     const SizedBox(height: 20),
-                    _buildFormFields(branchState),
+                    _buildFormFields(),
                     const SizedBox(height: 20),
                     _buildRegisterButton(isLoading),
+                    const SizedBox(height: 24),
+                    SocialLoginSection(
+                      onGoogleTap: () => _onSocialLogin('google'),
+                      onFacebookTap: () => _onSocialLogin('facebook'),
+                      onAppleTap: () => _onSocialLogin('apple'),
+                    ),
+                    const SizedBox(height: 24),
                     AuthFooter(
                       text: LocaleKeys.webstore.auth.have_account.tr(context: context),
                       actionText: LocaleKeys.webstore.auth.login_now.tr(context: context),
@@ -121,7 +167,7 @@ class _WebStoreRegisterScreenState extends ConsumerState<WebStoreRegisterScreen>
     );
   }
 
-  Widget _buildFormFields(BranchState branchState) {
+  Widget _buildFormFields() {
     return Column(
       children: [
         AppTextField(
@@ -156,23 +202,36 @@ class _WebStoreRegisterScreenState extends ConsumerState<WebStoreRegisterScreen>
               : null,
         ),
         const SizedBox(height: 10),
-        if (branchState is BranchLoaded)
-          AppDropdown<int>(
-            label: '',
-            hint: LocaleKeys.webstore.auth.select_branch_hint.tr(context: context),
-            value: _selectedBranchId,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            items: branchState.branches.map((branch) {
-              return DropdownMenuItem<int>(
-                value: branch.id,
-                child: Text(
-                  context.locale.languageCode == 'ar' ? branch.nameAr : branch.name,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+        // Custom Branch Selection Field
+        InkWell(
+          onTap: _selectBranch,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.1)),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.storefront_rounded, size: 20, color: AppColors.primaryOrange.withOpacity(0.8)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    _selectedBranchName ?? LocaleKeys.webstore.auth.select_branch_hint.tr(context: context),
+                    style: TextStyle(
+                      color: _selectedBranchName == null ? Theme.of(context).hintColor : Theme.of(context).textTheme.bodyMedium?.color,
+                      fontWeight: _selectedBranchName == null ? FontWeight.normal : FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
                 ),
-              );
-            }).toList(),
-            onChanged: (value) => setState(() => _selectedBranchId = value),
+                Icon(Icons.keyboard_arrow_down_rounded, color: Theme.of(context).hintColor),
+              ],
+            ),
           ),
+        ),
         const SizedBox(height: 10),
         AppTextField(
           controller: _passwordController,
@@ -204,7 +263,7 @@ class _WebStoreRegisterScreenState extends ConsumerState<WebStoreRegisterScreen>
       onPressed: _onRegister,
       type: ButtonType.primary,
       isLoading: isLoading,
-      height: 48, // Compact button
+      height: 48,
       isGradient: true,
       child: Text(
         LocaleKeys.webstore.auth.register_button.tr(context: context),

@@ -15,7 +15,14 @@ class DetailsContentSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Divider(height: 32.h, thickness: 8, color: isDark ? Colors.white10 : Colors.grey[100]),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.h),
+          child: Divider(
+            height: 1,
+            thickness: 1,
+            color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.withOpacity(0.1),
+          ),
+        ),
         _buildDescription(theme),
         if (product.attributes != null && product.attributes!.isNotEmpty)
           _buildAttributes(theme, isDark),
@@ -48,7 +55,14 @@ class DetailsContentSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Divider(height: 32.h, thickness: 8, color: isDark ? Colors.white10 : Colors.grey[100]),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.h),
+          child: Divider(
+            height: 1,
+            thickness: 1,
+            color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.withOpacity(0.1),
+          ),
+        ),
         Padding(
           padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
           child: Text('المواصفات', style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),

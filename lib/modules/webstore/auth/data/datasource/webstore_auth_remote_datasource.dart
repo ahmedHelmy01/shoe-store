@@ -30,6 +30,7 @@ class WebStoreAuthRemoteDataSource {
         'mobile': mobile,
         'password': password,
         'password_confirmation': passwordConfirmation,
+        'company_id': 1, // Added for consistency
         if (branchId != null) 'branch_id': branchId,
       },
     );
@@ -47,6 +48,28 @@ class WebStoreAuthRemoteDataSource {
         // API expects "username" (email/mobile)
         'username': loginName,
         'password': password,
+      },
+    );
+  }
+
+  Future<dynamic> socialLogin({
+    required String providerType,
+    required String providerIdentifier,
+    String? name,
+    String? email,
+    String? mobile,
+    int? branchId,
+  }) {
+    return _networkService.post(
+      ApiEndpoints.webstore.auth.socialLogin,
+      body: {
+        'provider_type': providerType,
+        'provider_identifier': providerIdentifier,
+        'company_id': 1, // Fixed to 1 as per user request
+        if (name != null) 'name': name,
+        if (email != null) 'email': email,
+        if (mobile != null) 'mobile': mobile,
+        if (branchId != null) 'branch_id': branchId,
       },
     );
   }

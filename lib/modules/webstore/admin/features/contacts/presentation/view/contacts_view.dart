@@ -5,7 +5,6 @@ import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:intl/intl.dart';
 import '../view_model/contacts_view_model.dart';
-import '../../../dashboard/presentation/widgets/glass_panel.dart';
 
 class ContactsView extends ConsumerWidget {
   const ContactsView({super.key});
@@ -38,46 +37,66 @@ class ContactsView extends ConsumerWidget {
 
   Widget _buildHeader(BuildContext context, WidgetRef ref, bool isLoading) {
     final theme = Theme.of(context);
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Customer Messages',
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w900,
-                  color: AppColors.textColor,
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        color: (isDark ? Colors.white : Colors.black).withOpacity(0.04),
+        border: Border.all(
+          color: (isDark ? Colors.white : Colors.black).withOpacity(0.08),
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Customer Messages',
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
-              ),
-              Text(
-                'Manage inquiries and support requests from your store',
-                style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
-              ),
-            ],
+                const SizedBox(height: 4),
+                Text(
+                  'Manage inquiries and support requests from your store',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        IconButton(
-          onPressed: () => ref.read(adminContactsProvider.notifier).getContacts(),
-          icon: isLoading 
-            ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-            : const Icon(Icons.refresh_rounded),
-          tooltip: 'Refresh',
-        ),
-      ],
+          IconButton(
+            onPressed: () => ref.read(adminContactsProvider.notifier).getContacts(),
+            icon: isLoading 
+              ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+              : const Icon(Icons.refresh_rounded),
+            tooltip: 'Refresh',
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildInbox(BuildContext context, WidgetRef ref, AdminContactsState state) {
+    final theme = Theme.of(context);
     if (state.contacts.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.mark_email_read_outlined, size: 64, color: AppColors.primary.withValues(alpha: 0.3)),
+            Icon(Icons.mark_email_read_outlined, size: 64, color: AppColors.primary.withOpacity(0.3)),
             const SizedBox(height: 16),
-            Text('No messages found', style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              'No messages found', 
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: theme.textTheme.titleMedium?.color?.withOpacity(0.5),
+              ),
+            ),
           ],
         ),
       );
@@ -85,6 +104,7 @@ class ContactsView extends ConsumerWidget {
 
     return ListView.builder(
       itemCount: state.contacts.length,
+      padding: const EdgeInsets.only(bottom: 24),
       itemBuilder: (context, index) {
         final contact = state.contacts[index];
         return AppAnimation.fadeInUp(
@@ -104,7 +124,6 @@ class _ContactListItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final fg = theme.textTheme.bodyMedium?.color ?? (isDark ? Colors.white : Colors.black);
     
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -115,17 +134,17 @@ class _ContactListItem extends ConsumerWidget {
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: isDark ? Colors.white.withValues(alpha: 0.02) : Colors.white,
+              color: theme.cardColor,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: contact.isRead 
-                  ? fg.withValues(alpha: 0.05)
-                  : AppColors.primary.withValues(alpha: 0.2),
+                  ? theme.dividerColor.withOpacity(0.05)
+                  : AppColors.primary.withOpacity(0.2),
                 width: contact.isRead ? 1 : 2,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: (isDark ? Colors.black : Colors.grey).withValues(alpha: 0.03),
+                  color: Colors.black.withOpacity(isDark ? 0.2 : 0.03),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -146,7 +165,9 @@ class _ContactListItem extends ConsumerWidget {
                               contact.name,
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.w900,
-                                color: contact.isRead ? fg.withValues(alpha: 0.8) : AppColors.primary,
+                                color: contact.isRead 
+                                    ? theme.textTheme.titleMedium?.color?.withOpacity(0.7) 
+                                    : AppColors.primary,
                                 letterSpacing: -0.5,
                               ),
                             ),
@@ -156,7 +177,7 @@ class _ContactListItem extends ConsumerWidget {
                               margin: const EdgeInsets.only(right: 8),
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                               decoration: BoxDecoration(
-                                color: AppColors.primary.withValues(alpha: 0.1),
+                                color: AppColors.primary.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: const Text(
@@ -173,7 +194,7 @@ class _ContactListItem extends ConsumerWidget {
                               ? DateFormat('hh:mm a').format(contact.createdAt!)
                               : 'Now',
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: fg.withValues(alpha: 0.4),
+                              color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -186,7 +207,7 @@ class _ContactListItem extends ConsumerWidget {
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: contact.isRead ? FontWeight.w600 : FontWeight.w800,
-                          color: fg.withValues(alpha: contact.isRead ? 0.6 : 0.9),
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(contact.isRead ? 0.6 : 1),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -195,7 +216,7 @@ class _ContactListItem extends ConsumerWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: fg.withValues(alpha: 0.4),
+                          color: theme.textTheme.bodySmall?.color?.withOpacity(0.4),
                           height: 1.3,
                         ),
                       ),
@@ -204,7 +225,7 @@ class _ContactListItem extends ConsumerWidget {
                 ),
                 const SizedBox(width: 12),
                 IconButton(
-                  icon: Icon(Icons.delete_sweep_outlined, color: AppColors.error.withValues(alpha: 0.5), size: 22),
+                  icon: Icon(Icons.delete_outline_rounded, color: AppColors.error.withOpacity(0.5), size: 22),
                   onPressed: () => _confirmDelete(context, ref),
                 ),
               ],
@@ -222,7 +243,7 @@ class _ContactListItem extends ConsumerWidget {
       width: 54,
       height: 54,
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.05),
+        color: AppColors.primary.withOpacity(0.08),
         borderRadius: BorderRadius.circular(18),
       ),
       child: Center(
@@ -239,6 +260,9 @@ class _ContactListItem extends ConsumerWidget {
   }
 
   void _showDetails(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     if (!contact.isRead) {
       ref.read(adminContactsProvider.notifier).markAsRead(contact.id);
     }
@@ -246,7 +270,7 @@ class _ContactListItem extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => Dialog(
-        backgroundColor: Colors.white,
+        backgroundColor: theme.dialogBackgroundColor,
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
         child: Container(
@@ -266,21 +290,25 @@ class _ContactListItem extends ConsumerWidget {
                       children: [
                         Text(
                           contact.name,
-                          style: const TextStyle(
-                            color: Colors.black87,
-                            fontSize: 20,
+                          style: theme.textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.w900,
                             letterSpacing: -0.5,
                           ),
                         ),
                         Text(
                           contact.email,
-                          style: TextStyle(color: Colors.black.withValues(alpha: 0.5), fontSize: 13),
+                          style: TextStyle(
+                            color: theme.textTheme.bodySmall?.color?.withOpacity(0.6), 
+                            fontSize: 13,
+                          ),
                         ),
                         if (contact.mobile != null)
                           Text(
                             contact.mobile!,
-                            style: TextStyle(color: Colors.black.withValues(alpha: 0.5), fontSize: 13),
+                            style: TextStyle(
+                              color: theme.textTheme.bodySmall?.color?.withOpacity(0.6), 
+                              fontSize: 13,
+                            ),
                           ),
                       ],
                     ),
@@ -290,48 +318,63 @@ class _ContactListItem extends ConsumerWidget {
                     icon: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.05),
+                        color: theme.dividerColor.withOpacity(0.1),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.close, size: 20, color: Colors.black54),
+                      child: Icon(Icons.close, size: 20, color: theme.iconTheme.color?.withOpacity(0.7)),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 32),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.primary.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.primary.withOpacity(0.1)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.subject_rounded, color: AppColors.primary, size: 20),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        contact.subject,
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 32),
+              Text(
+                'MESSAGE CONTENT',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.5,
+                  color: theme.textTheme.labelSmall?.color?.withOpacity(0.4),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: theme.scaffoldBackgroundColor.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: theme.dividerColor.withOpacity(0.05)),
                 ),
                 child: Text(
-                  contact.subject,
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 16,
+                  contact.message,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    height: 1.6,
+                    fontWeight: FontWeight.w500,
                   ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'MESSAGE CONTENT',
-                style: TextStyle(
-                  color: Colors.black38,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.2,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                contact.message,
-                style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 16,
-                  height: 1.6,
-                  fontWeight: FontWeight.w500,
                 ),
               ),
               const SizedBox(height: 40),
@@ -340,13 +383,16 @@ class _ContactListItem extends ConsumerWidget {
                 child: TextButton(
                   onPressed: () => Navigator.pop(context),
                   style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Colors.black.withValues(alpha: 0.03),
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    backgroundColor: theme.dividerColor.withOpacity(0.05),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Close Reader',
-                    style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: theme.textTheme.bodyLarge?.color, 
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -358,10 +404,12 @@ class _ContactListItem extends ConsumerWidget {
   }
 
   void _confirmDelete(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    
     showDialog(
       context: context,
       builder: (context) => Dialog(
-        backgroundColor: Colors.white,
+        backgroundColor: theme.dialogBackgroundColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
         child: Container(
           width: 400,
@@ -372,7 +420,7 @@ class _ContactListItem extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: AppColors.error.withValues(alpha: 0.1),
+                  color: AppColors.error.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -382,11 +430,9 @@ class _ContactListItem extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              const Text(
+              Text(
                 'Are you sure?',
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 22,
+                style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w900,
                 ),
               ),
@@ -394,9 +440,8 @@ class _ContactListItem extends ConsumerWidget {
               Text(
                 'This message will be permanently removed. This action cannot be undone.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black.withValues(alpha: 0.5),
-                  fontSize: 14,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
                   height: 1.5,
                 ),
               ),
@@ -410,12 +455,15 @@ class _ContactListItem extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
-                          side: BorderSide(color: Colors.black.withValues(alpha: 0.1)),
+                          side: BorderSide(color: theme.dividerColor.withOpacity(0.1)),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         'Cancel',
-                        style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7), 
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),

@@ -3,7 +3,13 @@
 /// to access assets across the application.
 class AssetManager {
   static const String _images = "assets/common/images/";
+  static const String _icons = "assets/common/icons/";
   static const String _webstoreImages = "assets/webstore/images/";
+
+  // ---------------- Social Icons ----------------
+  static String get google => "${_icons}icons8-g-100.png";
+  static String get facebook => "${_icons}icons8-facebook-logo-100.png";
+  static String get apple => "${_icons}icons8-apple-logo-100.png";
 
   // ---------------- General Images ----------------
   static String get logo => "${_images}logo.png";
