@@ -97,10 +97,18 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
       if (next is WebStoreAuthSuccess) {
         setState(() => _populateFields(next.authResponse.user));
       } else if (next is WebStoreOtpVerified) {
-        AppSnackBar.showSuccess(context, next.message);
+        AppStatusDialog.showSuccess(
+          context,
+          title: LocaleKeys.webstore.auth.otp_verified.tr(context: context),
+          message: next.message,
+        );
         setState(() => isEditing = false);
       } else if (next is WebStoreAuthError) {
-        AppSnackBar.showError(context, next.message);
+        AppStatusDialog.showError(
+          context,
+          title: LocaleKeys.common.error.tr(context: context),
+          message: next.message,
+        );
       } else if (next is WebStoreAuthIdle && prev is WebStoreAuthLoading) {
         AppNavigator.replace(context, AppRouteNames.webstoreMain);
       }

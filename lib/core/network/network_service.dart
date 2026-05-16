@@ -258,6 +258,10 @@ class NetworkService {
       headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
     }
 
+    // Locale injection for localized server responses
+    final locale = await _session.getLocale();
+    headers[HttpHeaders.acceptLanguageHeader] = locale;
+
     return headers;
   }
 

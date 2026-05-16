@@ -9,7 +9,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
-import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/modules/webstore/auth/presentation/state/webstore_auth_state.dart';
@@ -51,17 +51,28 @@ class _WebStoreForgotPasswordScreenState
 
     ref.listen<WebStoreAuthState>(webStoreAuthViewModelProvider, (prev, next) {
       if (next is WebStoreOtpSent) {
-        AppSnackBar.showSuccess(context, next.message);
-        AppNavigator.push(
+        AppStatusDialog.showSuccess(
           context,
-          AppRouteNames.webstoreOtp,
-          arguments: {
-            'identifier': next.identifier,
-            'type': next.type,
+          title: LocaleKeys.webstore.auth.otp_sent.tr(context: context),
+          message: next.message,
+          onActionPressed: () {
+            AppNavigator.replace(
+              context,
+              AppRouteNames.webstoreOtp,
+              arguments: {
+                'identifier': next.identifier,
+                'type': next.type,
+              },
+            );
           },
         );
       } else if (next is WebStoreAuthError) {
-        AppSnackBar.showError(context, next.message);
+        AppStatusDialog.showError(
+          context,
+          title: LocaleKeys.common.error.tr(context: context),
+          message: next.message,
+        );
+        ref.read(webStoreAuthViewModelProvider.notifier).resetState();
       }
     });
 

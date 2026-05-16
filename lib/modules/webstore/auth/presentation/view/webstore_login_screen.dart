@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
-import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
@@ -13,14 +13,13 @@ import 'package:erp/modules/webstore/auth/presentation/view_model/webstore_auth_
 import 'package:erp/modules/webstore/auth/presentation/widgets/webstore_auth_scaffold.dart';
 import 'package:erp/modules/webstore/auth/presentation/widgets/auth_glass_card.dart';
 import 'package:erp/modules/webstore/auth/presentation/widgets/auth_ui_components.dart';
-import 'package:erp/modules/webstore/auth/presentation/widgets/social_login_section.dart';
-import 'package:erp/core/common_widget/app_bottom_sheet/branch_selection_sheet.dart';
 
 class WebStoreLoginScreen extends ConsumerStatefulWidget {
   const WebStoreLoginScreen({super.key});
 
   @override
-  ConsumerState<WebStoreLoginScreen> createState() => _WebStoreLoginScreenState();
+  ConsumerState<WebStoreLoginScreen> createState() =>
+      _WebStoreLoginScreenState();
 }
 
 class _WebStoreLoginScreenState extends ConsumerState<WebStoreLoginScreen> {
@@ -37,31 +36,13 @@ class _WebStoreLoginScreenState extends ConsumerState<WebStoreLoginScreen> {
 
   void _onLogin() {
     if (_formKey.currentState?.validate() ?? false) {
-      ref.read(webStoreAuthViewModelProvider.notifier).login(
+      ref
+          .read(webStoreAuthViewModelProvider.notifier)
+          .login(
             loginName: _loginNameController.text.trim(),
             password: _passwordController.text,
           );
     }
-  }
-
-  void _onSocialLogin(String provider) async {
-    // 1. Show Branch Selection Sheet first
-    final branchId = await showModalBottomSheet<int>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => const BranchSelectionSheet(),
-    );
-
-    if (branchId == null) return; // User cancelled
-
-    // 2. Proceed with social login using selected branch
-    ref.read(webStoreAuthViewModelProvider.notifier).socialLogin(
-          providerType: provider,
-          providerIdentifier: 'dummy-id-${DateTime.now().millisecondsSinceEpoch}',
-          name: 'Social User',
-          branchId: branchId,
-        );
   }
 
   @override
@@ -71,11 +52,29 @@ class _WebStoreLoginScreenState extends ConsumerState<WebStoreLoginScreen> {
 
     ref.listen<WebStoreAuthState>(webStoreAuthViewModelProvider, (prev, next) {
       if (next is WebStoreAuthError) {
-        AppSnackBar.showError(context, next.message);
+        AppStatusDialog.showError(
+          context,
+          title: LocaleKeys.common.error.tr(context: context),
+          message: next.message,
+        );
         ref.read(webStoreAuthViewModelProvider.notifier).resetState();
       }
       if (next is WebStoreAuthSuccess) {
-        AppNavigator.replace(context, AppRouteNames.webstoreMain);
+        final serverMsg = next.authResponse.message;
+        AppStatusDialog.showSuccess(
+          context,
+          title: LocaleKeys.webstore.auth.login_success_title.tr(
+            context: context,
+          ),
+          message:
+              serverMsg ??
+              LocaleKeys.webstore.auth.login_success_message.tr(
+                context: context,
+              ),
+          onActionPressed: () {
+            AppNavigator.replace(context, AppRouteNames.webstoreMain);
+          },
+        );
       }
     });
 
@@ -94,24 +93,29 @@ class _WebStoreLoginScreenState extends ConsumerState<WebStoreLoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     AuthHeader(
-                      title: LocaleKeys.webstore.auth.login_title.tr(context: context),
-                      subtitle: LocaleKeys.webstore.auth.login_subtitle.tr(context: context),
+                      title: LocaleKeys.webstore.auth.login_title.tr(
+                        context: context,
+                      ),
+                      subtitle: LocaleKeys.webstore.auth.login_subtitle.tr(
+                        context: context,
+                      ),
                     ),
                     const SizedBox(height: 32),
                     _buildFormFields(),
                     const SizedBox(height: 20),
                     _buildLoginButton(isLoading),
                     const SizedBox(height: 32),
-                    SocialLoginSection(
-                      onGoogleTap: () => _onSocialLogin('google'),
-                      onFacebookTap: () => _onSocialLogin('facebook'),
-                      onAppleTap: () => _onSocialLogin('apple'),
-                    ),
-                    const SizedBox(height: 32),
                     AuthFooter(
-                      text: LocaleKeys.webstore.auth.no_account.tr(context: context),
-                      actionText: LocaleKeys.webstore.auth.register_now.tr(context: context),
-                      onActionTap: () => AppNavigator.push(context, AppRouteNames.webstoreRegister),
+                      text: LocaleKeys.webstore.auth.no_account.tr(
+                        context: context,
+                      ),
+                      actionText: LocaleKeys.webstore.auth.register_now.tr(
+                        context: context,
+                      ),
+                      onActionTap: () => AppNavigator.replace(
+                        context,
+                        AppRouteNames.webstoreRegister,
+                      ),
                     ),
                   ],
                 ),
@@ -150,8 +154,15 @@ class _WebStoreLoginScreenState extends ConsumerState<WebStoreLoginScreen> {
         Align(
           alignment: AlignmentDirectional.centerEnd,
           child: TextButton(
-            onPressed: () => AppNavigator.push(context, AppRouteNames.webstoreForgotPassword),
-            child: Text(LocaleKeys.webstore.auth.forgot_password_title.tr(context: context)),
+            onPressed: () => AppNavigator.replace(
+              context,
+              AppRouteNames.webstoreForgotPassword,
+            ),
+            child: Text(
+              LocaleKeys.webstore.auth.forgot_password_title.tr(
+                context: context,
+              ),
+            ),
           ),
         ),
       ],
@@ -166,7 +177,11 @@ class _WebStoreLoginScreenState extends ConsumerState<WebStoreLoginScreen> {
       isGradient: true,
       child: Text(
         LocaleKeys.webstore.auth.login_button.tr(context: context),
-        style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800),
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 18,
+          fontWeight: FontWeight.w800,
+        ),
       ),
     );
   }

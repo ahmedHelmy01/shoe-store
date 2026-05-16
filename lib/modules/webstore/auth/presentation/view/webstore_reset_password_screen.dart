@@ -10,7 +10,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
-import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/modules/webstore/auth/presentation/state/webstore_auth_state.dart';
@@ -64,10 +64,21 @@ class _WebStoreResetPasswordScreenState
 
     ref.listen<WebStoreAuthState>(webStoreAuthViewModelProvider, (prev, next) {
       if (next is WebStoreAuthPasswordResetSuccess) {
-        AppSnackBar.showSuccess(context, next.message);
-        AppNavigator.popToRoot(context);
+        AppStatusDialog.showSuccess(
+          context,
+          title: LocaleKeys.webstore.auth.password_reset_success.tr(context: context),
+          message: next.message,
+          onActionPressed: () {
+            AppNavigator.popToRoot(context);
+          },
+        );
       } else if (next is WebStoreAuthError) {
-        AppSnackBar.showError(context, next.message);
+        AppStatusDialog.showError(
+          context,
+          title: LocaleKeys.common.error.tr(context: context),
+          message: next.message,
+        );
+        ref.read(webStoreAuthViewModelProvider.notifier).resetState();
       }
     });
 

@@ -132,6 +132,8 @@
       "branch_required": "Please select a branch",
       "register_success_title": "Account Created Successfully",
       "register_success_message": "Welcome to El-Tarshooby family! You can start shopping now.",
+      "login_success_title": "Login Successful",
+      "login_success_message": "Welcome back! Redirecting to home...",
       "logout_title": "Logout",
       "logout_confirm": "Are you sure you want to logout?",
       "logout_button": "Logout",

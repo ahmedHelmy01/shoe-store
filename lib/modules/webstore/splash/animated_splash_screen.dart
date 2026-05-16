@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/core/constants/configure_system_ui.dart';
 
 class AnimatedSplashScreen extends StatefulWidget {
   final VoidCallback onComplete;
@@ -34,6 +35,7 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
   @override
   void initState() {
     super.initState();
+    configureSystemUI();
     _initAnimations();
     _startSequence();
   }

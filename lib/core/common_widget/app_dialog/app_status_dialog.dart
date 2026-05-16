@@ -1,9 +1,13 @@
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 
 enum AppDialogStatus { success, error }
 
 class AppStatusDialog extends StatelessWidget {
+  static bool _isShowing = false;
+
   final AppDialogStatus status;
   final String title;
   final String message;
@@ -15,7 +19,7 @@ class AppStatusDialog extends StatelessWidget {
     required this.status,
     required this.title,
     required this.message,
-    this.actionText = 'OK',
+    required this.actionText,
     this.onActionPressed,
   });
 
@@ -24,9 +28,12 @@ class AppStatusDialog extends StatelessWidget {
     required AppDialogStatus status,
     required String title,
     required String message,
-    String actionText = 'OK',
+    String? actionText,
     VoidCallback? onActionPressed,
   }) {
+    if (_isShowing) return Future.value();
+    _isShowing = true;
+
     return showGeneralDialog<void>(
       context: context,
       barrierLabel: 'StatusDialog',
@@ -34,14 +41,19 @@ class AppStatusDialog extends StatelessWidget {
       barrierColor: Colors.black54,
       transitionDuration: const Duration(milliseconds: 320),
       pageBuilder: (_, _, _) {
-        return SafeArea(
-          child: Center(
-            child: AppStatusDialog(
-              status: status,
-              title: title,
-              message: message,
-              actionText: actionText,
-              onActionPressed: onActionPressed,
+        return PopScope(
+          onPopInvokedWithResult: (didPop, result) {
+            _isShowing = false;
+          },
+          child: SafeArea(
+            child: Center(
+              child: AppStatusDialog(
+                status: status,
+                title: title,
+                message: message,
+                actionText: actionText ?? LocaleKeys.common.ok.tr(context: context),
+                onActionPressed: onActionPressed,
+              ),
             ),
           ),
         );
@@ -53,39 +65,39 @@ class AppStatusDialog extends StatelessWidget {
           child: ScaleTransition(scale: curved, child: child),
         );
       },
-    );
+    ).then((_) => _isShowing = false);
   }
 
   static Future<void> showSuccess(
     BuildContext context, {
-    String title = 'Success',
+    String? title,
     required String message,
-    String actionText = 'OK',
+    String? actionText,
     VoidCallback? onActionPressed,
   }) {
     return show(
       context,
       status: AppDialogStatus.success,
-      title: title,
+      title: title ?? LocaleKeys.common.sent_successfully.tr(context: context),
       message: message,
-      actionText: actionText,
+      actionText: actionText ?? LocaleKeys.common.ok.tr(context: context),
       onActionPressed: onActionPressed,
     );
   }
 
   static Future<void> showError(
     BuildContext context, {
-    String title = 'Error',
+    String? title,
     required String message,
-    String actionText = 'OK',
+    String? actionText,
     VoidCallback? onActionPressed,
   }) {
     return show(
       context,
       status: AppDialogStatus.error,
-      title: title,
+      title: title ?? LocaleKeys.common.error.tr(context: context),
       message: message,
-      actionText: actionText,
+      actionText: actionText ?? LocaleKeys.common.ok.tr(context: context),
       onActionPressed: onActionPressed,
     );
   }
@@ -139,7 +151,7 @@ class AppStatusDialog extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Text(
-              title,
+              title.tr(),
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: isDark ? Colors.white : Colors.black87,
@@ -149,7 +161,7 @@ class AppStatusDialog extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              message,
+              message.tr(),
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: (isDark ? Colors.white : Colors.black87).withValues(alpha: 0.85),
@@ -174,7 +186,7 @@ class AppStatusDialog extends StatelessWidget {
                   onActionPressed?.call(); // Then execute callback if provided
                 },
                 child: Text(
-                  actionText,
+                  actionText.tr(),
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
               ),

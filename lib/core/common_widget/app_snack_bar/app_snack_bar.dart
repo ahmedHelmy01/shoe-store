@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AppSnackBar {
   static void show(
@@ -12,7 +13,7 @@ class AppSnackBar {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          message,
+          message.tr(),
           style: const TextStyle(color: Colors.white, fontSize: 16),
         ),
         backgroundColor: isError ? AppColors.error : AppColors.success,

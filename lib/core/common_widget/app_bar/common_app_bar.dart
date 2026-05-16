@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -52,7 +53,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false,
       title: title ??
           (titleText != null
-              ? Text(titleText!, style: mergedTitleStyle)
+              ? Text(titleText!.tr(), style: mergedTitleStyle)
               : null),
       leading:
           leading ??

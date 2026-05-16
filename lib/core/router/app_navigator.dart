@@ -67,22 +67,52 @@ class AppNavigator {
     return Navigator.of(context).pushNamed(routeName, arguments: arguments);
   }
 
+  /// Context-less push using the global navigator key
+  static Future<T?> pushNamed<T>(String routeName, {Object? arguments}) {
+    return navigatorKey.currentState!.pushNamed<T>(
+      routeName,
+      arguments: arguments,
+    );
+  }
+
   static Future<T?> replace<T>(
     BuildContext context,
     String routeName, {
     Object? arguments,
   }) {
-    return Navigator.of(
-      context,
-    ).pushReplacementNamed(routeName, arguments: arguments);
+    // Check if the context is still mounted before using it
+    if (context.mounted) {
+      return Navigator.of(context).pushReplacementNamed(
+        routeName,
+        arguments: arguments,
+      );
+    }
+    // Fallback to context-less navigation
+    return replaceNamed(routeName, arguments: arguments);
+  }
+
+  /// Context-less replace using the global navigator key
+  static Future<T?> replaceNamed<T>(String routeName, {Object? arguments}) {
+    return navigatorKey.currentState!.pushReplacementNamed<T, dynamic>(
+      routeName,
+      arguments: arguments,
+    );
   }
 
   static void pop<T>(BuildContext context, [T? result]) {
-    Navigator.of(context).pop(result);
+    if (context.mounted) {
+      Navigator.of(context).pop(result);
+    } else {
+      navigatorKey.currentState!.pop(result);
+    }
   }
 
   static void popToRoot(BuildContext context) {
-    Navigator.of(context).popUntil((route) => route.isFirst);
+    if (context.mounted) {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    } else {
+      navigatorKey.currentState!.popUntil((route) => route.isFirst);
+    }
   }
 
   static Future<bool> maybePop<T>(BuildContext context, [T? result]) {
@@ -94,7 +124,22 @@ class AppNavigator {
     String routeName, {
     Object? arguments,
   }) {
-    return Navigator.of(context).pushNamedAndRemoveUntil(
+    if (context.mounted) {
+      return Navigator.of(context).pushNamedAndRemoveUntil(
+        routeName,
+        (route) => false,
+        arguments: arguments,
+      );
+    }
+    return pushNamedAndRemoveUntilNoContext(routeName, arguments: arguments);
+  }
+
+  /// Context-less pushAndRemoveUntil
+  static Future<T?> pushNamedAndRemoveUntilNoContext<T>(
+    String routeName, {
+    Object? arguments,
+  }) {
+    return navigatorKey.currentState!.pushNamedAndRemoveUntil<T>(
       routeName,
       (route) => false,
       arguments: arguments,

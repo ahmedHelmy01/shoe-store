@@ -52,7 +52,7 @@ class WebStoreBaseScaffold extends StatelessWidget {
       key: scaffoldKey,
       drawer: drawer,
       backgroundColor: scaffoldBg,
-      extendBodyBehindAppBar: false, // Standardizing to avoid overlap issues
+      extendBodyBehindAppBar: true, 
       resizeToAvoidBottomInset: true,
       appBar: showAppBar
           ? CommonAppBar(
@@ -69,10 +69,8 @@ class WebStoreBaseScaffold extends StatelessWidget {
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: floatingActionButtonLocation,
-      body: NetworkListener(
-        child: CartListener(
-          child: body,
-        ),
+      body: CartListener(
+        child: body,
       ),
     );
 

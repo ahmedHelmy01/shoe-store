@@ -4,7 +4,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
-import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
 import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/localization/locale_keys.dart';
@@ -48,7 +47,11 @@ class _WebStoreRegisterScreenState extends ConsumerState<WebStoreRegisterScreen>
   void _onRegister() {
     if (_formKey.currentState?.validate() ?? false) {
       if (_selectedBranchId == null) {
-        AppSnackBar.showError(context, LocaleKeys.webstore.auth.branch_required.tr(context: context));
+        AppStatusDialog.showError(
+          context,
+          title: LocaleKeys.common.error.tr(context: context),
+          message: LocaleKeys.webstore.auth.branch_required.tr(context: context),
+        );
         return;
       }
       ref.read(webStoreAuthViewModelProvider.notifier).register(
@@ -107,7 +110,11 @@ class _WebStoreRegisterScreenState extends ConsumerState<WebStoreRegisterScreen>
 
     ref.listen<WebStoreAuthState>(webStoreAuthViewModelProvider, (prev, next) {
       if (next is WebStoreAuthError) {
-        AppSnackBar.showError(context, next.message);
+        AppStatusDialog.showError(
+          context,
+          title: LocaleKeys.common.error.tr(context: context),
+          message: next.message,
+        );
         ref.read(webStoreAuthViewModelProvider.notifier).resetState();
       }
       if (next is WebStoreAuthSuccess) {
@@ -155,7 +162,7 @@ class _WebStoreRegisterScreenState extends ConsumerState<WebStoreRegisterScreen>
                     AuthFooter(
                       text: LocaleKeys.webstore.auth.have_account.tr(context: context),
                       actionText: LocaleKeys.webstore.auth.login_now.tr(context: context),
-                      onActionTap: () => AppNavigator.pop(context),
+                      onActionTap: () => AppNavigator.replace(context, AppRouteNames.webstoreLogin),
                     ),
                   ],
                 ),

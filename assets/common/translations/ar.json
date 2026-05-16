@@ -132,6 +132,8 @@
       "branch_required": "الرجاء اختيار الفرع",
       "register_success_title": "تم إنشاء الحساب بنجاح",
       "register_success_message": "مرحباً بك في أسرة الطرشوبي، يمكنك الآن البدء بالتسوق.",
+      "login_success_title": "تم تسجيل الدخول بنجاح",
+      "login_success_message": "مرحباً بك مجدداً! جاري توجيهك للرئيسية.",
       "logout_title": "تسجيل الخروج",
       "logout_confirm": "هل أنت متأكد من رغبتك في تسجيل الخروج؟",
       "logout_button": "خروج",

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/app/app_initializer.dart';
+import 'package:erp/core/constants/configure_system_ui.dart';
 import 'package:erp/core/config/app_flavor.dart';
 import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/core/providers/theme_provider.dart';
@@ -86,6 +88,7 @@ class _ErpAppRootState extends ConsumerState<ErpAppRoot> {
 /// Global dynamic bootstrap function
 Future<void> bootstrap(AppFlavor flavor) async {
   WidgetsFlutterBinding.ensureInitialized();
+  configureSystemUI();
   
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

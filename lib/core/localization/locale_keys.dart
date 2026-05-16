@@ -148,6 +148,8 @@ class _WebStoreAuth {
   final branch_required = 'webstore.auth.branch_required';
   final register_success_title = 'webstore.auth.register_success_title';
   final register_success_message = 'webstore.auth.register_success_message';
+  final login_success_title = 'webstore.auth.login_success_title';
+  final login_success_message = 'webstore.auth.login_success_message';
   final logout_title = 'webstore.auth.logout_title';
   final logout_confirm = 'webstore.auth.logout_confirm';
   final logout_button = 'webstore.auth.logout_button';
