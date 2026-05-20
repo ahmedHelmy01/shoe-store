@@ -20,6 +20,8 @@ class AppRouteNames {
   static const String webstorePrescriptions = '/webstore/prescriptions';
   static const String webstoreUploadPrescription = '/webstore/prescriptions/upload';
   static const String webstorePrescriptionDetails = '/webstore/prescriptions/details';
+  static const String webstoreAddresses = '/webstore/addresses';
+  static const String webstoreAddEditAddress = '/webstore/addresses/add-edit';
 
   // ─── WebStore Admin ───────────────────────────────
   static const String webstoreAdmin = '/webstore/admin';

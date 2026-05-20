@@ -67,6 +67,41 @@ class ApiException implements Exception {
 
   @override
   String toString() => 'ApiException($type): [$statusCode] $message';
+
+  /// User-facing message including Laravel-style validation `errors` map.
+  String get displayMessage {
+    final fieldErrors = parseValidationErrors(originalError);
+    if (fieldErrors.isNotEmpty) return fieldErrors.join('\n');
+    return message;
+  }
+
+  /// Extracts messages from `{ "message": "...", "errors": { "field": ["..."] } }`.
+  static List<String> parseValidationErrors(dynamic data) {
+    if (data is! Map) return [];
+    final messages = <String>[];
+
+    final errors = data['errors'];
+    if (errors is Map) {
+      for (final value in errors.values) {
+        if (value is List) {
+          for (final item in value) {
+            final text = item?.toString().trim();
+            if (text != null && text.isNotEmpty) messages.add(text);
+          }
+        } else {
+          final text = value?.toString().trim();
+          if (text != null && text.isNotEmpty) messages.add(text);
+        }
+      }
+    }
+
+    if (messages.isEmpty) {
+      final msg = data['message']?.toString().trim();
+      if (msg != null && msg.isNotEmpty) messages.add(msg);
+    }
+
+    return messages;
+  }
 }
 
 /// Categorized error types for consistent error handling

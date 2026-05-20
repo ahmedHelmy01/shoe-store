@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/common_widget/main_layout/webstore_base_scaffold.dart';
@@ -41,7 +40,13 @@ class WebStoreMoreView extends ConsumerWidget {
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: AppAnimation.fadeInUp(
                 delay: const Duration(milliseconds: 200),
-                child: _buildServicesGrid(context, isAuthed),
+                child: Column(
+                  children: [
+                    _buildServicesGrid(context, isAuthed),
+                    16.verticalSpace,
+                    _buildAddressesCard(context, isAuthed),
+                  ],
+                ),
               ),
             ),
 
@@ -78,6 +83,73 @@ class WebStoreMoreView extends ConsumerWidget {
     } else {
       AppNavigator.push(context, route);
     }
+  }
+
+  Widget _buildAddressesCard(BuildContext context, bool isAuthed) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    const color = Colors.orange;
+
+    return InkWell(
+      onTap: () => _checkAuthAndNavigate(
+          context, isAuthed, AppRouteNames.webstoreAddresses),
+      borderRadius: BorderRadius.circular(20.r),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(
+              color: (isDark ? Colors.white : Colors.black)
+                  .withValues(alpha: 0.05)),
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: 0.08),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(12.w),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.location_on_rounded, color: color, size: 24.sp),
+            ),
+            16.horizontalSpace,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'webstore.addresses.title'.tr(context: context),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                      color: theme.textTheme.bodyLarge?.color,
+                    ),
+                  ),
+                  4.verticalSpace,
+                  Text(
+                    'webstore.addresses.subtitle'.tr(context: context),
+                    style: TextStyle(
+                      fontSize: 11.sp,
+                      color: theme.hintColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.arrow_forward_ios_rounded, color: theme.hintColor, size: 14.sp),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildServicesGrid(BuildContext context, bool isAuthed) {

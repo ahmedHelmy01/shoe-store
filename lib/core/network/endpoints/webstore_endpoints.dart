@@ -15,6 +15,9 @@ class WebStoreEndpoints {
   final profile = const _WebStoreProfile();
   final cms = const _WebStoreCms();
   final prescriptions = const _WebStorePrescriptions();
+  final String points = '/api/store/points';
+  final String governorates = '/api/store/governorates';
+  final String cities = '/api/store/cities';
 
   // ─── Admin Facing ──────────────────────────────────
   final wishlist = const _WebStoreWishlist();

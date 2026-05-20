@@ -310,6 +310,10 @@
       "delete_this": "Delete This Prescription",
       "success_title": "Prescription Sent Successfully!",
       "success_subtitle": "We'll review it immediately and contact you to confirm medications and delivery."
+    },
+    "addresses": {
+      "title": "Addresses",
+      "subtitle": "Manage your delivery addresses for quick ordering"
     }
   }
 }

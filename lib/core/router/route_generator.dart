@@ -25,6 +25,9 @@ import 'package:erp/modules/webstore/prescriptions/presentation/view/prescriptio
 import 'package:erp/modules/webstore/prescriptions/presentation/view/upload_prescription_view.dart';
 import 'package:erp/modules/webstore/prescriptions/presentation/view/prescription_detail_view.dart';
 import 'package:erp/modules/webstore/prescriptions/data/models/prescription_model.dart';
+import 'package:erp/modules/webstore/addresses/data/models/address_model.dart';
+import 'package:erp/modules/webstore/addresses/presentation/view/webstore_addresses_view.dart';
+import 'package:erp/modules/webstore/addresses/presentation/view/webstore_add_edit_address_view.dart';
 
 // Models for type casting in arguments
 
@@ -91,6 +94,11 @@ class RouteGenerator {
       case AppRouteNames.webstorePrescriptionDetails:
         final prescription = settings.arguments as PrescriptionModel;
         return _guarded(PrescriptionDetailView(prescription: prescription));
+      case AppRouteNames.webstoreAddresses:
+        return _guarded(const WebStoreAddressesView());
+      case AppRouteNames.webstoreAddEditAddress:
+        final address = settings.arguments as AddressModel?;
+        return _guarded(WebStoreAddEditAddressView(addressToEdit: address));
       case AppRouteNames.webstorePage:
         final args = (settings.arguments is Map)
             ? (settings.arguments as Map)
