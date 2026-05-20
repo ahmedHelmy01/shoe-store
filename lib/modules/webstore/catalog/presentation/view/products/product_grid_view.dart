@@ -6,6 +6,7 @@ import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_pro
 import 'package:erp/modules/webstore/catalog/presentation/view/products/widgets/product_card.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view/product_details/product_details_view.dart';
 import 'package:erp/core/common_widget/app_empty_widget/app_empty_widget.dart';
+import 'package:erp/core/common_widget/app_error_widget/app_error_widget.dart';
 
 class ProductGridView extends ConsumerWidget {
   final ScrollController scrollController;
@@ -21,7 +22,12 @@ class ProductGridView extends ConsumerWidget {
     }
 
     if (state.errorMessage != null) {
-      return Center(child: Text(state.errorMessage!));
+      return AppErrorWidget(
+        errorMessage: state.errorMessage,
+        onRetry: () {
+          ref.read(catalogProductsProvider.notifier).getProducts(isRefresh: true);
+        },
+      );
     }
 
     if (state.items.isEmpty) {

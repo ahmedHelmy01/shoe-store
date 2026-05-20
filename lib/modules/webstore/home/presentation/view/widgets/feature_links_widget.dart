@@ -48,8 +48,7 @@ class FeatureLinksWidget extends ConsumerWidget {
       case 'الروشتة':
         AppNavigator.push(
           context,
-          AppRouteNames.webstorePage,
-          arguments: {'slug': 'prescriptions', 'title': feature.title},
+          AppRouteNames.webstorePrescriptions,
         );
         break;
       case 'خدمات طبية':

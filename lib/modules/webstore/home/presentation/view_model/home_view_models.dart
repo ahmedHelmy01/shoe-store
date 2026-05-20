@@ -3,20 +3,19 @@ import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/modules/webstore/home/presentation/state/home_state.dart';
-import 'package:erp/modules/webstore/home/presentation/state/slider_state.dart';
 import 'package:erp/modules/webstore/shared/data/providers/webstore_providers.dart';
-import 'package:erp/modules/webstore/home/data/models/slider_model.dart';
-import 'package:erp/modules/webstore/catalog/data/models/manufacturer_model.dart';
 import 'package:erp/core/providers/core_providers.dart';
-import 'package:erp/core/services/location_service.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
-import 'package:erp/modules/webstore/home/presentation/view_model/ads/ads_view_model.dart';
-
-export 'package:erp/modules/webstore/home/presentation/state/home_state.dart';
-export 'package:erp/modules/webstore/branches/presentation/view_model/branch_view_model.dart';
-export 'package:erp/modules/webstore/branches/presentation/state/branch_state.dart';
 
 import 'package:erp/modules/webstore/home/data/models/coupon_model.dart';
+
+// ─── Re-exports for backward compatibility ──────────
+export 'package:erp/modules/webstore/home/presentation/state/home_state.dart';
+export 'package:erp/modules/webstore/home/presentation/view_model/slider_view_model.dart';
+export 'package:erp/modules/webstore/home/presentation/view_model/company_produces_view_model.dart';
+export 'package:erp/modules/webstore/home/presentation/view_model/location_view_model.dart';
+export 'package:erp/modules/webstore/branches/presentation/view_model/branch_view_model.dart';
+export 'package:erp/modules/webstore/branches/presentation/state/branch_state.dart';
 
 // ─── Home View Model ────────────────────────────────
 
@@ -27,14 +26,12 @@ class HomeVm extends Notifier<HomeState> {
     return HomeState();
   }
 
-  /// Initial loading sequence optimized for slow networks
+  /// Initial loading sequence — runs in parallel for speed
   Future<void> initHome() async {
-    // 1. Prioritize Coupons (Smallest but important for user)
-    await getCoupons();
-    
-    // 2. Fetch Latest Products
-    await getLatestProducts();
-    
+    await Future.wait([
+      getCoupons(),
+      getLatestProducts(),
+    ]);
     // Note: SliderVm and AdsVm handle their own initialization on build
   }
 
@@ -94,7 +91,7 @@ class HomeVm extends Notifier<HomeState> {
         state = state.copyWith(
           products: products, 
           isLoading: false,
-          errorMessage: null, // Clear error on success
+          errorMessage: null,
         );
         
         // Cache the successful result
@@ -115,7 +112,7 @@ class HomeVm extends Notifier<HomeState> {
             state = state.copyWith(
               products: products, 
               isLoading: false,
-              errorMessage: null, // If we have cache, don't show error banner
+              errorMessage: null,
             );
           } catch (e) {
             debugPrint('Error parsing cached products: $e');
@@ -178,126 +175,3 @@ class HomeVm extends Notifier<HomeState> {
 }
 
 final homeVmProvider = NotifierProvider<HomeVm, HomeState>(HomeVm.new);
-
-// ─── Slider View Model ──────────────────────────────
-
-class SliderVm extends Notifier<SliderState> {
-  @override
-  SliderState build() {
-    Future.microtask(() => getSliders());
-    return SliderInitial();
-  }
-
-  Future<void> getSliders() async {
-    final prefs = ref.read(sharedPreferencesProvider);
-    final cacheKey = 'webstore_sliders_cache';
-
-    state = SliderLoading();
-
-    // Attempt 1
-    var result = await ref.read(cmsRepositoryProvider).getSliders();
-
-    // Retry Logic
-    if (result.isFailure) {
-      await Future.delayed(const Duration(seconds: 1));
-      result = await ref.read(cmsRepositoryProvider).getSliders();
-    }
-
-    result.when(
-      success: (data) {
-        final List<dynamic> sliderJson = data['data'] ?? [];
-        final sliders = sliderJson.map((j) => SliderModel.fromJson(j)).toList();
-        state = SliderSuccess(sliders);
-        
-        // Cache successful result
-        prefs.setString(cacheKey, jsonEncode(data));
-      },
-      failure: (error) {
-        debugPrint('❌ SliderVm: Fetch failed: ${error.message}');
-        
-        // Try cache
-        final cachedData = prefs.getString(cacheKey);
-        if (cachedData != null) {
-          try {
-            final Map<String, dynamic> data = jsonDecode(cachedData);
-            final List<dynamic> sliderJson = data['data'] ?? [];
-            final sliders = sliderJson.map((j) => SliderModel.fromJson(j)).toList();
-            state = SliderSuccess(sliders);
-          } catch (e) {
-            debugPrint('Error parsing cached sliders: $e');
-            state = SliderError(error.message);
-          }
-        } else {
-          state = SliderError(error.message);
-        }
-      },
-    );
-  }
-}
-
-final sliderVmProvider = NotifierProvider<SliderVm, SliderState>(SliderVm.new);
-
-// ─── Company Produces View Model ────────────────────
-
-class CompanyProducesVm extends Notifier<List<ManufacturerModel>> {
-  @override
-  List<ManufacturerModel> build() {
-    Future.microtask(() => getCompanyProduces());
-    return [];
-  }
-
-  Future<void> getCompanyProduces() async {
-    final result = await ref.read(catalogRepositoryProvider).getManufacturers();
-
-    result.when(
-      success: (data) {
-        final List<dynamic> json = data['data'] is List
-            ? data['data']
-            : (data is List ? data : []);
-        state = json.map((j) => ManufacturerModel.fromJson(j)).toList();
-      },
-      failure: (error) => debugPrint('❌ HomeVm: Manufacturers fetch failed'),
-    );
-  }
-}
-
-final companyProducesVmProvider =
-    NotifierProvider<CompanyProducesVm, List<ManufacturerModel>>(
-      CompanyProducesVm.new,
-    );
-
-// ─── Location View Model ────────────────────────────
-
-class LocationVm extends Notifier<LocationState> {
-  @override
-  LocationState build() {
-    _initLocation();
-    return LocationState(selectedBranch: 'الفرع الرئيسي');
-  }
-
-  Future<void> _initLocation() async {
-    final branch = await ref.read(sessionManagerProvider).getBranchName();
-    if (branch != null) {
-      state = state.copyWith(selectedBranch: branch);
-    }
-  }
-
-  Future<void> requestLocation() async {
-    final position = await LocationService.getCurrentLocation();
-    if (position != null) {
-      state = state.copyWith(
-        latitude: position.latitude,
-        longitude: position.longitude,
-      );
-    }
-  }
-
-  void updateSelectedBranch(String branch) async {
-    state = state.copyWith(selectedBranch: branch);
-    await ref.read(sessionManagerProvider).setBranchName(branch);
-  }
-}
-
-final locationProvider = NotifierProvider<LocationVm, LocationState>(
-  LocationVm.new,
-);

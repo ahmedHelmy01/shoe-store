@@ -37,22 +37,3 @@ class HomeState {
   }
 }
 
-class LocationState {
-  final String? selectedBranch;
-  final double? latitude;
-  final double? longitude;
-
-  LocationState({this.selectedBranch, this.latitude, this.longitude});
-
-  LocationState copyWith({
-    String? selectedBranch,
-    double? latitude,
-    double? longitude,
-  }) {
-    return LocationState(
-      selectedBranch: selectedBranch ?? this.selectedBranch,
-      latitude: latitude ?? this.latitude,
-      longitude: longitude ?? this.longitude,
-    );
-  }
-}

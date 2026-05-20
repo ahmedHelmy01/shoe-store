@@ -53,7 +53,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false,
       title: title ??
           (titleText != null
-              ? Text(titleText!.tr(), style: mergedTitleStyle)
+              ? Text(titleText!, style: mergedTitleStyle)
               : null),
       leading:
           leading ??

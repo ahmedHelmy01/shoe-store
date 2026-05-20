@@ -4,6 +4,7 @@ import 'package:erp/modules/webstore/branches/data/branch_model.dart';
 import 'package:erp/modules/webstore/branches/presentation/state/branch_state.dart';
 import 'package:erp/modules/webstore/branches/presentation/view_model/branch_view_model.dart';
 import 'package:erp/modules/webstore/branches/presentation/view/widgets/branches_map_content.dart';
+import 'package:erp/core/common_widget/app_error_widget/app_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -49,7 +50,12 @@ class _BranchesMapViewState extends ConsumerState<BranchesMapView> {
       body: branchState is BranchLoading
           ? const Center(child: CircularProgressIndicator.adaptive())
           : branchState is BranchError
-          ? Center(child: Text(branchState.message))
+          ? Center(
+              child: AppErrorWidget(
+                errorMessage: branchState.message,
+                onRetry: () => ref.read(branchVmProvider.notifier).getBranches(),
+              ),
+            )
           : branchState is BranchLoaded
           ? _buildMapContent(branchState.branches)
           : const SizedBox.shrink(),

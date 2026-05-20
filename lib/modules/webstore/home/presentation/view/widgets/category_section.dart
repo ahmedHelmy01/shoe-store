@@ -8,6 +8,8 @@ import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CategorySection extends ConsumerStatefulWidget {
   const CategorySection({super.key});
@@ -46,12 +48,50 @@ class _CategorySectionState extends ConsumerState<CategorySection> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(catalogCategoriesProvider);
+    final theme = Theme.of(context);
 
     if (state.isLoading && state.items.isEmpty) {
       return AppHorizontalLoader(
         height: 90.h,
         itemWidth: 70.w,
         borderRadius: 35,
+      );
+    }
+
+    if (state.errorMessage != null && state.items.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 20.w),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              LocaleKeys.common.unexpected_error.tr(context: context),
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: theme.hintColor,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                ref.read(catalogCategoriesProvider.notifier).getCategories(isRefresh: true);
+              },
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                LocaleKeys.common.retry.tr(context: context),
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryOrange,
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     }
 

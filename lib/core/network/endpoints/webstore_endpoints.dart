@@ -14,6 +14,7 @@ class WebStoreEndpoints {
   final orders = const _WebStoreOrders();
   final profile = const _WebStoreProfile();
   final cms = const _WebStoreCms();
+  final prescriptions = const _WebStorePrescriptions();
 
   // ─── Admin Facing ──────────────────────────────────
   final wishlist = const _WebStoreWishlist();
@@ -101,8 +102,8 @@ class _WebStoreCms {
 class _WebStoreWishlist {
   const _WebStoreWishlist();
   final String index = '/api/store/wishlist';
-  final String add = '/api/store/wishlist/add';
-  final String remove = '/api/store/wishlist/remove';
+  final String add = '/api/store/wishlist';
+  final String remove = '/api/store/wishlist';
 }
 
 class _WebStoreAdmin {
@@ -169,3 +170,11 @@ class _WebStoreUpload {
   final String multiple = '/api/store/upload/multi';
   final String delete = '/api/store/upload/delete';
 }
+
+class _WebStorePrescriptions {
+  const _WebStorePrescriptions();
+
+  final String index = '/api/store/prescriptions';
+  final String detail = '/api/store/prescriptions/{id}';
+}
+

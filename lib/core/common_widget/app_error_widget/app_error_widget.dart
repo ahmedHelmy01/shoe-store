@@ -48,9 +48,9 @@ class AppErrorWidget extends StatelessWidget {
               12.verticalSpace,
               if (errorMessage != null)
                 Text(
-                  _isTechnical(errorMessage!)
+                  _isNetworkError(errorMessage!)
                       ? LocaleKeys.common.check_internet.tr(context: context)
-                      : errorMessage!,
+                      : errorMessage!.tr(context: context),
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.hintColor,
@@ -99,8 +99,14 @@ class AppErrorWidget extends StatelessWidget {
     return technicalTerms.any((term) => msg.contains(term));
   }
 
+  bool _isNetworkError(String msg) {
+    return _isTechnical(msg) ||
+        msg == LocaleKeys.common.no_internet ||
+        msg.contains('no_internet');
+  }
+
   String _getFriendlyMessage(BuildContext context) {
-    if (errorMessage != null && _isTechnical(errorMessage!)) {
+    if (errorMessage != null && _isNetworkError(errorMessage!)) {
       return LocaleKeys.common.no_internet.tr(context: context);
     }
     return LocaleKeys.common.error.tr(context: context);

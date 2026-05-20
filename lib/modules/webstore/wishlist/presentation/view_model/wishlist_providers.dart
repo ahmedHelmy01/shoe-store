@@ -1,0 +1,70 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
+import 'package:erp/modules/webstore/catalog/data/repositories/wishlist_repository.dart';
+import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
+
+final wishlistRepositoryProvider = Provider<IWishlistRepository>((ref) {
+  return WishlistRepository(ref.watch(catalogRemoteDataSourceProvider));
+});
+
+final wishlistProvider = AsyncNotifierProvider<WishlistNotifier, List<WebStoreProduct>>(() {
+  return WishlistNotifier();
+});
+
+class WishlistNotifier extends AsyncNotifier<List<WebStoreProduct>> {
+  @override
+  Future<List<WebStoreProduct>> build() async {
+    return _fetchWishlist();
+  }
+
+  Future<List<WebStoreProduct>> _fetchWishlist() async {
+    final repository = ref.read(wishlistRepositoryProvider);
+    final result = await repository.getWishlist();
+    return result.when(
+      success: (data) {
+        final list = (data['data'] as List?) ?? [];
+        return list
+            .whereType<Map<String, dynamic>>()
+            .map(WebStoreProduct.fromJson)
+            .toList();
+      },
+      failure: (failure) {
+        throw failure.message;
+      },
+    );
+  }
+
+  Future<bool> toggleWishlist(WebStoreProduct product) async {
+    if (product.id == null) return false;
+    final currentList = state.value ?? [];
+    final isFav = currentList.any((p) => p.id == product.id);
+
+    // Optimistic UI update
+    final updatedList = List<WebStoreProduct>.from(currentList);
+    if (isFav) {
+      updatedList.removeWhere((p) => p.id == product.id);
+    } else {
+      updatedList.add(product);
+    }
+    state = AsyncValue.data(updatedList);
+
+    final repository = ref.read(wishlistRepositoryProvider);
+    final result = isFav
+        ? await repository.removeFromWishlist(product.id!)
+        : await repository.addToWishlist(product.id!);
+
+    return result.when(
+      success: (_) => true,
+      failure: (failure) {
+        // Revert optimistic update on failure
+        state = AsyncValue.data(currentList);
+        return false;
+      },
+    );
+  }
+
+  Future<void> refresh() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() => _fetchWishlist());
+  }
+}

@@ -1,45 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/common_widget/app_bar/common_app_bar.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/router/app_navigator.dart';
-import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
 import '../widgets/cart_item_card.dart';
 
-class WebStoreCartView extends StatefulWidget {
+class WebStoreCartView extends ConsumerWidget {
   const WebStoreCartView({super.key});
 
   @override
-  State<WebStoreCartView> createState() => _WebStoreCartViewState();
-}
-
-class _WebStoreCartViewState extends State<WebStoreCartView> {
-  // Mock Cart State - Starting empty to avoid mock dependency
-  late List<Map<String, dynamic>> cartItems;
-
-  @override
-  void initState() {
-    super.initState();
-    cartItems = [];
-  }
-
-  double get subtotal => cartItems.fold(
-      0, (sum, item) => sum + (item['product'] as WebStoreProduct).price * item['quantity']);
-  double get shipping => cartItems.isEmpty ? 0 : 25.0;
-  double get tax => 0.0;
-  double get total => subtotal + shipping + tax;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final cartItems = ref.watch(cartProvider);
+    final cartNotifier = ref.read(cartProvider.notifier);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: CommonAppBar(
-        titleText: 'Cart (${cartItems.length})',
+        titleText: '${LocaleKeys.webstore.nav.cart.tr(context: context)} (${cartItems.length})',
       ),
       body: cartItems.isEmpty 
-          ? _buildEmptyState(context)
+          ? _buildEmptyState(context, ref)
           : Column(
         children: [
           Expanded(
@@ -49,26 +34,24 @@ class _WebStoreCartViewState extends State<WebStoreCartView> {
               itemBuilder: (context, index) {
                 final item = cartItems[index];
                 return CartItemCard(
-                  product: item['product'],
-                  quantity: item['quantity'],
-                  onIncrement: () => setState(() => item['quantity']++),
-                  onDecrement: () => setState(() {
-                    if (item['quantity'] > 1) item['quantity']--;
-                  }),
-                  onRemove: () => setState(() => cartItems.removeAt(index)),
+                  product: item.product,
+                  quantity: item.quantity,
+                  onIncrement: () => cartNotifier.incrementQuantity(item.product.id!),
+                  onDecrement: () => cartNotifier.decrementQuantity(item.product.id!),
+                  onRemove: () => cartNotifier.removeFromCart(item.product.id!),
                 );
               },
             ),
           ),
           
           // Summary Section
-          _buildSummary(context),
+          _buildSummary(context, ref),
         ],
       ),
     );
   }
 
-  Widget _buildEmptyState(BuildContext context) {
+  Widget _buildEmptyState(BuildContext context, WidgetRef ref) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -76,25 +59,26 @@ class _WebStoreCartViewState extends State<WebStoreCartView> {
           Icon(Icons.shopping_cart_outlined, size: 80.sp, color: Colors.grey.withOpacity(0.5)),
           24.verticalSpace,
           Text(
-            'Your cart is empty',
+            LocaleKeys.common.cart_empty.tr(context: context),
             style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: Colors.grey),
           ),
           12.verticalSpace,
           AppButton(
             width: 150.w,
             onPressed: () {
-              // Maybe go back to home or catalog
+              AppNavigator.replace(ref.context, AppRouteNames.webstoreMain);
             },
-            child: const Text('Shop Now'),
+            child: Text(LocaleKeys.common.browse_products.tr(context: context)),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSummary(BuildContext context) {
+  Widget _buildSummary(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final cartNotifier = ref.read(cartProvider.notifier);
 
     return Container(
       padding: EdgeInsets.all(24.w),
@@ -114,15 +98,13 @@ class _WebStoreCartViewState extends State<WebStoreCartView> {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Order Details
-            _summaryRow('Shipping', '\$${shipping.toStringAsFixed(0)}'),
+            _summaryRow(LocaleKeys.webstore.checkout.delivery_fee.tr(context: context), '\$${cartNotifier.shipping.toStringAsFixed(0)}'),
             12.verticalSpace,
-            _summaryRow('Tax', '\$${tax.toStringAsFixed(0)}'),
-            12.verticalSpace,
-            _summaryRow('Subtotal', '\$${subtotal.toStringAsFixed(2)}'),
+            _summaryRow(LocaleKeys.webstore.checkout.order_amount.tr(context: context), '\$${cartNotifier.subtotal.toStringAsFixed(2)}'),
             16.verticalSpace,
             const Divider(),
             16.verticalSpace,
-            _summaryRow('Total', '\$${total.toStringAsFixed(2)}', isTotal: true),
+            _summaryRow(LocaleKeys.webstore.checkout.total_amount.tr(context: context), '\$${cartNotifier.total.toStringAsFixed(2)}', isTotal: true),
             
             32.verticalSpace,
             
@@ -131,7 +113,7 @@ class _WebStoreCartViewState extends State<WebStoreCartView> {
               onPressed: () => AppNavigator.push(context, AppRouteNames.webstoreCheckout),
               isGradient: true,
               child: Text(
-                'Checkout',
+                LocaleKeys.webstore.checkout.place_order.tr(context: context),
                 style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: Colors.white),
               ),
             ),

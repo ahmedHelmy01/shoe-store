@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
+import 'package:erp/modules/webstore/wishlist/presentation/view_model/wishlist_providers.dart';
 import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
 
 // Modular Widgets
@@ -11,6 +12,11 @@ import 'widgets/details_image_gallery.dart';
 import 'widgets/details_info_section.dart';
 import 'widgets/details_content_section.dart';
 import 'widgets/details_bottom_bar.dart';
+import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
+import 'package:erp/core/common_widget/app_error_widget/app_error_widget.dart';
+import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ProductDetailsView extends ConsumerStatefulWidget {
   final WebStoreProduct product;
@@ -37,7 +43,12 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
       backgroundColor: theme.scaffoldBackgroundColor,
       body: detailsAsync.when(
         loading: () => _buildShimmerLoading(),
-        error: (err, stack) => Center(child: Text('خطأ في جلب البيانات: $err')),
+        error: (err, stack) => Center(
+          child: AppErrorWidget(
+            errorMessage: err.toString(),
+            onRetry: () => ref.refresh(productDetailsProvider(widget.product.id!)),
+          ),
+        ),
         data: (fullProduct) => CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
@@ -70,17 +81,10 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
             if (_quantity > 1) setState(() => _quantity--);
           },
           onAddToCart: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'تمت إضافة $_quantity من "${fullProduct.name}" إلى السلة',
-                ),
-                backgroundColor: AppColors.primaryOrange,
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
+            ref.read(cartProvider.notifier).addToCart(fullProduct, quantity: _quantity);
+            AppSnackBar.showSuccess(
+              context,
+              LocaleKeys.webstore.orders.added_to_cart.tr(context: context),
             );
           },
         ),
@@ -107,6 +111,9 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
   }
 
   Widget _buildAppBar(bool isDark, ThemeData theme, WebStoreProduct product) {
+    final wishlist = ref.watch(wishlistProvider).value ?? [];
+    final isWishlisted = product.id != null && wishlist.any((p) => p.id == product.id);
+
     return SliverAppBar(
       expandedHeight: 380.h,
       pinned: true,
@@ -118,7 +125,13 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
       actions: [
         _buildCircleButton(Icons.share_rounded, onTap: () {}),
         8.horizontalSpace,
-        _buildCircleButton(Icons.favorite_border_rounded, onTap: () {}),
+        _buildCircleButton(
+          isWishlisted ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+          iconColor: isWishlisted ? Colors.red : null,
+          onTap: () {
+            ref.read(wishlistProvider.notifier).toggleWishlist(product);
+          },
+        ),
         12.horizontalSpace,
       ],
       flexibleSpace: FlexibleSpaceBar(
@@ -132,7 +145,7 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
     );
   }
 
-  Widget _buildCircleButton(IconData icon, {required VoidCallback onTap}) {
+  Widget _buildCircleButton(IconData icon, {Color? iconColor, required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -157,9 +170,9 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
             ),
             child: Icon(
               icon,
-              color: Theme.of(context).brightness == Brightness.dark
+              color: iconColor ?? (Theme.of(context).brightness == Brightness.dark
                   ? Colors.white
-                  : Colors.black87,
+                  : Colors.black87),
               size: 20.sp,
             ),
           ),

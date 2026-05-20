@@ -1,6 +1,8 @@
 /// Catalog Feature State Management (Vertical Slices)
 library;
 
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/network/pagination/paginated_response.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
@@ -62,6 +64,7 @@ final catalogTagsProvider = FutureProvider<List<TagModel>>((ref) async {
 // ═══════════════════════════════════════════════════════════════
 
 /// Paginated list of categories
+
 final catalogCategoriesProvider =
     NotifierProvider<CategoriesNotifier, CategoriesState>(() {
       return CategoriesNotifier();
@@ -76,8 +79,33 @@ class CategoriesNotifier extends Notifier<CategoriesState> {
 
   @override
   CategoriesState build() {
+    // 1. Try to load cached categories synchronously on startup to make UI load instantly!
+    List<WebStoreCategory> cachedItems = [];
+    int? firstCachedId;
+    try {
+      final prefs = ref.read(sharedPreferencesProvider);
+      final cachedData = prefs.getString('webstore_categories_cache');
+      if (cachedData != null) {
+        final Map<String, dynamic> data = jsonDecode(cachedData);
+        final List<dynamic> list = data['data'] ?? [];
+        cachedItems = list
+            .map((item) => WebStoreCategory.fromJson(Map<String, dynamic>.from(item as Map)))
+            .toList();
+        if (cachedItems.isNotEmpty) {
+          firstCachedId = cachedItems.first.id;
+        }
+      }
+    } catch (e) {
+      debugPrint('❌ CategoriesNotifier: Error loading cached categories: $e');
+    }
+
+    // 2. Trigger async background fetch to get latest categories
     Future.microtask(() => getCategories());
-    return const CategoriesState();
+
+    return CategoriesState(
+      items: cachedItems,
+      selectedCategoryId: firstCachedId,
+    );
   }
 
   Future<void> getCategories({bool isRefresh = false}) async {
@@ -165,6 +193,16 @@ class CategoriesNotifier extends Notifier<CategoriesState> {
           selectedCategoryId: newSelectedId,
         );
 
+        // Cache the successful result if it is the first page or a refresh
+        if (pageSent == 1 || isRefresh) {
+          try {
+            final prefs = ref.read(sharedPreferencesProvider);
+            prefs.setString('webstore_categories_cache', jsonEncode(data));
+          } catch (e) {
+            debugPrint('❌ CategoriesNotifier: Error caching categories: $e');
+          }
+        }
+
         if (hasMorePages) {
           _nextCategoriesApiPage = pageSent + 1;
         }
@@ -208,9 +246,35 @@ class ProductsNotifier extends Notifier<ProductsState> {
   }
 
   Future<void> getProducts({bool isRefresh = false}) async {
+    final categoryId = _params.filters?['category_id'] as int?;
+    final cacheKey = categoryId != null
+        ? 'webstore_products_cache_category_$categoryId'
+        : 'webstore_products_cache_all';
+
     if (isRefresh) {
       _params = _params.copyWith(page: 1);
-      state = state.copyWith(isLoading: true, items: []);
+
+      // Load cached products synchronously for this category to avoid a blank loading screen offline!
+      List<WebStoreProduct> cachedItems = [];
+      try {
+        final prefs = ref.read(sharedPreferencesProvider);
+        final cachedData = prefs.getString(cacheKey);
+        if (cachedData != null) {
+          final Map<String, dynamic> decoded = jsonDecode(cachedData);
+          final List<dynamic> list = decoded['data'] ?? [];
+          cachedItems = list
+              .map((item) => WebStoreProduct.fromJson(Map<String, dynamic>.from(item as Map)))
+              .toList();
+        }
+      } catch (e) {
+        debugPrint('❌ ProductsNotifier: Error loading cached products: $e');
+      }
+
+      state = state.copyWith(
+        isLoading: true,
+        items: cachedItems,
+        errorMessage: null,
+      );
     } else if (state.items.isEmpty) {
       state = state.copyWith(isLoading: true);
     } else if (state.isLoadingMore || !state.hasMore) {
@@ -241,14 +305,34 @@ class ProductsNotifier extends Notifier<ProductsState> {
           errorMessage: null,
         );
 
+        // Cache the refreshed successful first page products
+        if (isRefresh) {
+          try {
+            final prefs = ref.read(sharedPreferencesProvider);
+            prefs.setString(cacheKey, jsonEncode(data));
+          } catch (e) {
+            debugPrint('❌ ProductsNotifier: Error caching products: $e');
+          }
+        }
+
         _params = _params.copyWith(page: paginated.meta.currentPage + 1);
       },
       failure: (failure) {
-        state = state.copyWith(
-          isLoading: false,
-          isLoadingMore: false,
-          errorMessage: failure.message,
-        );
+        // If we loaded cached items successfully, do NOT show the fullscreen error widget.
+        // Instead, just clear loading state so the cached items remain visible and interactive!
+        if (state.items.isNotEmpty) {
+          state = state.copyWith(
+            isLoading: false,
+            isLoadingMore: false,
+            errorMessage: null,
+          );
+        } else {
+          state = state.copyWith(
+            isLoading: false,
+            isLoadingMore: false,
+            errorMessage: failure.message,
+          );
+        }
       },
     );
   }
@@ -317,11 +401,46 @@ final productDetailsProvider = FutureProvider.family<WebStoreProduct, int>((
   ref,
   id,
 ) async {
+  final prefs = ref.read(sharedPreferencesProvider);
+  final cacheKey = 'webstore_product_details_cache_$id';
+  
   final repository = ref.watch(catalogRepositoryProvider);
+  
+  // 1. Try to read from cache first for instant loading
+  final cachedData = prefs.getString(cacheKey);
+  if (cachedData != null) {
+    try {
+      final decoded = jsonDecode(cachedData);
+      return WebStoreProduct.fromJson(decoded);
+    } catch (e) {
+      debugPrint('❌ productDetailsProvider: Cache parse error: $e');
+    }
+  }
+
+  // 2. Fetch from server and cache result
   final result = await repository.getProductDetail(id);
 
   return result.when(
-    success: (data) => WebStoreProduct.fromJson(data['data']),
-    failure: (failure) => throw failure.message,
+    success: (data) {
+      final productData = data['data'];
+      try {
+        prefs.setString(cacheKey, jsonEncode(productData));
+      } catch (e) {
+        debugPrint('❌ productDetailsProvider: Cache save error: $e');
+      }
+      return WebStoreProduct.fromJson(productData);
+    },
+    failure: (failure) {
+      // If server fails but we have cached version, return it instead of throwing!
+      if (cachedData != null) {
+        try {
+          final decoded = jsonDecode(cachedData);
+          return WebStoreProduct.fromJson(decoded);
+        } catch (e) {
+          // Fall through to throw
+        }
+      }
+      throw failure.message;
+    },
   );
 });

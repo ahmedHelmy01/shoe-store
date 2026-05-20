@@ -5,13 +5,15 @@ import 'package:erp/core/common_widget/app_bar/common_app_bar.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
 import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
+import 'package:erp/core/common_widget/app_error_widget/app_error_widget.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:erp/modules/webstore/auth/presentation/view_model/webstore_auth_providers.dart';
-import 'package:erp/modules/webstore/auth/presentation/state/webstore_auth_state.dart';
+import 'package:erp/modules/webstore/auth/data/models/webstore_user_model.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
+import 'package:erp/modules/webstore/profile/presentation/state/profile_state.dart';
+import 'package:erp/modules/webstore/profile/presentation/view_model/profile_providers.dart';
 import 'widgets/profile_header.dart';
 import 'widgets/profile_data_field.dart';
 import 'widgets/profile_info_section.dart';
@@ -32,21 +34,22 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
+  final branchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      final state = ref.read(webStoreAuthViewModelProvider);
-      if (state is WebStoreAuthSuccess) {
-        setState(() => _populateFields(state.authResponse.user));
+      final state = ref.read(profileViewModelProvider);
+      if (state is ProfileLoaded) {
+        setState(() => _populateFields(state.user));
       } else {
-        ref.read(webStoreAuthViewModelProvider.notifier).getProfile();
+        ref.read(profileViewModelProvider.notifier).getProfile();
       }
     });
   }
 
-  void _populateFields(user) {
+  void _populateFields(WebStoreUser user) {
     nameController.text = user.name;
     emailController.text = user.email ?? '';
     phoneController.text = user.mobile ?? '';
@@ -62,14 +65,15 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
     emailController.dispose();
     phoneController.dispose();
     addressController.dispose();
+    branchController.dispose();
     super.dispose();
   }
 
   void _onSave() {
-    ref.read(webStoreAuthViewModelProvider.notifier).updateProfile(
-      name: nameController.text,
-      email: emailController.text,
-      mobile: phoneController.text,
+    ref.read(profileViewModelProvider.notifier).updateProfile(
+      name: nameController.text.trim(),
+      email: emailController.text.trim(),
+      mobile: phoneController.text.trim(),
     );
   }
 
@@ -81,7 +85,7 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
       message: LocaleKeys.webstore.profile.delete_confirm.tr(context: context),
       actionText: LocaleKeys.webstore.profile.delete_button.tr(context: context),
       onActionPressed: () {
-        ref.read(webStoreAuthViewModelProvider.notifier).deleteAccount();
+        ref.read(profileViewModelProvider.notifier).deleteAccount();
       },
     );
   }
@@ -89,33 +93,37 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final state = ref.watch(webStoreAuthViewModelProvider);
-    final isLoading = state is WebStoreAuthLoading;
+    final state = ref.watch(profileViewModelProvider);
+    final isLoading = state is ProfileLoading;
     final branchState = ref.watch(branchVmProvider);
 
-    ref.listen<WebStoreAuthState>(webStoreAuthViewModelProvider, (prev, next) {
-      if (next is WebStoreAuthSuccess) {
-        setState(() => _populateFields(next.authResponse.user));
-      } else if (next is WebStoreOtpVerified) {
+    ref.listen<ProfileState>(profileViewModelProvider, (prev, next) {
+      if (next is ProfileLoaded) {
+        setState(() => _populateFields(next.user));
+      } else if (next is ProfileUpdateSuccess) {
         AppStatusDialog.showSuccess(
           context,
-          title: LocaleKeys.webstore.auth.otp_verified.tr(context: context),
-          message: next.message,
+          title: LocaleKeys.webstore.profile.update_success.tr(context: context),
+          message: LocaleKeys.webstore.profile.update_success.tr(context: context),
         );
-        setState(() => isEditing = false);
-      } else if (next is WebStoreAuthError) {
+        setState(() {
+          isEditing = false;
+          _populateFields(next.user);
+        });
+      } else if (next is ProfileError) {
         AppStatusDialog.showError(
           context,
           title: LocaleKeys.common.error.tr(context: context),
           message: next.message,
         );
-      } else if (next is WebStoreAuthIdle && prev is WebStoreAuthLoading) {
+      } else if (next is ProfileDeleted) {
         AppNavigator.replace(context, AppRouteNames.webstoreMain);
       }
     });
 
     final hasAddress = addressController.text.isNotEmpty;
     final hasBranch = _selectedBranchId != null;
+    final hasUserData = state is ProfileLoaded || state is ProfileUpdateSuccess || (state is ProfileLoading && nameController.text.isNotEmpty);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -125,8 +133,12 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
         actions: [
           IconButton(
             onPressed: () {
-              if (isEditing && state is WebStoreAuthSuccess) {
-                setState(() => _populateFields(state.authResponse.user));
+              if (isEditing) {
+                if (state is ProfileLoaded) {
+                  setState(() => _populateFields(state.user));
+                } else if (state is ProfileUpdateSuccess) {
+                  setState(() => _populateFields(state.user));
+                }
               }
               setState(() => isEditing = !isEditing);
             },
@@ -140,7 +152,7 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
       ),
       body: Stack(
         children: [
-          if (state is WebStoreAuthSuccess || state is WebStoreOtpVerified || (state is WebStoreAuthLoading && nameController.text.isNotEmpty))
+          if (hasUserData)
             SingleChildScrollView(
               padding: EdgeInsets.all(20.w),
               child: Column(
@@ -153,8 +165,10 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
                           email: emailController.text,
                           isEditing: isEditing,
                         ),
-                        if (state is WebStoreAuthSuccess)
-                          ProfilePointsCard(points: state.authResponse.user.points),
+                        if (state is ProfileLoaded)
+                          ProfilePointsCard(points: state.user.points),
+                        if (state is ProfileUpdateSuccess)
+                          ProfilePointsCard(points: state.user.points),
                       ],
                     ),
                   ),
@@ -194,19 +208,22 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
                     ProfileInfoSection(
                       title: LocaleKeys.webstore.profile.store_location.tr(context: context),
                       children: [
-                        if (hasBranch) 
-                           ProfileDataField(
-                            label: LocaleKeys.webstore.profile.your_branch.tr(context: context),
-                            controller: TextEditingController(
-                              text: (branchState is BranchLoaded) 
-                                ? (branchState.branches.any((b) => b.id == _selectedBranchId)
-                                    ? branchState.branches.firstWhere((b) => b.id == _selectedBranchId).name
-                                    : 'Branch ID: $_selectedBranchId')
-                                : '...',
-                            ),
-                            icon: Icons.storefront_outlined,
-                            isEditing: false, // Always Read-only
-                            isLast: !hasAddress,
+                        if (hasBranch)
+                          Builder(
+                            builder: (_) {
+                              branchController.text = (branchState is BranchLoaded)
+                                  ? (branchState.branches.any((b) => b.id == _selectedBranchId)
+                                      ? branchState.branches.firstWhere((b) => b.id == _selectedBranchId).name
+                                      : 'Branch ID: $_selectedBranchId')
+                                  : '...';
+                              return ProfileDataField(
+                                label: LocaleKeys.webstore.profile.your_branch.tr(context: context),
+                                controller: branchController,
+                                icon: Icons.storefront_outlined,
+                                isEditing: false,
+                                isLast: !hasAddress,
+                              );
+                            },
                           ),
 
                         if (hasAddress)
@@ -235,17 +252,11 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
           if (isLoading && nameController.text.isEmpty)
             const Center(child: CircularProgressIndicator()),
 
-          if (state is WebStoreAuthError && nameController.text.isEmpty)
+          if (state is ProfileError && nameController.text.isEmpty)
             Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(state.message, style: const TextStyle(color: Colors.red)),
-                  TextButton(
-                    onPressed: () => ref.read(webStoreAuthViewModelProvider.notifier).getProfile(),
-                    child: Text(LocaleKeys.common.retry.tr(context: context)),
-                  ),
-                ],
+              child: AppErrorWidget(
+                errorMessage: state.message,
+                onRetry: () => ref.read(profileViewModelProvider.notifier).getProfile(),
               ),
             ),
         ],

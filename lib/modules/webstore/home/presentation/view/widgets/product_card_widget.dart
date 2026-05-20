@@ -7,6 +7,7 @@ import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/core/common_widget/app_price_text/app_price_text.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view/product_details/product_details_view.dart';
+import 'package:erp/modules/webstore/wishlist/presentation/view_model/wishlist_providers.dart';
 
 class ProductGridCard extends ConsumerWidget {
   final WebStoreProduct product;
@@ -17,6 +18,9 @@ class ProductGridCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+
+    final wishlist = ref.watch(wishlistProvider).value ?? [];
+    final isWishlisted = product.id != null && wishlist.any((p) => p.id == product.id);
 
     final bool hasDiscount =
         product.oldPrice != null && product.oldPrice! > product.price;
@@ -159,6 +163,24 @@ class ProductGridCard extends ConsumerWidget {
                 ),
               ),
             ),
+          // Wishlist Button
+          Positioned(
+            top: 4.h,
+            right: ranking != null && ranking! <= 3 ? 40.w : 4.w,
+            child: IconButton(
+              onPressed: () {
+                if (product.id != null) {
+                  ref.read(wishlistProvider.notifier).toggleWishlist(product);
+                }
+              },
+              icon: Icon(
+                isWishlisted
+                    ? Icons.favorite_rounded
+                    : Icons.favorite_outline_rounded,
+                color: isWishlisted ? Colors.red : Colors.grey.shade400,
+              ),
+            ),
+          ),
         ],
       ),
     );

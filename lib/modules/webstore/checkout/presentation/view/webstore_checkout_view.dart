@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/common_widget/app_bar/common_app_bar.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
+import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/localization/locale_keys.dart';
+import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
+import 'package:erp/modules/webstore/profile/presentation/state/profile_state.dart';
+import 'package:erp/modules/webstore/profile/presentation/view_model/profile_providers.dart';
+import 'package:erp/modules/webstore/checkout/presentation/view_model/checkout_view_model.dart';
+import 'package:erp/modules/webstore/checkout/presentation/state/checkout_state.dart';
 
-class WebStoreCheckoutView extends StatefulWidget {
+class WebStoreCheckoutView extends ConsumerStatefulWidget {
   const WebStoreCheckoutView({super.key});
 
   @override
-  State<WebStoreCheckoutView> createState() => _WebStoreCheckoutViewState();
+  ConsumerState<WebStoreCheckoutView> createState() =>
+      _WebStoreCheckoutViewState();
 }
 
-class _WebStoreCheckoutViewState extends State<WebStoreCheckoutView> {
+class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
   String selectedPayment = 'visa';
 
   @override
@@ -24,153 +32,288 @@ class _WebStoreCheckoutViewState extends State<WebStoreCheckoutView> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
+    final cartItems = ref.watch(cartProvider);
+    final cartNotifier = ref.read(cartProvider.notifier);
+
+    // Fetch profile address
+    final profileState = ref.watch(profileViewModelProvider);
+    final userAddress = profileState is ProfileLoaded
+        ? profileState.user.address ?? '123 El-Nasr St, Maadi, Cairo, Egypt'
+        : '123 El-Nasr St, Maadi, Cairo, Egypt';
+
+    // Listen for Checkout status
+    ref.listen<CheckoutState>(checkoutVmProvider, (previous, next) {
+      if (next is CheckoutSuccess) {
+        AppSnackBar.showSuccess(
+          context,
+          LocaleKeys.webstore.orders.success_order.tr(context: context),
+        );
+        AppNavigator.replace(context, AppRouteNames.webstoreOrderTrack);
+      } else if (next is CheckoutError) {
+        AppSnackBar.showError(context, next.message);
+      }
+    });
+
+    final checkoutState = ref.watch(checkoutVmProvider);
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: CommonAppBar(titleText: LocaleKeys.webstore.checkout.title.tr(context: context)),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(20.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ─── 1. Delivery Address ─────────────────────
-            _sectionHeader(LocaleKeys.webstore.checkout.delivery_address.tr(context: context), onAction: () {}),
-            12.verticalSpace,
-            AppCard(
-              padding: EdgeInsets.all(16.w),
-              child: Row(
+      appBar: CommonAppBar(
+        titleText: LocaleKeys.webstore.checkout.title.tr(context: context),
+      ),
+      body: checkoutState is CheckoutSubmitting
+          ? const Center(child: CircularProgressIndicator.adaptive())
+          : SingleChildScrollView(
+              padding: EdgeInsets.all(20.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: EdgeInsets.all(10.w),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryOrange.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
+                  // ─── 1. Delivery Address ─────────────────────
+                  _sectionHeader(
+                    LocaleKeys.webstore.checkout.delivery_address.tr(
+                      context: context,
                     ),
-                    child: Icon(Icons.location_on_rounded, color: AppColors.primaryOrange, size: 24.sp),
+                    onAction: () {},
                   ),
-                  16.horizontalSpace,
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  12.verticalSpace,
+                  AppCard(
+                    padding: EdgeInsets.all(16.w),
+                    child: Row(
                       children: [
-                        Text(LocaleKeys.common.home_address.tr(context: context), style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w700)),
-                        4.verticalSpace,
-                        Text(
-                          '123 El-Nasr St, Maadi, Cairo, Egypt',
-                          style: TextStyle(fontSize: 13.sp, color: theme.hintColor),
+                        Container(
+                          padding: EdgeInsets.all(10.w),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryOrange.withValues(
+                              alpha: 0.1,
+                            ),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.location_on_rounded,
+                            color: AppColors.primaryOrange,
+                            size: 24.sp,
+                          ),
+                        ),
+                        16.horizontalSpace,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                LocaleKeys.common.home_address.tr(
+                                  context: context,
+                                ),
+                                style: TextStyle(
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              4.verticalSpace,
+                              Text(
+                                userAddress,
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  color: theme.hintColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(
+                          Icons.check_circle_rounded,
+                          color: AppColors.primaryOrange,
+                          size: 22.sp,
                         ),
                       ],
                     ),
                   ),
-                  Icon(Icons.check_circle_rounded, color: AppColors.primaryOrange, size: 22.sp),
-                ],
-              ),
-            ),
-            
-            24.verticalSpace,
 
-            // ─── 2. Payment Method ───────────────────────
-            _sectionHeader(LocaleKeys.webstore.checkout.payment_method.tr(context: context)),
-            12.verticalSpace,
-            _buildPaymentOption('visa', LocaleKeys.webstore.checkout.visa_mastercard.tr(context: context), AssetManager.visa),
-            12.verticalSpace,
-            _buildPaymentOption('instapay', LocaleKeys.webstore.checkout.instapay.tr(context: context), AssetManager.instapay),
-            12.verticalSpace,
-            _buildPaymentOption('cash', LocaleKeys.webstore.checkout.cash_on_delivery.tr(context: context), AssetManager.car, isAsset: true),
+                  24.verticalSpace,
 
-            24.verticalSpace,
-
-            // ─── 3. Promo Code ──────────────────────────
-            _sectionHeader(LocaleKeys.webstore.checkout.promo_code.tr(context: context)),
-            12.verticalSpace,
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-              decoration: BoxDecoration(
-                color: isDark ? theme.cardColor : Colors.white,
-                borderRadius: BorderRadius.circular(16.r),
-                border: Border.all(
-                  color: AppColors.primaryOrange.withValues(alpha: 0.3),
-                  width: 1.5,
-                  style: BorderStyle.solid, // Dash border would need custom painter, solid is cleaner here
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  )
-                ],
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.confirmation_num_outlined, color: AppColors.primaryOrange, size: 24.sp),
-                  12.horizontalSpace,
-                  Expanded(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: LocaleKeys.webstore.checkout.enter_promo_code.tr(context: context),
-                        border: InputBorder.none,
-                        isDense: true,
-                        hintStyle: TextStyle(fontSize: 14.sp, color: theme.hintColor),
-                      ),
-                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+                  // ─── 2. Payment Method ───────────────────────
+                  _sectionHeader(
+                    LocaleKeys.webstore.checkout.payment_method.tr(
+                      context: context,
                     ),
                   ),
-                  12.horizontalSpace,
-                  TextButton(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(
-                      backgroundColor: AppColors.primaryOrange.withValues(alpha: 0.1),
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+                  12.verticalSpace,
+                  _buildPaymentOption(
+                    'visa',
+                    LocaleKeys.webstore.checkout.visa_mastercard.tr(
+                      context: context,
                     ),
+                    AssetManager.visa,
+                  ),
+                  12.verticalSpace,
+                  _buildPaymentOption(
+                    'instapay',
+                    LocaleKeys.webstore.checkout.instapay.tr(context: context),
+                    AssetManager.instapay,
+                  ),
+                  12.verticalSpace,
+                  _buildPaymentOption(
+                    'cash',
+                    LocaleKeys.webstore.checkout.cash_on_delivery.tr(
+                      context: context,
+                    ),
+                    AssetManager.car,
+                    isAsset: true,
+                  ),
+
+                  24.verticalSpace,
+
+                  // ─── 3. Promo Code ──────────────────────────
+                  _sectionHeader(
+                    LocaleKeys.webstore.checkout.promo_code.tr(
+                      context: context,
+                    ),
+                  ),
+                  12.verticalSpace,
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 8.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isDark ? theme.cardColor : Colors.white,
+                      borderRadius: BorderRadius.circular(16.r),
+                      border: Border.all(
+                        color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                        width: 1.5,
+                        style: BorderStyle.solid,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.03),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.confirmation_num_outlined,
+                          color: AppColors.primaryOrange,
+                          size: 24.sp,
+                        ),
+                        12.horizontalSpace,
+                        Expanded(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: LocaleKeys
+                                  .webstore
+                                  .checkout
+                                  .enter_promo_code
+                                  .tr(context: context),
+                              border: InputBorder.none,
+                              isDense: true,
+                              hintStyle: TextStyle(
+                                fontSize: 14.sp,
+                                color: theme.hintColor,
+                              ),
+                            ),
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        12.horizontalSpace,
+                        TextButton(
+                          onPressed: () {},
+                          style: TextButton.styleFrom(
+                            backgroundColor: AppColors.primaryOrange.withValues(
+                              alpha: 0.1,
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20.w,
+                              vertical: 8.h,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
+                          ),
+                          child: Text(
+                            LocaleKeys.webstore.checkout.apply.tr(
+                              context: context,
+                            ),
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w900,
+                              color: AppColors.primaryOrange,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  40.verticalSpace,
+
+                  // ─── 4. Summary ─────────────────────────────
+                  AppCard(
+                    padding: EdgeInsets.all(20.w),
+                    backgroundColor: isDark ? theme.cardColor : Colors.grey[50],
+                    child: Column(
+                      children: [
+                        _summaryRow(
+                          LocaleKeys.webstore.checkout.order_amount.tr(
+                            context: context,
+                          ),
+                          '\$${cartNotifier.subtotal.toStringAsFixed(2)}',
+                        ),
+                        12.verticalSpace,
+                        _summaryRow(
+                          LocaleKeys.webstore.checkout.delivery_fee.tr(
+                            context: context,
+                          ),
+                          '\$${cartNotifier.shipping.toStringAsFixed(0)}',
+                        ),
+                        20.verticalSpace,
+                        const Divider(),
+                        20.verticalSpace,
+                        _summaryRow(
+                          LocaleKeys.webstore.checkout.total_amount.tr(
+                            context: context,
+                          ),
+                          '\$${cartNotifier.total.toStringAsFixed(2)}',
+                          isTotal: true,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  32.verticalSpace,
+
+                  // Place Order Button
+                  AppButton(
+                    onPressed: () {
+                      ref
+                          .read(checkoutVmProvider.notifier)
+                          .confirmOrder(
+                            paymentMethod: selectedPayment,
+                            address: userAddress,
+                            totalAmount: cartNotifier.total,
+                          );
+                    },
+                    isGradient: true,
                     child: Text(
-                      LocaleKeys.webstore.checkout.apply.tr(context: context),
+                      LocaleKeys.webstore.checkout.place_order.tr(
+                        context: context,
+                      ),
                       style: TextStyle(
-                        fontSize: 14.sp, 
-                        fontWeight: FontWeight.w900, 
-                        color: AppColors.primaryOrange,
-                        letterSpacing: 0.5,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                   ),
+                  20.verticalSpace,
                 ],
               ),
             ),
-            
-            40.verticalSpace,
-
-            // ─── 4. Summary ─────────────────────────────
-            AppCard(
-              padding: EdgeInsets.all(20.w),
-              backgroundColor: isDark ? theme.cardColor : Colors.grey[50],
-              child: Column(
-                children: [
-                   _summaryRow(LocaleKeys.webstore.checkout.order_amount.tr(context: context), '\$423.00'),
-                   12.verticalSpace,
-                   _summaryRow(LocaleKeys.webstore.checkout.delivery_fee.tr(context: context), LocaleKeys.webstore.checkout.free.tr(context: context), isGreen: true),
-                   20.verticalSpace,
-                   const Divider(),
-                   20.verticalSpace,
-                   _summaryRow(LocaleKeys.webstore.checkout.total_amount.tr(context: context), '\$423.00', isTotal: true),
-                ],
-              ),
-            ),
-            
-            32.verticalSpace,
-
-            // Place Order Button
-            AppButton(
-              onPressed: () => AppNavigator.replace(context, AppRouteNames.webstoreOrderTrack),
-              isGradient: true,
-              child: Text(
-                LocaleKeys.webstore.checkout.place_order.tr(context: context),
-                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-            ),
-            20.verticalSpace,
-          ],
-        ),
-      ),
     );
   }
 
@@ -185,20 +328,37 @@ class _WebStoreCheckoutViewState extends State<WebStoreCheckoutView> {
         if (onAction != null)
           TextButton(
             onPressed: onAction,
-            child: Text(LocaleKeys.common.edit.tr(context: context), style: TextStyle(color: AppColors.primaryOrange, fontWeight: FontWeight.bold)),
+            child: Text(
+              LocaleKeys.common.edit.tr(context: context),
+              style: TextStyle(
+                color: AppColors.primaryOrange,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
       ],
     );
   }
 
-  Widget _buildPaymentOption(String id, String name, String iconPath, {bool isAsset = false}) {
+  Widget _buildPaymentOption(
+    String id,
+    String name,
+    String iconPath, {
+    bool isAsset = false,
+  }) {
     final bool isSelected = selectedPayment == id;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     return AppCard(
       onTap: () => setState(() => selectedPayment = id),
-      border: isSelected ? Border.all(color: AppColors.primaryOrange, width: 2) : Border.all(color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey[200]!),
+      border: isSelected
+          ? Border.all(color: AppColors.primaryOrange, width: 2)
+          : Border.all(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.1)
+                  : Colors.grey[200]!,
+            ),
       padding: EdgeInsets.all(16.w),
       child: Row(
         children: [
@@ -217,19 +377,35 @@ class _WebStoreCheckoutViewState extends State<WebStoreCheckoutView> {
           Expanded(
             child: Text(
               name,
-              style: TextStyle(fontSize: 14.sp, fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500),
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+              ),
             ),
           ),
           if (isSelected)
-            Icon(Icons.radio_button_checked_rounded, color: AppColors.primaryOrange, size: 22.sp)
+            Icon(
+              Icons.radio_button_checked_rounded,
+              color: AppColors.primaryOrange,
+              size: 22.sp,
+            )
           else
-            Icon(Icons.radio_button_off_rounded, color: theme.hintColor.withValues(alpha: 0.3), size: 22.sp),
+            Icon(
+              Icons.radio_button_off_rounded,
+              color: theme.hintColor.withValues(alpha: 0.3),
+              size: 22.sp,
+            ),
         ],
       ),
     );
   }
 
-  Widget _summaryRow(String label, String value, {bool isTotal = false, bool isGreen = false}) {
+  Widget _summaryRow(
+    String label,
+    String value, {
+    bool isTotal = false,
+    bool isGreen = false,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

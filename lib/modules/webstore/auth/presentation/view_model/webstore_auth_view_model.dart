@@ -311,66 +311,6 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
     );
   }
 
-  // ─── Profile Operations ────────────────────────────
-
-  Future<void> getProfile() async {
-    state = const WebStoreAuthLoading();
-    final result = await _repository.getProfile();
-    result.when(
-      success: (data) {
-        // We can reuse WebStoreAuthSuccess or create a new state
-        // For simplicity, let's keep it in Success but we need to handle it in UI
-        state = WebStoreAuthSuccess(WebStoreAuthResponse.fromJson(data));
-      },
-      failure: (exception) {
-        state = WebStoreAuthError(exception.message);
-      },
-    );
-  }
-
-  Future<void> updateProfile({
-    String? name,
-    String? email,
-    String? mobile,
-    String? password,
-  }) async {
-    state = const WebStoreAuthLoading();
-    final result = await _repository.updateProfile(
-      name: name,
-      email: email,
-      mobile: mobile,
-      password: password,
-    );
-    result.when(
-      success: (data) async {
-        final message =
-            data['message'] as String? ?? 'Profile updated successfully';
-        // Refresh profile data to get the updated user object
-        await getProfile();
-        // We can show the message using a different mechanism or keep the success state
-        state = WebStoreOtpVerified(message);
-      },
-      failure: (exception) {
-        state = WebStoreAuthError(exception.message);
-      },
-    );
-  }
-
-  Future<void> deleteAccount() async {
-    state = const WebStoreAuthLoading();
-    final result = await _repository.deleteAccount();
-    result.when(
-      success: (data) async {
-        await ref.read(sessionManagerProvider).clearSession();
-        ref.read(authStateProvider.notifier).setUnauthenticated();
-        state = const WebStoreAuthIdle();
-      },
-      failure: (exception) {
-        state = WebStoreAuthError(exception.message);
-      },
-    );
-  }
-
   // ─── Reset to Idle ─────────────────────────────────
 
   void resetState() {

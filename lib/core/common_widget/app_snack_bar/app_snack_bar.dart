@@ -13,7 +13,7 @@ class AppSnackBar {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          message.tr(),
+          message,
           style: const TextStyle(color: Colors.white, fontSize: 16),
         ),
         backgroundColor: isError ? AppColors.error : AppColors.success,

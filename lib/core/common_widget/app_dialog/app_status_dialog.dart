@@ -151,7 +151,7 @@ class AppStatusDialog extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Text(
-              title.tr(),
+              title,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: isDark ? Colors.white : Colors.black87,
@@ -161,7 +161,7 @@ class AppStatusDialog extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              message.tr(),
+              message,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: (isDark ? Colors.white : Colors.black87).withValues(alpha: 0.85),
@@ -186,7 +186,7 @@ class AppStatusDialog extends StatelessWidget {
                   onActionPressed?.call(); // Then execute callback if provided
                 },
                 child: Text(
-                  actionText.tr(),
+                  actionText,
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
               ),

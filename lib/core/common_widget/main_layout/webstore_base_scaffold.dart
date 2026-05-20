@@ -21,6 +21,7 @@ class WebStoreBaseScaffold extends StatelessWidget {
   final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
+  final bool extendBodyBehindAppBar;
 
   const WebStoreBaseScaffold({
     super.key,
@@ -40,6 +41,7 @@ class WebStoreBaseScaffold extends StatelessWidget {
     this.bottomNavigationBar,
     this.floatingActionButton,
     this.floatingActionButtonLocation,
+    this.extendBodyBehindAppBar = true,
   });
 
   @override
@@ -52,7 +54,7 @@ class WebStoreBaseScaffold extends StatelessWidget {
       key: scaffoldKey,
       drawer: drawer,
       backgroundColor: scaffoldBg,
-      extendBodyBehindAppBar: true, 
+      extendBodyBehindAppBar: extendBodyBehindAppBar, 
       resizeToAvoidBottomInset: true,
       appBar: showAppBar
           ? CommonAppBar(

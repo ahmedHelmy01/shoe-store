@@ -7,6 +7,10 @@ import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_pro
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
+import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
 
 class CatalogProductsBody extends ConsumerWidget {
   final ProductsState productsState;
@@ -40,9 +44,9 @@ class CatalogProductsBody extends ConsumerWidget {
     }
 
     if (products.isEmpty) {
-      return const AppEmptyWidget(
-        message: 'لا توجد منتجات مطابقة',
-        subtitle: 'جرب تعديل الفلاتر أو إزالة بعض الشروط لعرض نتائج أكثر.',
+      return AppEmptyWidget(
+        message: LocaleKeys.webstore.home.no_search_results.tr(context: context),
+        subtitle: LocaleKeys.webstore.home.no_filter_results.tr(context: context),
       );
     }
 
@@ -76,6 +80,13 @@ class CatalogProductsBody extends ConsumerWidget {
               return ProductCard(
                 product: product,
                 onTap: () => onProductTap(product),
+                onAddToCart: () {
+                  ref.read(cartProvider.notifier).addToCart(product);
+                  AppSnackBar.showSuccess(
+                    context,
+                    LocaleKeys.webstore.orders.added_to_cart.tr(context: context),
+                  );
+                },
               );
             }, childCount: products.length),
           ),

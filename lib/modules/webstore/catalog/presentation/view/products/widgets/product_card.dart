@@ -2,16 +2,18 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
+import 'package:erp/modules/webstore/wishlist/presentation/view_model/wishlist_providers.dart';
 import 'package:shimmer/shimmer.dart';
 
-class ProductCard extends StatelessWidget {
+class ProductCard extends ConsumerWidget {
   final WebStoreProduct product;
   final VoidCallback? onTap;
   final VoidCallback? onAddToCart;
   final VoidCallback? onToggleWishlist;
-  final bool isWishlisted;
+  final bool? isWishlisted;
 
   const ProductCard({
     super.key,
@@ -19,11 +21,18 @@ class ProductCard extends StatelessWidget {
     this.onTap,
     this.onAddToCart,
     this.onToggleWishlist,
-    this.isWishlisted = false,
+    this.isWishlisted,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final wishlist = ref.watch(wishlistProvider).value ?? [];
+    final effectiveIsWishlisted = isWishlisted ?? (product.id != null && wishlist.any((p) => p.id == product.id));
+    final effectiveOnToggleWishlist = onToggleWishlist ?? () {
+      if (product.id != null) {
+        ref.read(wishlistProvider.notifier).toggleWishlist(product);
+      }
+    };
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -110,12 +119,12 @@ class ProductCard extends StatelessWidget {
                     top: 4,
                     left: 4,
                     child: IconButton(
-                      onPressed: onToggleWishlist,
+                      onPressed: effectiveOnToggleWishlist,
                       icon: Icon(
-                        isWishlisted
+                        effectiveIsWishlisted
                             ? Icons.favorite_rounded
                             : Icons.favorite_outline_rounded,
-                        color: isWishlisted ? Colors.red : Colors.grey.shade400,
+                        color: effectiveIsWishlisted ? Colors.red : Colors.grey.shade400,
                       ),
                     ),
                   ),

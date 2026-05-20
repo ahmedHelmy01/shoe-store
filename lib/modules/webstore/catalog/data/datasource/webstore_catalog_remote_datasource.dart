@@ -67,8 +67,7 @@ class WebStoreCatalogRemoteDataSource {
 
   Future<dynamic> removeFromWishlist(int productId) {
     return _networkService.delete(
-      ApiEndpoints.webstore.wishlist.remove,
-      body: {'product_id': productId},
+      ApiEndpoints.withId(ApiEndpoints.webstore.wishlist.remove, productId),
     );
   }
 }

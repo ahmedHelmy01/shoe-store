@@ -110,6 +110,54 @@ class _WebStore {
   final more = const _WebStoreMore();
   final checkout = const _WebStoreCheckout();
   final profile = const _WebStoreProfile();
+  final prescriptions = const _WebStorePrescriptions();
+}
+
+class _WebStorePrescriptions {
+  const _WebStorePrescriptions();
+  final title = 'webstore.prescriptions.title';
+  final upload = 'webstore.prescriptions.upload';
+  final upload_title = 'webstore.prescriptions.upload_title';
+  final upload_subtitle = 'webstore.prescriptions.upload_subtitle';
+  final tap_to_upload = 'webstore.prescriptions.tap_to_upload';
+  final change_image = 'webstore.prescriptions.change_image';
+  final additional_notes = 'webstore.prescriptions.additional_notes';
+  final notes_hint = 'webstore.prescriptions.notes_hint';
+  final confirm_send = 'webstore.prescriptions.confirm_send';
+  final uploading = 'webstore.prescriptions.uploading';
+  final select_image_source = 'webstore.prescriptions.select_image_source';
+  final camera = 'webstore.prescriptions.camera';
+  final gallery = 'webstore.prescriptions.gallery';
+  final pick_image_failed = 'webstore.prescriptions.pick_image_failed';
+  final pick_image_first = 'webstore.prescriptions.pick_image_first';
+  final empty_title = 'webstore.prescriptions.empty_title';
+  final empty_subtitle = 'webstore.prescriptions.empty_subtitle';
+  final upload_new = 'webstore.prescriptions.upload_new';
+  final status_pending = 'webstore.prescriptions.status_pending';
+  final status_reviewed = 'webstore.prescriptions.status_reviewed';
+  final status_rejected = 'webstore.prescriptions.status_rejected';
+  final no_notes = 'webstore.prescriptions.no_notes';
+  final edit_notes = 'webstore.prescriptions.edit_notes';
+  final edit_notes_hint = 'webstore.prescriptions.edit_notes_hint';
+  final delete_prescription = 'webstore.prescriptions.delete_prescription';
+  final delete_confirm = 'webstore.prescriptions.delete_confirm';
+  final deleted_success = 'webstore.prescriptions.deleted_success';
+  final updating = 'webstore.prescriptions.updating';
+  final updated_success = 'webstore.prescriptions.updated_success';
+  final update_failed = 'webstore.prescriptions.update_failed';
+  final retry = 'webstore.prescriptions.retry';
+  final detail_title = 'webstore.prescriptions.detail_title';
+  final pinch_to_zoom = 'webstore.prescriptions.pinch_to_zoom';
+  final order_status = 'webstore.prescriptions.order_status';
+  final status_sent = 'webstore.prescriptions.status_sent';
+  final status_ready = 'webstore.prescriptions.status_ready';
+  final attached_notes = 'webstore.prescriptions.attached_notes';
+  final no_attached_notes = 'webstore.prescriptions.no_attached_notes';
+  final sent_date = 'webstore.prescriptions.sent_date';
+  final prescription_number = 'webstore.prescriptions.prescription_number';
+  final delete_this = 'webstore.prescriptions.delete_this';
+  final success_title = 'webstore.prescriptions.success_title';
+  final success_subtitle = 'webstore.prescriptions.success_subtitle';
 }
 
 class _WebStoreAuth {
@@ -234,6 +282,7 @@ class _WebStoreOrders {
   final reorder = 'webstore.orders.reorder';
   final rate_order = 'webstore.orders.rate_order';
   final added_to_cart = 'webstore.orders.added_to_cart';
+  final success_order = 'webstore.orders.success_order';
 }
 
 class _WebStoreWishlist {
