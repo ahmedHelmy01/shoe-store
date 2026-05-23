@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:erp/core/network/api_result.dart';
 import 'package:erp/modules/webstore/checkout/data/repositories/checkout_repository.dart';
 import 'package:erp/modules/webstore/checkout/presentation/state/checkout_state.dart';
 import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
@@ -10,13 +11,35 @@ class CheckoutVm extends Notifier<CheckoutState> {
     return const CheckoutInitial();
   }
 
-  Future<void> getSummary() async {
-    state = const CheckoutLoading();
+  Future<void> validateCart() async {
+    state = const CheckoutValidating();
     final repository = ref.read(checkoutRepositoryProvider);
-    final result = await repository.getCheckoutSummary();
+    final result = await repository.validateCart();
 
     result.when(
-      success: (data) => state = CheckoutSummaryLoaded(data),
+      success: (data) => state = CheckoutValidated(data),
+      failure: (error) => state = CheckoutError(error.message),
+    );
+  }
+
+  Future<void> calculateTotals({
+    int? addressId,
+    String? couponCode,
+    int? paymentMethodId,
+  }) async {
+    state = const CheckoutCalculating();
+    final repository = ref.read(checkoutRepositoryProvider);
+
+    final body = {
+      'address_id': addressId ?? 5, // fallback to example address ID
+      'payment_method_id': paymentMethodId ?? 1, // fallback to example payment ID
+      if (couponCode != null && couponCode.isNotEmpty) 'coupon_code': couponCode,
+    };
+
+    final result = await repository.calculateTotals(body);
+
+    result.when(
+      success: (data) => state = CheckoutCalculated(data),
       failure: (error) => state = CheckoutError(error.message),
     );
   }
@@ -25,6 +48,10 @@ class CheckoutVm extends Notifier<CheckoutState> {
     required String paymentMethod,
     required String address,
     required double totalAmount,
+    int? addressId,
+    int? paymentMethodId,
+    String? couponCode,
+    String? notes,
   }) async {
     state = const CheckoutSubmitting();
     
@@ -34,15 +61,23 @@ class CheckoutVm extends Notifier<CheckoutState> {
       return;
     }
 
+    // Map payment method string to ID (as fallback)
+    int finalPaymentMethodId = paymentMethodId ?? 1;
+    if (paymentMethodId == null) {
+      if (paymentMethod.toLowerCase().contains('visa')) {
+        finalPaymentMethodId = 1;
+      } else if (paymentMethod.toLowerCase().contains('instapay')) {
+        finalPaymentMethodId = 2;
+      } else if (paymentMethod.toLowerCase().contains('cash')) {
+        finalPaymentMethodId = 3;
+      }
+    }
+
     final orderBody = {
-      'payment_method': paymentMethod,
-      'address': address,
-      'total': totalAmount,
-      'items': cartItems.map((item) => {
-        'product_id': item.product.id,
-        'quantity': item.quantity,
-        'price': item.product.price,
-      }).toList(),
+      'address_id': addressId ?? 5,
+      'payment_method_id': finalPaymentMethodId,
+      if (couponCode != null && couponCode.isNotEmpty) 'coupon_code': couponCode,
+      if (notes != null && notes.isNotEmpty) 'notes': notes,
     };
 
     final repository = ref.read(checkoutRepositoryProvider);
@@ -56,6 +91,11 @@ class CheckoutVm extends Notifier<CheckoutState> {
       },
       failure: (error) => state = CheckoutError(error.message),
     );
+  }
+
+  Future<ApiResult<Map<String, dynamic>>> validateCoupon(String code) async {
+    final repository = ref.read(checkoutRepositoryProvider);
+    return await repository.validateCoupon(code);
   }
 }
 

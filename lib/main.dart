@@ -15,7 +15,6 @@ Future<void> main() async {
   // Flutter sets this when building/running with `--flavor <name>`.
   const flavorName = String.fromEnvironment('FLUTTER_APP_FLAVOR');
   final flavor = _parseFlavor(flavorName.isEmpty ? 'webstore' : flavorName);
-
   await bootstrap(flavor);
 }
 

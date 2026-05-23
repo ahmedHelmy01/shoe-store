@@ -13,10 +13,22 @@ class CheckoutLoading extends CheckoutState {
   const CheckoutLoading();
 }
 
-class CheckoutSummaryLoaded extends CheckoutState {
-  final Map<String, dynamic> summary;
+class CheckoutValidating extends CheckoutState {
+  const CheckoutValidating();
+}
 
-  const CheckoutSummaryLoaded(this.summary);
+class CheckoutValidated extends CheckoutState {
+  final Map<String, dynamic> result;
+  const CheckoutValidated(this.result);
+}
+
+class CheckoutCalculating extends CheckoutState {
+  const CheckoutCalculating();
+}
+
+class CheckoutCalculated extends CheckoutState {
+  final Map<String, dynamic> calculations;
+  const CheckoutCalculated(this.calculations);
 }
 
 class CheckoutSubmitting extends CheckoutState {

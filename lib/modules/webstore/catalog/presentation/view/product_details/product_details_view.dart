@@ -73,7 +73,8 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
           product: fullProduct,
           quantity: _quantity,
           onIncrement: () {
-            if (_quantity < (fullProduct.stock ?? 99)) {
+            final maxStock = (fullProduct.stock != null && fullProduct.stock! > 0) ? fullProduct.stock! : 99;
+            if (_quantity < maxStock) {
               setState(() => _quantity++);
             }
           },

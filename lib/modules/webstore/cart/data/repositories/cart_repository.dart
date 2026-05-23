@@ -1,14 +1,15 @@
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/repository/base_repository.dart';
 import 'package:erp/modules/webstore/cart/data/datasource/webstore_cart_remote_datasource.dart';
+import 'package:erp/modules/webstore/cart/data/models/cart_model.dart';
 
 abstract class ICartRepository {
-  Future<ApiResult<Map<String, dynamic>>> getCart();
-  Future<ApiResult<Map<String, dynamic>>> addToCart(Map<String, dynamic> data);
-  Future<ApiResult<Map<String, dynamic>>> updateCart(Map<String, dynamic> data);
-  Future<ApiResult<Map<String, dynamic>>> removeFromCart(Map<String, dynamic> data);
-  Future<ApiResult<Map<String, dynamic>>> clearCart();
-  Future<ApiResult<Map<String, dynamic>>> applyCoupon(String code);
+  Future<ApiResult<CartModel>> getCart();
+  Future<ApiResult<CartModel>> addItem(Map<String, dynamic> data);
+  Future<ApiResult<CartModel>> updateItem(int itemId, {required int quantity});
+  Future<ApiResult<CartModel>> removeItem(int itemId);
+  Future<ApiResult<dynamic>> clearCart();
+  Future<ApiResult<CartModel>> reorder(int orderId);
 }
 
 class CartRepository extends BaseRepository implements ICartRepository {
@@ -16,26 +17,41 @@ class CartRepository extends BaseRepository implements ICartRepository {
   CartRepository(this._remoteDataSource);
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> getCart() => 
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.getCart());
+  Future<ApiResult<CartModel>> getCart() => 
+      safeApiCall<CartModel>(() async {
+        final res = await _remoteDataSource.getCart();
+        return CartModel.fromJson(res as Map<String, dynamic>);
+      });
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> addToCart(Map<String, dynamic> data) =>
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.addToCart(data));
+  Future<ApiResult<CartModel>> addItem(Map<String, dynamic> data) =>
+      safeApiCall<CartModel>(() async {
+        final res = await _remoteDataSource.addItem(data);
+        return CartModel.fromJson(res as Map<String, dynamic>);
+      });
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> updateCart(Map<String, dynamic> data) =>
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.updateCart(data));
+  Future<ApiResult<CartModel>> updateItem(int itemId, {required int quantity}) =>
+      safeApiCall<CartModel>(() async {
+        final res = await _remoteDataSource.updateItem(itemId, quantity: quantity);
+        return CartModel.fromJson(res as Map<String, dynamic>);
+      });
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> removeFromCart(Map<String, dynamic> data) =>
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.removeFromCart(data));
+  Future<ApiResult<CartModel>> removeItem(int itemId) =>
+      safeApiCall<CartModel>(() async {
+        final res = await _remoteDataSource.removeItem(itemId);
+        return CartModel.fromJson(res as Map<String, dynamic>);
+      });
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> clearCart() => 
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.clearCart());
+  Future<ApiResult<dynamic>> clearCart() => 
+      safeApiCall<dynamic>(() => _remoteDataSource.clearCart());
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> applyCoupon(String code) =>
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.applyCoupon(code));
+  Future<ApiResult<CartModel>> reorder(int orderId) =>
+      safeApiCall<CartModel>(() async {
+        final res = await _remoteDataSource.reorder(orderId);
+        return CartModel.fromJson(res as Map<String, dynamic>);
+      });
 }

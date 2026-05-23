@@ -1,6 +1,6 @@
 /// WebStore Cart Remote DataSource
 ///
-/// Cart-only HTTP calls to WebStore API endpoints using NetworkService.
+/// Cart HTTP calls to WebStore API using the new items-based endpoints.
 library;
 
 import 'package:erp/core/network/network_service.dart';
@@ -11,31 +11,40 @@ class WebStoreCartRemoteDataSource {
 
   WebStoreCartRemoteDataSource(this._networkService);
 
+  /// GET /api/store/cart — Fetch the current cart
   Future<dynamic> getCart() {
     return _networkService.get(ApiEndpoints.webstore.cart.index);
   }
 
-  Future<dynamic> addToCart(Map<String, dynamic> data) {
-    return _networkService.post(ApiEndpoints.webstore.cart.add, body: data);
+  /// POST /api/store/cart/items — Add item to cart
+  Future<dynamic> addItem(Map<String, dynamic> data) {
+    return _networkService.post(ApiEndpoints.webstore.cart.items, body: data);
   }
 
-  Future<dynamic> updateCart(Map<String, dynamic> data) {
-    return _networkService.put(ApiEndpoints.webstore.cart.update, body: data);
+  /// PUT /api/store/cart/items/{item} — Update cart item quantity
+  Future<dynamic> updateItem(int itemId, {required int quantity}) {
+    return _networkService.put(
+      ApiEndpoints.webstore.cart.itemDetail(itemId),
+      body: {'quantity': quantity},
+    );
   }
 
-  Future<dynamic> removeFromCart(Map<String, dynamic> data) {
-    return _networkService.delete(ApiEndpoints.webstore.cart.remove, body: data);
+  /// DELETE /api/store/cart/items/{item} — Remove item from cart
+  Future<dynamic> removeItem(int itemId) {
+    return _networkService.delete(
+      ApiEndpoints.webstore.cart.itemDetail(itemId),
+    );
   }
 
+  /// DELETE /api/store/cart — Clear all items from cart
   Future<dynamic> clearCart() {
-    return _networkService.delete(ApiEndpoints.webstore.cart.clear);
+    return _networkService.delete(ApiEndpoints.webstore.cart.index);
   }
 
-  Future<dynamic> applyCoupon(String code) {
+  /// POST /api/store/cart/reorder/{order} — Reorder from previous order
+  Future<dynamic> reorder(int orderId) {
     return _networkService.post(
-      ApiEndpoints.webstore.cart.applyCoupon,
-      body: {'code': code},
+      ApiEndpoints.webstore.cart.reorder(orderId),
     );
   }
 }
-

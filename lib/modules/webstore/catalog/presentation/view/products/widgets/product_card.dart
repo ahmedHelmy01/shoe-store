@@ -7,6 +7,10 @@ import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/modules/webstore/wishlist/presentation/view_model/wishlist_providers.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
 
 class ProductCard extends ConsumerWidget {
   final WebStoreProduct product;
@@ -32,6 +36,13 @@ class ProductCard extends ConsumerWidget {
       if (product.id != null) {
         ref.read(wishlistProvider.notifier).toggleWishlist(product);
       }
+    };
+    final effectiveOnAddToCart = onAddToCart ?? () {
+      ref.read(cartProvider.notifier).addToCart(product);
+      AppSnackBar.showSuccess(
+        context,
+        LocaleKeys.webstore.orders.added_to_cart.tr(context: context),
+      );
     };
     return GestureDetector(
       onTap: onTap,
@@ -230,7 +241,7 @@ class ProductCard extends ConsumerWidget {
                         width: 38,
                         height: 38,
                         child: IconButton.filled(
-                          onPressed: product.isInStock ? onAddToCart : null,
+                          onPressed: effectiveOnAddToCart,
                           iconSize: 18,
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints.tightFor(
@@ -239,9 +250,7 @@ class ProductCard extends ConsumerWidget {
                           ),
                           style: IconButton.styleFrom(
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            backgroundColor: product.isInStock
-                                ? AppColors.primary
-                                : Colors.grey,
+                            backgroundColor: AppColors.primary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),

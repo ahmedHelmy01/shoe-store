@@ -48,22 +48,22 @@ class _WebStoreCatalog {
   final String categoryDetail = '/api/store/categories/{id}';
   final String search = '/api/store/search';
   final String filters = '/api/store/properties';
+  String productReviews(int productId) => '/api/store/products/$productId/reviews';
 }
 
 class _WebStoreCart {
   const _WebStoreCart();
   final String index = '/api/store/cart';
-  final String add = '/api/store/cart/add';
-  final String update = '/api/store/cart/update';
-  final String remove = '/api/store/cart/remove';
-  final String clear = '/api/store/cart/clear';
-  final String applyCoupon = '/api/store/cart/apply-coupon';
+  final String items = '/api/store/cart/items';
+  String itemDetail(int itemId) => '/api/store/cart/items/$itemId';
+  String reorder(int orderId) => '/api/store/cart/reorder/$orderId';
 }
 
 class _WebStoreCheckout {
   const _WebStoreCheckout();
-  final String summary = '/api/store/checkout/summary';
-  final String confirm = '/api/store/checkout/place-order';
+  final String validate = '/api/store/checkout/validate';
+  final String calculate = '/api/store/checkout/calculate';
+  final String placeOrder = '/api/store/checkout/place-order';
 }
 
 class _WebStoreOrders {

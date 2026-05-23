@@ -77,7 +77,7 @@ class DetailsBottomBar extends StatelessWidget {
               child: SizedBox(
                 height: 54.h,
                 child: ElevatedButton(
-                  onPressed: product.isInStock ? onAddToCart : null,
+                  onPressed: onAddToCart,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryOrange,
                     disabledBackgroundColor: Colors.grey.withOpacity(0.2),
@@ -93,7 +93,7 @@ class DetailsBottomBar extends StatelessWidget {
                       Icon(Icons.shopping_bag_outlined, size: 22.sp),
                       10.horizontalSpace,
                       Text(
-                        product.isInStock ? 'أضف إلى السلة' : 'غير متوفر',
+                        'أضف إلى السلة',
                         style: TextStyle(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w800,
