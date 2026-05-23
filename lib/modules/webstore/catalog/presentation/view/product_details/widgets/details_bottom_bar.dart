@@ -43,35 +43,6 @@ class DetailsBottomBar extends StatelessWidget {
       child: SafeArea(
         child: Row(
           children: [
-            // ─── Quantity Selector ──────────────────────────
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
-              decoration: BoxDecoration(
-                color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey[100],
-                borderRadius: BorderRadius.circular(16.r),
-                border: Border.all(
-                  color: isDark ? Colors.white10 : Colors.transparent,
-                ),
-              ),
-              child: Row(
-                children: [
-                  _buildQtyButton(context, Icons.remove, onDecrement, isDark),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: Text(
-                      '$quantity',
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w900,
-                        color: theme.textTheme.bodyLarge?.color,
-                      ),
-                    ),
-                  ),
-                  _buildQtyButton(context, Icons.add, onIncrement, isDark),
-                ],
-              ),
-            ),
-            16.horizontalSpace,
             // ─── Add to Cart Button ────────────────────────
             Expanded(
               child: SizedBox(
@@ -95,7 +66,7 @@ class DetailsBottomBar extends StatelessWidget {
                       Text(
                         'أضف إلى السلة',
                         style: TextStyle(
-                          fontSize: 15.sp,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w800,
                         ),
                       ),

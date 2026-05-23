@@ -86,8 +86,8 @@ class CheckoutVm extends Notifier<CheckoutState> {
     result.when(
       success: (data) {
         state = CheckoutSuccess(data);
-        // Clear the cart on successful order placement
-        ref.read(cartProvider.notifier).clearCart();
+        // Clear the local cart state since the server clears it automatically
+        ref.read(cartProvider.notifier).clearLocalCart();
       },
       failure: (error) => state = CheckoutError(error.message),
     );

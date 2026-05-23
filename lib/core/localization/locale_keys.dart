@@ -348,6 +348,7 @@ class _WebStoreCheckout {
   final delivery_fee = 'webstore.checkout.delivery_fee';
   final free = 'webstore.checkout.free';
   final total_amount = 'webstore.checkout.total_amount';
+  final discount = 'webstore.checkout.discount';
   final place_order = 'webstore.checkout.place_order';
   final visa_mastercard = 'webstore.checkout.visa_mastercard';
   final instapay = 'webstore.checkout.instapay';

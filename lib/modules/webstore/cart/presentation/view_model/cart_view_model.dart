@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/modules/webstore/cart/data/models/cart_item_model.dart';
-import 'package:erp/modules/webstore/cart/data/models/cart_model.dart';
 import 'cart_providers.dart';
 
 class CartNotifier extends Notifier<List<CartItemModel>> {
@@ -143,26 +142,33 @@ class CartNotifier extends Notifier<List<CartItemModel>> {
   }
 
   Future<void> removeFromCart(int productId) async {
-    final item = state.where((item) => item.product.id == productId).firstOrNull;
+    final item =
+        state.where((item) => item.product.id == productId).firstOrNull;
     if (item == null) return;
 
-    _isLoading = true;
+    // Track loading state for this specific product
+    ref.read(cartDeletingItemsProvider.notifier).add(productId);
+
     final repository = ref.read(cartRepositoryProvider);
     final result = await repository.removeItem(item.id);
 
     result.when(
-      success: (cart) {
-        _cartId = cart.id;
-        _serverSubtotal = cart.subtotal;
-        state = cart.items;
-        _saveToCache(cart.items);
-        _isLoading = false;
+      success: (_) {
+        // Manually remove item from local state since API doesn't return updated cart
+        state = state.where((i) => i.product.id != productId).toList();
+        _saveToCache(state);
+
+        // Update subtotal locally or fetch cart to sync all totals
+        _serverSubtotal = state.fold<double>(
+            0.0, (sum, i) => sum + (i.product.price * i.quantity));
       },
       failure: (error) {
         debugPrint('❌ CartNotifier: Failed to remove item: ${error.message}');
-        _isLoading = false;
       },
     );
+
+    // Remove from tracking
+    ref.read(cartDeletingItemsProvider.notifier).remove(productId);
   }
 
   Future<void> clearCart() async {
@@ -172,11 +178,7 @@ class CartNotifier extends Notifier<List<CartItemModel>> {
 
     result.when(
       success: (_) {
-        state = [];
-        _cartId = null;
-        _serverSubtotal = null;
-        final prefs = ref.read(sharedPreferencesProvider);
-        prefs.remove(_cacheKey);
+        clearLocalCart();
         _isLoading = false;
       },
       failure: (error) {
@@ -184,6 +186,14 @@ class CartNotifier extends Notifier<List<CartItemModel>> {
         _isLoading = false;
       },
     );
+  }
+
+  void clearLocalCart() {
+    state = [];
+    _cartId = null;
+    _serverSubtotal = null;
+    final prefs = ref.read(sharedPreferencesProvider);
+    prefs.remove(_cacheKey);
   }
 
   Future<void> reorder(int orderId) async {
@@ -206,11 +216,19 @@ class CartNotifier extends Notifier<List<CartItemModel>> {
     );
   }
 
-  double get subtotal => _serverSubtotal ?? state.fold(0.0, (sum, item) => sum + (item.product.price * item.quantity));
+  double get subtotal => _serverSubtotal ?? state.fold<double>(0.0, (sum, item) => sum + (item.product.price * item.quantity));
   double get shipping => state.isEmpty ? 0.0 : 25.0;
   double get total => subtotal + shipping;
 }
 
-final cartProvider = NotifierProvider<CartNotifier, List<CartItemModel>>(() {
-  return CartNotifier();
-});
+final cartProvider = NotifierProvider<CartNotifier, List<CartItemModel>>(CartNotifier.new);
+
+final cartDeletingItemsProvider = NotifierProvider<CartDeletingItemsNotifier, Set<int>>(CartDeletingItemsNotifier.new);
+
+class CartDeletingItemsNotifier extends Notifier<Set<int>> {
+  @override
+  Set<int> build() => {};
+
+  void add(int id) => state = {...state, id};
+  void remove(int id) => state = state.where((i) => i != id).toSet();
+}

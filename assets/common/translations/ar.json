@@ -248,6 +248,7 @@
       "delivery_fee": "مصاريف التوصيل",
       "free": "مجاناً",
       "total_amount": "الإجمالي",
+      "discount": "الخصم",
       "place_order": "تأكيد الطلب",
       "visa_mastercard": "فيزا / ماستر كارد",
       "instapay": "إنستا باي",

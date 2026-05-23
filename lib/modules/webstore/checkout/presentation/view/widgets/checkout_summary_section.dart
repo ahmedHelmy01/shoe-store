@@ -9,6 +9,8 @@ import 'package:erp/modules/webstore/checkout/presentation/view_model/checkout_p
 import 'package:erp/modules/webstore/checkout/presentation/view_model/checkout_view_model.dart';
 import 'package:erp/modules/webstore/checkout/presentation/state/checkout_state.dart';
 
+import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
+
 class CheckoutSummarySection extends ConsumerWidget {
   const CheckoutSummarySection({super.key});
 
@@ -21,6 +23,7 @@ class CheckoutSummarySection extends ConsumerWidget {
     ref.watch(cartProvider);
     final cartNotifier = ref.read(cartProvider.notifier);
     final checkoutState = ref.watch(checkoutVmProvider);
+    final isCalculating = checkoutState is CheckoutCalculating;
 
     double subtotal = cartNotifier.subtotal;
     double shipping = cartNotifier.shipping;
@@ -29,47 +32,70 @@ class CheckoutSummarySection extends ConsumerWidget {
 
     if (checkoutState is CheckoutCalculated) {
       final calculations = checkoutState.calculations;
-      subtotal = (calculations['subtotal'] as num?)?.toDouble() ?? subtotal;
-      shipping = (calculations['shipping'] as num?)?.toDouble() ?? shipping;
-      discount = (calculations['discount'] as num?)?.toDouble() ?? discount;
-      total = (calculations['total'] as num?)?.toDouble() ?? total;
+      final data =
+          calculations['data'] as Map<String, dynamic>? ?? calculations;
+
+      subtotal = (data['subtotal'] as num?)?.toDouble() ?? subtotal;
+      shipping = (data['shipping_cost'] as num?)?.toDouble() ??
+          (data['shipping'] as num?)?.toDouble() ??
+          shipping;
+      discount = (data['discount_amount'] as num?)?.toDouble() ??
+          (data['discount'] as num?)?.toDouble() ??
+          discount;
+      total = (data['total'] as num?)?.toDouble() ?? total;
     }
+
+    Widget content = Column(
+      children: [
+        _summaryRow(
+          context,
+          LocaleKeys.webstore.checkout.order_amount.tr(context: context),
+          '\$${subtotal.toStringAsFixed(2)}',
+        ),
+        12.verticalSpace,
+        _summaryRow(
+          context,
+          LocaleKeys.webstore.checkout.delivery_fee.tr(context: context),
+          '\$${shipping.toStringAsFixed(0)}',
+        ),
+        if (discount > 0 || isCalculating) ...[
+          12.verticalSpace,
+          _summaryRow(
+            context,
+            LocaleKeys.webstore.checkout.discount.tr(context: context),
+            isCalculating ? '...' : '-\$${discount.toStringAsFixed(2)}',
+            isGreen: true,
+          ),
+        ],
+        20.verticalSpace,
+        const Divider(),
+        20.verticalSpace,
+        _summaryRow(
+          context,
+          LocaleKeys.webstore.checkout.total_amount.tr(context: context),
+          '\$${total.toStringAsFixed(2)}',
+          isTotal: true,
+        ),
+      ],
+    );
 
     return AppCard(
       padding: EdgeInsets.all(20.w),
       backgroundColor: isDark ? theme.cardColor : Colors.grey[50],
-      child: Column(
-        children: [
-          _summaryRow(
-            context,
-            LocaleKeys.webstore.checkout.order_amount.tr(context: context),
-            '\$${subtotal.toStringAsFixed(2)}',
-          ),
-          12.verticalSpace,
-          _summaryRow(
-            context,
-            LocaleKeys.webstore.checkout.delivery_fee.tr(context: context),
-            '\$${shipping.toStringAsFixed(0)}',
-          ),
-          if (discount > 0) ...[
-            12.verticalSpace,
-            _summaryRow(
-              context,
-              'الخصم',
-              '-\$${discount.toStringAsFixed(2)}',
-              isGreen: true,
-            ),
-          ],
-          20.verticalSpace,
-          const Divider(),
-          20.verticalSpace,
-          _summaryRow(
-            context,
-            LocaleKeys.webstore.checkout.total_amount.tr(context: context),
-            '\$${total.toStringAsFixed(2)}',
-            isTotal: true,
-          ),
-        ],
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        child: isCalculating
+            ? AppShimmer(
+                key: const ValueKey('shimmer_loading'),
+                child: content,
+              )
+            : Container(
+                key: const ValueKey('summary_content'),
+                child: content,
+              ),
       ),
     );
   }

@@ -36,7 +36,7 @@ class WebStoreCheckoutRemoteDataSource {
   Future<dynamic> validateCoupon(String code) {
     return _networkService.post(
       '/api/store/coupons/validate',
-      body: {'code': code},
+      body: {'coupon_code': code},
     );
   }
 

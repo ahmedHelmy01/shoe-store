@@ -8,6 +8,7 @@ import 'package:erp/core/localization/locale_keys.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
 import '../widgets/cart_item_card.dart';
+import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
 
 class WebStoreCartView extends ConsumerWidget {
   const WebStoreCartView({super.key});
@@ -21,7 +22,29 @@ class WebStoreCartView extends ConsumerWidget {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: CommonAppBar(
-        titleText: '${LocaleKeys.webstore.nav.cart.tr(context: context)} (${cartItems.length})',
+        showBackButton: false,
+        titleText:
+            '${LocaleKeys.webstore.nav.cart.tr(context: context)} (${cartItems.length})',
+        actions: [
+          if (cartItems.isNotEmpty)
+            IconButton(
+              onPressed: () {
+                AppDialog.show(
+                  context,
+                  title: 'مسح السلة',
+                  message: 'هل أنت متأكد من رغبتك في حذف جميع المنتجات من السلة؟',
+                  confirmText: 'نعم، احذف',
+                  cancelText: 'إلغاء',
+                  onConfirm: () {
+                    Navigator.pop(context);
+                    cartNotifier.clearCart();
+                  },
+                );
+              },
+              icon: Icon(Icons.delete_sweep_rounded, color: Colors.red[400]),
+              tooltip: 'مسح السلة',
+            ),
+        ],
       ),
       body: cartItems.isEmpty 
           ? _buildEmptyState(context, ref)
@@ -36,8 +59,10 @@ class WebStoreCartView extends ConsumerWidget {
                 return CartItemCard(
                   product: item.product,
                   quantity: item.quantity,
-                  onIncrement: () => cartNotifier.incrementQuantity(item.product.id!),
-                  onDecrement: () => cartNotifier.decrementQuantity(item.product.id!),
+                  onIncrement: () =>
+                      cartNotifier.incrementQuantity(item.product.id!),
+                  onDecrement: () =>
+                      cartNotifier.decrementQuantity(item.product.id!),
                   onRemove: () => cartNotifier.removeFromCart(item.product.id!),
                 );
               },

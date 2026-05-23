@@ -6,7 +6,7 @@ abstract class IOrdersRepository {
   Future<ApiResult<Map<String, dynamic>>> getOrders({Map<String, dynamic>? queryParams});
   Future<ApiResult<Map<String, dynamic>>> getOrderDetail(int id);
   Future<ApiResult<Map<String, dynamic>>> cancelOrder(int id);
-  Future<ApiResult<Map<String, dynamic>>> trackOrder(int id);
+  Future<ApiResult<dynamic>> trackOrder(int id);
 }
 
 class OrdersRepository extends BaseRepository implements IOrdersRepository {
@@ -26,6 +26,6 @@ class OrdersRepository extends BaseRepository implements IOrdersRepository {
       safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.cancelOrder(id));
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> trackOrder(int id) =>
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.trackOrder(id));
+  Future<ApiResult<dynamic>> trackOrder(int id) =>
+      safeApiCall<dynamic>(() => _remoteDataSource.trackOrder(id));
 }

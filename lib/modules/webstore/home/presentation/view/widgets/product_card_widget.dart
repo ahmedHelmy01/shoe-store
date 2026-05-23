@@ -8,6 +8,10 @@ import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/core/common_widget/app_price_text/app_price_text.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view/product_details/product_details_view.dart';
 import 'package:erp/modules/webstore/wishlist/presentation/view_model/wishlist_providers.dart';
+import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
+import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ProductGridCard extends ConsumerWidget {
   final WebStoreProduct product;
@@ -67,52 +71,75 @@ class ProductGridCard extends ConsumerWidget {
               Expanded(
                 flex: 5,
                 child: Padding(
-                  padding: EdgeInsets.all(10.w),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            product.name,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                              color: theme.textTheme.bodyLarge?.color,
-                              height: 1.2,
-                            ),
-                          ),
-                          4.verticalSpace,
-                          if (product.brand != null)
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Text(
-                              product.brand!,
+                              product.name,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                fontSize: 11.sp,
-                                color: isDark ? Colors.white.withValues(alpha: 0.5) : theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w600,
+                                color: theme.textTheme.bodyLarge?.color,
+                                height: 1.1,
                               ),
                             ),
-                        ],
+                            2.verticalSpace,
+                            if (product.brand != null)
+                              Text(
+                                product.brand!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: isDark
+                                      ? Colors.white.withValues(alpha: 0.5)
+                                      : theme.textTheme.bodySmall?.color
+                                          ?.withValues(alpha: 0.7),
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          AppPriceText(
-                            price: product.price,
-                            oldPrice: product.oldPrice,
-                          ),
-                          Container(
-                            height: 32.h,
-                            width: 32.h,
-                            decoration: const BoxDecoration(
-                              color: AppColors.primaryOrange,
-                              shape: BoxShape.circle,
+                          Expanded(
+                            child: AppPriceText(
+                              price: product.price,
+                              oldPrice: product.oldPrice,
                             ),
-                            child: const Icon(Icons.add_shopping_cart,
-                                color: Colors.white, size: 16),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              ref
+                                  .read(cartProvider.notifier)
+                                  .addToCart(product);
+                              AppSnackBar.showSuccess(
+                                context,
+                                LocaleKeys.webstore.orders.added_to_cart
+                                    .tr(context: context),
+                              );
+                            },
+                            child: Container(
+                              height: 28.h,
+                              width: 28.h,
+                              decoration: const BoxDecoration(
+                                color: AppColors.primaryOrange,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.add_shopping_cart,
+                                  color: Colors.white, size: 14),
+                            ),
                           ),
                         ],
                       ),

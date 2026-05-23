@@ -37,13 +37,14 @@ class ProductCard extends ConsumerWidget {
         ref.read(wishlistProvider.notifier).toggleWishlist(product);
       }
     };
-    final effectiveOnAddToCart = onAddToCart ?? () {
-      ref.read(cartProvider.notifier).addToCart(product);
-      AppSnackBar.showSuccess(
-        context,
-        LocaleKeys.webstore.orders.added_to_cart.tr(context: context),
-      );
-    };
+    final effectiveOnAddToCart = onAddToCart ??
+        () {
+          ref.read(cartProvider.notifier).addToCart(product);
+          AppSnackBar.showSuccess(
+            context,
+            LocaleKeys.webstore.orders.added_to_cart.tr(context: context),
+          );
+        };
     return GestureDetector(
       onTap: onTap,
       child: Container(

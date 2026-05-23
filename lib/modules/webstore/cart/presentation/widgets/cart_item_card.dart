@@ -5,7 +5,10 @@ import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/core/constants/app_constants.dart';
 
-class CartItemCard extends StatelessWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
+
+class CartItemCard extends ConsumerWidget {
   final WebStoreProduct product;
   final int quantity;
   final VoidCallback? onRemove;
@@ -22,9 +25,11 @@ class CartItemCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final isDeleting =
+        ref.watch(cartDeletingItemsProvider).contains(product.id);
 
     return Dismissible(
       key: ValueKey(product.id),
@@ -83,12 +88,23 @@ class CartItemCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.keyboard_arrow_down_rounded, color: theme.hintColor, size: 20.sp),
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                      ),
+                      if (isDeleting)
+                        SizedBox(
+                          width: 20.sp,
+                          height: 20.sp,
+                          child: const CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.red,
+                          ),
+                        )
+                      else
+                        IconButton(
+                          onPressed: onRemove,
+                          icon: Icon(Icons.delete_outline_rounded,
+                              color: Colors.red[300], size: 20.sp),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                        ),
                     ],
                   ),
                   4.verticalSpace,

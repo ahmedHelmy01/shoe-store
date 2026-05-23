@@ -76,7 +76,14 @@ class RouteGenerator {
       case AppRouteNames.webstoreCheckout:
         return _guarded(const WebStoreCheckoutView());
       case AppRouteNames.webstoreOrderTrack:
-        return _guarded(const WebStoreOrderTrackView());
+        final args = settings.arguments as Map<String, dynamic>? ?? {};
+        final orderId = args['order_id'] as int?;
+        final orderNumber = args['order_number'] as String?;
+        if (orderId == null || orderNumber == null) return _errorRoute();
+        return _guarded(WebStoreOrderTrackView(
+          orderId: orderId,
+          orderNumber: orderNumber,
+        ));
       case AppRouteNames.webstoreRateOrder:
         return _guarded(const WebStoreRateOrderView());
       case AppRouteNames.webstoreOrderList:

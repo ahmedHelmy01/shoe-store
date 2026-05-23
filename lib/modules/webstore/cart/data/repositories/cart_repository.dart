@@ -7,7 +7,7 @@ abstract class ICartRepository {
   Future<ApiResult<CartModel>> getCart();
   Future<ApiResult<CartModel>> addItem(Map<String, dynamic> data);
   Future<ApiResult<CartModel>> updateItem(int itemId, {required int quantity});
-  Future<ApiResult<CartModel>> removeItem(int itemId);
+  Future<ApiResult<dynamic>> removeItem(int itemId);
   Future<ApiResult<dynamic>> clearCart();
   Future<ApiResult<CartModel>> reorder(int orderId);
 }
@@ -38,11 +38,8 @@ class CartRepository extends BaseRepository implements ICartRepository {
       });
 
   @override
-  Future<ApiResult<CartModel>> removeItem(int itemId) =>
-      safeApiCall<CartModel>(() async {
-        final res = await _remoteDataSource.removeItem(itemId);
-        return CartModel.fromJson(res as Map<String, dynamic>);
-      });
+  Future<ApiResult<dynamic>> removeItem(int itemId) =>
+      safeApiCall<dynamic>(() => _remoteDataSource.removeItem(itemId));
 
   @override
   Future<ApiResult<dynamic>> clearCart() => 
