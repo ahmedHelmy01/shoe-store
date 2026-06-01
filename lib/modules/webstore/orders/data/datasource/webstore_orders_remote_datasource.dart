@@ -52,4 +52,11 @@ class WebStoreOrdersRemoteDataSource {
   Future<dynamic> trackOrder(int id) {
     return _networkService.get(ApiEndpoints.withId(ApiEndpoints.webstore.orders.track, id));
   }
+
+  /// POST /api/store/cart/reorder/{order} — Reorder (backend handles everything)
+  Future<dynamic> reorder(int orderId) {
+    return _networkService.post(
+      ApiEndpoints.webstore.cart.reorder(orderId),
+    );
+  }
 }

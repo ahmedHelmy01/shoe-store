@@ -9,6 +9,7 @@ abstract class IOrdersRepository {
   Future<ApiResult<Map<String, dynamic>>> rateOrder(int id, {required int rating, String? ratingText});
   Future<ApiResult<Map<String, dynamic>>> getOrderRating(int id);
   Future<ApiResult<dynamic>> trackOrder(int id);
+  Future<ApiResult<dynamic>> reorder(int orderId);
 }
 
 class OrdersRepository extends BaseRepository implements IOrdersRepository {
@@ -38,4 +39,8 @@ class OrdersRepository extends BaseRepository implements IOrdersRepository {
   @override
   Future<ApiResult<dynamic>> trackOrder(int id) =>
       safeApiCall<dynamic>(() => _remoteDataSource.trackOrder(id));
+
+  @override
+  Future<ApiResult<dynamic>> reorder(int orderId) =>
+      safeApiCall<dynamic>(() => _remoteDataSource.reorder(orderId));
 }

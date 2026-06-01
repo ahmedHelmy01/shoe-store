@@ -6,7 +6,6 @@ import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/modules/webstore/orders/presentation/view_model/orders_providers.dart';
-import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
 
 class WebStoreOrderDetailsBottomBar extends ConsumerWidget {
   final int orderId;
@@ -112,7 +111,8 @@ class WebStoreOrderDetailsBottomBar extends ConsumerWidget {
   Future<void> _handleReorder(BuildContext context, WidgetRef ref) async {
     ref.read(webstoreReorderLoadingProvider.notifier).setLoading(true);
     try {
-      await ref.read(cartProvider.notifier).reorder(orderId);
+      await ref.read(reorderProvider(orderId).future);
+      ref.invalidate(ordersListProvider);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -120,7 +120,7 @@ class WebStoreOrderDetailsBottomBar extends ConsumerWidget {
             backgroundColor: Colors.green,
           ),
         );
-        AppNavigator.replace(context, AppRouteNames.webstoreMain, arguments: {'initialIndex': 2});
+        AppNavigator.pop(context);
       }
     } catch (e) {
       if (context.mounted) {

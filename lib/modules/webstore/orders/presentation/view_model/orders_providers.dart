@@ -82,6 +82,17 @@ final orderTrackingProvider = FutureProvider.family<dynamic, int>((ref, orderId)
   );
 });
 
+// ─── POST /api/store/cart/reorder/{order} — Reorder ───
+
+final reorderProvider = FutureProvider.family<dynamic, int>((ref, orderId) async {
+  final repo = ref.watch(webstoreOrdersRepositoryProvider);
+  final result = await repo.reorder(orderId);
+  return result.when(
+    success: (data) => data,
+    failure: (error) => throw error.displayMessage,
+  );
+});
+
 class WebStoreReorderLoadingNotifier extends Notifier<bool> {
   @override
   bool build() => false;
@@ -90,3 +101,4 @@ class WebStoreReorderLoadingNotifier extends Notifier<bool> {
 }
 
 final webstoreReorderLoadingProvider = NotifierProvider.autoDispose<WebStoreReorderLoadingNotifier, bool>(WebStoreReorderLoadingNotifier.new);
+
