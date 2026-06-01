@@ -4,7 +4,7 @@ import 'package:erp/core/constants/app_constants.dart';
 enum ButtonType { primary, secondary, outline, text }
 
 class AppButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Widget child;
   final ButtonType type;
   final double? width;
@@ -15,7 +15,7 @@ class AppButton extends StatelessWidget {
 
   const AppButton({
     super.key,
-    required this.onPressed,
+    this.onPressed,
     required this.child,
     this.type = ButtonType.primary,
     this.width,

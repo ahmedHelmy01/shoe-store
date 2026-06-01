@@ -31,12 +31,15 @@ class ProductCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final wishlist = ref.watch(wishlistProvider).value ?? [];
-    final effectiveIsWishlisted = isWishlisted ?? (product.id != null && wishlist.any((p) => p.id == product.id));
-    final effectiveOnToggleWishlist = onToggleWishlist ?? () {
-      if (product.id != null) {
-        ref.read(wishlistProvider.notifier).toggleWishlist(product);
-      }
-    };
+    final product = this.product;
+    final effectiveIsWishlisted = isWishlisted ??
+        (product.id != null && wishlist.any((p) => p.id == product.id));
+    final effectiveOnToggleWishlist = onToggleWishlist ??
+        () {
+          if (product.id != null) {
+            ref.read(wishlistProvider.notifier).toggleWishlist(product);
+          }
+        };
     final effectiveOnAddToCart = onAddToCart ??
         () {
           ref.read(cartProvider.notifier).addToCart(product);

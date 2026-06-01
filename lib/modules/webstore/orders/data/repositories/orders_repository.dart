@@ -5,7 +5,9 @@ import 'package:erp/modules/webstore/orders/data/datasource/webstore_orders_remo
 abstract class IOrdersRepository {
   Future<ApiResult<Map<String, dynamic>>> getOrders({Map<String, dynamic>? queryParams});
   Future<ApiResult<Map<String, dynamic>>> getOrderDetail(int id);
-  Future<ApiResult<Map<String, dynamic>>> cancelOrder(int id);
+  Future<ApiResult<Map<String, dynamic>>> cancelOrder(int id, {String? reason});
+  Future<ApiResult<Map<String, dynamic>>> rateOrder(int id, {required int rating, String? ratingText});
+  Future<ApiResult<Map<String, dynamic>>> getOrderRating(int id);
   Future<ApiResult<dynamic>> trackOrder(int id);
 }
 
@@ -22,8 +24,16 @@ class OrdersRepository extends BaseRepository implements IOrdersRepository {
       safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.getOrderDetail(id));
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> cancelOrder(int id) =>
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.cancelOrder(id));
+  Future<ApiResult<Map<String, dynamic>>> cancelOrder(int id, {String? reason}) =>
+      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.cancelOrder(id, reason: reason));
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> rateOrder(int id, {required int rating, String? ratingText}) =>
+      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.rateOrder(id, rating: rating, ratingText: ratingText));
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getOrderRating(int id) =>
+      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.getOrderRating(id));
 
   @override
   Future<ApiResult<dynamic>> trackOrder(int id) =>

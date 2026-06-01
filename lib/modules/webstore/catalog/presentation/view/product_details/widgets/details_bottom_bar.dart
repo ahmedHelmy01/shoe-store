@@ -5,17 +5,11 @@ import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 
 class DetailsBottomBar extends StatelessWidget {
   final WebStoreProduct product;
-  final int quantity;
-  final VoidCallback onIncrement;
-  final VoidCallback onDecrement;
   final VoidCallback onAddToCart;
 
   const DetailsBottomBar({
     super.key,
     required this.product,
-    required this.quantity,
-    required this.onIncrement,
-    required this.onDecrement,
     required this.onAddToCart,
   });
 

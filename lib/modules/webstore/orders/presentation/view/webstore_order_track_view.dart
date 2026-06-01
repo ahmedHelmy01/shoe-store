@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/common_widget/app_bar/common_app_bar.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/constants/app_constants.dart';
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/modules/webstore/orders/presentation/view_model/orders_providers.dart';
 import 'package:erp/core/common_widget/app_error_widget/app_error_widget.dart';
-import 'package:intl/intl.dart';
+import 'package:erp/modules/webstore/orders/presentation/view/widgets/webstore_order_track_timeline_step.dart';
 
 class WebStoreOrderTrackView extends ConsumerWidget {
   final int orderId;
@@ -29,13 +30,13 @@ class WebStoreOrderTrackView extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: const CommonAppBar(titleText: 'Order Tracking'),
+      appBar: CommonAppBar(titleText: LocaleKeys.webstore.orders.order_tracking.tr(context: context)),
       body: trackingAsync.when(
         loading: () => const Center(child: CircularProgressIndicator.adaptive()),
         error: (err, stack) => Center(
           child: AppErrorWidget(
             errorMessage: err.toString(),
-            onRetry: () => ref.refresh(orderTrackingProvider(orderId)),
+            onRetry: () => ref.invalidate(orderTrackingProvider(orderId)),
           ),
         ),
         data: (trackingData) {
@@ -88,30 +89,36 @@ class WebStoreOrderTrackView extends ConsumerWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Order ID: $orderNumber',
-                                style: TextStyle(
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.w800)),
+                            Text(
+                              LocaleKeys.webstore.orders.order_id.tr(context: context, args: [orderNumber]),
+                              style: TextStyle(
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
                             4.verticalSpace,
                             Text(
-                                DateFormat('MMM d, yyyy \'at\' h:mm a')
-                                    .format(createdAt ?? DateTime.now()),
-                                style: TextStyle(
-                                    fontSize: 12.sp, color: theme.hintColor)),
+                              DateFormat('MMM d, yyyy \'at\' h:mm a').format(createdAt ?? DateTime.now()),
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: theme.hintColor,
+                              ),
+                            ),
                           ],
                         ),
                         Text(
-                          '\$$total',
+                          '$total ${AppConstants.currency}',
                           style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.primaryOrange),
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.primaryOrange,
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                
+
                 24.verticalSpace,
 
                 // ─── Map Placeholder ───────────────────────
@@ -132,21 +139,24 @@ class WebStoreOrderTrackView extends ConsumerWidget {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20.r),
-                          boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10)],
+                          boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 10)],
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(Icons.directions_bike_rounded, color: AppColors.primaryOrange, size: 20.sp),
                             8.horizontalSpace,
-                            Text('Arriving in 15 mins', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+                            Text(
+                              LocaleKeys.webstore.orders.arriving_in.tr(context: context),
+                              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                            ),
                           ],
                         ),
                       ),
                     ),
                   ),
                 ),
-                
+
                 24.verticalSpace,
 
                 // ─── Delivery Timeline ────────────────────
@@ -154,35 +164,30 @@ class WebStoreOrderTrackView extends ConsumerWidget {
                   padding: EdgeInsets.all(20.w),
                   child: Column(
                     children: [
-                       _buildTimelineStep(
-                        context,
-                        title: 'Order Placed',
-                        subtitle: 'Your order has been received.',
+                      WebStoreOrderTrackTimelineStepWidget(
+                        title: LocaleKeys.webstore.orders.order_placed.tr(context: context),
+                        subtitle: LocaleKeys.webstore.orders.order_placed_subtitle.tr(context: context),
                         time: DateFormat('h:mm a').format(createdAt ?? DateTime.now()),
                         isActive: true,
                         isCompleted: true,
                       ),
-                       _buildTimelineStep(
-                        context,
-                        title: 'Processing',
-                        subtitle: 'Order is being prepared.',
+                      WebStoreOrderTrackTimelineStepWidget(
+                        title: LocaleKeys.webstore.orders.status_processing.tr(context: context),
+                        subtitle: LocaleKeys.webstore.orders.processing_subtitle.tr(context: context),
                         time: '--:--',
                         isActive: status == 'processing' || status == 'shipped' || status == 'delivered',
                         isCompleted: status == 'shipped' || status == 'delivered',
                       ),
-                       _buildTimelineStep(
-                        context,
-                        title: 'Out for Delivery',
-                        subtitle: 'Courier is on the way.',
+                      WebStoreOrderTrackTimelineStepWidget(
+                        title: LocaleKeys.webstore.orders.out_for_delivery.tr(context: context),
+                        subtitle: LocaleKeys.webstore.orders.out_for_delivery_subtitle.tr(context: context),
                         time: '--:--',
                         isActive: status == 'shipped' || status == 'delivered',
                         isCompleted: status == 'delivered',
-                        isLast: false,
                       ),
-                       _buildTimelineStep(
-                        context,
-                        title: 'Delivered',
-                        subtitle: 'Order successfully delivered.',
+                      WebStoreOrderTrackTimelineStepWidget(
+                        title: LocaleKeys.webstore.orders.status_delivered.tr(context: context),
+                        subtitle: LocaleKeys.webstore.orders.delivered_subtitle.tr(context: context),
                         time: '--:--',
                         isActive: status == 'delivered',
                         isCompleted: status == 'delivered',
@@ -191,7 +196,7 @@ class WebStoreOrderTrackView extends ConsumerWidget {
                     ],
                   ),
                 ),
-                
+
                 24.verticalSpace,
 
                 // ─── Courier Details ───────────────────────
@@ -209,7 +214,10 @@ class WebStoreOrderTrackView extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text('Ahmed Mohamed', style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold)),
-                            Text('Delivery Partner', style: TextStyle(fontSize: 12.sp, color: theme.hintColor)),
+                            Text(
+                              LocaleKeys.webstore.orders.delivery_partner.tr(context: context),
+                              style: TextStyle(fontSize: 12.sp, color: theme.hintColor),
+                            ),
                           ],
                         ),
                       ),
@@ -223,15 +231,15 @@ class WebStoreOrderTrackView extends ConsumerWidget {
                     ],
                   ),
                 ),
-                
+
                 32.verticalSpace,
 
                 // Rate Order Button
                 AppButton(
-                  onPressed: () => AppNavigator.push(context, AppRouteNames.webstoreRateOrder),
+                  onPressed: () => AppNavigator.push(context, AppRouteNames.webstoreRateOrder, arguments: {'order_id': orderId}),
                   isGradient: true,
                   child: Text(
-                    'Rate Your Order',
+                    LocaleKeys.webstore.orders.rate_order.tr(context: context),
                     style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
@@ -240,79 +248,6 @@ class WebStoreOrderTrackView extends ConsumerWidget {
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildTimelineStep(
-    BuildContext context, {
-    required String title,
-    required String subtitle,
-    required String time,
-    required bool isActive,
-    required bool isCompleted,
-    bool isLast = false,
-  }) {
-    final theme = Theme.of(context);
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            children: [
-              Container(
-                width: 24.w,
-                height: 24.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isCompleted ? AppColors.primaryOrange : (isActive ? Colors.white : Colors.grey[300]),
-                  border: Border.all(
-                    color: isCompleted ? AppColors.primaryOrange : (isActive ? AppColors.primaryOrange : Colors.grey[400]!),
-                    width: 2,
-                  ),
-                ),
-                child: isCompleted 
-                  ? Icon(Icons.check, size: 14.sp, color: Colors.white)
-                  : (isActive ? Center(child: Container(width: 8.w, height: 8.w, decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.primaryOrange))) : null),
-              ),
-              if (!isLast)
-                Expanded(
-                  child: Container(
-                    width: 2,
-                    color: isCompleted ? AppColors.primaryOrange : Colors.grey[300],
-                  ),
-                ),
-            ],
-          ),
-          16.horizontalSpace,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: isActive ? FontWeight.w800 : FontWeight.w500,
-                        color: isActive ? null : theme.hintColor,
-                      ),
-                    ),
-                    Text(time, style: TextStyle(fontSize: 11.sp, color: theme.hintColor)),
-                  ],
-                ),
-                4.verticalSpace,
-                Text(
-                  subtitle,
-                  style: TextStyle(fontSize: 12.sp, color: theme.hintColor),
-                ),
-                if (!isLast) 24.verticalSpace,
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

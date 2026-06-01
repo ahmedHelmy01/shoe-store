@@ -201,7 +201,7 @@ class CartNotifier extends Notifier<List<CartItemModel>> {
     final repository = ref.read(cartRepositoryProvider);
     final result = await repository.reorder(orderId);
 
-    result.when(
+    return result.when(
       success: (cart) {
         _cartId = cart.id;
         _serverSubtotal = cart.subtotal;
@@ -210,8 +210,9 @@ class CartNotifier extends Notifier<List<CartItemModel>> {
         _isLoading = false;
       },
       failure: (error) {
-        debugPrint('❌ CartNotifier: Failed to reorder: ${error.message}');
         _isLoading = false;
+        debugPrint('❌ CartNotifier: Failed to reorder: ${error.message}');
+        throw error.displayMessage;
       },
     );
   }

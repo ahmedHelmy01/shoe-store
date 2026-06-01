@@ -29,7 +29,6 @@ class ProductDetailsView extends ConsumerStatefulWidget {
 
 class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
   int _selectedImageIndex = 0;
-  int _quantity = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +45,8 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
         error: (err, stack) => Center(
           child: AppErrorWidget(
             errorMessage: err.toString(),
-            onRetry: () => ref.refresh(productDetailsProvider(widget.product.id!)),
+            onRetry: () =>
+                ref.refresh(productDetailsProvider(widget.product.id!)),
           ),
         ),
         data: (fullProduct) => CustomScrollView(
@@ -71,18 +71,8 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
       bottomNavigationBar: detailsAsync.maybeWhen(
         data: (fullProduct) => DetailsBottomBar(
           product: fullProduct,
-          quantity: _quantity,
-          onIncrement: () {
-            final maxStock = (fullProduct.stock != null && fullProduct.stock! > 0) ? fullProduct.stock! : 99;
-            if (_quantity < maxStock) {
-              setState(() => _quantity++);
-            }
-          },
-          onDecrement: () {
-            if (_quantity > 1) setState(() => _quantity--);
-          },
           onAddToCart: () {
-            ref.read(cartProvider.notifier).addToCart(fullProduct, quantity: _quantity);
+            ref.read(cartProvider.notifier).addToCart(fullProduct);
             AppSnackBar.showSuccess(
               context,
               LocaleKeys.webstore.orders.added_to_cart.tr(context: context),
@@ -113,7 +103,8 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
 
   Widget _buildAppBar(bool isDark, ThemeData theme, WebStoreProduct product) {
     final wishlist = ref.watch(wishlistProvider).value ?? [];
-    final isWishlisted = product.id != null && wishlist.any((p) => p.id == product.id);
+    final isWishlisted =
+        product.id != null && wishlist.any((p) => p.id == product.id);
 
     return SliverAppBar(
       expandedHeight: 380.h,
@@ -146,7 +137,11 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
     );
   }
 
-  Widget _buildCircleButton(IconData icon, {Color? iconColor, required VoidCallback onTap}) {
+  Widget _buildCircleButton(
+    IconData icon, {
+    Color? iconColor,
+    required VoidCallback onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -158,10 +153,7 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
               ? Colors.white.withOpacity(0.1)
               : Colors.black.withOpacity(0.05),
           shape: BoxShape.circle,
-          border: Border.all(
-            color: Colors.white.withOpacity(0.2),
-            width: 1,
-          ),
+          border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
         ),
         child: ClipOval(
           child: BackdropFilter(
@@ -171,9 +163,11 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
             ),
             child: Icon(
               icon,
-              color: iconColor ?? (Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black87),
+              color:
+                  iconColor ??
+                  (Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black87),
               size: 20.sp,
             ),
           ),

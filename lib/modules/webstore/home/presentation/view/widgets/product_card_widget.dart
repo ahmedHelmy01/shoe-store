@@ -16,15 +16,19 @@ import 'package:easy_localization/easy_localization.dart';
 class ProductGridCard extends ConsumerWidget {
   final WebStoreProduct product;
   final int? ranking;
+
   const ProductGridCard({super.key, required this.product, this.ranking});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final product = this.product;
+    final ranking = this.ranking;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     final wishlist = ref.watch(wishlistProvider).value ?? [];
-    final isWishlisted = product.id != null && wishlist.any((p) => p.id == product.id);
+    final isWishlisted =
+        product.id != null && wishlist.any((p) => p.id == product.id);
 
     final bool hasDiscount =
         product.oldPrice != null && product.oldPrice! > product.price;

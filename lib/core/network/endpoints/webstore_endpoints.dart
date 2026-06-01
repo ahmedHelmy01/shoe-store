@@ -74,6 +74,8 @@ class _WebStoreOrders {
   final String returnOrder = '/api/store/orders/{id}/return';
   final String track = '/api/store/orders/{id}/track';
   final String reorder = '/api/store/orders/{id}/reorder';
+  final String rate = '/api/store/orders/{id}/rate';
+  final String rating = '/api/store/orders/{id}/rating';
 }
 
 class _WebStoreProfile {

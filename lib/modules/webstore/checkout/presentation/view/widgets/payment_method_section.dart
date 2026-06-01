@@ -9,6 +9,8 @@ import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/modules/webstore/checkout/data/models/payment_method_model.dart';
 import 'package:erp/modules/webstore/checkout/presentation/view_model/checkout_providers.dart';
 
+import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
+
 class PaymentMethodSection extends ConsumerWidget {
   final int? selectedPaymentId;
   final String selectedPayment;
@@ -34,8 +36,14 @@ class PaymentMethodSection extends ConsumerWidget {
         ),
         12.verticalSpace,
         paymentMethodsAsync.when(
-          loading: () => const Center(
-            child: CircularProgressIndicator.adaptive(),
+          loading: () => Column(
+            children: List.generate(
+              3,
+              (index) => Padding(
+                padding: EdgeInsets.only(bottom: 12.h),
+                child: AppShimmer.box(height: 70.h, borderRadius: 16.r),
+              ),
+            ),
           ),
           error: (err, _) => Column(
             children: [

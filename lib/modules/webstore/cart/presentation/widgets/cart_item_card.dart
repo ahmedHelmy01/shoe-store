@@ -136,13 +136,26 @@ class CartItemCard extends ConsumerWidget {
                       ),
                       
                       // Price
-                      Text(
-                        '${(product.price * quantity).toStringAsFixed(2)} ${AppConstants.currency}',
-                        style: TextStyle(
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.w800,
-                          color: theme.textTheme.bodyLarge?.color,
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '${product.price.toStringAsFixed(2)} ${AppConstants.currency}',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                              color: theme.hintColor,
+                            ),
+                          ),
+                          Text(
+                            '${(product.price * quantity).toStringAsFixed(2)} ${AppConstants.currency}',
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w800,
+                              color: theme.textTheme.bodyLarge?.color,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
