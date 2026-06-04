@@ -66,8 +66,17 @@ mixin SplashLogic<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     required bool selectAfterLoad,
   }) async {
     await ref.read(branchVmProvider.notifier).getBranches();
-    if (!mounted || !selectAfterLoad) return;
+    if (!mounted) return;
+    
+    final sessionBranch = await ref.read(sessionManagerProvider).getBranchName();
     final state = ref.read(branchVmProvider);
+    
+    if (state is BranchLoaded && state.branches.isNotEmpty && sessionBranch == null) {
+      final mainBranch = state.branches.firstWhere((b) => b.isMain, orElse: () => state.branches.first);
+      await _selectBranch(mainBranch);
+    }
+
+    if (!selectAfterLoad) return;
     if (state is! BranchLoaded) return;
 
     final selected = await showDialog<BranchModel>(

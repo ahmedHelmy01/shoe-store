@@ -16,7 +16,15 @@ class WebStoreBranchRepository extends BaseRepository implements IWebStoreBranch
   Future<ApiResult<List<BranchModel>>> getBranches() =>
       safeApiCall<List<BranchModel>>(() async {
         final response = await _remoteDataSource.getBranches();
-        final List<dynamic> data = response['data'] ?? [];
-        return data.map((e) => BranchModel.fromJson(e as Map<String, dynamic>)).toList();
+        final rawData = response['data'];
+        List<dynamic> dataList;
+        if (rawData is Map) {
+          dataList = rawData['data'] as List? ?? [];
+        } else if (rawData is List) {
+          dataList = rawData;
+        } else {
+          dataList = [];
+        }
+        return dataList.map((e) => BranchModel.fromJson(e as Map<String, dynamic>)).toList();
       });
 }

@@ -25,7 +25,10 @@ class BranchVm extends Notifier<BranchState> {
     if (cachedData != null) {
       try {
         final List<dynamic> json = jsonDecode(cachedData);
-        final branches = json.map((e) => BranchModel.fromJson(e as Map<String, dynamic>)).toList();
+        final branches = json
+            .map((e) => BranchModel.fromJson(e as Map<String, dynamic>))
+            .where((b) => b.nameAr != 'الفرع الرئيسي' && b.name != 'Main Branch')
+            .toList();
         state = BranchLoaded(branches);
       } catch (e) {
         debugPrint('❌ BranchVm: Error loading cache: $e');
@@ -47,9 +50,12 @@ class BranchVm extends Notifier<BranchState> {
     
     result.when(
       success: (branches) {
-        state = BranchLoaded(branches);
+        final cleanBranches = branches
+            .where((b) => b.nameAr != 'الفرع الرئيسي' && b.name != 'Main Branch')
+            .toList();
+        state = BranchLoaded(cleanBranches);
         // Cache the successful branches list
-        final listJson = branches.map((e) => e.toJson()).toList();
+        final listJson = cleanBranches.map((e) => e.toJson()).toList();
         prefs.setString(_cacheKey, jsonEncode(listJson));
       },
       failure: (error) {

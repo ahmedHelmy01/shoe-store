@@ -35,7 +35,15 @@ class _WebStoreOrderListViewState extends ConsumerState<WebStoreOrderListView> {
           ),
         ),
         data: (response) {
-          final List<dynamic> orders = response['data'] ?? [];
+          final rawData = response['data'];
+          final List<dynamic> orders;
+          if (rawData is Map) {
+            orders = rawData['data'] as List? ?? [];
+          } else if (rawData is List) {
+            orders = rawData;
+          } else {
+            orders = [];
+          }
 
           if (orders.isEmpty) {
             return Center(

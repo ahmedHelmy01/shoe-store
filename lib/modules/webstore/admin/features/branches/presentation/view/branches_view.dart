@@ -252,6 +252,7 @@ class _BranchDetails extends StatelessWidget {
       icon: Icons.storefront_rounded,
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', item.name, Icons.title_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
@@ -260,6 +261,7 @@ class _BranchDetails extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Code', item.code ?? 'N/A', Icons.qr_code_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
@@ -269,6 +271,7 @@ class _BranchDetails extends StatelessWidget {
         const SizedBox(height: 20),
         AdminDetailsDialog.buildDetailRow(context, 'Email', item.email ?? 'N/A', Icons.email_rounded),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Address (EN)', item.address ?? 'N/A', Icons.location_on_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
@@ -277,6 +280,7 @@ class _BranchDetails extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'City', item.city ?? 'N/A', Icons.location_city_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
@@ -285,6 +289,7 @@ class _BranchDetails extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Latitude', item.latitude?.toString() ?? 'N/A', Icons.map_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
@@ -293,6 +298,7 @@ class _BranchDetails extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Description (EN)', item.description ?? 'N/A', Icons.description_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),

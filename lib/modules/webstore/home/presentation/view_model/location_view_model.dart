@@ -30,13 +30,16 @@ class LocationVm extends Notifier<LocationState> {
   @override
   LocationState build() {
     _initLocation();
-    return LocationState(selectedBranch: 'الفرع الرئيسي');
+    return LocationState(selectedBranch: null);
   }
 
   Future<void> _initLocation() async {
     final branch = await ref.read(sessionManagerProvider).getBranchName();
-    if (branch != null) {
+    if (branch != null && branch != 'الفرع الرئيسي' && branch != 'Main Branch' && branch.isNotEmpty) {
       state = state.copyWith(selectedBranch: branch);
+    } else {
+      await ref.read(sessionManagerProvider).setBranchName('');
+      state = state.copyWith(selectedBranch: null);
     }
   }
 
