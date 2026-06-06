@@ -174,14 +174,23 @@ class NetworkService {
     // Remove content-type, http package will set it for multipart
     combinedHeaders.remove(HttpHeaders.contentTypeHeader);
 
+    // Laravel/PHP PUT Spoofing for Multipart:
+    // PHP cannot parse multipart/form-data for PUT requests natively.
+    // We send a POST request instead, and include '_method': 'PUT' in the fields.
+    final String actualMethod = method == 'PUT' ? 'POST' : method;
+    final Map<String, String> actualFields = Map<String, String>.from(fields);
+    if (method == 'PUT') {
+      actualFields['_method'] = 'PUT';
+    }
+
     // 2. Prepare Request
     final request = ProgressMultipartRequest(
-      method,
+      actualMethod,
       uri,
       onProgress: onProgress,
     );
     request.headers.addAll(combinedHeaders);
-    request.fields.addAll(fields);
+    request.fields.addAll(actualFields);
 
     // 3. Attach Single Files
     if (files != null) {

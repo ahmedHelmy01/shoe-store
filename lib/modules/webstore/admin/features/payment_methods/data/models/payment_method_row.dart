@@ -4,6 +4,7 @@ class PaymentMethodRow {
   final int id;
   final String name;
   final String? nameAr;
+  final String? nameEn;
   final String? note;
   final String? noteAr;
   final String? image;
@@ -16,6 +17,7 @@ class PaymentMethodRow {
     required this.id,
     required this.name,
     this.nameAr,
+    this.nameEn,
     this.note,
     this.noteAr,
     this.image,
@@ -33,6 +35,7 @@ class PaymentMethodRow {
       id: json['id'] as int? ?? 0,
       name: (json['name'] ?? json['title']) as String? ?? '',
       nameAr: (json['name_ar'] ?? json['title_ar']) as String?,
+      nameEn: (json['name_en'] ?? json['title_en']) as String?,
       note: json['note'] as String?,
       noteAr: json['note_ar'] as String?,
       image: imagePath,
@@ -49,6 +52,7 @@ class PaymentMethodRow {
     return {
       'name': name,
       'name_ar': nameAr,
+      'name_en': nameEn,
       'type': type,
       'sort_order': sortOrder,
       'is_active': isActive,

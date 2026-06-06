@@ -42,7 +42,7 @@ class _PaymentStatusFormState extends State<PaymentStatusForm> {
   void initState() {
     super.initState();
     final i = widget.initial;
-    _nameCtrl = TextEditingController(text: i?.name ?? '');
+    _nameCtrl = TextEditingController(text: i?.nameEn ?? i?.name ?? '');
     _nameArCtrl = TextEditingController(text: i?.nameAr ?? '');
     _sortOrderCtrl = TextEditingController(text: i?.sortOrder.toString() ?? '0');
     _isActive = i?.isActive ?? true;
@@ -63,6 +63,7 @@ class _PaymentStatusFormState extends State<PaymentStatusForm> {
   void _submit() {
     widget.onSave({
       'name': _nameCtrl.text.trim(),
+      'name_en': _nameCtrl.text.trim(),
       'name_ar': _nameArCtrl.text.trim(),
       'sort_order': int.tryParse(_sortOrderCtrl.text.trim()) ?? 0,
       'is_active': _isActive,

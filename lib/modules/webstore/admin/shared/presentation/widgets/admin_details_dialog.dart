@@ -26,7 +26,8 @@ class AdminDetailsDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Container(
+      child: SelectionArea(
+        child: Container(
         constraints: BoxConstraints(maxWidth: maxWidth),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
@@ -101,11 +102,26 @@ class AdminDetailsDialog extends StatelessWidget {
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: children,
+                  children: children.map((child) {
+                    if (child is Row) {
+                      return Row(
+                        key: child.key,
+                        mainAxisAlignment: child.mainAxisAlignment,
+                        mainAxisSize: child.mainAxisSize,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        textDirection: child.textDirection,
+                        verticalDirection: child.verticalDirection,
+                        textBaseline: child.textBaseline,
+                        children: child.children,
+                      );
+                    }
+                    return child;
+                  }).toList(),
                 ),
               ),
             ),
           ],
+        ),
         ),
       ),
     );

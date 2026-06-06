@@ -25,7 +25,7 @@ class PaymentStatusesTable extends StatelessWidget {
       idOf: (s) => '${s.id}',
       exportBaseName: 'payment_statuses',
       searchHint: 'Search statuses…',
-      searchText: (s) => '${s.id} ${s.name} ${s.nameAr ?? ''}',
+      searchText: (s) => '${s.id} ${s.nameEn ?? s.name} ${s.nameAr ?? ''}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<PaymentStatusRow>(
@@ -39,9 +39,9 @@ class PaymentStatusesTable extends StatelessWidget {
         AdminColumn<PaymentStatusRow>(
           title: 'Name',
           sortable: true,
-          sortValue: (s) => s.name,
-          exportValue: (s) => s.name,
-          cell: (_, s) => Text(s.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+          sortValue: (s) => s.nameEn ?? s.name,
+          exportValue: (s) => s.nameEn ?? s.name,
+          cell: (_, s) => Text(s.nameEn ?? s.name, style: const TextStyle(fontWeight: FontWeight.bold)),
           width: 200,
         ),
         AdminColumn<PaymentStatusRow>(
@@ -102,7 +102,7 @@ class PaymentStatusDetailsDialog extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', status.name, Icons.language_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', status.nameEn ?? status.name, Icons.language_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
             Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', status.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
           ],

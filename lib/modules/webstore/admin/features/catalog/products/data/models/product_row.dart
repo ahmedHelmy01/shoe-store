@@ -76,21 +76,21 @@ class ProductRow {
     final galleryUrls = (json['image_urls'] as List?)?.map((e) => e.toString()).toList();
 
     return ProductRow(
-      id: json['id'] as int? ?? 0,
-      companyId: json['company_id'] as int?,
+      id: _safeInt(json['id']) ?? 0,
+      companyId: _safeInt(json['company_id']),
       code: json['code'] as String?,
       sku: json['sku'] as String? ?? '',
       name: json['name'] as String? ?? 'Unnamed Product',
       nameEn: json['name_en'] as String?,
       nameAr: json['name_ar'] as String?,
-      productCategoryId: json['product_category_id'] as int?,
+      productCategoryId: _safeInt(json['product_category_id']),
       description: json['description'] as String?,
       descriptionAr: json['description_ar'] as String?,
       barcode: json['barcode'] as String?,
       brand: json['brand'] as String?,
       brandAr: json['brand_ar'] as String?,
-      brandId: json['brand_id'] as int?,
-      baseUnitId: json['base_unit_id'] as int?,
+      brandId: _safeInt(json['brand_id']),
+      baseUnitId: _safeInt(json['base_unit_id']),
       purchasePrice: json['purchase_price']?.toString(),
       salePrice: json['sale_price']?.toString(),
       minSalePrice: json['min_sale_price']?.toString(),
@@ -112,6 +112,14 @@ class ProductRow {
       tags: _parseTags(json['tags'] ?? json['product_tags']),
       properties: _parseProperties(json['properties'] ?? json['product_properties']),
     );
+  }
+
+  /// Safely parse a value that may be int, String, or null into int?.
+  static int? _safeInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value);
+    return null;
   }
 
   static List<FilterRow>? _parseTags(dynamic json) {

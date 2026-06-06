@@ -2,6 +2,7 @@ class PaymentStatusRow {
   final int id;
   final String name;
   final String? nameAr;
+  final String? nameEn;
   final String color;
   final int sortOrder;
   final bool isDefault;
@@ -11,6 +12,7 @@ class PaymentStatusRow {
     required this.id,
     required this.name,
     this.nameAr,
+    this.nameEn,
     required this.color,
     required this.sortOrder,
     required this.isDefault,
@@ -28,6 +30,7 @@ class PaymentStatusRow {
       id: json['id'] as int? ?? 0,
       name: json['name'] as String? ?? '',
       nameAr: json['name_ar'] as String?,
+      nameEn: json['name_en'] as String?,
       color: (json['color'] ?? json['hex_color'] ?? json['hexa_color']) as String? ?? '#000000',
       sortOrder: json['sort_order'] as int? ?? 0,
       isDefault: defaultVal,
@@ -39,6 +42,7 @@ class PaymentStatusRow {
     return {
       'name': name,
       'name_ar': nameAr,
+      'name_en': nameEn,
       'color': color,
       'sort_order': sortOrder,
       'is_default': isDefault,

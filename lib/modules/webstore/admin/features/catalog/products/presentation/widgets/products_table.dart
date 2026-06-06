@@ -150,48 +150,86 @@ class ProductDetailsDialog extends StatelessWidget {
           ),
           const SizedBox(height: 24),
         ],
-        AdminDetailsDialog.buildDetailRow(context, 'Name', product.name, Icons.title_rounded),
-        if (product.code != null)
-          AdminDetailsDialog.buildDetailRow(context, 'Code', product.code!, Icons.qr_code_rounded),
-        AdminDetailsDialog.buildDetailRow(context, 'SKU', product.sku, Icons.tag_rounded),
+        // Name (EN) + Name (AR)
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Sale Price', '${product.salePrice ?? '0'} EGP', Icons.sell_rounded)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', product.nameEn ?? product.name, Icons.title_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Purchase Price', '${product.purchasePrice ?? '0'} EGP', Icons.shopping_cart_rounded)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', product.nameAr ?? 'N/A', Icons.title_rounded, bottomPadding: 0)),
           ],
         ),
-        AdminDetailsDialog.buildDetailRow(context, 'Description (EN)', product.description ?? 'N/A', Icons.description_rounded),
-        AdminDetailsDialog.buildDetailRow(context, 'Description (AR)', product.descriptionAr ?? 'N/A', Icons.description_rounded),
-        if (product.tags != null && product.tags!.isNotEmpty) ...[
-          _buildBadgesRow(
-            context,
-            'Tags',
-            product.tags!.map((t) => t.nameAr ?? t.name).toList(),
-            Icons.label_important_outline_rounded,
-            Theme.of(context).primaryColor,
+        const SizedBox(height: 20),
+        // SKU + Code
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'SKU', product.sku, Icons.tag_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Code', product.code ?? 'N/A', Icons.qr_code_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 20),
+        // Sale Price + Purchase Price
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Sale Price', '${product.salePrice ?? '0'} EGP', Icons.sell_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Purchase Price', '${product.purchasePrice ?? '0'} EGP', Icons.shopping_cart_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 20),
+        // Description EN + Description AR
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Description (EN)', product.description ?? 'N/A', Icons.description_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Description (AR)', product.descriptionAr ?? 'N/A', Icons.description_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 20),
+        // Tags + Properties
+        if ((product.tags != null && product.tags!.isNotEmpty) || (product.properties != null && product.properties!.isNotEmpty)) ...[
+          Row(
+            children: [
+              if (product.tags != null && product.tags!.isNotEmpty)
+                Expanded(
+                  child: _buildBadgesRow(
+                    context,
+                    'Tags',
+                    product.tags!.map((t) => t.nameAr ?? t.name).toList(),
+                    Icons.label_important_outline_rounded,
+                    Theme.of(context).primaryColor,
+                    bottomPadding: 0,
+                  ),
+                ),
+              if (product.tags != null && product.tags!.isNotEmpty &&
+                  product.properties != null && product.properties!.isNotEmpty)
+                const SizedBox(width: 16),
+              if (product.properties != null && product.properties!.isNotEmpty)
+                Expanded(
+                  child: _buildBadgesRow(
+                    context,
+                    'Properties',
+                    product.properties!.map((p) => p.titleAr ?? p.title).toList(),
+                    Icons.settings_input_component_rounded,
+                    Colors.blue,
+                    bottomPadding: 0,
+                  ),
+                ),
+            ],
           ),
+          const SizedBox(height: 20),
         ],
-        if (product.properties != null && product.properties!.isNotEmpty) ...[
-          _buildBadgesRow(
-            context,
-            'Properties',
-            product.properties!.map((p) => p.titleAr ?? p.title).toList(),
-            Icons.settings_input_component_rounded,
-            Colors.blue,
-          ),
-        ],
-        const SizedBox(height: 12),
+        // Status
         AdminDetailsDialog.buildStatusRow(context, product.isActive),
       ],
     );
   }
 
-  Widget _buildBadgesRow(BuildContext context, String label, List<String> values, IconData icon, Color color) {
+  Widget _buildBadgesRow(BuildContext context, String label, List<String> values, IconData icon, Color color, {double bottomPadding = 20}) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
+      padding: EdgeInsets.only(bottom: bottomPadding),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

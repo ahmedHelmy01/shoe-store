@@ -20,7 +20,8 @@ class AdminDetailsPanel extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return Stack(
+    return SelectionArea(
+      child: Stack(
       children: [
         Positioned(
           left: -50,
@@ -162,6 +163,7 @@ class AdminDetailsPanel extends StatelessWidget {
           ),
         ),
       ],
+      ),
     );
   }
 }

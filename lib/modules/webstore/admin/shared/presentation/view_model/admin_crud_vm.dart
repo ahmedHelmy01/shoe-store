@@ -2,6 +2,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_response.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 
 /// Base State for all Admin CRUD features.
 sealed class AdminCrudState<T> {
@@ -276,6 +277,7 @@ abstract class AdminCrudVm<T> extends Notifier<AdminCrudState<T>> {
       },
       failure: (e) {
         state = state.copyWithUi(isSaving: false, uploadProgress: 0);
+        AppStatusDialog.lastApiError = e.message;
         return false;
       },
     );
@@ -288,7 +290,10 @@ abstract class AdminCrudVm<T> extends Notifier<AdminCrudState<T>> {
         fetch(page: _page);
         return true;
       },
-      failure: (e) => false,
+      failure: (e) {
+        AppStatusDialog.lastApiError = e.message;
+        return false;
+      },
     );
   }
 
@@ -307,7 +312,7 @@ abstract class AdminCrudVm<T> extends Notifier<AdminCrudState<T>> {
   Future<void> fetchMore() async {
     final s = state;
     if (s is! AdminCrudData<T> || !s.canNext || s is AdminCrudLoading) return;
-    
+
     _page = s.page + 1;
     final res = await getItems(page: _page, search: _search, perPage: _perPage);
 

@@ -41,7 +41,7 @@ class _PaymentMethodFormState extends ConsumerState<PaymentMethodForm> {
   void initState() {
     super.initState();
     final i = widget.initial;
-    _nameCtrl = TextEditingController(text: i?.name ?? '');
+    _nameCtrl = TextEditingController(text: i?.nameEn ?? i?.name ?? '');
     _nameArCtrl = TextEditingController(text: i?.nameAr ?? '');
     _noteCtrl = TextEditingController(text: i?.note ?? '');
     _noteArCtrl = TextEditingController(text: i?.noteAr ?? '');
@@ -63,9 +63,11 @@ class _PaymentMethodFormState extends ConsumerState<PaymentMethodForm> {
   void _submit() {
     final data = <String, dynamic>{
       'name': _nameCtrl.text.trim(),
+      'name_en': _nameCtrl.text.trim(),
       'name_ar': _nameArCtrl.text.trim(),
       'type': _type,
       'note': _noteCtrl.text.trim(),
+      'note_en': _noteCtrl.text.trim(),
       'note_ar': _noteArCtrl.text.trim(),
       'sort_order': int.tryParse(_sortOrderCtrl.text.trim()) ?? 0,
       'is_active': _isActive,

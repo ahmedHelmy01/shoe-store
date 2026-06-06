@@ -102,12 +102,12 @@ class PaymentMethodsView extends ConsumerWidget {
             child: PaymentMethodsTable(
               items: items,
               onEdit: (m) => notifier.openEdit(m),
-              onDelete: (id) => _confirmAndDelete(context, notifier, id, items.firstWhere((m) => m.id == id).name),
+              onDelete: (id) => _confirmAndDelete(context, notifier, id, items.firstWhere((m) => m.id == id).nameEn ?? items.firstWhere((m) => m.id == id).name),
               cardBuilder: (context, m) => _PaymentMethodCard(
                 method: m,
                 onView: () => showDialog(context: context, builder: (_) => PaymentMethodDetailsDialog(method: m)),
                 onEdit: () => notifier.openEdit(m),
-                onDelete: () => _confirmAndDelete(context, notifier, m.id, m.name),
+                onDelete: () => _confirmAndDelete(context, notifier, m.id, m.nameEn ?? m.name),
               ),
             ),
           ),
@@ -171,7 +171,7 @@ class _PaymentMethodCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      method.name,
+                      method.nameEn ?? method.name,
                       style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
                     ),
                     const SizedBox(height: 4),

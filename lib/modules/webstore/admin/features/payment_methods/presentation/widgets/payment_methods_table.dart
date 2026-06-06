@@ -25,7 +25,7 @@ class PaymentMethodsTable extends StatelessWidget {
       idOf: (p) => '${p.id}',
       exportBaseName: 'payment_methods',
       searchHint: 'Search payment methods…',
-      searchText: (p) => '${p.id} ${p.name} ${p.nameAr ?? ''} ${p.type}',
+      searchText: (p) => '${p.id} ${p.nameEn ?? p.name} ${p.nameAr ?? ''} ${p.type}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<PaymentMethodRow>(
@@ -52,9 +52,9 @@ class PaymentMethodsTable extends StatelessWidget {
         AdminColumn<PaymentMethodRow>(
           title: 'Name',
           sortable: true,
-          sortValue: (p) => p.name,
-          exportValue: (p) => p.name,
-          cell: (_, p) => Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+          sortValue: (p) => p.nameEn ?? p.name,
+          exportValue: (p) => p.nameEn ?? p.name,
+          cell: (_, p) => Text(p.nameEn ?? p.name, style: const TextStyle(fontWeight: FontWeight.bold)),
           width: 160,
         ),
         AdminColumn<PaymentMethodRow>(
@@ -130,7 +130,7 @@ class PaymentMethodDetailsDialog extends StatelessWidget {
           ),
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', method.name, Icons.language_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', method.nameEn ?? method.name, Icons.language_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
             Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', method.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
           ],
