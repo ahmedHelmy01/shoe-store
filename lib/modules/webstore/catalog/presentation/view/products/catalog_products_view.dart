@@ -52,7 +52,7 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 220) {
-      ref.read(catalogProductsProvider.notifier).getProducts();
+      ref.read(presetProductsProvider.notifier).getProducts();
     }
   }
 
@@ -95,7 +95,7 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
 
   void _applyFiltersToApi() {
     ref
-        .read(catalogProductsProvider.notifier)
+        .read(presetProductsProvider.notifier)
         .applyApiFilters(
           categoryId: _selectedCategoryId,
           manufacturerId: _selectedManufacturerId,
@@ -143,7 +143,7 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final appBarTheme = theme.appBarTheme;
-    final productsState = ref.watch(catalogProductsProvider);
+    final productsState = ref.watch(presetProductsProvider);
     final categoriesState = ref.watch(catalogCategoriesProvider);
     final manufacturers = ref
         .watch(catalogManufacturersProvider)
@@ -212,6 +212,9 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
               builder: (_) => ProductDetailsView(product: product),
             ),
           );
+        },
+        onRetry: () {
+          ref.read(presetProductsProvider.notifier).getProducts(isRefresh: true);
         },
       ),
     );

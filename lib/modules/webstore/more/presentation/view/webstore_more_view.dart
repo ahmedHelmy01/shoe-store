@@ -186,7 +186,8 @@ class WebStoreMoreView extends ConsumerWidget {
           icon: Icons.notifications_active_rounded,
           title: LocaleKeys.common.notifications.tr(context: context),
           color: Colors.teal,
-          onTap: () {},
+          onTap: () => _checkAuthAndNavigate(
+              context, isAuthed, AppRouteNames.webstoreNotifications),
         ),
       ],
     );

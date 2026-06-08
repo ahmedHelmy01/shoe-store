@@ -28,6 +28,7 @@ import 'package:erp/modules/webstore/prescriptions/data/models/prescription_mode
 import 'package:erp/modules/webstore/addresses/data/models/address_model.dart';
 import 'package:erp/modules/webstore/addresses/presentation/view/webstore_addresses_view.dart';
 import 'package:erp/modules/webstore/addresses/presentation/view/webstore_add_edit_address_view.dart';
+import 'package:erp/modules/webstore/notifications/presentation/view/webstore_notifications_view.dart';
 
 // Models for type casting in arguments
 
@@ -112,6 +113,10 @@ class RouteGenerator {
       case AppRouteNames.webstoreAddEditAddress:
         final address = settings.arguments as AddressModel?;
         return _guarded(WebStoreAddEditAddressView(addressToEdit: address));
+      case AppRouteNames.webstoreNotifications:
+        return MaterialPageRoute(
+          builder: (_) => const WebStoreNotificationsView(),
+        );
       case AppRouteNames.webstorePage:
         final args = (settings.arguments is Map)
             ? (settings.arguments as Map)

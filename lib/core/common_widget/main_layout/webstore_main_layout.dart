@@ -11,6 +11,7 @@ import 'package:erp/modules/webstore/profile/presentation/view/webstore_profile_
 import 'package:erp/modules/webstore/more/presentation/view/webstore_more_view.dart';
 import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/core/router/app_navigator.dart';
+import 'package:erp/core/providers/navigation_provider.dart';
 
 class WebStoreMainLayout extends ConsumerStatefulWidget {
   final int initialIndex;
@@ -21,22 +22,25 @@ class WebStoreMainLayout extends ConsumerStatefulWidget {
 }
 
 class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
-  late int _currentIndex;
   DateTime? _lastPressed;
 
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.initialIndex;
+    if (widget.initialIndex != 0) {
+      Future.microtask(() {
+        ref.read(webStoreNavIndexProvider.notifier).setIndex(widget.initialIndex);
+      });
+    }
   }
 
   // ─── Tab Screens ───────────────────────────────────
 
-  List<Widget> get _pages => [
+  List<Widget> _pages(int currentIndex) => [
     const WebStoreHomeScreen(),
     const CatalogView(),
     const WebStoreCartView(),
-    WebStoreProfileView(key: ValueKey(_currentIndex == 3)),
+    WebStoreProfileView(key: ValueKey(currentIndex == 3)),
     const WebStoreMoreView(),
   ];
 
@@ -73,14 +77,16 @@ class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
   @override
   Widget build(BuildContext context) {
     final auth = ref.watch(authStateProvider);
+    final currentIndex = ref.watch(webStoreNavIndexProvider);
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
 
         // If not on home tab, go to home first
-        if (_currentIndex != 0) {
-          setState(() => _currentIndex = 0);
+        if (currentIndex != 0) {
+          ref.read(webStoreNavIndexProvider.notifier).setIndex(0);
           return;
         }
 
@@ -106,15 +112,15 @@ class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
         SystemNavigator.pop();
       },
       child: Scaffold(
-        body: IndexedStack(index: _currentIndex, children: _pages),
-        bottomNavigationBar: _buildBottomNavBar(auth),
+        body: IndexedStack(index: currentIndex, children: _pages(currentIndex)),
+        bottomNavigationBar: _buildBottomNavBar(auth, currentIndex),
       ),
     );
   }
 
   // ─── Bottom Nav Bar ────────────────────────────────
 
-  Widget _buildBottomNavBar(AuthState auth) {
+  Widget _buildBottomNavBar(AuthState auth, int currentIndex) {
     final theme = Theme.of(context);
     final tabs = _tabs(context);
 
@@ -137,7 +143,7 @@ class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: List.generate(tabs.length, (index) {
               final tab = tabs[index];
-              final isActive = index == _currentIndex;
+              final isActive = index == currentIndex;
 
               return Expanded(
                 child: GestureDetector(
@@ -149,7 +155,7 @@ class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
                       AppNavigator.push(context, AppRouteNames.webstoreLogin);
                       return;
                     }
-                    setState(() => _currentIndex = index);
+                    ref.read(webStoreNavIndexProvider.notifier).setIndex(index);
                   },
                   behavior: HitTestBehavior.opaque,
                   child: AnimatedContainer(

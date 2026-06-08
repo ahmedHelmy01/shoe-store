@@ -89,7 +89,11 @@ class CategoriesNotifier extends Notifier<CategoriesState> {
         final Map<String, dynamic> data = jsonDecode(cachedData);
         final List<dynamic> list = data['data'] ?? [];
         cachedItems = list
-            .map((item) => WebStoreCategory.fromJson(Map<String, dynamic>.from(item as Map)))
+            .map(
+              (item) => WebStoreCategory.fromJson(
+                Map<String, dynamic>.from(item as Map),
+              ),
+            )
             .toList();
         if (cachedItems.isNotEmpty) {
           firstCachedId = cachedItems.first.id;
@@ -134,9 +138,7 @@ class CategoriesNotifier extends Notifier<CategoriesState> {
     query['page'] = pageSent;
 
     final repository = ref.read(catalogRepositoryProvider);
-    final result = await repository.getCategories(
-      queryParams: query,
-    );
+    final result = await repository.getCategories(queryParams: query);
 
     result.when(
       success: (data) {
@@ -144,22 +146,19 @@ class CategoriesNotifier extends Notifier<CategoriesState> {
 
         final paginated = PaginatedResponse.fromJson(
           data,
-          (item) => WebStoreCategory.fromJson(
-            Map<String, dynamic>.from(item as Map),
-          ),
+          (item) =>
+              WebStoreCategory.fromJson(Map<String, dynamic>.from(item as Map)),
         );
 
         final chunk = paginated.data;
         final perPage = _params.perPage;
         final serverTotal = paginated.meta.total;
 
-        final mergedItems =
-            isRefresh ? chunk : [...state.items, ...chunk];
+        final mergedItems = isRefresh ? chunk : [...state.items, ...chunk];
         final loadedCount = mergedItems.length;
 
         final totalKnown = serverTotal > 0 ? serverTotal : null;
-        final reachedTotal =
-            totalKnown != null && loadedCount >= totalKnown;
+        final reachedTotal = totalKnown != null && loadedCount >= totalKnown;
 
         final bool hasMorePages;
         if (chunk.isEmpty) {
@@ -181,7 +180,8 @@ class CategoriesNotifier extends Notifier<CategoriesState> {
           total: reportedTotal,
         );
 
-        final newSelectedId = state.selectedCategoryId ??
+        final newSelectedId =
+            state.selectedCategoryId ??
             (chunk.isNotEmpty ? chunk.first.id : null);
 
         state = state.copyWith(
@@ -263,7 +263,11 @@ class ProductsNotifier extends Notifier<ProductsState> {
           final Map<String, dynamic> decoded = jsonDecode(cachedData);
           final List<dynamic> list = decoded['data'] ?? [];
           cachedItems = list
-              .map((item) => WebStoreProduct.fromJson(Map<String, dynamic>.from(item as Map)))
+              .map(
+                (item) => WebStoreProduct.fromJson(
+                  Map<String, dynamic>.from(item as Map),
+                ),
+              )
               .toList();
         }
       } catch (e) {
@@ -403,9 +407,9 @@ final productDetailsProvider = FutureProvider.family<WebStoreProduct, int>((
 ) async {
   final prefs = ref.read(sharedPreferencesProvider);
   final cacheKey = 'webstore_product_details_cache_$id';
-  
+
   final repository = ref.watch(catalogRepositoryProvider);
-  
+
   // 1. Try to read from cache first for instant loading
   final cachedData = prefs.getString(cacheKey);
   if (cachedData != null) {
@@ -444,3 +448,170 @@ final productDetailsProvider = FutureProvider.family<WebStoreProduct, int>((
     },
   );
 });
+
+/// Paginated list of products for preset/pushed screens (Auto Disposes when leaving page)
+final presetProductsProvider =
+    NotifierProvider.autoDispose<PresetProductsNotifier, ProductsState>(() {
+      return PresetProductsNotifier();
+    });
+
+class PresetProductsNotifier extends Notifier<ProductsState> {
+  PaginationParams _params = const PaginationParams(page: 1);
+
+  @override
+  ProductsState build() {
+    return const ProductsState();
+  }
+
+  Future<void> getProducts({bool isRefresh = false}) async {
+    final categoryId = _params.filters?['category_id'] as int?;
+    final cacheKey = categoryId != null
+        ? 'webstore_products_preset_cache_category_$categoryId'
+        : 'webstore_products_preset_cache_all';
+
+    if (isRefresh) {
+      _params = _params.copyWith(page: 1);
+
+      // Load cached products synchronously
+      List<WebStoreProduct> cachedItems = [];
+      try {
+        final prefs = ref.read(sharedPreferencesProvider);
+        final cachedData = prefs.getString(cacheKey);
+        if (cachedData != null) {
+          final Map<String, dynamic> decoded = jsonDecode(cachedData);
+          final List<dynamic> list = decoded['data'] ?? [];
+          cachedItems = list
+              .map(
+                (item) => WebStoreProduct.fromJson(
+                  Map<String, dynamic>.from(item as Map),
+                ),
+              )
+              .toList();
+        }
+      } catch (e) {
+        debugPrint(
+          '❌ PresetProductsNotifier: Error loading cached products: $e',
+        );
+      }
+
+      state = state.copyWith(
+        isLoading: true,
+        items: cachedItems,
+        errorMessage: null,
+      );
+    } else if (state.items.isEmpty) {
+      state = state.copyWith(isLoading: true);
+    } else if (state.isLoadingMore || !state.hasMore) {
+      return;
+    } else {
+      state = state.copyWith(isLoadingMore: true);
+    }
+
+    final repository = ref.read(catalogRepositoryProvider);
+    final result = await repository.getProducts(
+      queryParams: _params.toQueryParameters(),
+    );
+
+    result.when(
+      success: (data) {
+        final paginated = PaginatedResponse.fromJson(
+          data,
+          (item) => WebStoreProduct.fromJson(item),
+        );
+
+        state = state.copyWith(
+          isLoading: false,
+          isLoadingMore: false,
+          items: isRefresh
+              ? paginated.data
+              : [...state.items, ...paginated.data],
+          meta: paginated.meta,
+          errorMessage: null,
+        );
+
+        // Cache the refreshed successful first page products
+        if (isRefresh) {
+          try {
+            final prefs = ref.read(sharedPreferencesProvider);
+            prefs.setString(cacheKey, jsonEncode(data));
+          } catch (e) {
+            debugPrint('❌ PresetProductsNotifier: Error caching products: $e');
+          }
+        }
+
+        _params = _params.copyWith(page: paginated.meta.currentPage + 1);
+      },
+      failure: (failure) {
+        if (state.items.isNotEmpty) {
+          state = state.copyWith(
+            isLoading: false,
+            isLoadingMore: false,
+            errorMessage: null,
+          );
+        } else {
+          state = state.copyWith(
+            isLoading: false,
+            isLoadingMore: false,
+            errorMessage: failure.message,
+          );
+        }
+      },
+    );
+  }
+
+  void filterByCategory(int? categoryId) {
+    final newFilters = Map<String, dynamic>.from(_params.filters ?? {});
+    if (categoryId != null) {
+      newFilters['category_id'] = categoryId;
+    } else {
+      newFilters.remove('category_id');
+    }
+    _params = _params.copyWith(filters: newFilters, page: 1);
+    getProducts(isRefresh: true);
+  }
+
+  void applyApiFilters({
+    int? categoryId,
+    int? manufacturerId,
+    int? tagId,
+    double? priceFrom,
+    double? priceTo,
+    bool? isAvailable,
+    String? sortBy,
+    String? sortDir,
+  }) {
+    final newFilters = <String, dynamic>{};
+    if (categoryId != null) newFilters['category_id'] = categoryId;
+    if (manufacturerId != null) newFilters['manufacturer_id'] = manufacturerId;
+    if (tagId != null) newFilters['tag_id'] = tagId;
+    if (priceFrom != null) newFilters['price_from'] = priceFrom;
+    if (priceTo != null) newFilters['price_to'] = priceTo;
+    if (isAvailable != null) newFilters['is_available'] = isAvailable;
+    if (sortBy != null && sortBy.isNotEmpty) newFilters['sort_by'] = sortBy;
+    if (sortDir != null && sortDir.isNotEmpty) newFilters['sort_dir'] = sortDir;
+
+    _params = _params.copyWith(filters: newFilters, page: 1);
+    getProducts(isRefresh: true);
+  }
+
+  void search(String query) {
+    final trimmed = query.trim();
+    final newFilters = Map<String, dynamic>.from(_params.filters ?? {});
+
+    if (trimmed.isNotEmpty) {
+      newFilters.remove('category_id');
+    } else {
+      final selectedCategoryId = ref
+          .read(catalogCategoriesProvider)
+          .selectedCategoryId;
+      if (selectedCategoryId != null) {
+        newFilters['category_id'] = selectedCategoryId;
+      } else {
+        newFilters.remove('category_id');
+      }
+    }
+
+    _params = _params.copyWith(filters: newFilters, search: trimmed, page: 1);
+    getProducts(isRefresh: true);
+  }
+}

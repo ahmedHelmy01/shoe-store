@@ -18,6 +18,13 @@ class WebStoreOrderListView extends ConsumerStatefulWidget {
 
 class _WebStoreOrderListViewState extends ConsumerState<WebStoreOrderListView> {
   @override
+  void initState() {
+    super.initState();
+    // Invalidate the provider when entering the screen to ensure fresh data
+    Future.microtask(() => ref.invalidate(ordersListProvider));
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;

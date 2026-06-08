@@ -85,15 +85,11 @@ class WebStoreCartView extends ConsumerWidget {
           24.verticalSpace,
           Text(
             LocaleKeys.common.cart_empty.tr(context: context),
-            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: Colors.grey),
-          ),
-          12.verticalSpace,
-          AppButton(
-            width: 150.w,
-            onPressed: () {
-              AppNavigator.replace(ref.context, AppRouteNames.webstoreMain);
-            },
-            child: Text(LocaleKeys.common.browse_products.tr(context: context)),
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+            ),
           ),
         ],
       ),

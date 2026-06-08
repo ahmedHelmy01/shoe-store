@@ -60,24 +60,27 @@ class _WebStoreWishlistViewState extends ConsumerState<WebStoreWishlistView> {
             );
           }
 
-          return GridView.builder(
-            padding: EdgeInsets.all(20.w),
-            itemCount: wishlistItems.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 16.h,
-              crossAxisSpacing: 16.w,
-              childAspectRatio: 0.7,
+          return RefreshIndicator(
+            onRefresh: () => ref.read(wishlistProvider.notifier).refresh(),
+            child: GridView.builder(
+              padding: EdgeInsets.all(20.w),
+              itemCount: wishlistItems.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16.h,
+                crossAxisSpacing: 16.w,
+                childAspectRatio: 0.7,
+              ),
+              itemBuilder: (context, index) {
+                final product = wishlistItems[index];
+                return AppAnimation.fadeInUp(
+                  delay: Duration(milliseconds: index * 50),
+                  child: ProductCard(
+                    product: product,
+                  ),
+                );
+              },
             ),
-            itemBuilder: (context, index) {
-              final product = wishlistItems[index];
-              return AppAnimation.fadeInUp(
-                delay: Duration(milliseconds: index * 50),
-                child: ProductCard(
-                  product: product,
-                ),
-              );
-            },
           );
         },
       ),

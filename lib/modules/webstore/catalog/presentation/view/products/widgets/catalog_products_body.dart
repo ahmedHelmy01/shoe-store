@@ -17,6 +17,7 @@ class CatalogProductsBody extends ConsumerWidget {
   final List<WebStoreProduct> products;
   final ScrollController scrollController;
   final ValueChanged<WebStoreProduct> onProductTap;
+  final VoidCallback onRetry;
 
   const CatalogProductsBody({
     super.key,
@@ -24,6 +25,7 @@ class CatalogProductsBody extends ConsumerWidget {
     required this.products,
     required this.scrollController,
     required this.onProductTap,
+    required this.onRetry,
   });
 
   @override
@@ -37,9 +39,7 @@ class CatalogProductsBody extends ConsumerWidget {
     if (productsState.errorMessage != null && products.isEmpty) {
       return AppErrorWidget(
         errorMessage: productsState.errorMessage,
-        onRetry: () {
-          ref.read(catalogProductsProvider.notifier).getProducts(isRefresh: true);
-        },
+        onRetry: onRetry,
       );
     }
 

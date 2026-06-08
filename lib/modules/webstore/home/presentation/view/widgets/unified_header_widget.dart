@@ -10,6 +10,9 @@ import 'package:erp/core/common_widget/app_bottom_sheet/branch_selection_sheet.d
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/search_result_widget.dart';
 import 'package:erp/core/providers/core_providers.dart';
+import 'package:erp/core/providers/navigation_provider.dart';
+import 'package:erp/core/router/app_navigator.dart';
+import 'package:erp/core/router/route_generator.dart';
 
 class UnifiedHomeHeader extends ConsumerStatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -40,6 +43,7 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
     final locationState = ref.watch(locationProvider);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final auth = ref.watch(authStateProvider);
 
     return Container(
       padding: EdgeInsets.only(
@@ -93,9 +97,18 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
                 ),
               ),
               const Spacer(),
-              _buildHeaderIcon(Icons.notifications_none_rounded, () {}, theme),
+              _buildHeaderIcon(Icons.notifications_none_rounded, () {
+                AppNavigator.push(context, AppRouteNames.webstoreNotifications);
+              }, theme),
               12.horizontalSpace,
-              _buildHeaderIcon(Icons.shopping_bag_outlined, () {}, theme),
+              _buildHeaderIcon(Icons.shopping_bag_outlined, () {
+                final isAuthed = auth.status == AuthStatus.authenticated;
+                if (!isAuthed) {
+                  AppNavigator.push(context, AppRouteNames.webstoreLogin);
+                  return;
+                }
+                ref.read(webStoreNavIndexProvider.notifier).setIndex(2);
+              }, theme),
             ],
           ),
           10.verticalSpace,

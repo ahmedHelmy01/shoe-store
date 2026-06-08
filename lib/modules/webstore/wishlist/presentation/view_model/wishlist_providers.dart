@@ -7,7 +7,8 @@ final wishlistRepositoryProvider = Provider<IWishlistRepository>((ref) {
   return WishlistRepository(ref.watch(catalogRemoteDataSourceProvider));
 });
 
-final wishlistProvider = AsyncNotifierProvider<WishlistNotifier, List<WebStoreProduct>>(() {
+final wishlistProvider =
+    AsyncNotifierProvider.autoDispose<WishlistNotifier, List<WebStoreProduct>>(() {
   return WishlistNotifier();
 });
 
@@ -25,7 +26,13 @@ class WishlistNotifier extends AsyncNotifier<List<WebStoreProduct>> {
         final list = (data['data'] as List?) ?? [];
         return list
             .whereType<Map<String, dynamic>>()
-            .map(WebStoreProduct.fromJson)
+            .map((item) {
+              final productData = item['product'] as Map<String, dynamic>?;
+              if (productData != null) {
+                return WebStoreProduct.fromJson(productData);
+              }
+              return WebStoreProduct.fromJson(item);
+            })
             .toList();
       },
       failure: (failure) {
