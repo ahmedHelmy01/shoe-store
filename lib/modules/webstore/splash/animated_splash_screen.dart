@@ -191,7 +191,7 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.primaryOrange.withOpacity(0.2),
+                                color: Colors.white,
                                 blurRadius: 20,
                                 spreadRadius: 5,
                               ),
