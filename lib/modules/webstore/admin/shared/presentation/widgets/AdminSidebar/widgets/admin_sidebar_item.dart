@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/admin/core/admin_routes.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class AdminSidebarItem extends StatelessWidget {
   final AdminNavNode node;
@@ -46,7 +47,7 @@ class AdminSidebarItem extends StatelessWidget {
         ),
       );
 
-      return Tooltip(message: node.title, child: tile);
+      return Tooltip(message: AdminLocalizations.translate(context, node.title), child: tile);
     }
 
     final fg = selected
@@ -103,7 +104,7 @@ class AdminSidebarItem extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      node.title,
+                      AdminLocalizations.translate(context, node.title),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodyMedium?.copyWith(

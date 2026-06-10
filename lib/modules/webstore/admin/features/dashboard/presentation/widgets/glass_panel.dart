@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 class GlassPanel extends StatelessWidget {
   final String title;
   final Widget child;
-  const GlassPanel({super.key, required this.title, required this.child});
+  final Widget? action;
+
+  const GlassPanel({
+    super.key,
+    required this.title,
+    required this.child,
+    this.action,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +30,21 @@ class GlassPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w900)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  title,
+                  style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w900),
+                ),
+              ),
+              if (action != null) ...[
+                const SizedBox(width: 8),
+                action!,
+              ],
+            ],
+          ),
           const SizedBox(height: 8),
           Expanded(child: child),
         ],

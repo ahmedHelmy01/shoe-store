@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/core/constants/app_constants.dart';
 
@@ -22,7 +21,7 @@ class DashboardHeader extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              'Good $greeting, Admin',
+              greeting,
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.w900,
                 color: AppColors.textColor,
@@ -37,3 +36,4 @@ class DashboardHeader extends StatelessWidget {
     );
   }
 }
+

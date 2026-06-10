@@ -1,3 +1,5 @@
+import 'admin_dashboard_models.dart';
+
 class AdminStatisticsModel {
   final int totalOrders;
   final double totalRevenue;
@@ -5,6 +7,7 @@ class AdminStatisticsModel {
   final int todayOrders;
   final double todayRevenue;
   final List<TopProductModel> topProducts;
+  final List<AdminSalesPoint> inventoryMovement;
 
   AdminStatisticsModel({
     required this.totalOrders,
@@ -13,6 +16,7 @@ class AdminStatisticsModel {
     required this.todayOrders,
     required this.todayRevenue,
     required this.topProducts,
+    required this.inventoryMovement,
   });
 
   factory AdminStatisticsModel.fromJson(Map<String, dynamic> json) {
@@ -35,6 +39,13 @@ class AdminStatisticsModel {
       topProducts: rawTopProducts
           .map((e) => TopProductModel.fromJson(e))
           .toList(),
+      inventoryMovement: (data['inventory_movement'] as List? ?? [])
+          .map((e) => AdminSalesPoint(
+                day: DateTime.parse(e['date']),
+                revenue: (e['revenue'] ?? 0).toDouble(),
+                orders: e['orders'] ?? 0,
+              ))
+          .toList(),
     );
   }
 
@@ -51,6 +62,14 @@ class AdminStatisticsModel {
         TopProductModel(productId: 3, productName: 'Hydrating Serum', totalQty: 28, totalRevenue: 7200),
         TopProductModel(productId: 4, productName: 'Sunscreen SPF 50', totalQty: 25, totalRevenue: 5100),
         TopProductModel(productId: 5, productName: 'Night Repair Cream', totalQty: 18, totalRevenue: 4800),
+      ],
+      inventoryMovement: [
+        AdminSalesPoint(day: DateTime.now().subtract(const Duration(days: 150)), revenue: 0, orders: 150),
+        AdminSalesPoint(day: DateTime.now().subtract(const Duration(days: 120)), revenue: 0, orders: 280),
+        AdminSalesPoint(day: DateTime.now().subtract(const Duration(days: 90)), revenue: 0, orders: 190),
+        AdminSalesPoint(day: DateTime.now().subtract(const Duration(days: 60)), revenue: 0, orders: 340),
+        AdminSalesPoint(day: DateTime.now().subtract(const Duration(days: 30)), revenue: 0, orders: 420),
+        AdminSalesPoint(day: DateTime.now(), revenue: 0, orders: 380),
       ],
     );
   }

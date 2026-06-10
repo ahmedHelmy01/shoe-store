@@ -146,24 +146,32 @@ class CartNotifier extends Notifier<List<CartItemModel>> {
         state.where((item) => item.product.id == productId).firstOrNull;
     if (item == null) return;
 
-    // Track loading state for this specific product
+    // Track loading state
     ref.read(cartDeletingItemsProvider.notifier).add(productId);
+
+    // Capture state for potential rollback
+    final previousState = state;
+    final previousSubtotal = _serverSubtotal;
+
+    // 1. Optimistic Update: Remove from local state immediately to satisfy Dismissible
+    state = state.where((i) => i.product.id != productId).toList();
+    _saveToCache(state);
+    _serverSubtotal = state.fold<double>(
+        0.0, (sum, i) => sum + (i.product.price * i.quantity));
 
     final repository = ref.read(cartRepositoryProvider);
     final result = await repository.removeItem(item.id);
 
     result.when(
       success: (_) {
-        // Manually remove item from local state since API doesn't return updated cart
-        state = state.where((i) => i.product.id != productId).toList();
-        _saveToCache(state);
-
-        // Update subtotal locally or fetch cart to sync all totals
-        _serverSubtotal = state.fold<double>(
-            0.0, (sum, i) => sum + (i.product.price * i.quantity));
+        debugPrint('✅ CartNotifier: Item $productId removed successfully');
       },
       failure: (error) {
-        debugPrint('❌ CartNotifier: Failed to remove item: ${error.message}');
+        debugPrint('❌ CartNotifier: Failed to remove item $productId: ${error.message}');
+        // Rollback on failure
+        state = previousState;
+        _serverSubtotal = previousSubtotal;
+        _saveToCache(state);
       },
     );
 

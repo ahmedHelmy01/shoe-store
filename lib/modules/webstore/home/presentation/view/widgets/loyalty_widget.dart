@@ -1,17 +1,23 @@
+import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
+import 'package:erp/modules/webstore/points/presentation/view_model/points_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
 
-class UserLoyaltyWidget extends StatelessWidget {
+class UserLoyaltyWidget extends ConsumerWidget {
   const UserLoyaltyWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    
+    final pointsAsync = ref.watch(pointsProvider);
+    final homeState = ref.watch(homeVmProvider);
 
     return AppCard(
       margin: EdgeInsets.symmetric(horizontal: 16.w),
@@ -24,15 +30,33 @@ class UserLoyaltyWidget extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: _buildLoyaltyItem(LocaleKeys.webstore.home.my_points.tr(context: context), '1,250', Icons.stars_rounded, theme),
+            child: _buildLoyaltyItem(
+              LocaleKeys.webstore.home.my_points.tr(context: context),
+              pointsAsync.maybeWhen(
+                data: (points) => points.balance.toString(),
+                orElse: () => '...',
+              ),
+              Icons.stars_rounded,
+              theme,
+            ),
           ),
           _buildDivider(isDark, theme),
           Expanded(
-            child: _buildLoyaltyItem(LocaleKeys.webstore.home.wallet.tr(context: context), '450.5 LE', Icons.account_balance_wallet_rounded, theme),
+            child: _buildLoyaltyItem(
+              LocaleKeys.webstore.home.wallet.tr(context: context),
+              '0.00 LE',
+              Icons.account_balance_wallet_rounded,
+              theme,
+            ),
           ),
           _buildDivider(isDark, theme),
           Expanded(
-            child: _buildLoyaltyItem(LocaleKeys.webstore.home.coupons.tr(context: context), '3', Icons.confirmation_number_rounded, theme),
+            child: _buildLoyaltyItem(
+              LocaleKeys.webstore.home.coupons.tr(context: context),
+              homeState.coupons.length.toString(),
+              Icons.confirmation_number_rounded,
+              theme,
+            ),
           ),
         ],
       ),

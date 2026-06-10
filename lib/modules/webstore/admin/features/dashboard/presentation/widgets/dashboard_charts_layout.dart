@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class DashboardChartsLayout extends StatelessWidget {
   final List<Widget> charts;
@@ -17,7 +18,7 @@ class DashboardChartsLayout extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Product Performance Insights', 
+          AdminLocalizations.translate(context, 'Product Performance Insights'), 
           style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.hintColor),
         ),
         const SizedBox(height: 16),

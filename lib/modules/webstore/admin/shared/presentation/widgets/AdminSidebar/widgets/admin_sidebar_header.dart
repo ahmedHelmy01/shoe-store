@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/utils/asset_manager.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class AdminSidebarHeader extends StatelessWidget {
   final bool collapsed;
@@ -11,6 +12,7 @@ class AdminSidebarHeader extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final titleColor = theme.textTheme.titleMedium?.color ?? (isDark ? Colors.white : Colors.black);
+    final isAr = Localizations.localeOf(context).languageCode == 'ar';
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -40,7 +42,7 @@ class AdminSidebarHeader extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Tarshouby Admin',
+                    isAr ? 'لوحة تحكم الطرشوبي' : 'Tarshouby Admin',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -50,7 +52,7 @@ class AdminSidebarHeader extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'WebStore Control Panel',
+                    isAr ? 'لوحة تحكم المتجر' : 'WebStore Control Panel',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall?.copyWith(

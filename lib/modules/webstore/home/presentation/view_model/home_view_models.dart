@@ -175,3 +175,11 @@ class HomeVm extends Notifier<HomeState> {
 }
 
 final homeVmProvider = NotifierProvider<HomeVm, HomeState>(HomeVm.new);
+
+class HomeScrollNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
+  void setScrolling(bool isScrolling) => state = isScrolling;
+}
+
+final homeScrollProvider = NotifierProvider<HomeScrollNotifier, bool>(HomeScrollNotifier.new);

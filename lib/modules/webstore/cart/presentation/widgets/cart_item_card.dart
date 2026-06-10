@@ -115,26 +115,35 @@ class CartItemCard extends ConsumerWidget {
                     children: [
                       // Quantity Selector
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                         decoration: BoxDecoration(
-                          border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
-                          borderRadius: BorderRadius.circular(8.r),
+                          color: isDark
+                              ? Colors.white.withValues(alpha: 0.05)
+                              : Colors.grey[50],
+                          borderRadius: BorderRadius.circular(12.r),
+                          border: Border.all(
+                            color: theme.dividerColor.withValues(alpha: 0.3),
+                          ),
                         ),
                         child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             _buildQtyBtn(Icons.remove, onDecrement),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 12.w),
                               child: Text(
                                 '$quantity',
-                                style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w700),
+                                style: TextStyle(
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w800,
+                                  color: theme.textTheme.bodyLarge?.color,
+                                ),
                               ),
                             ),
                             _buildQtyBtn(Icons.add, onIncrement),
                           ],
                         ),
                       ),
-                      
+
                       // Price
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -171,7 +180,16 @@ class CartItemCard extends ConsumerWidget {
   Widget _buildQtyBtn(IconData icon, VoidCallback? onTap) {
     return InkWell(
       onTap: onTap,
-      child: Icon(icon, size: 16.sp, color: AppColors.primaryOrange),
+      borderRadius: BorderRadius.circular(10.r),
+      child: Container(
+        width: 38.w,
+        height: 38.w,
+        decoration: BoxDecoration(
+          color: AppColors.primaryOrange,
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        child: Icon(icon, size: 20.sp, color: Colors.white),
+      ),
     );
   }
 }

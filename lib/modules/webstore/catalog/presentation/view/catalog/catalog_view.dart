@@ -72,6 +72,7 @@ class _CatalogViewState extends ConsumerState<CatalogView> {
 
             Expanded(
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // 🏷️ Side Category Navigation
                   if (!isSearching) const SideCategoryList(),

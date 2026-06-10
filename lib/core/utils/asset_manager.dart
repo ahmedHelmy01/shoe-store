@@ -23,8 +23,7 @@ class AssetManager {
 
   // ---------------- WebStore Pharmacy Images ----------------
   static String get pharmacyLogo => "${_webstoreImages}logo.png";
-  static String get logoElTarshopy =>
-      "${_webstoreImages}WhatsApp_Image_2025-12-25_at_17.23.37-removebg-preview.png";
+  static String get logoElTarshopy => "${_webstoreImages}logo2.png";
 
   static String get drugs => "${_webstoreImages}drugs.png";
   static String get syringe => "${_webstoreImages}syringe.png";

@@ -1,3 +1,4 @@
+import 'package:erp/modules/webstore/points/presentation/view_model/points_providers.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,6 +43,7 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
     ref.invalidate(companyProducesVmProvider);
     ref.invalidate(branchVmProvider);
     ref.invalidate(catalogCategoriesProvider);
+    ref.invalidate(pointsProvider);
   }
 
   @override
@@ -57,10 +59,19 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
         onRefresh: _refreshHomeData,
         backgroundColor: theme.cardColor,
         color: AppColors.primaryOrange,
-        child: CustomScrollView(
-          key: ValueKey('${isDark}_${context.locale.languageCode}'),
-          physics: const BouncingScrollPhysics(),
-          slivers: [
+        child: NotificationListener<ScrollNotification>(
+          onNotification: (notification) {
+            if (notification is ScrollStartNotification) {
+              ref.read(homeScrollProvider.notifier).setScrolling(true);
+            } else if (notification is ScrollEndNotification) {
+              ref.read(homeScrollProvider.notifier).setScrolling(false);
+            }
+            return false;
+          },
+          child: CustomScrollView(
+            key: ValueKey('${isDark}_${context.locale.languageCode}'),
+            physics: const BouncingScrollPhysics(),
+            slivers: [
             // 1. Unified Header (Sliver)
             SliverToBoxAdapter(
               child: AppAnimation.fadeInDown(
@@ -206,6 +217,7 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

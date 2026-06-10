@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,6 +23,7 @@ class SliderSection extends ConsumerStatefulWidget {
 class _SliderSectionState extends ConsumerState<SliderSection> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -29,10 +31,32 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
     Future.microtask(() {
       ref.read(sliderVmProvider.notifier).getSliders();
     });
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      final isScrolling = ref.read(homeScrollProvider);
+      if (isScrolling) return;
+
+      if (_pageController.hasClients) {
+        final state = ref.read(sliderVmProvider);
+        if (state is SliderSuccess && state.sliders.isNotEmpty) {
+          final nextGroup = (_currentPage + 1) % state.sliders.length;
+          _pageController.animateToPage(
+            nextGroup,
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeInOutCubic,
+          );
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
