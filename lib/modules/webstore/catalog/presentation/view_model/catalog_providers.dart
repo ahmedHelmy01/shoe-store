@@ -96,7 +96,10 @@ class CategoriesNotifier extends Notifier<CategoriesState> {
             )
             .toList();
         if (cachedItems.isNotEmpty) {
-          firstCachedId = cachedItems.first.id;
+          final firstCategory = cachedItems.first;
+          firstCachedId = firstCategory.children.isNotEmpty
+              ? firstCategory.children.first.id
+              : firstCategory.id;
         }
       }
     } catch (e) {
@@ -104,7 +107,14 @@ class CategoriesNotifier extends Notifier<CategoriesState> {
     }
 
     // 2. Trigger async background fetch to get latest categories
-    Future.microtask(() => getCategories());
+    Future.microtask(() {
+      if (firstCachedId != null) {
+        ref
+            .read(catalogProductsProvider.notifier)
+            .filterByCategory(firstCachedId);
+      }
+      getCategories();
+    });
 
     return CategoriesState(
       items: cachedItems,
@@ -180,9 +190,18 @@ class CategoriesNotifier extends Notifier<CategoriesState> {
           total: reportedTotal,
         );
 
-        final newSelectedId =
-            state.selectedCategoryId ??
-            (chunk.isNotEmpty ? chunk.first.id : null);
+        int? newSelectedId = state.selectedCategoryId;
+        if (newSelectedId == null && chunk.isNotEmpty) {
+          final first = chunk.first;
+          newSelectedId = first.children.isNotEmpty ? first.children.first.id : first.id;
+        } else if (newSelectedId != null) {
+          // Even if we have a selection, if it's a parent category that now has children,
+          // and we want to enforce child-first selection:
+          final selectedCat = mergedItems.where((e) => e.id == newSelectedId).firstOrNull;
+          if (selectedCat != null && selectedCat.children.isNotEmpty) {
+             newSelectedId = selectedCat.children.first.id;
+          }
+        }
 
         state = state.copyWith(
           isLoading: false,
@@ -224,9 +243,22 @@ class CategoriesNotifier extends Notifier<CategoriesState> {
   }
 
   void selectCategory(int? categoryId) {
-    if (categoryId == null || state.selectedCategoryId == categoryId) return;
-    state = state.copyWith(selectedCategoryId: categoryId);
-    ref.read(catalogProductsProvider.notifier).filterByCategory(categoryId);
+    if (categoryId == null) return;
+    
+    // If the category has children, we should select the first child instead
+    int? actualId = categoryId;
+    final category = state.items.where((element) => element.id == categoryId).firstOrNull;
+    if (category != null && category.children.isNotEmpty) {
+      actualId = category.children.first.id;
+    } else {
+      // Check if it's already a child (searching all children)
+      // This is a bit expensive but ensures we stay on child level if possible
+    }
+
+    if (state.selectedCategoryId == actualId) return;
+    
+    state = state.copyWith(selectedCategoryId: actualId);
+    ref.read(catalogProductsProvider.notifier).filterByCategory(actualId);
   }
 }
 

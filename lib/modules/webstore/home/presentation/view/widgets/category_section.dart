@@ -152,12 +152,18 @@ class _CategoryItem extends StatelessWidget {
         onTap: cat.id == null
             ? null
             : () {
+                final targetId =
+                    cat.children.isNotEmpty ? cat.children.first.id : cat.id;
+                final targetTitle = cat.children.isNotEmpty
+                    ? cat.children.first.name
+                    : cat.name;
+
                 AppNavigator.push(
                   context,
                   AppRouteNames.webstoreCatalogProducts,
                   arguments: {
-                    'category_id': cat.id,
-                    'category_title': cat.name,
+                    'category_id': targetId,
+                    'category_title': targetTitle,
                   },
                 );
               },

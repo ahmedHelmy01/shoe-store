@@ -115,7 +115,7 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
           // Tarshooby Logo
           Center(
             child: AppImage(
-              imagePath: AssetManager.logoElTarshopy,
+              imagePath: AssetManager.logoElTarshopy2,
               height: 100.h,
               fit: BoxFit.contain,
             ),
