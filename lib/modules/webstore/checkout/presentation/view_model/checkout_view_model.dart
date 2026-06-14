@@ -1,9 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/network/api_result.dart';
-import 'package:erp/modules/webstore/checkout/data/repositories/checkout_repository.dart';
 import 'package:erp/modules/webstore/checkout/presentation/state/checkout_state.dart';
 import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
 import 'checkout_providers.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 
 class CheckoutVm extends Notifier<CheckoutState> {
   @override
@@ -57,7 +58,7 @@ class CheckoutVm extends Notifier<CheckoutState> {
     
     final cartItems = ref.read(cartProvider);
     if (cartItems.isEmpty) {
-      state = const CheckoutError('العربة فارغة حالياً');
+      state = CheckoutError(LocaleKeys.webstore.checkout.cart_empty_error.tr());
       return;
     }
 

@@ -4,10 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
+import 'package:erp/core/common_widget/app_dropdown/category_tree_dropdown.dart';
 import 'package:erp/core/common_widget/app_dropdown/app_multi_dropdown.dart';
 import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/products/data/models/product_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
+import 'package:erp/core/network/network_url.dart';
 
 class ProductForm extends ConsumerStatefulWidget {
   final ProductRow? initial;
@@ -113,9 +115,17 @@ class _ProductFormState extends ConsumerState<ProductForm> {
         data['image'] = widget.initial!.image;
       }
 
-      // Handle Gallery - if no new files selected, keep existing paths
-      if (_galleryFiles.isEmpty && widget.initial?.images != null) {
-        data['images'] = widget.initial!.images;
+      // Handle Gallery - filter out any deleted initial images and send remaining paths
+      if (widget.initial?.images != null) {
+        final remainingUrls = widget.initial!.imageUrls ?? [];
+        final remainingPaths = <String>[];
+        for (final path in widget.initial!.images!) {
+          final fullUrl = NetworkUrl.fullUrl(path);
+          if (remainingUrls.contains(fullUrl)) {
+            remainingPaths.add(path);
+          }
+        }
+        data['images'] = remainingPaths;
       }
 
       widget.onSave(data, _imageFile, _galleryFiles.isEmpty ? null : _galleryFiles);
@@ -124,7 +134,7 @@ class _ProductFormState extends ConsumerState<ProductForm> {
 
   @override
   Widget build(BuildContext context) {
-    final categoriesAsync = ref.watch(allCategoriesProvider);
+    final categoryTreeAsync = ref.watch(categoryTreeProvider);
     final companiesAsync = ref.watch(allCompaniesProvider);
     final tagsAsync = ref.watch(allTagsProvider);
     final propertiesAsync = ref.watch(allPropertiesProvider);
@@ -169,17 +179,17 @@ class _ProductFormState extends ConsumerState<ProductForm> {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: categoriesAsync.when(
-                    data: (list) => AppDropdown<int>(
-                      label: 'Category',
-                      hint: 'Select Category',
-                      value: list.any((c) => c.id == _selectedCategoryId) ? _selectedCategoryId : null,
-                      items: list.map((c) => DropdownMenuItem(
-                        value: c.id,
-                        child: Text(c.name),
-                      )).toList(),
-                      onChanged: (v) => setState(() => _selectedCategoryId = v),
-                    ),
+                  child: categoryTreeAsync.when(
+                    data: (tree) {
+                      final items = CategoryTreeDropdown.flattenTree(tree);
+                      return CategoryTreeDropdown(
+                        label: 'Category',
+                        hint: 'Select Category',
+                        value: items.any((c) => c.id == _selectedCategoryId) ? _selectedCategoryId : null,
+                        items: items,
+                        onChanged: (v) => setState(() => _selectedCategoryId = v),
+                      );
+                    },
                     loading: () => const Center(child: CircularProgressIndicator()),
                     error: (e, _) => const Text('Error loading categories'),
                   ),

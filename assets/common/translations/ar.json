@@ -294,7 +294,20 @@
       "place_order": "تأكيد الطلب",
       "visa_mastercard": "فيزا / ماستر كارد",
       "instapay": "إنستا باي",
-      "cash_on_delivery": "الدفع عند الاستلام"
+      "cash_on_delivery": "الدفع عند الاستلام",
+      "cart_empty_error": "العربة فارغة حالياً",
+      "currency_egp": " ج.م",
+      "coupon_applied_success_discount": "تم تطبيق الكوبون بنجاح! قيمة الخصم: {}",
+      "coupon_applied_success": "تم تطبيق الكوبون بنجاح!",
+      "choose_delivery_address": "اختر عنوان التوصيل",
+      "no_registered_addresses": "لا توجد عناوين مسجلة حالياً",
+      "add_new_address": "إضافة عنوان جديد",
+      "manage_registered_addresses": "إدارة العناوين المسجلة",
+      "order_executed_successfully": "تم تنفيذ الطلب بنجاح",
+      "order_number_msg": "رقم الطلب: {}",
+      "thanks_for_shopping_track_order": "شكراً لتسوقك معنا! يمكنك متابعة حالة طلبك من خلال صفحة التتبع.",
+      "track_order_btn": "متابعة الطلب",
+      "back_to_home": "العودة للرئيسية"
     },
     "profile": {
       "title": "حسابي",

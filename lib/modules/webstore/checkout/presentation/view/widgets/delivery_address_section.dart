@@ -5,18 +5,19 @@ import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/core/router/app_navigator.dart';
+import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/modules/webstore/addresses/data/models/address_model.dart';
 
 class DeliveryAddressSection extends StatelessWidget {
   final AddressModel? selectedAddress;
-  final String userAddress;
+
   final List<AddressModel> addresses;
   final ValueChanged<AddressModel> onAddressSelected;
 
   const DeliveryAddressSection({
     super.key,
     required this.selectedAddress,
-    required this.userAddress,
+
     required this.addresses,
     required this.onAddressSelected,
   });
@@ -59,20 +60,23 @@ class DeliveryAddressSection extends StatelessWidget {
                   children: [
                     Text(
                       selectedAddress?.displayTitle ??
-                          LocaleKeys.common.home_address.tr(context: context),
+                          LocaleKeys.webstore.checkout.no_registered_addresses.tr(context: context),
                       style: TextStyle(
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w700,
+                        color: selectedAddress == null ? Colors.red : null,
                       ),
                     ),
-                    4.verticalSpace,
-                    Text(
-                      selectedAddress?.printableAddress ?? userAddress,
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        color: theme.hintColor,
+                    if (selectedAddress != null) ...[
+                      4.verticalSpace,
+                      Text(
+                        selectedAddress!.printableAddress,
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: theme.hintColor,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),
@@ -128,9 +132,11 @@ class DeliveryAddressSection extends StatelessWidget {
       ),
       builder: (context) {
         return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+          child: SizedBox(
+            width: double.infinity,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
               16.verticalSpace,
               Container(
                 width: 40.w,
@@ -142,7 +148,7 @@ class DeliveryAddressSection extends StatelessWidget {
               ),
               16.verticalSpace,
               Text(
-                'اختر عنوان التوصيل',
+                LocaleKeys.webstore.checkout.choose_delivery_address.tr(context: context),
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
@@ -155,11 +161,11 @@ class DeliveryAddressSection extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(
-                        'لا توجد عناوين مسجلة حالياً',
+                        LocaleKeys.webstore.checkout.no_registered_addresses.tr(context: context),
                         style: TextStyle(fontSize: 14.sp, color: theme.hintColor),
                       ),
                       16.verticalSpace,
-                      ElevatedButton(
+                      AppButton(
                         onPressed: () {
                           Navigator.pop(context);
                           AppNavigator.push(
@@ -167,14 +173,11 @@ class DeliveryAddressSection extends StatelessWidget {
                             AppRouteNames.webstoreAddresses,
                           );
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryOrange,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.r),
-                          ),
+                        height: 48.h,
+                        child: Text(
+                          LocaleKeys.webstore.checkout.add_new_address.tr(context: context),
+                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
                         ),
-                        child: const Text('إضافة عنوان جديد'),
                       ),
                     ],
                   ),
@@ -234,12 +237,13 @@ class DeliveryAddressSection extends StatelessWidget {
                     Icons.settings_suggest_rounded,
                     color: AppColors.primaryOrange,
                   ),
-                  title: const Text('إدارة العناوين المسجلة'),
+                  title: Text(LocaleKeys.webstore.checkout.manage_registered_addresses.tr(context: context)),
                   trailing:
                       const Icon(Icons.arrow_forward_ios_rounded, size: 16),
                 ),
               ],
             ],
+            ),
           ),
         );
       },

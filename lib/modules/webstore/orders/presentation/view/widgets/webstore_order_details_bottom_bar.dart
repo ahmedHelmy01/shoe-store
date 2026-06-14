@@ -1,3 +1,4 @@
+import 'package:erp/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -41,41 +42,26 @@ class WebStoreOrderDetailsBottomBar extends ConsumerWidget {
       child: SafeArea(
         child: Row(
           children: [
-            // Cancel / Track button
-            if (!isCancelled && !isDelivered)
-              Expanded(
-                child: AppButton(
-                  type: ButtonType.secondary,
-                  onPressed: isReordering ? null : () => _showCancelDialog(context, ref),
-                  child: Text(LocaleKeys.common.cancel.tr(context: context)),
-                ),
-              ),
-            if (isDelivered)
-              Expanded(
-                child: AppButton(
-                  type: ButtonType.secondary,
-                  onPressed: isReordering ? null : () {
-                    AppNavigator.push(context, AppRouteNames.webstoreOrderTrack, arguments: {
-                      'order_id': orderId,
-                      'order_number': orderNumber,
-                    });
-                  },
-                  child: Text(LocaleKeys.webstore.orders.track_order.tr(context: context)),
-                ),
-              ),
-            if (!isCancelled || isDelivered) 12.horizontalSpace,
-
-            // Reorder Button
+            // Rate button
             Expanded(
               child: AppButton(
-                type: isCancelled ? ButtonType.primary : ButtonType.outline,
-                isGradient: isCancelled,
-                isLoading: isReordering,
-                onPressed: isReordering ? null : () => _handleReorder(context, ref),
+                type: isCancelled ? ButtonType.secondary : ButtonType.primary,
+                isGradient: !isCancelled,
+                onPressed: isReordering
+                    ? null
+                    : () {
+                        AppNavigator.push(
+                          context,
+                          AppRouteNames.webstoreRateOrder,
+                          arguments: {'order_id': orderId},
+                        );
+                      },
                 child: Text(
-                  LocaleKeys.webstore.orders.reorder.tr(context: context),
+                  LocaleKeys.webstore.orders.rate_order.tr(context: context),
                   style: TextStyle(
-                    color: isCancelled ? Colors.white : theme.primaryColor,
+                    color: !isCancelled
+                        ? Colors.white
+                        : theme.textTheme.bodyMedium?.color,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -83,25 +69,61 @@ class WebStoreOrderDetailsBottomBar extends ConsumerWidget {
             ),
             12.horizontalSpace,
 
-            // Rate button
+            // Reorder Button
             Expanded(
               child: AppButton(
-                type: isCancelled ? ButtonType.secondary : ButtonType.primary,
-                isGradient: !isCancelled,
-                onPressed: isReordering ? null : () {
-                  AppNavigator.push(context, AppRouteNames.webstoreRateOrder, arguments: {
-                    'order_id': orderId,
-                  });
-                },
+                type: isCancelled ? ButtonType.primary : ButtonType.outline,
+                isGradient: isCancelled,
+                isLoading: isReordering,
+                onPressed: isReordering
+                    ? null
+                    : () => _handleReorder(context, ref),
                 child: Text(
-                  LocaleKeys.webstore.orders.rate_order.tr(context: context),
+                  LocaleKeys.webstore.orders.reorder.tr(context: context),
                   style: TextStyle(
-                    color: !isCancelled ? Colors.white : theme.textTheme.bodyMedium?.color,
+                    color: isCancelled ? Colors.white : AppColors.primaryOrange,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ),
+
+            // Spacing
+            if (!isCancelled || isDelivered) 12.horizontalSpace,
+
+            // Cancel / Track button
+            if (!isCancelled && !isDelivered)
+              Expanded(
+                child: AppButton(
+                  type: ButtonType.primary,
+                  backgroundColor: AppColors.error,
+                  onPressed: isReordering
+                      ? null
+                      : () => _showCancelDialog(context, ref),
+                  child: Text(LocaleKeys.common.cancel.tr(context: context)),
+                ),
+              ),
+            if (isDelivered)
+              Expanded(
+                child: AppButton(
+                  type: ButtonType.secondary,
+                  onPressed: isReordering
+                      ? null
+                      : () {
+                          AppNavigator.push(
+                            context,
+                            AppRouteNames.webstoreOrderTrack,
+                            arguments: {
+                              'order_id': orderId,
+                              'order_number': orderNumber,
+                            },
+                          );
+                        },
+                  child: Text(
+                    LocaleKeys.webstore.orders.track_order.tr(context: context),
+                  ),
+                ),
+              ),
           ],
         ),
       ),
@@ -116,7 +138,9 @@ class WebStoreOrderDetailsBottomBar extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(LocaleKeys.webstore.orders.reorder_success.tr(context: context)),
+            content: Text(
+              LocaleKeys.webstore.orders.reorder_success.tr(context: context),
+            ),
             backgroundColor: Colors.green,
           ),
         );
@@ -125,10 +149,7 @@ class WebStoreOrderDetailsBottomBar extends ConsumerWidget {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
         );
       }
     } finally {
@@ -141,16 +162,24 @@ class WebStoreOrderDetailsBottomBar extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(LocaleKeys.webstore.orders.cancel_order.tr(context: context)),
+        title: Text(
+          LocaleKeys.webstore.orders.cancel_order.tr(context: context),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(LocaleKeys.webstore.orders.cancel_order_confirm.tr(context: context)),
+            Text(
+              LocaleKeys.webstore.orders.cancel_order_confirm.tr(
+                context: context,
+              ),
+            ),
             16.verticalSpace,
             TextField(
               controller: reasonController,
               decoration: InputDecoration(
-                hintText: LocaleKeys.webstore.orders.cancel_reason_hint.tr(context: context),
+                hintText: LocaleKeys.webstore.orders.cancel_reason_hint.tr(
+                  context: context,
+                ),
                 border: const OutlineInputBorder(),
               ),
               maxLines: 2,
@@ -165,7 +194,9 @@ class WebStoreOrderDetailsBottomBar extends ConsumerWidget {
           TextButton(
             onPressed: () async {
               Navigator.pop(ctx);
-              final reason = reasonController.text.trim().isEmpty ? null : reasonController.text.trim();
+              final reason = reasonController.text.trim().isEmpty
+                  ? null
+                  : reasonController.text.trim();
               // Trigger the cancel
               ref.read(cancelOrderProvider((orderId: orderId, reason: reason)));
               // Refresh order detail
@@ -174,12 +205,20 @@ class WebStoreOrderDetailsBottomBar extends ConsumerWidget {
               ref.invalidate(ordersListProvider);
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(LocaleKeys.webstore.orders.cancel_success.tr(context: context))),
+                  SnackBar(
+                    content: Text(
+                      LocaleKeys.webstore.orders.cancel_success.tr(
+                        context: context,
+                      ),
+                    ),
+                  ),
                 );
               }
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: Text(LocaleKeys.webstore.orders.confirm_cancel.tr(context: context)),
+            child: Text(
+              LocaleKeys.webstore.orders.confirm_cancel.tr(context: context),
+            ),
           ),
         ],
       ),

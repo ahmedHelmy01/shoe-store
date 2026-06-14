@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/constants/app_constants.dart';
-import 'package:erp/modules/webstore/checkout/presentation/view_model/checkout_providers.dart';
 import 'package:erp/modules/webstore/checkout/presentation/view_model/checkout_view_model.dart';
 
 class PromoCodeSection extends ConsumerStatefulWidget {
@@ -145,12 +144,12 @@ class _PromoCodeSectionState extends ConsumerState<PromoCodeSection> {
                                   final formattedType =
                                       discountType == 'percentage'
                                           ? '%'
-                                          : ' ج.م';
+                                          : LocaleKeys.webstore.checkout.currency_egp.tr(context: context);
                                   couponStatusMessage =
-                                      'تم تطبيق الكوبون بنجاح! قيمة الخصم: $discountVal$formattedType';
+                                      LocaleKeys.webstore.checkout.coupon_applied_success_discount.tr(context: context, args: ['$discountVal$formattedType']);
                                 } else {
                                   couponStatusMessage = data['message'] ??
-                                      'تم تطبيق الكوبون بنجاح!';
+                                      LocaleKeys.webstore.checkout.coupon_applied_success.tr(context: context);
                                 }
                               });
                             }

@@ -5,6 +5,7 @@ import 'package:erp/modules/webstore/admin/features/catalog/products/data/dataso
 import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_response.dart';
 import 'package:erp/modules/webstore/admin/shared/data/repositories/admin_base_repository.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/products/data/models/product_row.dart';
+import 'package:erp/core/services/upload/upload_service.dart';
 
 abstract class IProductsRepository {
   Future<ApiResult<AdminPagedResponse<ProductRow>>> getProducts({
@@ -22,8 +23,9 @@ abstract class IProductsRepository {
 
 class ProductsRepository extends AdminBaseRepository implements IProductsRepository {
   final ProductsRemoteDataSource _ds;
+  final UploadService _uploadService;
 
-  ProductsRepository(this._ds);
+  ProductsRepository(this._ds, this._uploadService);
 
   @override
   Future<ApiResult<AdminPagedResponse<ProductRow>>> getProducts({
@@ -40,29 +42,34 @@ class ProductsRepository extends AdminBaseRepository implements IProductsReposit
   @override
   Future<ApiResult<ProductRow>> saveProduct(Map<String, dynamic> data, {int? id, XFile? imageFile, List<XFile>? galleryFiles, void Function(double)? onProgress}) {
     return safeApiCall(() async {
+      // 1. Upload main image if a new one is selected
+      if (imageFile != null) {
+        final mainImagePath = await _uploadService.uploadSingle(
+          file: imageFile,
+          uploadFolder: 'products',
+        );
+        data['image'] = mainImagePath;
+      }
+
+      // 2. Upload new gallery images if selected
+      if (galleryFiles != null && galleryFiles.isNotEmpty) {
+        final newPaths = await _uploadService.uploadMultiple(
+          xFiles: galleryFiles,
+          uploadFolder: 'products',
+        );
+        final existingImages = (data['images'] as List?)?.cast<String>() ?? [];
+        data['images'] = [...existingImages, ...newPaths];
+      }
+
+      // 3. Save the product details via standard JSON
       final path = id == null
           ? ApiEndpoints.webstore.admin.products
           : ApiEndpoints.withId(ApiEndpoints.webstore.admin.products, id);
 
-      final Map<String, dynamic> json;
-      if (imageFile != null || galleryFiles != null) {
-        // Convert all fields to strings for multipart
-        final fields = toMultipartFields(data);
+      final Map<String, dynamic> json = id == null
+          ? await _ds.postData(path, data)
+          : await _ds.putData(path, data);
 
-        final Map<String, XFile> files = {};
-        if (imageFile != null) files['image'] = imageFile;
-
-        final multiFiles = <String, List<XFile>>{};
-        if (galleryFiles != null) {
-          multiFiles['images[]'] = galleryFiles;
-        }
-
-        json = id == null
-            ? await _ds.postMultipart(path, fields: fields, files: files, multiFiles: multiFiles, onProgress: onProgress)
-            : await _ds.putMultipart(path, fields: fields, files: files, multiFiles: multiFiles, onProgress: onProgress);
-      } else {
-        json = id == null ? await _ds.postData(path, data) : await _ds.putData(path, data);
-      }
       return parseSingle(json, (j) => ProductRow.fromJson(j));
     });
   }

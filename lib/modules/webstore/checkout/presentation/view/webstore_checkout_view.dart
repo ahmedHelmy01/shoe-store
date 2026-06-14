@@ -8,8 +8,6 @@ import 'package:erp/core/router/app_navigator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
-import 'package:erp/modules/webstore/profile/presentation/state/profile_state.dart';
-import 'package:erp/modules/webstore/profile/presentation/view_model/profile_providers.dart';
 import 'package:erp/modules/webstore/checkout/presentation/view_model/checkout_view_model.dart';
 import 'package:erp/modules/webstore/checkout/presentation/state/checkout_state.dart';
 import 'package:erp/modules/webstore/addresses/presentation/view_model/address_providers.dart';
@@ -97,7 +95,7 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
               ),
               24.verticalSpace,
               Text(
-                'تم تنفيذ الطلب بنجاح',
+                LocaleKeys.webstore.checkout.order_executed_successfully.tr(context: context),
                 style: TextStyle(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w900,
@@ -111,7 +109,7 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Text(
-                  'رقم الطلب: $orderNumber',
+                  LocaleKeys.webstore.checkout.order_number_msg.tr(context: context, args: ['$orderNumber']),
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
@@ -121,7 +119,7 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
               ),
               24.verticalSpace,
               Text(
-                'شكراً لتسوقك معنا! يمكنك متابعة حالة طلبك من خلال صفحة التتبع.',
+                LocaleKeys.webstore.checkout.thanks_for_shopping_track_order.tr(context: context),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14.sp,
@@ -143,9 +141,9 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
                   );
                 },
                 isGradient: true,
-                child: const Text(
-                  'متابعة الطلب',
-                  style: TextStyle(
+                child: Text(
+                  LocaleKeys.webstore.checkout.track_order_btn.tr(context: context),
+                  style: const TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -156,7 +154,7 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
                   AppNavigator.replace(context, AppRouteNames.webstoreMain);
                 },
                 child: Text(
-                  'العودة للرئيسية',
+                  LocaleKeys.webstore.checkout.back_to_home.tr(context: context),
                   style: TextStyle(
                     color: theme.primaryColor,
                     fontWeight: FontWeight.w600,
@@ -178,11 +176,6 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
     ref.watch(cartProvider);
     final cartNotifier = ref.read(cartProvider.notifier);
 
-    // Fetch profile address
-    final profileState = ref.watch(profileViewModelProvider);
-    final userAddress = profileState is ProfileLoaded
-        ? profileState.user.address ?? '123 El-Nasr St, Maadi, Cairo, Egypt'
-        : '123 El-Nasr St, Maadi, Cairo, Egypt';
 
     final addressesAsync = ref.watch(addressesProvider);
     final addresses = addressesAsync.value ?? [];
@@ -240,7 +233,6 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
                 children: [
                   DeliveryAddressSection(
                     selectedAddress: selectedAddress,
-                    userAddress: userAddress,
                     addresses: addresses,
                     onAddressSelected: (addr) {
                       setState(() {
@@ -297,12 +289,11 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
               ),
               child: SafeArea(
                 child: AppButton(
-                  onPressed: () {
+                  onPressed: selectedAddress == null ? null : () {
                     ref.read(checkoutVmProvider.notifier).confirmOrder(
                           paymentMethod: selectedPayment,
-                          address:
-                              selectedAddress?.printableAddress ?? userAddress,
-                          addressId: selectedAddress?.id,
+                          address: selectedAddress!.printableAddress,
+                          addressId: selectedAddress!.id,
                           paymentMethodId: selectedPaymentId,
                           totalAmount: cartNotifier.total,
                           couponCode: promoController.text,

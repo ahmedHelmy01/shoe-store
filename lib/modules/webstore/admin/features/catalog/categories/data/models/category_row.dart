@@ -3,10 +3,12 @@ import 'package:erp/core/network/network_url.dart';
 class CategoryRow {
   final int id;
   final String name;
+  final String? nameEn;
   final String? nameAr;
   final String? code;
   final int? parentId;
   final String? description;
+  final String? descriptionEn;
   final String? descriptionAr;
   final String? image;
   final String? imageUrl;
@@ -15,10 +17,12 @@ class CategoryRow {
   CategoryRow({
     required this.id,
     required this.name,
+    this.nameEn,
     this.nameAr,
     this.code,
     this.parentId,
     this.description,
+    this.descriptionEn,
     this.descriptionAr,
     this.image,
     this.imageUrl,
@@ -32,10 +36,12 @@ class CategoryRow {
     return CategoryRow(
       id: json['id'] as int? ?? 0,
       name: json['name'] as String? ?? json['name_en'] as String? ?? 'Unnamed Category',
+      nameEn: json['name_en'] as String?,
       nameAr: json['name_ar'] as String?,
       code: json['code'] as String?,
       parentId: json['parent_id'] as int?,
       description: json['description'] as String? ?? json['description_en'] as String?,
+      descriptionEn: json['description_en'] as String?,
       descriptionAr: json['description_ar'] as String?,
       image: imagePath,
       imageUrl: (providedUrl != null && providedUrl.isNotEmpty)

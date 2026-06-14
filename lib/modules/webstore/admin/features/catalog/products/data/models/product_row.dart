@@ -72,8 +72,35 @@ class ProductRow {
   factory ProductRow.fromJson(Map<String, dynamic> json) {
     final imagePath = json['image'] as String?;
     final providedUrl = json['image_url'] as String?;
-    final galleryPaths = (json['images'] as List?)?.map((e) => e.toString()).toList();
-    final galleryUrls = (json['image_urls'] as List?)?.map((e) => e.toString()).toList();
+    
+    final galleryPaths = <String>[];
+    final galleryUrls = <String>[];
+    
+    if (json['images'] is List) {
+      for (final e in json['images'] as List) {
+        if (e is Map) {
+          final path = e['image'] as String?;
+          if (path != null && path.isNotEmpty) {
+            galleryPaths.add(path);
+          }
+          final url = e['image_url'] as String?;
+          if (url != null && url.isNotEmpty) {
+            galleryUrls.add(url);
+          } else if (path != null && path.isNotEmpty) {
+            galleryUrls.add(NetworkUrl.fullUrl(path));
+          }
+        } else if (e is String) {
+          galleryPaths.add(e);
+          galleryUrls.add(NetworkUrl.fullUrl(e));
+        }
+      }
+    }
+    
+    final jsonUrls = json['image_urls'] as List?;
+    if (jsonUrls != null && jsonUrls.isNotEmpty) {
+      galleryUrls.clear();
+      galleryUrls.addAll(jsonUrls.map((e) => e.toString()));
+    }
 
     return ProductRow(
       id: _safeInt(json['id']) ?? 0,
@@ -100,10 +127,8 @@ class ProductRow {
       imageUrl: (providedUrl != null && providedUrl.isNotEmpty)
           ? providedUrl
           : (imagePath != null ? NetworkUrl.fullUrl(imagePath) : null),
-      images: galleryPaths,
-      imageUrls: (galleryUrls != null && galleryUrls.isNotEmpty)
-          ? galleryUrls
-          : galleryPaths?.map((p) => NetworkUrl.fullUrl(p)).toList(),
+      images: galleryPaths.isEmpty ? null : galleryPaths,
+      imageUrls: galleryUrls.isEmpty ? null : galleryUrls,
       notes: json['notes'] as String?,
       notesAr: json['notes_ar'] as String?,
       hasVariants: (json['has_variants'] ?? false) as bool,

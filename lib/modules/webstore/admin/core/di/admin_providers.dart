@@ -47,7 +47,6 @@ import 'package:erp/modules/webstore/admin/features/sliders/data/repositories/sl
 import 'package:erp/modules/webstore/admin/features/order_statuses/data/repositories/order_statuses_repository.dart';
 import 'package:erp/modules/webstore/admin/features/customers/customer_groups/data/repositories/customer_groups_repository.dart';
 import 'package:erp/modules/webstore/admin/features/countries/data/repositories/countries_repository.dart';
-import 'package:erp/modules/webstore/admin/features/countries/data/models/country_row.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/data/repositories/warehouses_repository.dart';
 
 // --- DataSources ---
@@ -82,11 +81,17 @@ final authRepositoryProvider = Provider<IAuthRepository>((ref) {
 });
 
 final productsRepositoryProvider = Provider<IProductsRepository>((ref) {
-  return ProductsRepository(ref.read(productsDataSourceProvider));
+  return ProductsRepository(
+    ref.read(productsDataSourceProvider),
+    ref.read(uploadServiceProvider),
+  );
 });
 
 final categoriesRepositoryProvider = Provider<ICategoriesRepository>((ref) {
-  return CategoriesRepository(ref.read(categoriesDataSourceProvider));
+  return CategoriesRepository(
+    ref.read(categoriesDataSourceProvider),
+    ref.read(uploadServiceProvider),
+  );
 });
 
 final usersRepositoryProvider = Provider<IUsersRepository>((ref) {
@@ -167,6 +172,14 @@ final countriesRepositoryProvider = Provider<ICountriesRepository>((ref) {
 
 
 // --- Dropdown Data Providers ---
+
+/// Fetches category tree from `/api/store/categories/tree` for hierarchical dropdown.
+final categoryTreeProvider = FutureProvider<List<dynamic>>((ref) async {
+  final network = ref.read(networkServiceProvider);
+  final response = await network.get('/api/store/categories/tree');
+  final data = response as Map<String, dynamic>;
+  return (data['data'] as List?) ?? [];
+});
 
 final allCategoriesProvider = FutureProvider((ref) async {
   final repo = ref.read(categoriesRepositoryProvider);

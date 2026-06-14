@@ -89,7 +89,6 @@ class _PrescriptionsListViewState extends ConsumerState<PrescriptionsListView> {
       subtitle: LocaleKeys.webstore.prescriptions.empty_subtitle,
       icon: Icons.receipt_long_rounded,
       actionText: LocaleKeys.webstore.prescriptions.upload_new,
-      onAction: () => AppNavigator.push(context, AppRouteNames.webstoreUploadPrescription),
     );
   }
 

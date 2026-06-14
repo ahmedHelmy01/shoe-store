@@ -226,13 +226,13 @@ class _ProductCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              if (product.image != null)
+              if (product.imageUrl != null)
                 Padding(
                   padding: const EdgeInsets.only(right: 12),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.network(
-                      product.image!,
+                      product.imageUrl!,
                       width: 48,
                       height: 48,
                       fit: BoxFit.cover,

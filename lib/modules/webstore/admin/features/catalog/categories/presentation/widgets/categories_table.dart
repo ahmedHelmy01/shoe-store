@@ -44,7 +44,7 @@ class CategoriesTable extends StatelessWidget {
       idOf: (c) => '${c.id}',
       exportBaseName: 'categories',
       searchHint: 'Search categories by name or code…',
-      searchText: (c) => '${c.id} ${c.code ?? ''} ${c.name} ${c.nameAr ?? ''}',
+      searchText: (c) => '${c.id} ${c.code ?? ''} ${c.name} ${c.nameEn ?? ''} ${c.nameAr ?? ''}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<CategoryRow>(
@@ -60,15 +60,33 @@ class CategoriesTable extends StatelessWidget {
           sortable: true,
           sortValue: (c) => c.name,
           exportValue: (c) => c.name,
-          cell: (_, c) => Text(c.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+          cell: (_, c) => Row(
+            children: [
+              if (c.imageUrl != null)
+                Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: Image.network(
+                      c.imageUrl!,
+                      width: 36,
+                      height: 36,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                    ),
+                  ),
+                ),
+              Text(c.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+            ],
+          ),
           width: 200,
         ),
         AdminColumn<CategoryRow>(
-          title: 'Arabic Name',
+          title: 'English Name',
           sortable: true,
-          sortValue: (c) => c.nameAr ?? '',
-          exportValue: (c) => c.nameAr ?? '',
-          cell: (_, c) => Text(c.nameAr ?? '-', style: const TextStyle(fontWeight: FontWeight.w600)),
+          sortValue: (c) => c.nameEn ?? '',
+          exportValue: (c) => c.nameEn ?? '',
+          cell: (_, c) => Text(c.nameEn ?? '-', style: const TextStyle(fontWeight: FontWeight.w600)),
           width: 200,
         ),
         AdminColumn<CategoryRow>(
@@ -115,34 +133,116 @@ class CategoryDetailsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return AdminDetailsDialog(
       title: 'Category Details',
       id: category.id.toString(),
       icon: Icons.category_rounded,
+      maxWidth: 600,
       children: [
-        if (category.imageUrl != null)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                category.imageUrl!,
-                height: 180,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-              ),
-            ),
+        // Category Image
+        Padding(
+          padding: const EdgeInsets.only(bottom: 24),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: category.imageUrl != null
+                ? Image.network(
+                    category.imageUrl!,
+                    height: 180,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => _buildImagePlaceholder(isDark),
+                  )
+                : _buildImagePlaceholder(isDark),
           ),
-        AdminDetailsDialog.buildDetailRow(context, 'Name (English)', category.name, Icons.language_rounded),
-        AdminDetailsDialog.buildDetailRow(context, 'Name (Arabic)', category.nameAr ?? 'N/A', Icons.translate_rounded),
-        AdminDetailsDialog.buildDetailRow(context, 'Code', category.code ?? 'N/A', Icons.qr_code_rounded),
-        AdminDetailsDialog.buildDetailRow(context, 'Parent ID', category.parentId?.toString() ?? 'None', Icons.account_tree_rounded),
-        AdminDetailsDialog.buildDetailRow(context, 'Description (English)', category.description ?? 'N/A', Icons.description_rounded),
-        AdminDetailsDialog.buildDetailRow(context, 'Description (Arabic)', category.descriptionAr ?? 'N/A', Icons.description_rounded),
-        const SizedBox(height: 12),
+        ),
+
+        // Row 1: Name (English) + Name (Arabic)
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context, 'Name (English)', category.nameEn ?? category.name, Icons.language_rounded),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context, 'Name (Arabic)', category.nameAr ?? 'N/A', Icons.translate_rounded),
+            ),
+          ],
+        ),
+
+        // Row 2: Code + Parent ID
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context, 'Code', category.code ?? 'N/A', Icons.qr_code_rounded),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context, 'Parent ID', category.parentId?.toString() ?? 'None', Icons.account_tree_rounded),
+            ),
+          ],
+        ),
+
+        // Row 3: Description (English) + Description (Arabic)
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context, 'Description (English)', category.descriptionEn ?? 'N/A', Icons.description_rounded),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context, 'Description (Arabic)', category.descriptionAr ?? 'N/A', Icons.description_rounded),
+            ),
+          ],
+        ),
+
+        // Status row
         AdminDetailsDialog.buildStatusRow(context, category.isActive),
       ],
+    );
+  }
+
+  Widget _buildImagePlaceholder(bool isDark) {
+    return Container(
+      height: 180,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08),
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.image_outlined,
+            size: 48,
+            color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.2),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'No Image',
+            style: TextStyle(
+              color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.3),
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

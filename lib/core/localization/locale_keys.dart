@@ -395,4 +395,17 @@ class _WebStoreCheckout {
   final visa_mastercard = 'webstore.checkout.visa_mastercard';
   final instapay = 'webstore.checkout.instapay';
   final cash_on_delivery = 'webstore.checkout.cash_on_delivery';
+  final cart_empty_error = 'webstore.checkout.cart_empty_error';
+  final currency_egp = 'webstore.checkout.currency_egp';
+  final coupon_applied_success_discount = 'webstore.checkout.coupon_applied_success_discount';
+  final coupon_applied_success = 'webstore.checkout.coupon_applied_success';
+  final choose_delivery_address = 'webstore.checkout.choose_delivery_address';
+  final no_registered_addresses = 'webstore.checkout.no_registered_addresses';
+  final add_new_address = 'webstore.checkout.add_new_address';
+  final manage_registered_addresses = 'webstore.checkout.manage_registered_addresses';
+  final order_executed_successfully = 'webstore.checkout.order_executed_successfully';
+  final order_number_msg = 'webstore.checkout.order_number_msg';
+  final thanks_for_shopping_track_order = 'webstore.checkout.thanks_for_shopping_track_order';
+  final track_order_btn = 'webstore.checkout.track_order_btn';
+  final back_to_home = 'webstore.checkout.back_to_home';
 }

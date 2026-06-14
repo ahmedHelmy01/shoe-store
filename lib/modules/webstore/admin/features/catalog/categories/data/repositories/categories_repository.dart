@@ -5,6 +5,7 @@ import 'package:erp/modules/webstore/admin/features/catalog/categories/data/data
 import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_response.dart';
 import 'package:erp/modules/webstore/admin/shared/data/repositories/admin_base_repository.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/categories/data/models/category_row.dart';
+import 'package:erp/core/services/upload/upload_service.dart';
 
 abstract class ICategoriesRepository {
   Future<ApiResult<AdminPagedResponse<CategoryRow>>> getCategories({
@@ -20,8 +21,9 @@ abstract class ICategoriesRepository {
 
 class CategoriesRepository extends AdminBaseRepository implements ICategoriesRepository {
   final CategoriesRemoteDataSource _ds;
+  final UploadService _uploadService;
 
-  CategoriesRepository(this._ds);
+  CategoriesRepository(this._ds, this._uploadService);
 
   @override
   Future<ApiResult<AdminPagedResponse<CategoryRow>>> getCategories({
@@ -38,19 +40,24 @@ class CategoriesRepository extends AdminBaseRepository implements ICategoriesRep
   @override
   Future<ApiResult<CategoryRow>> saveCategory(Map<String, dynamic> data, {int? id, XFile? imageFile, void Function(double)? onProgress}) {
     return safeApiCall(() async {
+      // 1. Upload category image if selected
+      if (imageFile != null) {
+        final imagePath = await _uploadService.uploadSingle(
+          file: imageFile,
+          uploadFolder: 'categories',
+        );
+        data['image'] = imagePath;
+      }
+
+      // 2. Save the category details via standard JSON
       final path = id == null
           ? ApiEndpoints.webstore.admin.categories
           : ApiEndpoints.withId(ApiEndpoints.webstore.admin.categories, id);
 
-      final Map<String, dynamic> json;
-      if (imageFile != null) {
-        final fields = toMultipartFields(data);
-        json = id == null
-            ? await _ds.postMultipart(path, fields: fields, files: {'image': imageFile}, onProgress: onProgress)
-            : await _ds.putMultipart(path, fields: fields, files: {'image': imageFile}, onProgress: onProgress);
-      } else {
-        json = id == null ? await _ds.postData(path, data) : await _ds.putData(path, data);
-      }
+      final Map<String, dynamic> json = id == null
+          ? await _ds.postData(path, data)
+          : await _ds.putData(path, data);
+
       return parseSingle(json, (j) => CategoryRow.fromJson(j));
     });
   }

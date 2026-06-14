@@ -132,11 +132,11 @@ class ProductDetailsDialog extends StatelessWidget {
       id: product.id.toString(),
       icon: Icons.inventory_2_rounded,
       children: [
-        if (product.image != null) ...[
+        if (product.imageUrl != null) ...[
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Image.network(
-              product.image!,
+              product.imageUrl!,
               width: double.infinity,
               height: 200,
               fit: BoxFit.cover,
@@ -147,6 +147,57 @@ class ProductDetailsDialog extends StatelessWidget {
                 child: const Icon(Icons.image_not_supported, size: 48),
               ),
             ),
+          ),
+          const SizedBox(height: 24),
+        ],
+        if (product.imageUrls != null && product.imageUrls!.isNotEmpty) ...[
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.collections_rounded, size: 20, color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withValues(alpha: 0.4)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Gallery Images',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withValues(alpha: 0.5),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 80,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: product.imageUrls!.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 8),
+                        itemBuilder: (context, index) {
+                          final url = product.imageUrls![index];
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              url,
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => Container(
+                                width: 80,
+                                height: 80,
+                                color: Colors.grey[200],
+                                child: const Icon(Icons.image_not_supported, size: 20),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 24),
         ],

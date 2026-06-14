@@ -1,5 +1,6 @@
-import 'dart:ui';
+import 'dart:ui' as ui;
 import 'dart:io' show File;
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,10 +55,112 @@ class _AdminImagePickerState extends ConsumerState<AdminImagePicker> {
   bool _isProcessing = false;
   double _internalProgress = 0;
 
+  /// Allowed image extensions for web compatibility
+  static const _allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp'];
+
+  /// Validates that the picked file is a decodable image.
+  /// Returns null if valid, or an error reason string if invalid.
+  Future<String?> _validateImage(XFile file) async {
+    // 1. Check file extension
+    final ext = file.name.split('.').last.toLowerCase();
+    if (!_allowedExtensions.contains(ext)) {
+      return 'صيغة الملف ".$ext" غير مدعومة.\nالصيغ المسموح بها: JPG, PNG, WebP, GIF, BMP';
+    }
+
+    // 2. Try to actually decode the bytes (catches corrupted files & mismatched extensions)
+    try {
+      final Uint8List bytes = await file.readAsBytes();
+      if (bytes.isEmpty) {
+        return 'الملف فارغ ولا يحتوي على بيانات صورة.';
+      }
+      final codec = await ui.instantiateImageCodec(bytes);
+      final frame = await codec.getNextFrame();
+      frame.image.dispose();
+      codec.dispose();
+    } catch (_) {
+      return 'الملف تالف أو بصيغة غير مدعومة من المتصفح.\nجرب تحويل الصورة لصيغة JPG أو PNG.';
+    }
+
+    return null; // ✅ valid
+  }
+
+  /// Shows a professional dialog when an image fails validation.
+  void _showImageErrorDialog(String fileName, String reason) {
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.red[50],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(Icons.image_not_supported_outlined, color: Colors.red[400], size: 24),
+            ),
+            const SizedBox(width: 12),
+            const Expanded(
+              child: Text('تعذر إرفاق الصورة', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // File name
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.insert_drive_file_outlined, size: 18, color: Colors.grey[600]),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      fileName,
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey[800]),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Reason
+            Text('السبب:', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey[700])),
+            const SizedBox(height: 6),
+            Text(reason, style: TextStyle(fontSize: 13, color: Colors.red[700], height: 1.5)),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('حسناً'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _pickImage() async {
     try {
       final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
       if (image == null) return;
+
+      // ✅ Validate image before proceeding
+      final validationError = await _validateImage(image);
+      if (validationError != null) {
+        _showImageErrorDialog(image.name, validationError);
+        return;
+      }
 
       if (widget.uploadFolder != null) {
         // Instant Upload Flow
@@ -115,6 +218,18 @@ class _AdminImagePickerState extends ConsumerState<AdminImagePicker> {
       final List<XFile> images = await _picker.pickMultiImage();
       if (images.isEmpty) return;
 
+      // ✅ Validate each image and filter out invalid ones
+      final List<XFile> validImages = [];
+      for (final image in images) {
+        final error = await _validateImage(image);
+        if (error != null) {
+          _showImageErrorDialog(image.name, error);
+        } else {
+          validImages.add(image);
+        }
+      }
+      if (validImages.isEmpty) return;
+
       if (widget.uploadFolder != null) {
         // Instant Upload Flow
         if (mounted) {
@@ -126,7 +241,7 @@ class _AdminImagePickerState extends ConsumerState<AdminImagePicker> {
 
         try {
           final paths = await ref.read(uploadServiceProvider).uploadMultiple(
-            xFiles: images,
+            xFiles: validImages,
             uploadFolder: widget.uploadFolder!,
             onProgress: (p) {
               if (mounted) setState(() => _internalProgress = p);
@@ -135,7 +250,7 @@ class _AdminImagePickerState extends ConsumerState<AdminImagePicker> {
 
           if (mounted) {
             setState(() {
-              _selectedFiles = [..._selectedFiles, ...images];
+              _selectedFiles = [..._selectedFiles, ...validImages];
               _isProcessing = false;
             });
           }
@@ -154,7 +269,7 @@ class _AdminImagePickerState extends ConsumerState<AdminImagePicker> {
         // Local Selection Flow
         if (mounted) {
           setState(() {
-            _selectedFiles = [..._selectedFiles, ...images];
+            _selectedFiles = [..._selectedFiles, ...validImages];
           });
         }
         widget.onGallerySelected?.call(_selectedFiles);
@@ -311,7 +426,11 @@ class _AdminImagePickerState extends ConsumerState<AdminImagePicker> {
                 borderRadius: BorderRadius.circular(23),
                 child: _selectedFile != null
                     ? kIsWeb
-                        ? Image.network(_selectedFile!.path, fit: BoxFit.cover)
+                        ? Image.network(
+                            _selectedFile!.path,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => _buildBrokenImagePlaceholder(),
+                          )
                         : Image.file(File(_selectedFile!.path), fit: BoxFit.cover)
                     : _buildInitialImage(),
               ),
@@ -489,7 +608,11 @@ class _AdminImagePickerState extends ConsumerState<AdminImagePicker> {
               child: isNetwork
                   ? ImageRenderer.rendererImage(imagePath: path)
                   : kIsWeb
-                      ? Image.network(path, fit: BoxFit.cover)
+                      ? Image.network(
+                          path,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => _buildBrokenImagePlaceholder(isSmall: true),
+                        )
                       : Image.file(File(path), fit: BoxFit.cover),
             ),
           ),
@@ -554,6 +677,27 @@ class _AdminImagePickerState extends ConsumerState<AdminImagePicker> {
     );
   }
 
+  /// Fallback widget shown when an already-attached image fails to render.
+  Widget _buildBrokenImagePlaceholder({bool isSmall = false}) {
+    return Container(
+      color: Colors.grey[50],
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.broken_image_outlined, size: isSmall ? 24 : 36, color: Colors.grey[400]),
+            const SizedBox(height: 4),
+            Text(
+              'صيغة غير مدعومة',
+              style: TextStyle(fontSize: isSmall ? 9 : 11, color: Colors.grey[500], fontWeight: FontWeight.w500),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildRemoveButton(VoidCallback onTap, {bool isSmall = false}) {
     return GestureDetector(
       onTap: onTap,
@@ -601,7 +745,7 @@ class _DashPainter extends CustomPainter {
     const double dashSpace = 6.0;
     double distance = 0.0;
 
-    for (PathMetric measurePath in path.computeMetrics()) {
+    for (ui.PathMetric measurePath in path.computeMetrics()) {
       while (distance < measurePath.length) {
         canvas.drawPath(
           measurePath.extractPath(distance, distance + dashWidth),

@@ -12,6 +12,7 @@ class AppButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final bool isLoading;
   final bool isGradient;
+  final Color? backgroundColor;
 
   const AppButton({
     super.key,
@@ -23,39 +24,43 @@ class AppButton extends StatelessWidget {
     this.padding,
     this.isLoading = false,
     this.isGradient = false,
+    this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
     final buttonHeight = height ?? 54;
+    final bool isDisabled = onPressed == null || isLoading;
     
     if (isGradient) {
-      return Container(
-        width: width ?? double.infinity,
-        height: buttonHeight,
-        decoration: BoxDecoration(
-          gradient: AppColors.primaryGradient,
-          borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: ElevatedButton(
-          onPressed: isLoading ? null : onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-            ),
-            // Set padding to zero to allow Center to manage the space perfectly
-            padding: padding ?? EdgeInsets.zero,
+      return Opacity(
+        opacity: isDisabled ? 0.6 : 1.0,
+        child: Container(
+          width: width ?? double.infinity,
+          height: buttonHeight,
+          decoration: BoxDecoration(
+            gradient: AppColors.primaryGradient,
+            borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+            boxShadow: isDisabled ? null : [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-          child: _buildButtonChild(),
+          child: ElevatedButton(
+            onPressed: isDisabled ? null : onPressed,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+              ),
+              padding: padding ?? EdgeInsets.zero,
+            ),
+            child: _buildButtonChild(),
+          ),
         ),
       );
     }
@@ -63,7 +68,7 @@ class AppButton extends StatelessWidget {
     return SizedBox(
       width: width ?? double.infinity,
       height: buttonHeight,
-      child: _buildButton(),
+      child: _buildButton(isDisabled),
     );
   }
 
@@ -85,39 +90,55 @@ class AppButton extends StatelessWidget {
     );
   }
 
-  Widget _buildButton() {
+  Widget _buildButton(bool isDisabled) {
     final style = ElevatedButton.styleFrom(
       padding: padding ?? EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppConstants.borderRadius),
       ),
+      disabledBackgroundColor: Colors.grey.shade300,
+      disabledForegroundColor: Colors.grey.shade500,
     );
 
     switch (type) {
       case ButtonType.primary:
         return ElevatedButton(
-          onPressed: isLoading ? null : onPressed,
+          onPressed: isDisabled ? null : onPressed,
           style: style.copyWith(
-            backgroundColor: WidgetStateProperty.all(AppColors.primary),
-            foregroundColor: WidgetStateProperty.all(Colors.white),
+            backgroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.disabled)) return Colors.grey.shade300;
+              return backgroundColor ?? AppColors.primary;
+            }),
+            foregroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.disabled)) return Colors.grey.shade500;
+              return Colors.white;
+            }),
           ),
           child: _buildButtonChild(),
         );
       case ButtonType.secondary:
         return ElevatedButton(
-          onPressed: isLoading ? null : onPressed,
+          onPressed: isDisabled ? null : onPressed,
           style: style.copyWith(
-            backgroundColor: WidgetStateProperty.all(AppColors.secondary),
-            foregroundColor: WidgetStateProperty.all(Colors.white),
+            backgroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.disabled)) return Colors.grey.shade300;
+              return backgroundColor ?? AppColors.secondary;
+            }),
+            foregroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.disabled)) return Colors.grey.shade500;
+              return Colors.white;
+            }),
           ),
           child: _buildButtonChild(),
         );
       case ButtonType.outline:
         return OutlinedButton(
-          onPressed: isLoading ? null : onPressed,
+          onPressed: isDisabled ? null : onPressed,
           style: OutlinedButton.styleFrom(
-            side: const BorderSide(color: AppColors.primary),
-            foregroundColor: AppColors.primary,
+            side: BorderSide(
+              color: isDisabled ? Colors.grey.shade300 : AppColors.primary,
+            ),
+            foregroundColor: isDisabled ? Colors.grey.shade400 : AppColors.primary,
             padding: padding ?? EdgeInsets.zero,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppConstants.borderRadius),
@@ -127,9 +148,9 @@ class AppButton extends StatelessWidget {
         );
       case ButtonType.text:
         return TextButton(
-          onPressed: isLoading ? null : onPressed,
+          onPressed: isDisabled ? null : onPressed,
           style: TextButton.styleFrom(
-            foregroundColor: AppColors.primary,
+            foregroundColor: isDisabled ? Colors.grey.shade400 : AppColors.primary,
             padding: padding ?? EdgeInsets.zero,
           ),
           child: _buildButtonChild(),

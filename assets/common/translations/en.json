@@ -288,7 +288,20 @@
       "place_order": "Place Order",
       "visa_mastercard": "Visa / Mastercard",
       "instapay": "InstaPay",
-      "cash_on_delivery": "Cash on Delivery"
+      "cash_on_delivery": "Cash on Delivery",
+      "cart_empty_error": "Cart is currently empty",
+      "currency_egp": " EGP",
+      "coupon_applied_success_discount": "Coupon applied successfully! Discount: {}",
+      "coupon_applied_success": "Coupon applied successfully!",
+      "choose_delivery_address": "Choose Delivery Address",
+      "no_registered_addresses": "No registered addresses currently",
+      "add_new_address": "Add New Address",
+      "manage_registered_addresses": "Manage Registered Addresses",
+      "order_executed_successfully": "Order executed successfully",
+      "order_number_msg": "Order Number: {}",
+      "thanks_for_shopping_track_order": "Thanks for shopping with us! You can track your order status from the tracking page.",
+      "track_order_btn": "Track Order",
+      "back_to_home": "Back to Home"
     },
     "profile": {
       "title": "My Account",

@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
 import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
-import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
@@ -105,7 +104,7 @@ class CategoriesView extends ConsumerWidget {
             ),
             clipBehavior: Clip.antiAlias,
             child: CategoriesTable(
-              state: state as AdminCrudData<CategoryRow>,
+              state: state,
               onNextPage: () => notifier.nextPage(),
               onPrevPage: () => notifier.prevPage(),
               onSearch: (q) => notifier.fetch(search: q, page: 1),
@@ -190,6 +189,20 @@ class _CategoryCard extends StatelessWidget {
         children: [
           Row(
             children: [
+              if (category.imageUrl != null)
+                Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      category.imageUrl!,
+                      width: 48,
+                      height: 48,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                    ),
+                  ),
+                ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

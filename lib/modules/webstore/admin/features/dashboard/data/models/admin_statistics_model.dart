@@ -21,32 +21,43 @@ class AdminStatisticsModel {
 
   factory AdminStatisticsModel.fromJson(Map<String, dynamic> json) {
     final data = json['data'] as Map<String, dynamic>;
-    
-    // Check if data is essentially empty/zero to provide "Design Mode" fallback
-    final rawTotalRev = (data['total_revenue'] ?? 0).toDouble();
-    final rawTopProducts = (data['top_products'] as List? ?? []);
 
-    if (rawTotalRev == 0 && rawTopProducts.isEmpty) {
-      return AdminStatisticsModel.demo();
-    }
+    final rawTopProducts = (data['top_products'] as List? ?? []);
+    final rawInventoryMovement = (data['inventory_movement'] as List? ?? []);
 
     return AdminStatisticsModel(
-      totalOrders: data['total_orders'] ?? 0,
-      totalRevenue: rawTotalRev,
-      totalCustomers: data['total_customers'] ?? 0,
-      todayOrders: data['today_orders'] ?? 0,
-      todayRevenue: (data['today_revenue'] ?? 0).toDouble(),
+      totalOrders: _parseInt(data['total_orders']),
+      totalRevenue: _parseDouble(data['total_revenue']),
+      totalCustomers: _parseInt(data['total_customers']),
+      todayOrders: _parseInt(data['today_orders']),
+      todayRevenue: _parseDouble(data['today_revenue']),
       topProducts: rawTopProducts
           .map((e) => TopProductModel.fromJson(e))
           .toList(),
-      inventoryMovement: (data['inventory_movement'] as List? ?? [])
+      inventoryMovement: rawInventoryMovement
           .map((e) => AdminSalesPoint(
-                day: DateTime.parse(e['date']),
-                revenue: (e['revenue'] ?? 0).toDouble(),
-                orders: e['orders'] ?? 0,
+                day: DateTime.tryParse(e['date']?.toString() ?? '') ?? DateTime.now(),
+                revenue: _parseDouble(e['revenue']),
+                orders: _parseInt(e['orders']),
               ))
           .toList(),
     );
+  }
+
+  /// Safely parse a value that could be int, double, or String to int.
+  static int _parseInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    return int.tryParse(value.toString()) ?? 0;
+  }
+
+  /// Safely parse a value that could be int, double, or String to double.
+  static double _parseDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    return double.tryParse(value.toString()) ?? 0.0;
   }
 
   factory AdminStatisticsModel.demo() {
@@ -90,10 +101,10 @@ class TopProductModel {
 
   factory TopProductModel.fromJson(Map<String, dynamic> json) {
     return TopProductModel(
-      productId: json['product_id'] ?? 0,
-      productName: json['product_name'] ?? 'Unknown',
-      totalQty: json['total_qty'] ?? 0,
-      totalRevenue: (json['total_revenue'] ?? 0).toDouble(),
+      productId: AdminStatisticsModel._parseInt(json['product_id']),
+      productName: json['product_name']?.toString() ?? 'Unknown',
+      totalQty: AdminStatisticsModel._parseInt(json['total_qty']),
+      totalRevenue: AdminStatisticsModel._parseDouble(json['total_revenue']),
     );
   }
 }
