@@ -11,6 +11,13 @@ class ProfileViewModel extends Notifier<ProfileState> {
 
   @override
   ProfileState build() {
+    final auth = ref.watch(authStateProvider);
+    if (auth.status != AuthStatus.authenticated) {
+      // Clear cache when logged out
+      final prefs = ref.read(sharedPreferencesProvider);
+      prefs.remove(_cacheKey);
+      return const ProfileInitial();
+    }
     // Load from local storage cache first for instant offline access
     _loadFromCache();
     return const ProfileInitial();
@@ -35,6 +42,12 @@ class ProfileViewModel extends Notifier<ProfileState> {
   }
 
   Future<void> getProfile() async {
+    final auth = ref.read(authStateProvider);
+    if (auth.status != AuthStatus.authenticated) {
+      state = const ProfileInitial();
+      return;
+    }
+
     // If not loaded yet, set loading. If already has cached state, keep it and load in background
     if (state is! ProfileLoaded) {
       state = const ProfileLoading();

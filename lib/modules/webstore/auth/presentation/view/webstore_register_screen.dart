@@ -15,6 +15,7 @@ import 'package:erp/modules/webstore/auth/presentation/widgets/auth_glass_card.d
 import 'package:erp/modules/webstore/auth/presentation/widgets/auth_ui_components.dart';
 import 'package:erp/modules/webstore/auth/presentation/widgets/social_login_section.dart';
 import 'package:erp/core/common_widget/app_bottom_sheet/branch_selection_sheet.dart';
+import 'package:erp/core/common_widget/app_bottom_sheet/phone_input_sheet.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
 
 class WebStoreRegisterScreen extends ConsumerStatefulWidget {
@@ -75,10 +76,14 @@ class _WebStoreRegisterScreenState extends ConsumerState<WebStoreRegisterScreen>
 
     if (branchId == null) return;
 
+    final phone = await PhoneInputSheet.show(context);
+    if (phone == null) return;
+
     ref.read(webStoreAuthViewModelProvider.notifier).socialLogin(
           providerType: provider,
           providerIdentifier: 'dummy-id-${DateTime.now().millisecondsSinceEpoch}',
           name: 'Social User',
+          mobile: phone,
           branchId: branchId,
         );
   }
@@ -119,14 +124,26 @@ class _WebStoreRegisterScreenState extends ConsumerState<WebStoreRegisterScreen>
       }
       if (next is WebStoreAuthSuccess) {
         final serverMsg = next.authResponse.message;
-        AppStatusDialog.showSuccess(
-          context,
-          title: LocaleKeys.webstore.auth.register_success_title.tr(context: context),
-          message: serverMsg ?? LocaleKeys.webstore.auth.register_success_message.tr(context: context),
-          onActionPressed: () {
-            AppNavigator.replace(context, AppRouteNames.webstoreMain);
-          },
-        );
+        final user = next.authResponse.user;
+        if (!user.verifyPhone) {
+          AppNavigator.replace(
+            context,
+            AppRouteNames.webstoreOtp,
+            arguments: {
+              'identifier': next.customMobile ?? user.mobile ?? '',
+              'type': 'registration',
+            },
+          );
+        } else {
+          AppStatusDialog.showSuccess(
+            context,
+            title: LocaleKeys.webstore.auth.register_success_title.tr(context: context),
+            message: serverMsg ?? LocaleKeys.webstore.auth.register_success_message.tr(context: context),
+            onActionPressed: () {
+              AppNavigator.replace(context, AppRouteNames.webstoreMain);
+            },
+          );
+        }
       }
     });
 

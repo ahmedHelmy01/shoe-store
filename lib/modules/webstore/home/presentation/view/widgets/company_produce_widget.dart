@@ -1,3 +1,4 @@
+import 'package:erp/core/router/app_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -41,73 +42,85 @@ class CompanyProduceWidget extends ConsumerWidget {
     // Filter out potential empty names
     if (name.trim().isEmpty) return const SizedBox.shrink();
 
-    return Container(
-      width: 130.w,
-      margin: EdgeInsets.only(right: 16.w),
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        color: isDark ? theme.cardColor : Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
-            blurRadius: 15,
-            spreadRadius: 0,
-            offset: const Offset(0, 5),
-          ),
-        ],
-        border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.1) : AppColors.primaryOrange.withValues(alpha: 0.08),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Unified Logo/Avatar Container
-          Container(
-            height: 55.w,
-            width: 55.w,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.primaryOrange.withValues(alpha: 0.05),
+    return InkWell(
+      onTap: () {
+        AppNavigator.push(
+          context,
+          AppRouteNames.webstoreCatalogProducts,
+          arguments: {
+            'manufacturer_id': company.id,
+            'category_title': name,
+          },
+        );
+      },
+      borderRadius: BorderRadius.circular(20.r),
+      child: Container(
+        width: 130.w,
+        padding: EdgeInsets.all(12.w),
+        decoration: BoxDecoration(
+          color: isDark ? theme.cardColor : Colors.white,
+          borderRadius: BorderRadius.circular(20.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+              blurRadius: 15,
+              spreadRadius: 0,
+              offset: const Offset(0, 5),
             ),
-            child: ClipOval(
-              child: company.logo != null && company.logo!.isNotEmpty
-                  ? AppImage(
-                      imagePath: company.logo!,
-                      fit: BoxFit.contain,
-                      width: 55.w,
-                      height: 55.w,
-                    )
-                  : Center(
-                      child: Text(
-                        name.isNotEmpty ? name[0].toUpperCase() : 'B',
-                        style: TextStyle(
-                          color: AppColors.primaryOrange,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 22.sp,
-                          fontFamily: 'store',
+          ],
+          border: Border.all(
+            color: isDark ? Colors.white.withValues(alpha: 0.1) : AppColors.primaryOrange.withValues(alpha: 0.08),
+            width: 1,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Unified Logo/Avatar Container
+            Container(
+              height: 55.w,
+              width: 55.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.primaryOrange.withValues(alpha: 0.05),
+              ),
+              child: ClipOval(
+                child: company.logo != null && company.logo!.isNotEmpty
+                    ? AppImage(
+                        imagePath: company.logo!,
+                        fit: BoxFit.contain,
+                        width: 55.w,
+                        height: 55.w,
+                      )
+                    : Center(
+                        child: Text(
+                          name.isNotEmpty ? name[0].toUpperCase() : 'B',
+                          style: TextStyle(
+                            color: AppColors.primaryOrange,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 22.sp,
+                            fontFamily: 'store',
+                          ),
                         ),
                       ),
-                    ),
+              ),
             ),
-          ),
-          12.verticalSpace,
-          Text(
-            name,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 13.sp,
-              fontWeight: FontWeight.w700,
-              color: isDark ? Colors.white : AppColors.textMain,
-              letterSpacing: -0.2,
+            12.verticalSpace,
+            Text(
+              name,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w700,
+                color: isDark ? Colors.white : AppColors.textMain,
+                letterSpacing: -0.2,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

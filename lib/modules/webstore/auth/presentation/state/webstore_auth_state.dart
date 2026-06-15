@@ -23,7 +23,13 @@ class WebStoreAuthLoading extends WebStoreAuthState {
 /// Login/Register success - contains user data and token
 class WebStoreAuthSuccess extends WebStoreAuthState {
   final WebStoreAuthResponse authResponse;
-  const WebStoreAuthSuccess(this.authResponse);
+  final bool isSocialLogin;
+  final String? customMobile;
+  const WebStoreAuthSuccess(
+    this.authResponse, {
+    this.isSocialLogin = false,
+    this.customMobile,
+  });
 }
 
 /// Error state with message

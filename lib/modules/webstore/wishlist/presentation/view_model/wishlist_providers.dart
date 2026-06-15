@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/modules/webstore/catalog/data/repositories/wishlist_repository.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
@@ -15,6 +16,10 @@ final wishlistProvider =
 class WishlistNotifier extends AsyncNotifier<List<WebStoreProduct>> {
   @override
   Future<List<WebStoreProduct>> build() async {
+    final auth = ref.watch(authStateProvider);
+    if (auth.status != AuthStatus.authenticated) {
+      return const [];
+    }
     return _fetchWishlist();
   }
 

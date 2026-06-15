@@ -13,6 +13,9 @@ import 'package:erp/modules/webstore/auth/presentation/view_model/webstore_auth_
 import 'package:erp/modules/webstore/auth/presentation/widgets/webstore_auth_scaffold.dart';
 import 'package:erp/modules/webstore/auth/presentation/widgets/auth_glass_card.dart';
 import 'package:erp/modules/webstore/auth/presentation/widgets/auth_ui_components.dart';
+import 'package:erp/modules/webstore/auth/presentation/widgets/social_login_section.dart';
+import 'package:erp/core/common_widget/app_bottom_sheet/branch_selection_sheet.dart';
+import 'package:erp/core/common_widget/app_bottom_sheet/phone_input_sheet.dart';
 
 class WebStoreLoginScreen extends ConsumerStatefulWidget {
   const WebStoreLoginScreen({super.key});
@@ -45,6 +48,14 @@ class _WebStoreLoginScreenState extends ConsumerState<WebStoreLoginScreen> {
     }
   }
 
+  void _onSocialLogin(String provider) {
+    ref.read(webStoreAuthViewModelProvider.notifier).socialLogin(
+          providerType: provider,
+          providerIdentifier: 'dummy-id-${DateTime.now().millisecondsSinceEpoch}',
+          name: 'Social User',
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(webStoreAuthViewModelProvider);
@@ -61,20 +72,32 @@ class _WebStoreLoginScreenState extends ConsumerState<WebStoreLoginScreen> {
       }
       if (next is WebStoreAuthSuccess) {
         final serverMsg = next.authResponse.message;
-        AppStatusDialog.showSuccess(
-          context,
-          title: LocaleKeys.webstore.auth.login_success_title.tr(
-            context: context,
-          ),
-          message:
-              serverMsg ??
-              LocaleKeys.webstore.auth.login_success_message.tr(
-                context: context,
-              ),
-          onActionPressed: () {
-            AppNavigator.replace(context, AppRouteNames.webstoreMain);
-          },
-        );
+        final user = next.authResponse.user;
+        if (!user.verifyPhone) {
+          AppNavigator.replace(
+            context,
+            AppRouteNames.webstoreOtp,
+            arguments: {
+              'identifier': next.customMobile ?? user.mobile ?? '',
+              'type': 'registration',
+            },
+          );
+        } else {
+          AppStatusDialog.showSuccess(
+            context,
+            title: LocaleKeys.webstore.auth.login_success_title.tr(
+              context: context,
+            ),
+            message:
+                serverMsg ??
+                LocaleKeys.webstore.auth.login_success_message.tr(
+                  context: context,
+                ),
+            onActionPressed: () {
+              AppNavigator.replace(context, AppRouteNames.webstoreMain);
+            },
+          );
+        }
       }
     });
 
@@ -104,7 +127,13 @@ class _WebStoreLoginScreenState extends ConsumerState<WebStoreLoginScreen> {
                     _buildFormFields(),
                     const SizedBox(height: 20),
                     _buildLoginButton(isLoading),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 24),
+                    SocialLoginSection(
+                      onGoogleTap: () => _onSocialLogin('google'),
+                      onFacebookTap: () => _onSocialLogin('facebook'),
+                      onAppleTap: () => _onSocialLogin('apple'),
+                    ),
+                    const SizedBox(height: 24),
                     AuthFooter(
                       text: LocaleKeys.webstore.auth.no_account.tr(
                         context: context,

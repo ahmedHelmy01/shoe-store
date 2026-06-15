@@ -162,19 +162,19 @@ class _WebStoreOtpScreenState extends ConsumerState<WebStoreOtpScreen> {
               Text(
                 LocaleKeys.webstore.auth.otp_title.tr(context: context),
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textMain,
+                  color: Theme.of(context).textTheme.titleLarge?.color ?? AppColors.textMain,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 '${LocaleKeys.webstore.auth.otp_subtitle.tr(context: context)}\n${widget.identifier}',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
-                  color: AppColors.textSecondary,
+                  color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ?? AppColors.textSecondary,
                   height: 1.5,
                 ),
               ),
@@ -186,6 +186,8 @@ class _WebStoreOtpScreenState extends ConsumerState<WebStoreOtpScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(6, (index) {
+                    final theme = Theme.of(context);
+                    final isDark = theme.brightness == Brightness.dark;
                     return Expanded(
                       child: Container(
                         height: 64,
@@ -196,10 +198,10 @@ class _WebStoreOtpScreenState extends ConsumerState<WebStoreOtpScreen> {
                           textAlign: TextAlign.center,
                           keyboardType: TextInputType.number,
                           maxLength: 1,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textMain,
+                            color: theme.textTheme.bodyLarge?.color ?? AppColors.textMain,
                           ),
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
@@ -207,18 +209,24 @@ class _WebStoreOtpScreenState extends ConsumerState<WebStoreOtpScreen> {
                           decoration: InputDecoration(
                             counterText: '',
                             filled: true,
-                            fillColor: AppColors.surface,
+                            fillColor: isDark
+                                ? Colors.white.withValues(alpha: 0.08)
+                                : AppColors.surface,
                             contentPadding: EdgeInsets.zero,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
-                              borderSide: const BorderSide(
-                                  color: AppColors.textHint, width: 1),
+                              borderSide: BorderSide(
+                                  color: isDark
+                                      ? Colors.white.withValues(alpha: 0.15)
+                                      : AppColors.textHint,
+                                  width: 1),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
                               borderSide: BorderSide(
-                                  color:
-                                      AppColors.textHint.withValues(alpha: 0.3),
+                                  color: isDark
+                                      ? Colors.white.withValues(alpha: 0.12)
+                                      : AppColors.textHint.withValues(alpha: 0.3),
                                   width: 1),
                             ),
                             focusedBorder: OutlineInputBorder(

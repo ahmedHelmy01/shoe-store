@@ -24,7 +24,7 @@ class VouchersWidget extends ConsumerWidget {
         children: [
           AppSectionHeader(
             title: LocaleKeys.webstore.home.vouchers_title.tr(context: context),
-            onViewAllTap: () {},
+
           ),
           SizedBox(
             height: 110.h,
@@ -57,11 +57,13 @@ class VouchersWidget extends ConsumerWidget {
                   isDark ? const Color(0xFFCE93D8) : const Color(0xFF7B1FA2),
                   isDark ? const Color(0xFFFFCC80) : const Color(0xFFF57C00),
                 ];
-                
+
                 return _buildVoucherCard(
                   coupon.valueLabel,
                   coupon.description,
-                  isDark ? darkColors[index % darkColors.length] : lightColors[index % lightColors.length],
+                  isDark
+                      ? darkColors[index % darkColors.length]
+                      : lightColors[index % lightColors.length],
                   textColors[index % textColors.length],
                 );
               },
@@ -72,7 +74,8 @@ class VouchersWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildVoucherCard(String discount, String description, Color bgColor, Color textColor) {
+  Widget _buildVoucherCard(String discount, String description, Color bgColor,
+      Color textColor) {
     return AppCard(
       width: 200.w,
       backgroundColor: bgColor,
@@ -106,7 +109,7 @@ class VouchersWidget extends ConsumerWidget {
               ),
             ),
           ),
-          
+
           Padding(
             padding: EdgeInsets.all(16.w),
             child: Row(
@@ -138,7 +141,8 @@ class VouchersWidget extends ConsumerWidget {
                     ],
                   ),
                 ),
-                Icon(Icons.card_giftcard_rounded, color: textColor.withValues(alpha: 0.3), size: 36),
+                Icon(Icons.card_giftcard_rounded,
+                    color: textColor.withValues(alpha: 0.3), size: 36),
               ],
             ),
           ),

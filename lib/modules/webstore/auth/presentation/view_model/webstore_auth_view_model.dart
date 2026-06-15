@@ -65,7 +65,7 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
               userId: authResponse.user.id.toString(),
             );
 
-        state = WebStoreAuthSuccess(authResponse);
+        state = WebStoreAuthSuccess(authResponse, customMobile: mobile);
       },
       failure: (exception) {
         state = WebStoreAuthError(exception.message);
@@ -100,7 +100,7 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
               token: authResponse.token,
               userId: authResponse.user.id.toString(),
             );
-        state = WebStoreAuthSuccess(authResponse);
+        state = WebStoreAuthSuccess(authResponse, customMobile: loginName);
       },
       failure: (exception) => state = WebStoreAuthError(exception.message),
     );
@@ -175,7 +175,7 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
                 token: authResponse.token,
                 userId: authResponse.user.id.toString(),
               );
-          state = WebStoreAuthSuccess(authResponse);
+          state = WebStoreAuthSuccess(authResponse, isSocialLogin: true, customMobile: mobile);
         },
         failure: (exception) => state = WebStoreAuthError(exception.message),
       );

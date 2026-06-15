@@ -13,6 +13,7 @@ class WebStoreUser {
   final int? cityId;
   final String? address;
   final int points;
+  final bool verifyPhone;
 
   const WebStoreUser({
     required this.id,
@@ -24,6 +25,7 @@ class WebStoreUser {
     this.cityId,
     this.address,
     this.points = 0,
+    this.verifyPhone = true,
   });
 
   factory WebStoreUser.fromJson(Map<String, dynamic> json) {
@@ -37,6 +39,7 @@ class WebStoreUser {
       cityId: json['city_id'] as int?,
       address: json['address'] as String?,
       points: json['points'] as int? ?? 0,
+      verifyPhone: json['verifyPhone'] != false && json['verify_phone'] != false,
     );
   }
 
@@ -51,6 +54,7 @@ class WebStoreUser {
       'city_id': cityId,
       'address': address,
       'points': points,
+      'verifyPhone': verifyPhone,
     };
   }
 }

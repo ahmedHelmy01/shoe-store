@@ -12,12 +12,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class CatalogProductsView extends ConsumerStatefulWidget {
   final String? initialPreset;
   final int? initialCategoryId;
+  final int? initialManufacturerId;
   final String? initialScreenTitle;
 
   const CatalogProductsView({
     super.key,
     this.initialPreset,
     this.initialCategoryId,
+    this.initialManufacturerId,
     this.initialScreenTitle,
   });
 
@@ -44,6 +46,7 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
   void initState() {
     super.initState();
     _selectedCategoryId = widget.initialCategoryId;
+    _selectedManufacturerId = widget.initialManufacturerId;
     _scrollController.addListener(_onScroll);
     _applyPreset(widget.initialPreset);
     Future.microtask(_applyFiltersToApi);

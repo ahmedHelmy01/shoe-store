@@ -139,11 +139,19 @@ class RouteGenerator {
           String v => int.tryParse(v),
           _ => null,
         };
+        final manufacturerIdArg = args['manufacturer_id'] ?? args['manufacturerId'];
+        final int? initialManufacturerId = switch (manufacturerIdArg) {
+          int v => v,
+          num v => v.toInt(),
+          String v => int.tryParse(v),
+          _ => null,
+        };
         final categoryTitle = args['category_title'] as String?;
         return MaterialPageRoute(
           builder: (_) => CatalogProductsView(
             initialPreset: preset,
             initialCategoryId: initialCategoryId,
+            initialManufacturerId: initialManufacturerId,
             initialScreenTitle: categoryTitle,
           ),
         );

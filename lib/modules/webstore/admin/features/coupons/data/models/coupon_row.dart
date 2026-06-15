@@ -35,28 +35,30 @@ class CouponRow {
     // Map API int values to internal string constants
     final rawType = json['discount_type'];
     String typeStr = 'percentage';
-    if (rawType == 2 || json['discount_type_label']?.toString().toLowerCase().contains('fixed') == true) {
+    if (rawType == 2 ||
+        rawType?.toString() == '2' ||
+        json['discount_type_label']?.toString().toLowerCase().contains('fixed') == true) {
       typeStr = 'fixed';
     }
 
-    final imagePath = json['image'] as String?;
-    final providedUrl = json['image_url'] as String?;
+    final imagePath = json['image']?.toString();
+    final providedUrl = json['image_url']?.toString();
 
     return CouponRow(
-      id: json['id'] as int? ?? 0,
-      code: json['code'] as String? ?? '',
+      id: _parseInt(json['id']),
+      code: json['code']?.toString() ?? '',
       discountType: typeStr,
-      discountValue: double.tryParse(json['discount_value']?.toString() ?? '0') ?? 0.0,
-      minimumOrderValue: double.tryParse(json['minimum_order_value']?.toString() ?? '0') ?? 0.0,
-      maxUses: json['usage_limit'] as int? ?? 0,
-      maxUsesPerCustomer: json['per_user_limit'] as int? ?? 0,
-      startsAt: json['start_date'] as String?,
-      expiresAt: json['end_date'] as String?,
+      discountValue: _parseDouble(json['discount_value']),
+      minimumOrderValue: _parseDouble(json['minimum_order_value']),
+      maxUses: _parseInt(json['usage_limit']),
+      maxUsesPerCustomer: _parseInt(json['per_user_limit']),
+      startsAt: json['start_date']?.toString(),
+      expiresAt: json['end_date']?.toString(),
       image: imagePath,
       imageUrl: (providedUrl != null && providedUrl.isNotEmpty)
           ? providedUrl
-          : (imagePath != null ? NetworkUrl.fullUrl(imagePath) : null),
-      isActive: json['is_active'] == true || json['is_active'] == 1,
+          : (imagePath != null && imagePath.isNotEmpty ? NetworkUrl.fullUrl(imagePath) : null),
+      isActive: _parseBool(json['is_active']),
     );
   }
 
@@ -74,4 +76,26 @@ class CouponRow {
       'is_active': isActive,
     };
   }
+}
+
+int _parseInt(dynamic value, [int defaultValue = 0]) {
+  if (value == null) return defaultValue;
+  if (value is int) return value;
+  if (value is double) return value.toInt();
+  return double.tryParse(value.toString())?.toInt() ?? defaultValue;
+}
+
+double _parseDouble(dynamic value, [double defaultValue = 0.0]) {
+  if (value == null) return defaultValue;
+  if (value is double) return value;
+  if (value is int) return value.toDouble();
+  return double.tryParse(value.toString()) ?? defaultValue;
+}
+
+bool _parseBool(dynamic value, [bool defaultValue = false]) {
+  if (value == null) return defaultValue;
+  if (value is bool) return value;
+  if (value is num) return value == 1;
+  final str = value.toString().toLowerCase();
+  return str == 'true' || str == '1';
 }

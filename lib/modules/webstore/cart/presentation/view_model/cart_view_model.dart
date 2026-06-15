@@ -18,6 +18,16 @@ class CartNotifier extends Notifier<List<CartItemModel>> {
 
   @override
   List<CartItemModel> build() {
+    final auth = ref.watch(authStateProvider);
+    if (auth.status != AuthStatus.authenticated) {
+      // Clear cache when logged out
+      final prefs = ref.read(sharedPreferencesProvider);
+      prefs.remove(_cacheKey);
+      _cartId = null;
+      _serverSubtotal = null;
+      return const [];
+    }
+
     _loadFromCache();
     // Fetch latest cart state from server
     Future.microtask(() => fetchCart());
@@ -46,6 +56,9 @@ class CartNotifier extends Notifier<List<CartItemModel>> {
   }
 
   Future<void> fetchCart() async {
+    final auth = ref.read(authStateProvider);
+    if (auth.status != AuthStatus.authenticated) return;
+
     _isLoading = true;
     final repository = ref.read(cartRepositoryProvider);
     final result = await repository.getCart();

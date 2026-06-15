@@ -19,6 +19,10 @@ final pointsProvider = AsyncNotifierProvider<PointsNotifier, PointsModel>(() {
 class PointsNotifier extends AsyncNotifier<PointsModel> {
   @override
   Future<PointsModel> build() async {
+    final auth = ref.watch(authStateProvider);
+    if (auth.status != AuthStatus.authenticated) {
+      return PointsModel(balance: 0, transactions: const []);
+    }
     return _fetchPoints();
   }
 

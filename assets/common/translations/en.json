@@ -371,5 +371,6 @@
       "title": "Addresses",
       "subtitle": "Manage your delivery addresses for quick ordering"
     }
-  }
+  },
+  "Unauthenticated.": "Please log in first"
 }
