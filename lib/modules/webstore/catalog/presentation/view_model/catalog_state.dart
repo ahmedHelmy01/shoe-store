@@ -72,13 +72,14 @@ class ProductsState {
     bool? isLoadingMore,
     String? errorMessage,
     PaginationMeta? meta,
+    bool clearMeta = false,
   }) {
     return ProductsState(
       items: items ?? this.items,
       isLoading: isLoading ?? this.isLoading,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       errorMessage: errorMessage ?? this.errorMessage,
-      meta: meta ?? this.meta,
+      meta: clearMeta ? null : (meta ?? this.meta),
     );
   }
 }

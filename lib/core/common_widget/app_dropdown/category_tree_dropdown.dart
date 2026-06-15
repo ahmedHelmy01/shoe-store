@@ -3,7 +3,7 @@ import 'package:erp/core/constants/app_constants.dart';
 
 /// A flat item that represents one row in the category tree dropdown.
 class CategoryTreeItem {
-  final int id;
+  final int? id;
   final String name;
   final bool isChild;
 
@@ -43,7 +43,7 @@ class CategoryTreeDropdown extends StatefulWidget {
     final result = <CategoryTreeItem>[];
     for (final cat in categories) {
       final map = cat as Map<String, dynamic>;
-      final id = map['id'] as int;
+      final id = map['id'] as int?;
       final name = (map['name'] ?? map['name_ar'] ?? map['name_en'] ?? 'بدون اسم').toString();
       result.add(CategoryTreeItem(id: id, name: name, isChild: false));
 
@@ -51,7 +51,7 @@ class CategoryTreeDropdown extends StatefulWidget {
       if (children != null) {
         for (final child in children) {
           final childMap = child as Map<String, dynamic>;
-          final childId = childMap['id'] as int;
+          final childId = childMap['id'] as int?;
           final childName = (childMap['name'] ?? childMap['name_ar'] ?? childMap['name_en'] ?? 'بدون اسم').toString();
           result.add(CategoryTreeItem(id: childId, name: childName, isChild: true));
         }
@@ -201,7 +201,7 @@ class _DropdownOverlay extends StatelessWidget {
   final double fieldWidth;
   final List<CategoryTreeItem> items;
   final int? selectedValue;
-  final ValueChanged<int> onSelect;
+  final ValueChanged<int?> onSelect;
   final VoidCallback onDismiss;
 
   const _DropdownOverlay({

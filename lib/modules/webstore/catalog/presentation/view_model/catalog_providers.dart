@@ -15,6 +15,157 @@ import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_state.dart';
 
 // ═══════════════════════════════════════════════════════════════
+// 📦 PRODUCTS LIST HELPERS
+// ═══════════════════════════════════════════════════════════════
+
+String _productsQueryFingerprint(PaginationParams params) {
+  final query = Map<String, dynamic>.from(params.toQueryParameters());
+  query.remove('page');
+  final keys = query.keys.toList()..sort();
+  return keys.map((key) => '$key=${query[key]}').join('|');
+}
+
+String _productsCacheKey(String prefix, PaginationParams params) {
+  return '$prefix${_productsQueryFingerprint(params.copyWith(page: 1))}';
+}
+
+List<WebStoreProduct> _readProductsCache(Ref ref, String cacheKey) {
+  try {
+    final prefs = ref.read(sharedPreferencesProvider);
+    final cachedData = prefs.getString(cacheKey);
+    if (cachedData == null) return const [];
+
+    final decoded = jsonDecode(cachedData) as Map<String, dynamic>;
+    final list = decoded['data'] as List? ?? const [];
+    return list
+        .map(
+          (item) => WebStoreProduct.fromJson(
+            Map<String, dynamic>.from(item as Map),
+          ),
+        )
+        .toList();
+  } catch (e) {
+    debugPrint('❌ Products cache read error ($cacheKey): $e');
+    return const [];
+  }
+}
+
+void _writeProductsCache(Ref ref, String cacheKey, Map<String, dynamic> data) {
+  try {
+    final prefs = ref.read(sharedPreferencesProvider);
+    prefs.setString(cacheKey, jsonEncode(data));
+  } catch (e) {
+    debugPrint('❌ Products cache write error ($cacheKey): $e');
+  }
+}
+
+class _PaginatedProductsController {
+  _PaginatedProductsController({
+    required this.ref,
+    required this.cacheKeyPrefix,
+    required this.readState,
+    required this.writeState,
+    required this.readParams,
+    required this.writeParams,
+  });
+
+  final Ref ref;
+  final String cacheKeyPrefix;
+  final ProductsState Function() readState;
+  final void Function(ProductsState) writeState;
+  final PaginationParams Function() readParams;
+  final void Function(PaginationParams) writeParams;
+
+  int _requestGeneration = 0;
+
+  Future<void> getProducts({bool isRefresh = false}) async {
+    final requestId = ++_requestGeneration;
+
+    if (isRefresh) {
+      writeParams(readParams().copyWith(page: 1));
+      final cacheKey = _productsCacheKey(cacheKeyPrefix, readParams());
+      final cachedItems = _readProductsCache(ref, cacheKey);
+
+      writeState(
+        readState().copyWith(
+          isLoading: true,
+          isLoadingMore: false,
+          items: cachedItems,
+          errorMessage: null,
+          clearMeta: true,
+        ),
+      );
+    } else if (readState().items.isEmpty) {
+      writeState(readState().copyWith(isLoading: true));
+    } else if (readState().isLoadingMore || !readState().hasMore) {
+      return;
+    } else {
+      writeState(readState().copyWith(isLoadingMore: true));
+    }
+
+    final repository = ref.read(catalogRepositoryProvider);
+    final result = await repository.getProducts(
+      queryParams: readParams().toQueryParameters(),
+    );
+
+    if (requestId != _requestGeneration) return;
+
+    result.when(
+      success: (data) {
+        if (requestId != _requestGeneration) return;
+
+        final paginated = PaginatedResponse.fromJson(
+          data,
+          (item) => WebStoreProduct.fromJson(item),
+        );
+
+        writeState(
+          readState().copyWith(
+            isLoading: false,
+            isLoadingMore: false,
+            items: isRefresh
+                ? paginated.data
+                : [...readState().items, ...paginated.data],
+            meta: paginated.meta,
+            errorMessage: null,
+          ),
+        );
+
+        if (isRefresh) {
+          final cacheKey = _productsCacheKey(cacheKeyPrefix, readParams());
+          _writeProductsCache(ref, cacheKey, data);
+        }
+
+        writeParams(
+          readParams().copyWith(page: paginated.meta.currentPage + 1),
+        );
+      },
+      failure: (failure) {
+        if (requestId != _requestGeneration) return;
+
+        if (readState().items.isNotEmpty) {
+          writeState(
+            readState().copyWith(
+              isLoading: false,
+              isLoadingMore: false,
+              errorMessage: null,
+            ),
+          );
+        } else {
+          writeState(
+            readState().copyWith(
+              isLoading: false,
+              isLoadingMore: false,
+              errorMessage: failure.message,
+            ),
+          );
+        }
+      },
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
 // 📦 DATA PROVIDERS
 // ═══════════════════════════════════════════════════════════════
 
@@ -270,108 +421,24 @@ final catalogProductsProvider =
 
 class ProductsNotifier extends Notifier<ProductsState> {
   PaginationParams _params = const PaginationParams(page: 1);
+  _PaginatedProductsController? _fetch;
+
+  _PaginatedProductsController get _loader => _fetch ??= _PaginatedProductsController(
+        ref: ref,
+        cacheKeyPrefix: 'webstore_products_cache_',
+        readState: () => state,
+        writeState: (value) => state = value,
+        readParams: () => _params,
+        writeParams: (value) => _params = value,
+      );
 
   @override
   ProductsState build() {
-    // Initial fetch is triggered by category selection
-    return const ProductsState();
+    return const ProductsState(isLoading: true);
   }
 
-  Future<void> getProducts({bool isRefresh = false}) async {
-    final categoryId = _params.filters?['category_id'] as int?;
-    final cacheKey = categoryId != null
-        ? 'webstore_products_cache_category_$categoryId'
-        : 'webstore_products_cache_all';
-
-    if (isRefresh) {
-      _params = _params.copyWith(page: 1);
-
-      // Load cached products synchronously for this category to avoid a blank loading screen offline!
-      List<WebStoreProduct> cachedItems = [];
-      try {
-        final prefs = ref.read(sharedPreferencesProvider);
-        final cachedData = prefs.getString(cacheKey);
-        if (cachedData != null) {
-          final Map<String, dynamic> decoded = jsonDecode(cachedData);
-          final List<dynamic> list = decoded['data'] ?? [];
-          cachedItems = list
-              .map(
-                (item) => WebStoreProduct.fromJson(
-                  Map<String, dynamic>.from(item as Map),
-                ),
-              )
-              .toList();
-        }
-      } catch (e) {
-        debugPrint('❌ ProductsNotifier: Error loading cached products: $e');
-      }
-
-      state = state.copyWith(
-        isLoading: true,
-        items: cachedItems,
-        errorMessage: null,
-      );
-    } else if (state.items.isEmpty) {
-      state = state.copyWith(isLoading: true);
-    } else if (state.isLoadingMore || !state.hasMore) {
-      return;
-    } else {
-      state = state.copyWith(isLoadingMore: true);
-    }
-
-    final repository = ref.read(catalogRepositoryProvider);
-    final result = await repository.getProducts(
-      queryParams: _params.toQueryParameters(),
-    );
-
-    result.when(
-      success: (data) {
-        final paginated = PaginatedResponse.fromJson(
-          data,
-          (item) => WebStoreProduct.fromJson(item),
-        );
-
-        state = state.copyWith(
-          isLoading: false,
-          isLoadingMore: false,
-          items: isRefresh
-              ? paginated.data
-              : [...state.items, ...paginated.data],
-          meta: paginated.meta,
-          errorMessage: null,
-        );
-
-        // Cache the refreshed successful first page products
-        if (isRefresh) {
-          try {
-            final prefs = ref.read(sharedPreferencesProvider);
-            prefs.setString(cacheKey, jsonEncode(data));
-          } catch (e) {
-            debugPrint('❌ ProductsNotifier: Error caching products: $e');
-          }
-        }
-
-        _params = _params.copyWith(page: paginated.meta.currentPage + 1);
-      },
-      failure: (failure) {
-        // If we loaded cached items successfully, do NOT show the fullscreen error widget.
-        // Instead, just clear loading state so the cached items remain visible and interactive!
-        if (state.items.isNotEmpty) {
-          state = state.copyWith(
-            isLoading: false,
-            isLoadingMore: false,
-            errorMessage: null,
-          );
-        } else {
-          state = state.copyWith(
-            isLoading: false,
-            isLoadingMore: false,
-            errorMessage: failure.message,
-          );
-        }
-      },
-    );
-  }
+  Future<void> getProducts({bool isRefresh = false}) =>
+      _loader.getProducts(isRefresh: isRefresh);
 
   void filterByCategory(int? categoryId) {
     final newFilters = Map<String, dynamic>.from(_params.filters ?? {});
@@ -489,107 +556,24 @@ final presetProductsProvider =
 
 class PresetProductsNotifier extends Notifier<ProductsState> {
   PaginationParams _params = const PaginationParams(page: 1);
+  _PaginatedProductsController? _fetch;
+
+  _PaginatedProductsController get _loader => _fetch ??= _PaginatedProductsController(
+        ref: ref,
+        cacheKeyPrefix: 'webstore_products_preset_cache_',
+        readState: () => state,
+        writeState: (value) => state = value,
+        readParams: () => _params,
+        writeParams: (value) => _params = value,
+      );
 
   @override
   ProductsState build() {
-    return const ProductsState();
+    return const ProductsState(isLoading: true);
   }
 
-  Future<void> getProducts({bool isRefresh = false}) async {
-    final categoryId = _params.filters?['category_id'] as int?;
-    final cacheKey = categoryId != null
-        ? 'webstore_products_preset_cache_category_$categoryId'
-        : 'webstore_products_preset_cache_all';
-
-    if (isRefresh) {
-      _params = _params.copyWith(page: 1);
-
-      // Load cached products synchronously
-      List<WebStoreProduct> cachedItems = [];
-      try {
-        final prefs = ref.read(sharedPreferencesProvider);
-        final cachedData = prefs.getString(cacheKey);
-        if (cachedData != null) {
-          final Map<String, dynamic> decoded = jsonDecode(cachedData);
-          final List<dynamic> list = decoded['data'] ?? [];
-          cachedItems = list
-              .map(
-                (item) => WebStoreProduct.fromJson(
-                  Map<String, dynamic>.from(item as Map),
-                ),
-              )
-              .toList();
-        }
-      } catch (e) {
-        debugPrint(
-          '❌ PresetProductsNotifier: Error loading cached products: $e',
-        );
-      }
-
-      state = state.copyWith(
-        isLoading: true,
-        items: cachedItems,
-        errorMessage: null,
-      );
-    } else if (state.items.isEmpty) {
-      state = state.copyWith(isLoading: true);
-    } else if (state.isLoadingMore || !state.hasMore) {
-      return;
-    } else {
-      state = state.copyWith(isLoadingMore: true);
-    }
-
-    final repository = ref.read(catalogRepositoryProvider);
-    final result = await repository.getProducts(
-      queryParams: _params.toQueryParameters(),
-    );
-
-    result.when(
-      success: (data) {
-        final paginated = PaginatedResponse.fromJson(
-          data,
-          (item) => WebStoreProduct.fromJson(item),
-        );
-
-        state = state.copyWith(
-          isLoading: false,
-          isLoadingMore: false,
-          items: isRefresh
-              ? paginated.data
-              : [...state.items, ...paginated.data],
-          meta: paginated.meta,
-          errorMessage: null,
-        );
-
-        // Cache the refreshed successful first page products
-        if (isRefresh) {
-          try {
-            final prefs = ref.read(sharedPreferencesProvider);
-            prefs.setString(cacheKey, jsonEncode(data));
-          } catch (e) {
-            debugPrint('❌ PresetProductsNotifier: Error caching products: $e');
-          }
-        }
-
-        _params = _params.copyWith(page: paginated.meta.currentPage + 1);
-      },
-      failure: (failure) {
-        if (state.items.isNotEmpty) {
-          state = state.copyWith(
-            isLoading: false,
-            isLoadingMore: false,
-            errorMessage: null,
-          );
-        } else {
-          state = state.copyWith(
-            isLoading: false,
-            isLoadingMore: false,
-            errorMessage: failure.message,
-          );
-        }
-      },
-    );
-  }
+  Future<void> getProducts({bool isRefresh = false}) =>
+      _loader.getProducts(isRefresh: isRefresh);
 
   void filterByCategory(int? categoryId) {
     final newFilters = Map<String, dynamic>.from(_params.filters ?? {});

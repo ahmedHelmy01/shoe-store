@@ -1,4 +1,5 @@
 import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
+import 'package:erp/core/common_widget/app_dropdown/category_tree_dropdown.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/catalog/data/models/category_model.dart';
 import 'package:erp/modules/webstore/catalog/data/models/manufacturer_model.dart';
@@ -90,28 +91,18 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
               ),
             ),
             16.verticalSpace,
-            AppDropdown<int?>(
+            CategoryTreeDropdown(
               label: 'القسم',
-              hint: 'اختر القسم',
+              hint: 'كل الأقسام',
               value: selectedCategoryId,
-              borderColor: isDark ? Colors.white10 : const Color(0xFFE8E8E8),
-              focusedBorderColor: AppColors.primaryOrange,
-              fieldHeight: 48.h,
-              menuMaxHeight: 320.h,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 14,
-              ),
               items: [
-                const DropdownMenuItem<int?>(
-                  value: null,
-                  child: Text('كل الأقسام'),
+                const CategoryTreeItem(
+                  id: null,
+                  name: 'كل الأقسام',
+                  isChild: false,
                 ),
-                ...categories.map(
-                  (category) => DropdownMenuItem<int?>(
-                    value: category.id,
-                    child: Text(category.name),
-                  ),
+                ...CategoryTreeDropdown.flattenTree(
+                  categories.map((e) => e.toJson()).toList(),
                 ),
               ],
               onChanged: onCategoryChanged,

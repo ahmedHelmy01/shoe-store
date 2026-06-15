@@ -41,6 +41,7 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
   double _priceFrom = 0;
   double _priceTo = 1000;
   bool _priceTouched = false;
+  bool _filtersApplied = false;
 
   @override
   void initState() {
@@ -49,7 +50,15 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
     _selectedManufacturerId = widget.initialManufacturerId;
     _scrollController.addListener(_onScroll);
     _applyPreset(widget.initialPreset);
-    Future.microtask(_applyFiltersToApi);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_filtersApplied) {
+      _filtersApplied = true;
+      _applyFiltersToApi();
+    }
   }
 
   void _onScroll() {
