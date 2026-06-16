@@ -70,7 +70,17 @@ class ProductRow {
   });
 
   factory ProductRow.fromJson(Map<String, dynamic> json) {
-    final imagePath = json['image'] as String?;
+    String? normalizePath(String? p) {
+      if (p == null || p.isEmpty) return p;
+      if (p.startsWith('http')) {
+        if (p.contains('/storage/')) {
+          return p.split('/storage/').last;
+        }
+      }
+      return p;
+    }
+
+    final imagePath = normalizePath(json['image'] as String?);
     final providedUrl = json['image_url'] as String?;
     
     final galleryPaths = <String>[];
@@ -78,20 +88,27 @@ class ProductRow {
     
     if (json['images'] is List) {
       for (final e in json['images'] as List) {
+        String? path;
+        String? url;
+
         if (e is Map) {
-          final path = e['image'] as String?;
-          if (path != null && path.isNotEmpty) {
-            galleryPaths.add(path);
-          }
-          final url = e['image_url'] as String?;
-          if (url != null && url.isNotEmpty) {
-            galleryUrls.add(url);
-          } else if (path != null && path.isNotEmpty) {
-            galleryUrls.add(NetworkUrl.fullUrl(path));
-          }
+          path = normalizePath(e['image'] as String?);
+          url = e['image_url'] as String?;
         } else if (e is String) {
-          galleryPaths.add(e);
-          galleryUrls.add(NetworkUrl.fullUrl(e));
+          path = normalizePath(e);
+        }
+
+        if (path != null && path.isNotEmpty) {
+          if (!galleryPaths.contains(path)) {
+            galleryPaths.add(path);
+            
+            // If the URL is obviously broken (double storage), ignore it and regenerate
+            if (url != null && url.contains('/storage/http')) {
+              url = null;
+            }
+            
+            galleryUrls.add(url ?? NetworkUrl.fullUrl(path));
+          }
         }
       }
     }

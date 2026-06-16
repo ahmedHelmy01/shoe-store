@@ -22,18 +22,33 @@ class AddressRow {
   });
 
   factory AddressRow.fromJson(Map<String, dynamic> json) {
+    double? parseDouble(dynamic value) {
+      if (value == null) return null;
+      if (value is num) return value.toDouble();
+      if (value is String) return double.tryParse(value);
+      return null;
+    }
+
+    int? parseInt(dynamic value) {
+      if (value == null) return null;
+      if (value is int) return value;
+      if (value is String) return int.tryParse(value);
+      if (value is num) return value.toInt();
+      return null;
+    }
+
     return AddressRow(
-      id: json['id'] as int? ?? 0,
+      id: parseInt(json['id']) ?? 0,
       name: json['name'] as String? ?? 'Home',
       mobile: json['mobile'] as String?,
-      governorateId: json['governorate_id'] as int?,
-      cityId: json['city_id'] as int?,
+      governorateId: parseInt(json['governorate_id']),
+      cityId: parseInt(json['city_id']),
       addressDetails: json['address_details'] as String?,
-      latitude: (json['latitude'] as num?)?.toDouble(),
-      longitude: (json['longitude'] as num?)?.toDouble(),
+      latitude: parseDouble(json['latitude']),
+      longitude: parseDouble(json['longitude']),
       isDefault: json['is_default'] is bool 
           ? json['is_default'] as bool 
-          : (json['is_default'] as int? ?? 0) == 1,
+          : (parseInt(json['is_default']) ?? 0) == 1,
     );
   }
 

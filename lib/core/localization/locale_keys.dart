@@ -218,7 +218,6 @@ class _WebStoreHome {
   final latest_products = 'webstore.home.latest_products';
   final view_all = 'webstore.home.view_all';
   final medical_services = 'webstore.home.medical_services';
-  final pharmacy_sections = 'webstore.home.pharmacy_sections';
   final most_ordered = 'webstore.home.most_ordered';
   final exclusive_offers = 'webstore.home.exclusive_offers';
   final trusted_brands = 'webstore.home.trusted_brands';

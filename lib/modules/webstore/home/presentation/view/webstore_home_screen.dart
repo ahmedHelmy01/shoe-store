@@ -1,5 +1,4 @@
 import 'package:erp/modules/webstore/points/presentation/view_model/points_providers.dart';
-import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +11,6 @@ import 'package:erp/modules/webstore/home/presentation/view/widgets/unified_head
 import 'package:erp/modules/webstore/home/presentation/view/widgets/loyalty_widget.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/vouchers_widget.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/feature_links_widget.dart';
-import 'package:erp/modules/webstore/home/presentation/view/widgets/category_section.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/ads_widget.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/product_grid_widget.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/company_produce_widget.dart';
@@ -42,7 +40,6 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
     ref.invalidate(sliderVmProvider);
     ref.invalidate(companyProducesVmProvider);
     ref.invalidate(branchVmProvider);
-    ref.invalidate(catalogCategoriesProvider);
     ref.invalidate(pointsProvider);
   }
 
@@ -133,41 +130,25 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                       ],
                     ),
                   ),
-                  16.verticalSpace,
-
-                  // 5. Categories
-                  AppAnimation.fadeInUp(
-                    delay: const Duration(milliseconds: 400),
-                    child: Column(
-                      children: [
-                        AppSectionHeader(
-                          title: LocaleKeys.webstore.home.pharmacy_sections.tr(
-                            context: context,
-                          ),
-                        ),
-                        const CategorySection(),
-                      ],
-                    ),
-                  ),
                   24.verticalSpace,
 
-                  // 6. Vouchers
+                  // 5. Vouchers
                   AppAnimation.fadeInUp(
-                    delay: const Duration(milliseconds: 500),
+                    delay: const Duration(milliseconds: 400),
                     child: const VouchersWidget(),
                   ),
                   24.verticalSpace,
 
-                  // 7. Flash Sale
+                  // 6. Flash Sale
                   AppAnimation.fadeInUp(
-                    delay: const Duration(milliseconds: 600),
+                    delay: const Duration(milliseconds: 500),
                     child: const FlashSaleWidget(),
                   ),
                   24.verticalSpace,
 
-                  // 9. Most Ordered
+                  // 7. Most Ordered
                   AppAnimation.fadeInUp(
-                    delay: const Duration(milliseconds: 700),
+                    delay: const Duration(milliseconds: 600),
                     child: Column(
                       children: [
                         AppSectionHeader(
@@ -189,16 +170,16 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                   ),
                   24.verticalSpace,
 
-                  // 10. Promotional Ads (Header is inside AdsSection now)
+                  // 8. Promotional Ads (Header is inside AdsSection now)
                   AppAnimation.fadeInUp(
-                    delay: const Duration(milliseconds: 800),
+                    delay: const Duration(milliseconds: 700),
                     child: const AdsSection(),
                   ),
                   12.verticalSpace,
 
-                  // 11. Brands
+                  // 9. Brands
                   AppAnimation.fadeInUp(
-                    delay: const Duration(milliseconds: 900),
+                    delay: const Duration(milliseconds: 800),
                     child: Column(
                       children: [
                         AppSectionHeader(
