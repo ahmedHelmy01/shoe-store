@@ -39,6 +39,7 @@ import 'package:erp/modules/webstore/admin/features/customers/reports/presentati
 import 'package:erp/modules/webstore/admin/features/warehouses/presentation/view/warehouses_view.dart';
 import 'package:erp/modules/webstore/admin/features/contacts/presentation/view/contacts_view.dart';
 import 'package:erp/modules/webstore/admin/features/countries/presentation/view/countries_view.dart';
+import 'package:erp/modules/webstore/admin/features/prescriptions/presentation/view/admin_prescriptions_view.dart';
 
 class AdminShell extends ConsumerStatefulWidget {
   final AdminRouteId initial;
@@ -167,6 +168,7 @@ class _AdminShellState extends ConsumerState<AdminShell> {
       AdminRouteId.filters => const FiltersView(),
       AdminRouteId.orderGroup => const OrdersView(),
       AdminRouteId.orders => const OrdersView(),
+      AdminRouteId.prescriptions => const AdminPrescriptionsView(),
       AdminRouteId.orderCreate => const OrderCreateView(),
       AdminRouteId.orderStatuses => const OrderStatusesView(),
       AdminRouteId.coupons => const CouponsView(),

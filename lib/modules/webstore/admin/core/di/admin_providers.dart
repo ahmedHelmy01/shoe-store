@@ -1,3 +1,5 @@
+import 'package:erp/modules/webstore/admin/features/prescriptions/data/datasource/admin_prescriptions_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/prescriptions/data/repositories/admin_prescriptions_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/providers/core_providers.dart';
 
@@ -71,6 +73,7 @@ final propertiesDataSourceProvider = Provider((ref) => PropertiesRemoteDataSourc
 final slidersDataSourceProvider = Provider((ref) => SlidersRemoteDataSource(ref.read(networkServiceProvider)));
 final warehousesDataSourceProvider = Provider((ref) => WarehousesRemoteDataSource(ref.read(networkServiceProvider)));
 final orderStatusesDataSourceProvider = Provider((ref) => OrderStatusesRemoteDataSource(ref.read(networkServiceProvider)));
+final adminPrescriptionsDataSourceProvider = Provider((ref) => AdminPrescriptionsRemoteDataSource(ref.read(networkServiceProvider)));
 final customerGroupsDataSourceProvider = Provider((ref) => CustomerGroupsRemoteDataSource(ref.read(networkServiceProvider)));
 final countriesDataSourceProvider = Provider((ref) => CountriesRemoteDataSource(ref.read(networkServiceProvider)));
 
@@ -160,6 +163,10 @@ final warehousesRepositoryProvider = Provider<IWarehousesRepository>((ref) {
 
 final orderStatusesRepositoryProvider = Provider<IOrderStatusesRepository>((ref) {
   return OrderStatusesRepository(ref.read(orderStatusesDataSourceProvider));
+});
+
+final adminPrescriptionsRepositoryProvider = Provider<IAdminPrescriptionsRepository>((ref) {
+  return AdminPrescriptionsRepository(ref.read(adminPrescriptionsDataSourceProvider));
 });
 
 final customerGroupsRepositoryProvider = Provider<ICustomerGroupsRepository>((ref) {

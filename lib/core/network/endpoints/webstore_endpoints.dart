@@ -137,6 +137,7 @@ class _WebStoreAdmin {
   // Sales
   final String orders = '/api/store/admin/orders';
   final String orderStatuses = '/api/store/admin/order-statuses';
+  final String prescriptions = '/api/store/admin/prescriptions';
   String orderStatusUpdate(int id) => '/api/store/admin/orders/$id/status';
 
   // Localize
