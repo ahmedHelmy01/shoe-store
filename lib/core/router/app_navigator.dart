@@ -17,6 +17,7 @@ class AppRouteNames {
   static const String webstoreOrderDetails = '/webstore/order-details';
   static const String webstorePage = '/webstore/page';
   static const String webstoreCatalogProducts = '/webstore/catalog/products';
+  static const String webstoreCategoryDrillDown = '/webstore/categories/drill';
   static const String webstorePrescriptions = '/webstore/prescriptions';
   static const String webstoreUploadPrescription = '/webstore/prescriptions/upload';
   static const String webstorePrescriptionDetails = '/webstore/prescriptions/details';

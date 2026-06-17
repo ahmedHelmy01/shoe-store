@@ -156,49 +156,25 @@ class _SideCategoryListState extends ConsumerState<SideCategoryList> {
                   ),
                 ),
               ),
-              // Tree structure subcategories under active parent
-              if (isParentActive && category.children.isNotEmpty)
+              // Badge showing subcategory count
+              if (category.children.isNotEmpty)
                 Container(
-                  color: isDark ? Colors.white.withValues(alpha: 0.01) : Colors.grey[50],
-                  padding: EdgeInsets.symmetric(vertical: 4.h),
-                  child: Column(
-                    children: category.children.map((child) {
-                      final isChildSelected = state.selectedCategoryId == child.id;
-                      return GestureDetector(
-                        onTap: () {
-                          ref
-                              .read(catalogCategoriesProvider.notifier)
-                              .selectCategory(child.id);
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 8.w),
-                          margin: EdgeInsets.symmetric(vertical: 2.h),
-                          decoration: BoxDecoration(
-                            border: BorderDirectional(
-                              start: BorderSide(
-                                color: isChildSelected ? AppColors.primaryOrange : Colors.transparent,
-                                width: 2.w,
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            child.name,
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 9.sp,
-                              height: 1.2,
-                              fontWeight: isChildSelected ? FontWeight.bold : FontWeight.normal,
-                              color: isChildSelected
-                                  ? AppColors.primaryOrange
-                                  : (isDark ? Colors.white70 : Colors.black87),
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                  margin: EdgeInsets.only(top: 4.h),
+                  padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                  decoration: BoxDecoration(
+                    color: isParentActive
+                        ? AppColors.primaryOrange.withValues(alpha: 0.15)
+                        : Colors.grey.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Text(
+                    '${category.children.length}',
+                    style: TextStyle(
+                      fontSize: 8.sp,
+                      color: isParentActive
+                          ? AppColors.primaryOrange
+                          : theme.hintColor,
+                    ),
                   ),
                 ),
             ],

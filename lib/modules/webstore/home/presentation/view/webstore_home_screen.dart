@@ -16,6 +16,7 @@ import 'package:erp/modules/webstore/home/presentation/view/widgets/product_grid
 import 'package:erp/modules/webstore/home/presentation/view/widgets/company_produce_widget.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/slider_widget.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/flash_sale_widget.dart';
+import 'package:erp/modules/webstore/home/presentation/view/widgets/home_categories_row.dart';
 import 'package:erp/core/common_widget/app_section_header/app_section_header.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/ads/ads_view_model.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
@@ -114,9 +115,21 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                   ),
                   24.verticalSpace,
 
-                  // 4. Feature Links
+                  // 4. Categories Row
                   AppAnimation.fadeInUp(
                     delay: const Duration(milliseconds: 300),
+                    child: Column(
+                      children: [
+                        AppSectionHeader(title: 'أقسام الصيدلية'),
+                        const HomeCategoriesRow(),
+                      ],
+                    ),
+                  ),
+                  16.verticalSpace,
+
+                  // 5. Feature Links
+                  AppAnimation.fadeInUp(
+                    delay: const Duration(milliseconds: 350),
                     child: Column(
                       children: [
                         AppSectionHeader(

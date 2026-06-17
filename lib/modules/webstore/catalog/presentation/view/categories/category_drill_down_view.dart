@@ -2,75 +2,117 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
-import 'package:erp/modules/webstore/catalog/presentation/view/categories/category_drill_down_view.dart';
+import 'package:erp/modules/webstore/catalog/data/models/category_model.dart';
+import 'package:erp/modules/webstore/catalog/presentation/view/products/catalog_products_view.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
 
-class CatalogView extends ConsumerWidget {
-  const CatalogView({super.key});
+class CategoryDrillDownView extends ConsumerWidget {
+  final int categoryId;
+  final String categoryName;
+
+  const CategoryDrillDownView({
+    super.key,
+    required this.categoryId,
+    required this.categoryName,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(catalogCategoriesProvider);
+    final category = _findCategory(state.items, categoryId);
+
+    if (category == null) {
+      return Scaffold(
+        appBar: AppBar(title: Text(categoryName)),
+        body: const Center(child: Text('التصنيف غير موجود')),
+      );
+    }
+
+    if (category.children.isNotEmpty) {
+      return _ChildrenScreen(category: category);
+    }
+
+    return _ProductsScreen(category: category);
+  }
+
+  WebStoreCategory? _findCategory(List<WebStoreCategory> items, int id) {
+    for (final item in items) {
+      if (item.id == id) return item;
+      final found = _findCategory(item.children, id);
+      if (found != null) return found;
+    }
+    return null;
+  }
+}
+
+class _ChildrenScreen extends StatelessWidget {
+  final WebStoreCategory category;
+
+  const _ChildrenScreen({required this.category});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final categoriesState = ref.watch(catalogCategoriesProvider);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('التصنيفات'),
-        centerTitle: true,
+        title: Text(category.name),
         backgroundColor: theme.colorScheme.surface,
         foregroundColor: theme.colorScheme.onSurface,
         elevation: 0,
         scrolledUnderElevation: 1,
       ),
-      body: categoriesState.isLoading && categoriesState.items.isEmpty
-          ? const Center(child: CircularProgressIndicator.adaptive())
-          : categoriesState.items.isEmpty
-              ? Center(
-                  child: Text(
-                    'لا توجد تصنيفات',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      color: theme.hintColor,
-                    ),
+      body: GridView.builder(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        physics: const BouncingScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          mainAxisSpacing: 10.h,
+          crossAxisSpacing: 8.w,
+          childAspectRatio: 0.65,
+        ),
+        itemCount: category.children.length,
+        itemBuilder: (context, index) {
+          final child = category.children[index];
+          return _CategoryCard(
+            category: child,
+            isDark: isDark,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => CategoryDrillDownView(
+                    categoryId: child.id!,
+                    categoryName: child.name,
                   ),
-                )
-              : GridView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                  physics: const BouncingScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                      mainAxisSpacing: 10.h,
-                      crossAxisSpacing: 8.w,
-                      childAspectRatio: 0.65,
-                    ),
-                  itemCount: categoriesState.items.length,
-                  itemBuilder: (context, index) {
-                    final category = categoriesState.items[index];
-                    return _CategoryCard(
-                      category: category,
-                      isDark: isDark,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => CategoryDrillDownView(
-                              categoryId: category.id!,
-                              categoryName: category.name,
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
                 ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ProductsScreen extends StatelessWidget {
+  final WebStoreCategory category;
+
+  const _ProductsScreen({required this.category});
+
+  @override
+  Widget build(BuildContext context) {
+    return CatalogProductsView(
+      initialCategoryId: category.id,
+      initialScreenTitle: category.name,
     );
   }
 }
 
 class _CategoryCard extends StatelessWidget {
-  final dynamic category;
+  final WebStoreCategory category;
   final bool isDark;
   final VoidCallback onTap;
 
@@ -99,7 +141,7 @@ class _CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accent = _accentFor(category.name);
-    final hasChildren = category.children != null && category.children.isNotEmpty;
+    final hasChildren = category.children.isNotEmpty;
     final productCount = category.productsCount;
 
     return GestureDetector(
