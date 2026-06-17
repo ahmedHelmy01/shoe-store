@@ -11,6 +11,7 @@ import 'package:erp/modules/webstore/wishlist/presentation/view_model/wishlist_p
 import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
 import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
 import 'package:erp/core/localization/locale_keys.dart';
+import 'package:erp/core/providers/core_providers.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class ProductGridCard extends ConsumerWidget {
@@ -124,15 +125,27 @@ class ProductGridCard extends ConsumerWidget {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {
-                              ref
+                            onTap: () async {
+                              final auth = ref.read(authStateProvider);
+                              if (auth.status != AuthStatus.authenticated) {
+                                if (context.mounted) {
+                                  AppSnackBar.showError(
+                                    context,
+                                    LocaleKeys.common.unauthorized.tr(context: context),
+                                  );
+                                }
+                                return;
+                              }
+                              final added = await ref
                                   .read(cartProvider.notifier)
                                   .addToCart(product);
-                              AppSnackBar.showSuccess(
-                                context,
-                                LocaleKeys.webstore.orders.added_to_cart
-                                    .tr(context: context),
-                              );
+                              if (added && context.mounted) {
+                                AppSnackBar.showSuccess(
+                                  context,
+                                  LocaleKeys.webstore.orders.added_to_cart
+                                      .tr(context: context),
+                                );
+                              }
                             },
                             child: Container(
                               height: 28.h,

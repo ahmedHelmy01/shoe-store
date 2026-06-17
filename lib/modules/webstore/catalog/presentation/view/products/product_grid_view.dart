@@ -64,7 +64,7 @@ class ProductGridView extends ConsumerWidget {
           sliver: SliverGrid(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.72,
+              childAspectRatio: 0.6,
               mainAxisSpacing: 12.h,
               crossAxisSpacing: 12.w,
             ),

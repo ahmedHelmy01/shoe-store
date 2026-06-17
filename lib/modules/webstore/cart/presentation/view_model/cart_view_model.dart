@@ -78,12 +78,12 @@ class CartNotifier extends Notifier<List<CartItemModel>> {
     );
   }
 
-  Future<void> addToCart(WebStoreProduct product, {int quantity = 1}) async {
+  Future<bool> addToCart(WebStoreProduct product, {int quantity = 1}) async {
     // If the product is already in the cart, increment its quantity
     final existingItem = state.where((item) => item.product.id == product.id).firstOrNull;
     if (existingItem != null) {
       await incrementQuantity(product.id!, amount: quantity);
-      return;
+      return true;
     }
 
     _isLoading = true;
@@ -93,17 +93,19 @@ class CartNotifier extends Notifier<List<CartItemModel>> {
       'quantity': quantity,
     });
 
-    result.when(
+    return result.when(
       success: (cart) {
         _cartId = cart.id;
         _serverSubtotal = cart.subtotal;
         state = cart.items;
         _saveToCache(cart.items);
         _isLoading = false;
+        return true;
       },
       failure: (error) {
         debugPrint('❌ CartNotifier: Failed to add item: ${error.message}');
         _isLoading = false;
+        return false;
       },
     );
   }

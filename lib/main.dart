@@ -17,4 +17,3 @@ Future<void> main() async {
   final flavor = _parseFlavor(flavorName.isEmpty ? 'webstore' : flavorName);
   await bootstrap(flavor);
 }
-

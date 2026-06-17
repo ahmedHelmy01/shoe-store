@@ -31,7 +31,7 @@ class CartItemModel {
     return CartItemModel(
       id: json['id'] as int,
       product: WebStoreProduct.fromJson(json['product'] as Map<String, dynamic>),
-      variant: json['variant'] as Map<String, dynamic>?,
+      variant: json['variant'] is Map ? json['variant'] as Map<String, dynamic> : null,
       quantity: json['quantity'] as int? ?? 1,
       unitPrice: _parseDouble(json['unit_price']),
       discount: _parseDouble(json['discount']),

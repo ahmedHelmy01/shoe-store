@@ -4,7 +4,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 
-class DetailsImageGallery extends StatelessWidget {
+class DetailsImageGallery extends StatefulWidget {
   final WebStoreProduct product;
   final int selectedImageIndex;
   final Function(int) onImageSelected;
@@ -15,6 +15,58 @@ class DetailsImageGallery extends StatelessWidget {
     required this.selectedImageIndex,
     required this.onImageSelected,
   });
+
+  @override
+  State<DetailsImageGallery> createState() => _DetailsImageGalleryState();
+}
+
+class _DetailsImageGalleryState extends State<DetailsImageGallery> {
+  final TransformationController _transformController = TransformationController();
+  bool _isZoomed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _transformController.addListener(_onTransformChanged);
+  }
+
+  @override
+  void didUpdateWidget(DetailsImageGallery oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedImageIndex != widget.selectedImageIndex) {
+      _resetZoom();
+    }
+  }
+
+  @override
+  void dispose() {
+    _transformController.removeListener(_onTransformChanged);
+    _transformController.dispose();
+    super.dispose();
+  }
+
+  void _onTransformChanged() {
+    final scale = _transformController.value.getMaxScaleOnAxis();
+    if (_isZoomed && scale <= 1.05) {
+      setState(() => _isZoomed = false);
+    } else if (!_isZoomed && scale > 1.05) {
+      setState(() => _isZoomed = true);
+    }
+  }
+
+  void _resetZoom() {
+    _transformController.value = Matrix4.identity();
+    setState(() => _isZoomed = false);
+  }
+
+  void _toggleZoom() {
+    if (_isZoomed) {
+      _resetZoom();
+    } else {
+      _transformController.value = Matrix4.diagonal3Values(3.0, 3.0, 1.0);
+      setState(() => _isZoomed = true);
+    }
+  }
 
   String _formatImageUrl(String url) {
     if (url.isEmpty) return '';
@@ -28,9 +80,10 @@ class DetailsImageGallery extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     final allImages = <String>[];
-    if (product.image != null) allImages.add(_formatImageUrl(product.image!));
-    if (product.images != null) {
-      for (final img in product.images!) {
+    if (widget.product.image != null) allImages.add(
+        _formatImageUrl(widget.product.image!));
+    if (widget.product.images != null) {
+      for (final img in widget.product.images!) {
         final formatted = _formatImageUrl(img);
         if (!allImages.contains(formatted)) allImages.add(formatted);
       }
@@ -42,37 +95,67 @@ class DetailsImageGallery extends StatelessWidget {
         Expanded(
           child: GestureDetector(
             onHorizontalDragEnd: (details) {
-              if (details.primaryVelocity != null) {
+              if (!_isZoomed && details.primaryVelocity != null) {
                 if (details.primaryVelocity! < 0 &&
-                    selectedImageIndex < allImages.length - 1) {
-                  onImageSelected(selectedImageIndex + 1);
+                    widget.selectedImageIndex < allImages.length - 1) {
+                  widget.onImageSelected(widget.selectedImageIndex + 1);
                 } else if (details.primaryVelocity! > 0 &&
-                    selectedImageIndex > 0) {
-                  onImageSelected(selectedImageIndex - 1);
+                    widget.selectedImageIndex > 0) {
+                  widget.onImageSelected(widget.selectedImageIndex - 1);
                 }
               }
             },
             child: Container(
               color: isDark ? Colors.grey[900] : Colors.grey[50],
-              child: Image.network(
-                allImages[selectedImageIndex],
-                fit: BoxFit.contain,
-                width: double.infinity,
-                loadingBuilder: (context, child, progress) {
-                  if (progress == null) return child;
-                  return Shimmer.fromColors(
-                    baseColor: Colors.grey.shade200,
-                    highlightColor: Colors.grey.shade100,
-                    child: Container(color: Colors.white),
-                  );
-                },
-                errorBuilder: (_, __, ___) => Center(
-                  child: Icon(
-                    Icons.image_not_supported_outlined,
-                    size: 60.sp,
-                    color: Colors.grey,
+              child: Stack(
+                children: [
+                  InteractiveViewer(
+                    transformationController: _transformController,
+                    panEnabled: true,
+                    minScale: 1.0,
+                    maxScale: 4.0,
+                    child: Image.network(
+                      allImages[widget.selectedImageIndex],
+                      fit: BoxFit.contain,
+                      width: double.infinity,
+                      loadingBuilder: (context, child, progress) {
+                        if (progress == null) return child;
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey.shade200,
+                          highlightColor: Colors.grey.shade100,
+                          child: Container(color: Colors.white),
+                        );
+                      },
+                      errorBuilder: (_, __, ___) =>
+                          Center(
+                            child: Icon(
+                              Icons.image_not_supported_outlined,
+                              size: 60.sp,
+                              color: Colors.grey,
+                            ),
+                          ),
+                    ),
                   ),
-                ),
+                  Positioned(
+                    bottom: 8.h,
+                    right: 8.w,
+                    child: GestureDetector(
+                      onTap: _toggleZoom,
+                      child: Container(
+                        padding: EdgeInsets.all(8.w),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.5),
+                          borderRadius: BorderRadius.circular(20.r),
+                        ),
+                        child: Icon(
+                          _isZoomed ? Icons.zoom_out : Icons.zoom_in,
+                          color: Colors.white,
+                          size: 20.sp,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -86,9 +169,9 @@ class DetailsImageGallery extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
               itemCount: allImages.length,
               itemBuilder: (context, index) {
-                final isSelected = index == selectedImageIndex;
+                final isSelected = index == widget.selectedImageIndex;
                 return GestureDetector(
-                  onTap: () => onImageSelected(index),
+                  onTap: () => widget.onImageSelected(index),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     width: 54.w,
@@ -108,7 +191,7 @@ class DetailsImageGallery extends StatelessWidget {
                         allImages[index],
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) =>
-                            const Icon(Icons.image, size: 20),
+                        const Icon(Icons.image, size: 20),
                       ),
                     ),
                   ),

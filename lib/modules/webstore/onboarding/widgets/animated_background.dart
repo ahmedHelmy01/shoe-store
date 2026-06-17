@@ -20,8 +20,8 @@ class AnimatedBackground extends StatelessWidget {
           center: Alignment.topRight,
           radius: 1.5,
           colors: [
-            gradients[currentPage][1].withOpacity(0.5),
-            gradients[currentPage][0],
+            gradients[currentPage % gradients.length][1].withOpacity(0.5),
+            gradients[currentPage % gradients.length][0],
           ],
           stops: const [0.0, 1.0],
         ),
@@ -32,7 +32,7 @@ class AnimatedBackground extends StatelessWidget {
             center: Alignment.bottomLeft,
             radius: 1.2,
             colors: [
-              gradients[currentPage][0].withOpacity(0.3),
+              gradients[currentPage % gradients.length][0].withOpacity(0.3),
               Colors.transparent,
             ],
           ),

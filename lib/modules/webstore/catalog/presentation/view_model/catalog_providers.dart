@@ -119,6 +119,26 @@ class _PaginatedProductsController {
           (item) => WebStoreProduct.fromJson(item),
         );
 
+        final bool hasMorePages;
+        if (paginated.data.isEmpty && !isRefresh) {
+          hasMorePages = false;
+        } else if (paginated.meta.total > 0 &&
+            (isRefresh
+                ? paginated.data.length
+                : readState().items.length + paginated.data.length) >=
+                paginated.meta.total) {
+          hasMorePages = false;
+        } else {
+          hasMorePages = paginated.meta.currentPage < paginated.meta.lastPage;
+        }
+
+        final metaForState = PaginationMeta(
+          currentPage: paginated.meta.currentPage,
+          lastPage: hasMorePages ? paginated.meta.lastPage : paginated.meta.currentPage,
+          perPage: paginated.meta.perPage,
+          total: paginated.meta.total,
+        );
+
         writeState(
           readState().copyWith(
             isLoading: false,
@@ -126,7 +146,7 @@ class _PaginatedProductsController {
             items: isRefresh
                 ? paginated.data
                 : [...readState().items, ...paginated.data],
-            meta: paginated.meta,
+            meta: metaForState,
             errorMessage: null,
           ),
         );
@@ -136,9 +156,11 @@ class _PaginatedProductsController {
           _writeProductsCache(ref, cacheKey, data);
         }
 
-        writeParams(
-          readParams().copyWith(page: paginated.meta.currentPage + 1),
-        );
+        if (hasMorePages) {
+          writeParams(
+            readParams().copyWith(page: paginated.meta.currentPage + 1),
+          );
+        }
       },
       failure: (failure) {
         if (requestId != _requestGeneration) return;

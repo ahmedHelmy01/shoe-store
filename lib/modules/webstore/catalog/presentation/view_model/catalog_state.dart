@@ -64,7 +64,11 @@ class ProductsState {
     this.meta,
   });
 
-  bool get hasMore => meta != null && meta!.currentPage < meta!.lastPage;
+  bool get hasMore {
+    if (meta == null) return false;
+    if (meta!.total > 0 && items.length >= meta!.total) return false;
+    return meta!.currentPage < meta!.lastPage;
+  }
 
   ProductsState copyWith({
     List<WebStoreProduct>? items,

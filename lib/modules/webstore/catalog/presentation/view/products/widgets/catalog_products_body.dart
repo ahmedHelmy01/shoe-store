@@ -3,11 +3,11 @@ import 'package:erp/core/common_widget/app_error_widget/app_error_widget.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view/products/widgets/product_card.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_state.dart';
-import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/localization/locale_keys.dart';
+import 'package:erp/core/providers/core_providers.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
 import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
@@ -71,7 +71,7 @@ class CatalogProductsBody extends ConsumerWidget {
           sliver: SliverGrid(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.72,
+              childAspectRatio: 0.6,
               mainAxisSpacing: 12.h,
               crossAxisSpacing: 12.w,
             ),
@@ -80,12 +80,24 @@ class CatalogProductsBody extends ConsumerWidget {
               return ProductCard(
                 product: product,
                 onTap: () => onProductTap(product),
-                onAddToCart: () {
-                  ref.read(cartProvider.notifier).addToCart(product);
-                  AppSnackBar.showSuccess(
-                    context,
-                    LocaleKeys.webstore.orders.added_to_cart.tr(context: context),
-                  );
+                onAddToCart: () async {
+                  final auth = ref.read(authStateProvider);
+                  if (auth.status != AuthStatus.authenticated) {
+                    if (context.mounted) {
+                      AppSnackBar.showError(
+                        context,
+                        LocaleKeys.common.unauthorized.tr(context: context),
+                      );
+                    }
+                    return;
+                  }
+                  final added = await ref.read(cartProvider.notifier).addToCart(product);
+                  if (added && context.mounted) {
+                    AppSnackBar.showSuccess(
+                      context,
+                      LocaleKeys.webstore.orders.added_to_cart.tr(context: context),
+                    );
+                  }
                 },
               );
             }, childCount: products.length),

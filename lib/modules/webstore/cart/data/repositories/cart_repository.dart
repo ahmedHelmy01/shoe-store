@@ -26,15 +26,18 @@ class CartRepository extends BaseRepository implements ICartRepository {
   @override
   Future<ApiResult<CartModel>> addItem(Map<String, dynamic> data) =>
       safeApiCall<CartModel>(() async {
-        final res = await _remoteDataSource.addItem(data);
-        return CartModel.fromJson(res as Map<String, dynamic>);
+        await _remoteDataSource.addItem(data);
+        // Some servers return just a success message, so re-fetch the full cart
+        final cart = await _remoteDataSource.getCart();
+        return CartModel.fromJson(cart as Map<String, dynamic>);
       });
 
   @override
   Future<ApiResult<CartModel>> updateItem(int itemId, {required int quantity}) =>
       safeApiCall<CartModel>(() async {
-        final res = await _remoteDataSource.updateItem(itemId, quantity: quantity);
-        return CartModel.fromJson(res as Map<String, dynamic>);
+        await _remoteDataSource.updateItem(itemId, quantity: quantity);
+        final cart = await _remoteDataSource.getCart();
+        return CartModel.fromJson(cart as Map<String, dynamic>);
       });
 
   @override

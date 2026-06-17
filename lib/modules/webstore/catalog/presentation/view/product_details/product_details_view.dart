@@ -17,6 +17,7 @@ import 'package:erp/core/common_widget/app_error_widget/app_error_widget.dart';
 import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/providers/core_providers.dart';
 
 class ProductDetailsView extends ConsumerStatefulWidget {
   final WebStoreProduct product;
@@ -71,12 +72,24 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
       bottomNavigationBar: detailsAsync.maybeWhen(
         data: (fullProduct) => DetailsBottomBar(
           product: fullProduct,
-          onAddToCart: () {
-            ref.read(cartProvider.notifier).addToCart(fullProduct);
-            AppSnackBar.showSuccess(
-              context,
-              LocaleKeys.webstore.orders.added_to_cart.tr(context: context),
-            );
+          onAddToCart: () async {
+            final auth = ref.read(authStateProvider);
+            if (auth.status != AuthStatus.authenticated) {
+              if (context.mounted) {
+                AppSnackBar.showError(
+                  context,
+                  LocaleKeys.common.unauthorized.tr(context: context),
+                );
+              }
+              return;
+            }
+            final added = await ref.read(cartProvider.notifier).addToCart(fullProduct);
+            if (added && context.mounted) {
+              AppSnackBar.showSuccess(
+                context,
+                LocaleKeys.webstore.orders.added_to_cart.tr(context: context),
+              );
+            }
           },
         ),
         orElse: () => const SizedBox.shrink(),

@@ -10,6 +10,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
 import 'package:erp/core/localization/locale_keys.dart';
+import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
 
 class ProductCard extends ConsumerWidget {
@@ -41,13 +42,27 @@ class ProductCard extends ConsumerWidget {
           }
         };
     final effectiveOnAddToCart = onAddToCart ??
-        () {
-          ref.read(cartProvider.notifier).addToCart(product);
-          AppSnackBar.showSuccess(
-            context,
-            LocaleKeys.webstore.orders.added_to_cart.tr(context: context),
-          );
+        () async {
+          final auth = ref.read(authStateProvider);
+          if (auth.status != AuthStatus.authenticated) {
+            if (context.mounted) {
+              AppSnackBar.showError(
+                context,
+                LocaleKeys.common.unauthorized.tr(context: context),
+              );
+            }
+            return;
+          }
+          final added = await ref.read(cartProvider.notifier).addToCart(product);
+          if (added && context.mounted) {
+            AppSnackBar.showSuccess(
+              context,
+              LocaleKeys.webstore.orders.added_to_cart.tr(context: context),
+            );
+          }
         };
+    final currency = AppConstants.currency;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -65,8 +80,9 @@ class ProductCard extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ─── Image Header ────────────────────────────────
+            // ─── Image ───────────────────────────────────────
             Expanded(
+              flex: 7,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -75,9 +91,8 @@ class ProductCard extends ConsumerWidget {
                       top: Radius.circular(16),
                     ),
                     child: Container(
-                      color: Theme.of(
-                        context,
-                      ).hintColor.withValues(alpha: 0.05),
+                      color: Theme.of(context).hintColor.withValues(alpha: 0.05),
+                      padding: const EdgeInsets.all(12),
                       child: Image.network(
                         product.image ?? '',
                         width: double.infinity,
@@ -92,9 +107,7 @@ class ProductCard extends ConsumerWidget {
                           );
                         },
                         errorBuilder: (context, error, stackTrace) => Container(
-                          color: Theme.of(
-                            context,
-                          ).hintColor.withValues(alpha: 0.1),
+                          color: Theme.of(context).hintColor.withValues(alpha: 0.1),
                           child: Icon(
                             Icons.image_not_supported_outlined,
                             color: Theme.of(context).hintColor,
@@ -103,17 +116,13 @@ class ProductCard extends ConsumerWidget {
                       ),
                     ),
                   ),
-
                   // Discount Badge
                   if (product.hasDiscount)
                     Positioned(
                       top: 8,
                       right: 8,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.redAccent,
                           borderRadius: BorderRadius.circular(8),
@@ -128,7 +137,6 @@ class ProductCard extends ConsumerWidget {
                         ),
                       ),
                     ),
-
                   // Wishlist Button
                   Positioned(
                     top: 4,
@@ -148,123 +156,92 @@ class ProductCard extends ConsumerWidget {
             ),
 
             // ─── Product Info ────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.category?.name ?? 'بدون تصنيف',
-                    style: const TextStyle(
-                      color: AppColors.primary,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
+            Expanded(
+              flex: 5,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Brand / Category
+                    Text(
+                      product.brand ?? product.category?.name ?? '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Theme.of(context).hintColor,
+                        fontSize: 11,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    product.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                    const SizedBox(height: 2),
+                    // Name
+                    Text(
+                      product.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        height: 1.15,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Rating
-                  if (product.rating != null && product.rating! > 0)
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.star_rounded,
-                          color: Colors.amber,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          product.rating!.toString(),
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
+                    // Price
+                    if (product.hasDiscount)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Text(
+                          '$currency ${product.oldPrice}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            decoration: TextDecoration.lineThrough,
+                            color: Theme.of(context).hintColor,
+                            fontSize: 10,
                           ),
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '(${product.reviewsCount ?? 0})',
-                          style: const TextStyle(
-                            fontSize: 10,
-                            color: AppColors.textHint,
+                      ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '$currency ${product.price}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: AppColors.primaryOrange,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 30,
+                          height: 30,
+                          child: IconButton.filled(
+                            onPressed: effectiveOnAddToCart,
+                            iconSize: 14,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints.tightFor(
+                              width: 30,
+                              height: 30,
+                            ),
+                            style: IconButton.styleFrom(
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              backgroundColor: AppColors.primaryOrange,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            icon: const Icon(Icons.add_shopping_cart_rounded),
                           ),
                         ),
                       ],
                     ),
-
-                  const SizedBox(height: 10),
-
-                  // Price & Add to Cart
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (product.hasDiscount)
-                              Text(
-                                '${product.oldPrice} ${AppConstants.currency}',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  decoration: TextDecoration.lineThrough,
-                                  color: AppColors.textHint,
-                                  fontSize: 10,
-                                ),
-                              ),
-                            Text(
-                              '${product.price} ${AppConstants.currency}',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: Theme.of(
-                                  context,
-                                ).textTheme.bodyLarge?.color,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Add Button
-                      const SizedBox(width: 8),
-                      SizedBox(
-                        width: 38,
-                        height: 38,
-                        child: IconButton.filled(
-                          onPressed: effectiveOnAddToCart,
-                          iconSize: 18,
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints.tightFor(
-                            width: 38,
-                            height: 38,
-                          ),
-                          style: IconButton.styleFrom(
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            backgroundColor: AppColors.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          icon: const Icon(Icons.add_shopping_cart_rounded),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

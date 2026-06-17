@@ -15,6 +15,7 @@ class CatalogView extends ConsumerStatefulWidget {
 class _CatalogViewState extends ConsumerState<CatalogView> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _productScrollController = ScrollController();
+  bool _isLoadingMore = false;
 
   @override
   void initState() {
@@ -26,9 +27,15 @@ class _CatalogViewState extends ConsumerState<CatalogView> {
   }
 
   void _onScroll() {
+    if (_isLoadingMore) return;
     if (_productScrollController.position.pixels >=
         _productScrollController.position.maxScrollExtent - 200) {
-      ref.read(catalogProductsProvider.notifier).getProducts();
+      _isLoadingMore = true;
+      ref.read(catalogProductsProvider.notifier).getProducts().then((_) {
+        if (mounted) setState(() => _isLoadingMore = false);
+      }).catchError((_) {
+        if (mounted) setState(() => _isLoadingMore = false);
+      });
     }
   }
 

@@ -23,11 +23,15 @@ class CartModel {
   });
 
   factory CartModel.fromJson(Map<String, dynamic> json) {
-    final data = json.containsKey('data') ? json['data'] as Map<String, dynamic> : json;
+    final data = json.containsKey('data') && json['data'] is Map
+        ? json['data'] as Map<String, dynamic>
+        : json;
 
-    final itemsList = (data['items'] as List<dynamic>?)
-        ?.map((e) => CartItemModel.fromJson(e as Map<String, dynamic>))
-        .toList() ?? [];
+    final itemsRaw = data['items'];
+    final itemsList = (itemsRaw is List ? itemsRaw : <dynamic>[])
+        .whereType<Map<String, dynamic>>()
+        .map((e) => CartItemModel.fromJson(e))
+        .toList();
 
     return CartModel(
       id: data['id'] as int,

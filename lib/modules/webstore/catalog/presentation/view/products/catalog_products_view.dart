@@ -42,6 +42,7 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
   double _priceTo = 1000;
   bool _priceTouched = false;
   bool _filtersApplied = false;
+  bool _isLoadingMore = false;
 
   @override
   void initState() {
@@ -57,14 +58,20 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
     super.didChangeDependencies();
     if (!_filtersApplied) {
       _filtersApplied = true;
-      _applyFiltersToApi();
+      WidgetsBinding.instance.addPostFrameCallback((_) => _applyFiltersToApi());
     }
   }
 
   void _onScroll() {
+    if (_isLoadingMore) return;
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 220) {
-      ref.read(presetProductsProvider.notifier).getProducts();
+      _isLoadingMore = true;
+      ref.read(presetProductsProvider.notifier).getProducts().then((_) {
+        if (mounted) setState(() => _isLoadingMore = false);
+      }).catchError((_) {
+        if (mounted) setState(() => _isLoadingMore = false);
+      });
     }
   }
 
