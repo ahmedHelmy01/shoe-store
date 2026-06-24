@@ -33,7 +33,7 @@ class _GovernorateFormState extends ConsumerState<GovernorateForm> {
   @override
   void initState() {
     super.initState();
-    _nameCtrl = TextEditingController(text: widget.initial?.name ?? '');
+    _nameCtrl = TextEditingController(text: widget.initial?.nameEn ?? widget.initial?.name ?? '');
     _nameArCtrl = TextEditingController(text: widget.initial?.nameAr ?? '');
     _isActive = widget.initial?.isActive ?? true;
     _selectedCountryId = widget.initial?.countryId;
@@ -57,6 +57,7 @@ class _GovernorateFormState extends ConsumerState<GovernorateForm> {
     widget.onSave({
       if (_selectedCountryId != null) 'country_id': _selectedCountryId,
       'name': _nameCtrl.text.trim(),
+      'name_en': _nameCtrl.text.trim(),
       'name_ar': _nameArCtrl.text.trim(),
       'is_active': _isActive,
     });

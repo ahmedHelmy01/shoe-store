@@ -12,6 +12,7 @@ class AdRow {
   final String? linkUrl;
   final bool isActive;
   final int? companyId;
+  final int? productCategoryId;
   final String? createdAt;
   final String? updatedAt;
 
@@ -27,6 +28,7 @@ class AdRow {
     this.linkUrl,
     required this.isActive,
     this.companyId,
+    this.productCategoryId,
     this.createdAt,
     this.updatedAt,
   });
@@ -49,6 +51,7 @@ class AdRow {
           ? json['is_active'] as bool
           : (json['is_active'] as int? ?? 1) == 1,
       companyId: json['company_id'] as int?,
+      productCategoryId: json['product_category_id'] as int?,
       createdAt: json['created_at'] as String?,
       updatedAt: json['updated_at'] as String?,
     );

@@ -199,11 +199,25 @@ class _WarehousesViewState extends ConsumerState<WarehousesView> {
       return '-';
     }();
 
+    final parentWarehouseName = () {
+      final parentId = w.parentWarehouseId;
+      if (parentId == null || parentId == 0) return 'None (لا يوجد)';
+      
+      final state = ref.read(warehousesVmProvider);
+      if (state is AdminCrudData<WarehouseRow>) {
+        for (final wh in state.items) {
+          if (wh.id == parentId) return wh.name;
+        }
+      }
+      return 'ID: $parentId';
+    }();
+
     showDialog(
       context: context,
       builder: (_) => _WarehouseDetails(
         item: w,
         branchName: branchName,
+        parentWarehouseName: parentWarehouseName,
       ),
     );
   }
@@ -284,10 +298,12 @@ class _WarehouseCard extends StatelessWidget {
 class _WarehouseDetails extends StatelessWidget {
   final WarehouseRow item;
   final String branchName;
+  final String parentWarehouseName;
 
   const _WarehouseDetails({
     required this.item,
     required this.branchName,
+    required this.parentWarehouseName,
   });
 
   @override
@@ -310,6 +326,14 @@ class _WarehouseDetails extends StatelessWidget {
             Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Code', item.code ?? 'N/A', Icons.qr_code_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
             Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Branch', branchName, Icons.storefront_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Parent Warehouse', parentWarehouseName, Icons.account_tree_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Notes', (item.notes?.isNotEmpty == true) ? item.notes! : 'N/A', Icons.note_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),

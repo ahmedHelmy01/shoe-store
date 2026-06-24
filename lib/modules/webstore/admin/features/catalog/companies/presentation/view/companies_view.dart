@@ -168,6 +168,30 @@ class CompaniesView extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: AdminDetailsDialog.buildDetailRow(
+                  context,
+                  'Description (EN)',
+                  c.description?.isNotEmpty == true ? c.description! : 'N/A',
+                  Icons.description_rounded,
+                  bottomPadding: 0,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: AdminDetailsDialog.buildDetailRow(
+                  context,
+                  'Description (AR)',
+                  c.descriptionAr?.isNotEmpty == true ? c.descriptionAr! : 'N/A',
+                  Icons.description_outlined,
+                  bottomPadding: 0,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
           AdminDetailsDialog.buildStatusRow(context, c.isActive),
         ],
       ),

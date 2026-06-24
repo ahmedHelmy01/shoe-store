@@ -55,8 +55,8 @@ class OrderStatusesTable extends StatelessWidget {
           sortable: true,
           sortValue: (s) => s.name,
           exportValue: (s) => s.name,
-          cell: (_, s) => Text(
-            s.name,
+          cell: (context, s) => Text(
+            s.displayName(Localizations.localeOf(context).languageCode),
             style: const TextStyle(fontWeight: FontWeight.bold),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -134,7 +134,7 @@ class OrderStatusDetailsDialog extends StatelessWidget {
               child: AdminDetailsDialog.buildDetailRow(
                 context,
                 'Name (EN)',
-                status.name,
+                status.displayNameEn.isNotEmpty ? status.displayNameEn : 'N/A',
                 Icons.title_rounded,
                 bottomPadding: 0,
               ),
@@ -144,7 +144,7 @@ class OrderStatusDetailsDialog extends StatelessWidget {
               child: AdminDetailsDialog.buildDetailRow(
                 context,
                 'Name (AR)',
-                status.nameAr ?? 'N/A',
+                status.displayNameAr.isNotEmpty ? status.displayNameAr : 'N/A',
                 Icons.translate_rounded,
                 bottomPadding: 0,
               ),

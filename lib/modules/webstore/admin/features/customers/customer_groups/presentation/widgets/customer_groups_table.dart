@@ -103,16 +103,28 @@ class CustomerGroupDetailsDialog extends StatelessWidget {
         const SizedBox(height: 20),
         Row(
           children: [
+            Expanded(
+              child: group.parentId != null
+                  ? AdminDetailsDialog.buildDetailRow(context, 'Parent ID', '${group.parentId}', Icons.account_tree_rounded, bottomPadding: 0)
+                  : AdminDetailsDialog.buildDetailRow(context, 'Parent ID', 'N/A', Icons.account_tree_rounded, bottomPadding: 0),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: group.companyId != null
+                  ? AdminDetailsDialog.buildDetailRow(context, 'Company ID', '${group.companyId}', Icons.business_rounded, bottomPadding: 0)
+                  : AdminDetailsDialog.buildDetailRow(context, 'Company ID', 'N/A', Icons.business_rounded, bottomPadding: 0),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
             Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Default', group.isDefault ? 'Yes' : 'No', Icons.check_circle_outline_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
             Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Status', group.isActive ? 'Active' : 'Inactive', Icons.toggle_on_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
-        if (group.parentId != null)
-          AdminDetailsDialog.buildDetailRow(context, 'Parent ID', '${group.parentId}', Icons.account_tree_rounded),
-        if (group.companyId != null)
-          AdminDetailsDialog.buildDetailRow(context, 'Company ID', '${group.companyId}', Icons.business_rounded),
         AdminDetailsDialog.buildDetailRow(context, 'Created At', group.createdAt?.toString() ?? 'N/A', Icons.calendar_today_rounded),
       ],
     );

@@ -5,6 +5,8 @@ class AddressRow {
   final int? governorateId;
   final int? cityId;
   final String? addressDetails;
+  final String? code;
+  final String? notes;
   final double? latitude;
   final double? longitude;
   final bool isDefault;
@@ -16,6 +18,8 @@ class AddressRow {
     this.governorateId,
     this.cityId,
     this.addressDetails,
+    this.code,
+    this.notes,
     this.latitude,
     this.longitude,
     this.isDefault = false,
@@ -44,6 +48,8 @@ class AddressRow {
       governorateId: parseInt(json['governorate_id']),
       cityId: parseInt(json['city_id']),
       addressDetails: json['address_details'] as String?,
+      code: json['code'] as String?,
+      notes: json['notes'] as String?,
       latitude: parseDouble(json['latitude']),
       longitude: parseDouble(json['longitude']),
       isDefault: json['is_default'] is bool 
@@ -59,9 +65,12 @@ class AddressRow {
       'governorate_id': governorateId,
       'city_id': cityId,
       'address_details': addressDetails,
+      'code': code,
+      'notes': notes,
       'latitude': latitude,
       'longitude': longitude,
       'is_default': isDefault ? 1 : 0,
     };
   }
 }
+

@@ -135,6 +135,8 @@ class AdDetailsDialog extends StatelessWidget {
         AdminDetailsDialog.buildDetailRow(context, 'Content (EN)', ad.content ?? 'N/A', Icons.description_rounded),
         AdminDetailsDialog.buildDetailRow(context, 'Content (AR)', ad.contentAr ?? 'N/A', Icons.description_outlined),
         AdminDetailsDialog.buildDetailRow(context, 'Target URL', ad.linkUrl ?? 'N/A', Icons.link_rounded),
+        if (ad.productCategoryId != null)
+          AdminDetailsDialog.buildDetailRow(context, 'Category Link ID', ad.productCategoryId.toString(), Icons.category_rounded),
       ],
     );
   }

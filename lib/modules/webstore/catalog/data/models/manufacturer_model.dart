@@ -4,6 +4,8 @@ class ManufacturerModel extends BaseEntity with JsonSerializable {
   final String name;
   final String? nameEn;
   final String? nameAr;
+  final String? description;
+  final String? descriptionAr;
   final String? logo;
   final bool isActive;
 
@@ -12,6 +14,8 @@ class ManufacturerModel extends BaseEntity with JsonSerializable {
     required this.name,
     this.nameEn,
     this.nameAr,
+    this.description,
+    this.descriptionAr,
     this.logo,
     this.isActive = true,
     super.createdAt,
@@ -32,6 +36,8 @@ class ManufacturerModel extends BaseEntity with JsonSerializable {
       name: json['name'] ?? '',
       nameEn: json['name_en'],
       nameAr: json['name_ar'],
+      description: json['description_en'] as String? ?? json['description'] as String?,
+      descriptionAr: json['description_ar'] as String?,
       logo: logoPath,
       isActive: json['is_active'] ?? true,
       createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
@@ -45,6 +51,8 @@ class ManufacturerModel extends BaseEntity with JsonSerializable {
     'name': name,
     'name_en': nameEn,
     'name_ar': nameAr,
+    'description': description,
+    'description_ar': descriptionAr,
     'logo': logo,
     'is_active': isActive,
   };

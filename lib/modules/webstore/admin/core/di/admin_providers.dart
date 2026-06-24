@@ -224,6 +224,15 @@ final allPropertiesProvider = FutureProvider((ref) async {
   );
 });
 
+final allCustomerGroupsProvider = FutureProvider((ref) async {
+  final repo = ref.read(customerGroupsRepositoryProvider);
+  final res = await repo.getCustomerGroups(page: 1);
+  return res.when(
+    success: (paged) => paged.items,
+    failure: (e) => throw e,
+  );
+});
+
 final allCountriesProvider = FutureProvider((ref) async {
   final repo = ref.read(countriesRepositoryProvider);
   final res = await repo.getCountries(page: 1, perPage: 1000);

@@ -25,7 +25,7 @@ class CitiesTable extends StatelessWidget {
       idOf: (c) => '${c.id}',
       exportBaseName: 'cities',
       searchHint: 'Search cities…',
-      searchText: (c) => '${c.id} ${c.name} ${c.nameAr ?? ""} ${c.governorateName ?? ""}',
+      searchText: (c) => '${c.id} ${c.name} ${c.nameEn ?? ""} ${c.nameAr ?? ""} ${c.code ?? ""} ${c.governorateName ?? ""}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<CityRow>(
@@ -99,24 +99,33 @@ class CityDetailsDialog extends StatelessWidget {
       id: city.id.toString(),
       icon: Icons.location_city_rounded,
       children: [
-        Align(
-          alignment: Alignment.centerRight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                city.nameAr ?? city.name,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              Text(
-                city.name,
-                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.6)),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 32),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context,
+                'Name (EN)',
+                city.nameEn ?? city.name,
+                Icons.title_rounded,
+                bottomPadding: 0,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context,
+                'Name (AR)',
+                city.nameAr ?? 'N/A',
+                Icons.translate_rounded,
+                bottomPadding: 0,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
@@ -124,19 +133,39 @@ class CityDetailsDialog extends StatelessWidget {
                 'Governorate',
                 city.governorateName ?? 'N/A',
                 Icons.map_rounded,
+                bottomPadding: 0,
               ),
             ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context,
+                'Code',
+                city.code ?? 'N/A',
+                Icons.qr_code_rounded,
+                bottomPadding: 0,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
                 context,
                 'Delivery Fee',
                 '${city.deliveryFee}',
                 Icons.delivery_dining_rounded,
+                bottomPadding: 0,
               ),
             ),
+            const SizedBox(width: 16),
+            Expanded(child: Container()),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 20),
         AdminDetailsDialog.buildStatusRow(context, city.isActive),
       ],
     );

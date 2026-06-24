@@ -175,7 +175,7 @@ class _GovernorateCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      gov.name,
+                      gov.nameEn ?? gov.name,
                       style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
                     ),
                     const SizedBox(height: 4),

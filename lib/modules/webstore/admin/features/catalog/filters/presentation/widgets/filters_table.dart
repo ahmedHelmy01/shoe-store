@@ -41,9 +41,9 @@ class FiltersTable extends StatelessWidget {
         AdminColumn<FilterRow>(
           title: 'Name',
           sortable: true,
-          sortValue: (f) => f.name,
-          exportValue: (f) => f.name,
-          cell: (_, f) => Text(f.name, style: const TextStyle(fontWeight: FontWeight.w600)),
+          sortValue: (f) => f.nameEn ?? f.name,
+          exportValue: (f) => f.nameEn ?? f.name,
+          cell: (_, f) => Text(f.nameEn ?? f.name, style: const TextStyle(fontWeight: FontWeight.w600)),
           width: 250,
         ),
         AdminColumn<FilterRow>(
@@ -54,7 +54,37 @@ class FiltersTable extends StatelessWidget {
           cell: (_, f) => Text(f.nameAr ?? '-', style: const TextStyle(fontWeight: FontWeight.w600)),
           width: 200,
         ),
-
+        AdminColumn<FilterRow>(
+          title: 'Color',
+          sortable: true,
+          sortValue: (f) => f.colorCode ?? '',
+          exportValue: (f) => f.colorCode ?? '',
+          cell: (_, f) {
+            final color = () {
+              try {
+                var hex = f.colorCode ?? '#6366f1';
+                if (!hex.startsWith('#')) hex = '#$hex';
+                return Color(int.parse(hex.replaceFirst('#', '0xFF')));
+              } catch (_) {
+                return Colors.grey;
+              }
+            }();
+            return Row(
+              children: [
+                Container(
+                  width: 16,
+                  height: 16,
+                  decoration: BoxDecoration(
+                    color: color,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.black12),
+                  ),
+                ),
+              ],
+            );
+          },
+          width: 80,
+        ),
         AdminColumn<FilterRow>(
           title: 'Status',
           sortable: true,
@@ -68,6 +98,15 @@ class FiltersTable extends StatelessWidget {
           cell: (_, f) => AdminTableActionsCell<FilterRow>(
             row: f,
             onView: (f) {
+              final parentTagName = () {
+                final parentId = f.parentId;
+                if (parentId == null || parentId == 0) return 'None (لا يوجد)';
+                for (final item in items) {
+                  if (item.id == parentId) return item.name;
+                }
+                return 'ID: $parentId';
+              }();
+
               showDialog(
                 context: context,
                 builder: (context) => AdminDetailsDialog(
@@ -77,9 +116,53 @@ class FiltersTable extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', f.name, Icons.language_rounded, bottomPadding: 0)),
+                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', f.nameEn ?? f.name, Icons.language_rounded, bottomPadding: 0)),
                         const SizedBox(width: 16),
                         Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', f.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Parent Tag', parentTagName, Icons.account_tree_rounded, bottomPadding: 0)),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Expanded(
+                                child: AdminDetailsDialog.buildDetailRow(
+                                  context,
+                                  'Color',
+                                  f.colorCode ?? '#6366f1',
+                                  Icons.palette_rounded,
+                                  bottomPadding: 0,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 4),
+                                child: Container(
+                                  width: 20,
+                                  height: 20,
+                                  decoration: BoxDecoration(
+                                    color: () {
+                                      try {
+                                        var hex = f.colorCode ?? '#6366f1';
+                                        if (!hex.startsWith('#')) hex = '#$hex';
+                                        return Color(int.parse(hex.replaceFirst('#', '0xFF')));
+                                      } catch (_) {
+                                        return Colors.grey;
+                                      }
+                                    }(),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Colors.black12),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 20),

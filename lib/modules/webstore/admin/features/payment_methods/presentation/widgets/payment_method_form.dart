@@ -133,41 +133,50 @@ class _PaymentMethodFormState extends ConsumerState<PaymentMethodForm> {
             ],
           ),
           const SizedBox(height: 18),
-          ref.watch(paymentMethodTypesProvider).when(
-            data: (types) => AppDropdown<String>(
-              label: 'Type',
-              hint: 'Select Type',
-              value: types.any((t) => t['value'] == _type) ? _type : null,
-              items: types.map((t) => DropdownMenuItem<String>(
-                value: t['value'] as String,
-                child: Text(t['label'] as String),
-              )).toList(),
-              onChanged: (v) {
-                if (v != null) setState(() => _type = v);
-              },
-            ),
-            loading: () => const Padding(
-              padding: EdgeInsets.symmetric(vertical: 12),
-              child: Center(
-                child: SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: ref.watch(paymentMethodTypesProvider).when(
+                  data: (types) => AppDropdown<String>(
+                    label: 'Type',
+                    hint: 'Select Type',
+                    value: types.any((t) => t['value'] == _type) ? _type : null,
+                    items: types.map((t) => DropdownMenuItem<String>(
+                      value: t['value'] as String,
+                      child: Text(t['label'] as String),
+                    )).toList(),
+                    onChanged: (v) {
+                      if (v != null) setState(() => _type = v);
+                    },
+                  ),
+                  loading: () => const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    child: Center(
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
+                  ),
+                  error: (e, _) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Error loading types: $e', style: const TextStyle(color: Colors.red, fontSize: 12)),
+                  ),
                 ),
               ),
-            ),
-            error: (e, _) => Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('Error loading types: $e', style: const TextStyle(color: Colors.red, fontSize: 12)),
-            ),
-          ),
-          const SizedBox(height: 18),
-          AppTextField(
-            controller: _sortOrderCtrl,
-            label: 'Sort Order',
-            hint: '0',
-            keyboardType: TextInputType.number,
-            borderRadius: 14,
+              const SizedBox(width: 12),
+              Expanded(
+                child: AppTextField(
+                  controller: _sortOrderCtrl,
+                  label: 'Sort Order',
+                  hint: '0',
+                  keyboardType: TextInputType.number,
+                  borderRadius: 14,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 20),
           AdminImagePicker(

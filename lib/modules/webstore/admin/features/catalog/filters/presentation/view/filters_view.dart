@@ -38,7 +38,7 @@ class FiltersView extends ConsumerWidget {
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 24),
-              Expanded(child: _buildBody(context, state, isDark, notifier)),
+              Expanded(child: _buildBody(context, ref, state, isDark, notifier)),
             ],
           ),
         ),
@@ -80,6 +80,7 @@ class FiltersView extends ConsumerWidget {
 
   Widget _buildBody(
     BuildContext context,
+    WidgetRef ref,
     AdminCrudState<FilterRow> state,
     bool isDark,
     FiltersVm notifier,
@@ -116,7 +117,7 @@ class FiltersView extends ConsumerWidget {
             onDelete: (id) => _confirmAndDelete(context, notifier, id, items.firstWhere((f) => f.id == id).name),
             cardBuilder: (context, f) => _FilterCard(
               filter: f,
-              onView: () => _showDetails(context, f),
+              onView: () => _showDetails(context, ref, f),
               onEdit: () => notifier.openEdit(f),
               onDelete: () => _confirmAndDelete(context, notifier, f.id, f.name),
             ),
@@ -126,7 +127,19 @@ class FiltersView extends ConsumerWidget {
     };
   }
 
-  void _showDetails(BuildContext context, FilterRow f) {
+  void _showDetails(BuildContext context, WidgetRef ref, FilterRow f) {
+    final parentTagName = () {
+      final parentId = f.parentId;
+      if (parentId == null || parentId == 0) return 'None (لا يوجد)';
+      final state = ref.read(filtersVmProvider);
+      if (state is AdminCrudData<FilterRow>) {
+        for (final item in state.items) {
+          if (item.id == parentId) return item.name;
+        }
+      }
+      return 'ID: $parentId';
+    }();
+
     showDialog(
       context: context,
       builder: (context) => AdminDetailsDialog(
@@ -136,9 +149,53 @@ class FiltersView extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', f.name, Icons.language_rounded, bottomPadding: 0)),
+              Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', f.nameEn ?? f.name, Icons.language_rounded, bottomPadding: 0)),
               const SizedBox(width: 16),
               Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', f.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Parent Tag', parentTagName, Icons.account_tree_rounded, bottomPadding: 0)),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Expanded(
+                      child: AdminDetailsDialog.buildDetailRow(
+                        context,
+                        'Color',
+                        f.colorCode ?? '#6366f1',
+                        Icons.palette_rounded,
+                        bottomPadding: 0,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: () {
+                            try {
+                              var hex = f.colorCode ?? '#6366f1';
+                              if (!hex.startsWith('#')) hex = '#$hex';
+                              return Color(int.parse(hex.replaceFirst('#', '0xFF')));
+                            } catch (_) {
+                              return Colors.grey;
+                            }
+                          }(),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.black12),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 20),
@@ -216,7 +273,7 @@ class _FilterCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      filter.name,
+                      filter.nameEn ?? filter.name,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w900,
                         letterSpacing: -0.5,

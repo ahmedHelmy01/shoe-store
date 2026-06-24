@@ -36,6 +36,7 @@ class _CategoryFormState extends ConsumerState<CategoryForm> {
   late final TextEditingController _descCtrl;
   late final TextEditingController _descArCtrl;
   int? _parentId;
+  bool _hasChildren = false;
   bool _isActive = true;
   XFile? _imageFile;
   // Removed _uploadedImagePath as we now use direct file upload
@@ -50,6 +51,7 @@ class _CategoryFormState extends ConsumerState<CategoryForm> {
     _descCtrl = TextEditingController(text: widget.initial?.descriptionEn ?? widget.initial?.description ?? '');
     _descArCtrl = TextEditingController(text: widget.initial?.descriptionAr ?? '');
     _parentId = widget.initial?.parentId;
+    _hasChildren = widget.initial?.hasChildren ?? false;
     _isActive = widget.initial?.isActive ?? true;
   }
 
@@ -74,6 +76,7 @@ class _CategoryFormState extends ConsumerState<CategoryForm> {
         'description_ar': _descArCtrl.text.trim(),
         'code': _codeCtrl.text.trim(),
         'parent_id': _parentId,
+        'has_children': _hasChildren,
         'is_active': _isActive,
       };
 
@@ -135,31 +138,48 @@ class _CategoryFormState extends ConsumerState<CategoryForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            AppTextField(
-              controller: _nameCtrl,
-              label: 'Category Name (English)',
-              hint: 'e.g. Electronics',
-              validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
+            Row(
+              children: [
+                Expanded(
+                  child: AppTextField(
+                    controller: _nameCtrl,
+                    label: 'Category Name (English)',
+                    hint: 'e.g. Electronics',
+                    validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: AppTextField(
+                    controller: _nameArCtrl,
+                    label: 'Category Name (Arabic)',
+                    hint: 'e.g. إلكترونيات',
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
-            AppTextField(
-              controller: _nameArCtrl,
-              label: 'Category Name (Arabic)',
-              hint: 'e.g. إلكترونيات',
-            ),
-            const SizedBox(height: 16),
-            AppTextField(
-              controller: _descCtrl,
-              label: 'Description (English)',
-              hint: 'e.g. Items related to consumer electronics',
-              maxLines: 2,
-            ),
-            const SizedBox(height: 16),
-            AppTextField(
-              controller: _descArCtrl,
-              label: 'Description (Arabic)',
-              hint: 'e.g. الأجهزة والمعدات الإلكترونية الاستهلاكية',
-              maxLines: 2,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: AppTextField(
+                    controller: _descCtrl,
+                    label: 'Description (English)',
+                    hint: 'e.g. Items related to consumer electronics',
+                    maxLines: 2,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: AppTextField(
+                    controller: _descArCtrl,
+                    label: 'Description (Arabic)',
+                    hint: 'e.g. الأجهزة والمعدات الإلكترونية الاستهلاكية',
+                    maxLines: 2,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             Row(
@@ -204,7 +224,15 @@ class _CategoryFormState extends ConsumerState<CategoryForm> {
               onImageSelected: (file) => setState(() => _imageFile = file),
               onRemoveInitial: () => setState(() => _removeInitialImage = true),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 12),
+            SwitchListTile(
+              title: const Text('Has Children', style: TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: const Text('Allow subcategories under this category'),
+              value: _hasChildren,
+              onChanged: (v) => setState(() => _hasChildren = v),
+              contentPadding: EdgeInsets.zero,
+            ),
+            const SizedBox(height: 12),
             SwitchListTile(
               title: const Text('Is Active'),
               value: _isActive,

@@ -37,4 +37,29 @@ class OrderStatusRow {
       updatedAt: json['updated_at'] != null ? DateTime.tryParse(json['updated_at'].toString()) : null,
     );
   }
+
+  String displayName(String languageCode) {
+    if (languageCode == 'ar') {
+      if (nameAr != null && nameAr!.isNotEmpty) return nameAr!;
+      if (RegExp(r'[\u0600-\u06FF]').hasMatch(name)) return name;
+      return nameEn ?? name;
+    } else {
+      if (nameEn != null && nameEn!.isNotEmpty) return nameEn!;
+      if (!RegExp(r'[\u0600-\u06FF]').hasMatch(name)) return name;
+      return nameAr ?? name;
+    }
+  }
+
+  String get displayNameEn {
+    if (nameEn != null && nameEn!.isNotEmpty) return nameEn!;
+    if (!RegExp(r'[\u0600-\u06FF]').hasMatch(name)) return name;
+    return '';
+  }
+
+  String get displayNameAr {
+    if (nameAr != null && nameAr!.isNotEmpty) return nameAr!;
+    if (RegExp(r'[\u0600-\u06FF]').hasMatch(name)) return name;
+    return '';
+  }
 }
+

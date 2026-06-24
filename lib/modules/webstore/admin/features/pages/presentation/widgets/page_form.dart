@@ -54,14 +54,24 @@ class _PageFormState extends State<PageForm> {
     super.dispose();
   }
 
+  String _sanitizeSlug(String input) {
+    final slug = input.toLowerCase().trim();
+    final cleaned = slug.replaceAll(RegExp(r'[^a-z0-9\s-]'), '').trim();
+    return cleaned.replaceAll(RegExp(r'\s+'), '-').replaceAll(RegExp(r'-+'), '-');
+  }
+
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
+      final rawSlug = _slugCtrl.text.trim();
+      final slug = rawSlug.isEmpty
+          ? _sanitizeSlug(_titleCtrl.text)
+          : _sanitizeSlug(rawSlug);
       final data = <String, dynamic>{
         'title': _titleCtrl.text.trim(),
         'title_ar': _titleArCtrl.text.trim(),
         'content': _contentCtrl.text.trim(),
         'content_ar': _contentArCtrl.text.trim(),
-        'slug': _slugCtrl.text.trim(),
+        'slug': slug,
         'is_active': _isActive,
       };
 

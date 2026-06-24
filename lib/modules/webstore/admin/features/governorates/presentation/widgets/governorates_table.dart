@@ -25,7 +25,7 @@ class GovernoratesTable extends StatelessWidget {
       idOf: (g) => '${g.id}',
       exportBaseName: 'governorates',
       searchHint: 'Search governorates…',
-      searchText: (g) => '${g.id} ${g.name} ${g.nameAr ?? ''}',
+      searchText: (g) => '${g.id} ${g.name} ${g.nameEn ?? ''} ${g.nameAr ?? ''}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<GovernorateRow>(
@@ -37,11 +37,11 @@ class GovernoratesTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<GovernorateRow>(
-          title: 'Name',
+          title: 'Name (EN)',
           sortable: true,
-          sortValue: (g) => g.name,
-          exportValue: (g) => g.name,
-          cell: (_, g) => Text(g.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+          sortValue: (g) => g.nameEn ?? g.name,
+          exportValue: (g) => g.nameEn ?? g.name,
+          cell: (_, g) => Text(g.nameEn ?? g.name, maxLines: 1, overflow: TextOverflow.ellipsis),
           width: 260,
         ),
         AdminColumn<GovernorateRow>(
@@ -91,24 +91,33 @@ class GovernorateDetailsDialog extends StatelessWidget {
       id: gov.id.toString(),
       icon: Icons.map_rounded,
       children: [
-        Align(
-          alignment: Alignment.centerRight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                gov.nameAr ?? gov.name,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              Text(
-                gov.name,
-                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.6)),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 32),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context,
+                'Name (EN)',
+                gov.nameEn ?? gov.name,
+                Icons.title_rounded,
+                bottomPadding: 0,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: AdminDetailsDialog.buildDetailRow(
+                context,
+                'Name (AR)',
+                gov.nameAr ?? 'N/A',
+                Icons.translate_rounded,
+                bottomPadding: 0,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
@@ -116,19 +125,14 @@ class GovernorateDetailsDialog extends StatelessWidget {
                 'Country',
                 gov.countryName ?? 'N/A',
                 Icons.public_rounded,
+                bottomPadding: 0,
               ),
             ),
-            Expanded(
-              child: AdminDetailsDialog.buildDetailRow(
-                context,
-                'Status',
-                gov.isActive ? 'Active' : 'Inactive',
-                gov.isActive ? Icons.check_circle_outline : Icons.error_outline,
-              ),
-            ),
+            const SizedBox(width: 16),
+            Expanded(child: Container()),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 20),
         AdminDetailsDialog.buildStatusRow(context, gov.isActive),
       ],
     );

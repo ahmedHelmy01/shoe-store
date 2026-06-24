@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
+import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
+import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
 import 'package:erp/modules/webstore/admin/features/properties/data/models/property_row.dart';
 
-class PropertyForm extends StatefulWidget {
+class PropertyForm extends ConsumerStatefulWidget {
   final PropertyRow? initial;
   final bool isSaving;
   final void Function(Map<String, dynamic> data) onSave;
@@ -16,14 +19,15 @@ class PropertyForm extends StatefulWidget {
   });
 
   @override
-  State<PropertyForm> createState() => _PropertyFormState();
+  ConsumerState<PropertyForm> createState() => _PropertyFormState();
 }
 
-class _PropertyFormState extends State<PropertyForm> {
+class _PropertyFormState extends ConsumerState<PropertyForm> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _titleCtrl;
   late final TextEditingController _titleArCtrl;
   late final TextEditingController _urlCtrl;
+  int? _selectedParentId;
   bool _isDefault = false;
   bool _isActive = true;
 
@@ -33,6 +37,7 @@ class _PropertyFormState extends State<PropertyForm> {
     _titleCtrl = TextEditingController(text: widget.initial?.title ?? '');
     _titleArCtrl = TextEditingController(text: widget.initial?.titleAr ?? '');
     _urlCtrl = TextEditingController(text: widget.initial?.propertyUrl ?? '');
+    _selectedParentId = widget.initial?.parentId;
     _isDefault = widget.initial?.isDefault ?? false;
     _isActive = widget.initial?.isActive ?? true;
   }
@@ -51,6 +56,7 @@ class _PropertyFormState extends State<PropertyForm> {
         'title': _titleCtrl.text.trim(),
         'title_ar': _titleArCtrl.text.trim(),
         'property_url': _urlCtrl.text.trim(),
+        'parent_id': _selectedParentId ?? 0,
         'is_default': _isDefault,
         'is_active': _isActive,
       });
@@ -59,6 +65,8 @@ class _PropertyFormState extends State<PropertyForm> {
 
   @override
   Widget build(BuildContext context) {
+    final propertiesAsync = ref.watch(allPropertiesProvider);
+
     return Form(
       key: _formKey,
       child: Column(
@@ -87,11 +95,48 @@ class _PropertyFormState extends State<PropertyForm> {
             ],
           ),
           const SizedBox(height: 18),
-          AppTextField(
-            controller: _urlCtrl,
-            label: 'Property URL (Optional)',
-            hint: 'e.g. colors-selector',
-            borderRadius: 14,
+          Row(
+            children: [
+              Expanded(
+                child: AppTextField(
+                  controller: _urlCtrl,
+                  label: 'Property URL (Optional)',
+                  hint: 'e.g. colors-selector',
+                  borderRadius: 14,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: propertiesAsync.when(
+                  data: (properties) {
+                    final filtered = widget.initial != null
+                        ? properties.where((p) => p.id != widget.initial!.id).toList()
+                        : properties;
+                    return AppDropdown<int>(
+                      label: 'Parent Property',
+                      value: filtered.any((p) => p.id == _selectedParentId) ? _selectedParentId : null,
+                      hint: 'None (لا يوجد)',
+                      onChanged: (value) => setState(() => _selectedParentId = value),
+                      items: [
+                        const DropdownMenuItem<int>(
+                          value: null,
+                          child: Text('None (لا يوجد)'),
+                        ),
+                        ...filtered.map(
+                          (p) => DropdownMenuItem<int>(
+                            value: p.id,
+                            child: Text(p.title),
+                          ),
+                        ),
+                      ],
+                      borderRadius: 14,
+                    );
+                  },
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                  error: (e, _) => const Text('Failed to load properties'),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 18),
           SwitchListTile(

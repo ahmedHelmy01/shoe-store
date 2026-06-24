@@ -15,6 +15,8 @@ class AppDropdown<T> extends StatelessWidget {
   final EdgeInsetsGeometry contentPadding;
   final double? fieldHeight;
   final double? menuMaxHeight;
+  final double? menuMaxWidth;
+  final double? maxHeight;
 
   const AppDropdown({
     super.key,
@@ -33,6 +35,8 @@ class AppDropdown<T> extends StatelessWidget {
     ),
     this.fieldHeight,
     this.menuMaxHeight,
+    this.menuMaxWidth,
+    this.maxHeight,
   });
 
   @override
@@ -61,7 +65,10 @@ class AppDropdown<T> extends StatelessWidget {
         Container(
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(br)),
           child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: fieldHeight ?? 0),
+            constraints: BoxConstraints(
+              minHeight: fieldHeight ?? 0,
+              maxHeight: maxHeight ?? double.infinity,
+            ),
             child: InputDecorator(
               decoration: InputDecoration(
                 filled: true,
@@ -115,6 +122,7 @@ class AppDropdown<T> extends StatelessWidget {
                   style: theme.textTheme.bodyLarge,
                   borderRadius: BorderRadius.circular(br),
                   menuMaxHeight: menuMaxHeight,
+                  menuWidth: menuMaxWidth,
                 ),
               ),
             ),
@@ -124,3 +132,4 @@ class AppDropdown<T> extends StatelessWidget {
     );
   }
 }
+

@@ -13,6 +13,7 @@ class CategoryRow {
   final String? image;
   final String? imageUrl;
   final bool isActive;
+  final bool hasChildren;
 
   CategoryRow({
     required this.id,
@@ -27,6 +28,7 @@ class CategoryRow {
     this.image,
     this.imageUrl,
     this.isActive = true,
+    this.hasChildren = false,
   });
 
   factory CategoryRow.fromJson(Map<String, dynamic> json) {
@@ -48,6 +50,7 @@ class CategoryRow {
           ? providedUrl
           : (imagePath != null ? NetworkUrl.fullUrl(imagePath) : null),
       isActive: (json['active'] ?? json['is_active'] ?? true) as bool,
+      hasChildren: json['has_children'] == true || json['has_children'] == 1,
     );
   }
 }

@@ -1,11 +1,14 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
+import 'package:erp/core/common_widget/app_dropdown/category_tree_dropdown.dart';
+import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
 import 'package:erp/modules/webstore/admin/features/ads/data/models/ad_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
 
-class AdForm extends StatefulWidget {
+class AdForm extends ConsumerStatefulWidget {
   final AdRow? initial;
   final bool isSaving;
   final void Function(Map<String, dynamic> data, XFile? imageFile) onSave;
@@ -18,10 +21,10 @@ class AdForm extends StatefulWidget {
   });
 
   @override
-  State<AdForm> createState() => _AdFormState();
+  ConsumerState<AdForm> createState() => _AdFormState();
 }
 
-class _AdFormState extends State<AdForm> {
+class _AdFormState extends ConsumerState<AdForm> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _titleCtrl;
   late final TextEditingController _titleArCtrl;
@@ -30,6 +33,7 @@ class _AdFormState extends State<AdForm> {
   late final TextEditingController _locationCtrl;
   late final TextEditingController _linkUrlCtrl;
   late bool _isActive;
+  int? _selectedCategoryId;
   
   XFile? _imageFile;
   // Removed _uploadedImagePath as we now use direct file upload
@@ -45,6 +49,7 @@ class _AdFormState extends State<AdForm> {
     _locationCtrl = TextEditingController(text: widget.initial?.location ?? 'home');
     _linkUrlCtrl = TextEditingController(text: widget.initial?.linkUrl ?? '');
     _isActive = widget.initial?.isActive ?? true;
+    _selectedCategoryId = widget.initial?.productCategoryId;
   }
 
   @override
@@ -68,6 +73,7 @@ class _AdFormState extends State<AdForm> {
         'location': _locationCtrl.text.trim(),
         'link_url': _linkUrlCtrl.text.trim(),
         'is_active': _isActive,
+        'product_category_id': _selectedCategoryId,
       };
 
       if (_removeInitialImage && _imageFile == null) {
@@ -146,6 +152,21 @@ class _AdFormState extends State<AdForm> {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 18),
+            ref.watch(categoryTreeProvider).when(
+              data: (tree) {
+                final items = CategoryTreeDropdown.flattenTree(tree);
+                return CategoryTreeDropdown(
+                  label: 'Category Link',
+                  hint: 'Select Category (Optional)',
+                  value: items.any((c) => c.id == _selectedCategoryId) ? _selectedCategoryId : null,
+                  items: items,
+                  onChanged: (v) => setState(() => _selectedCategoryId = v),
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => const Text('Error loading categories'),
             ),
             const SizedBox(height: 20),
             AdminImagePicker(

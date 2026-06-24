@@ -31,8 +31,8 @@ class _OrderStatusFormState extends State<OrderStatusForm> {
   @override
   void initState() {
     super.initState();
-    _nameCtrl = TextEditingController(text: widget.initial?.nameEn ?? widget.initial?.name ?? '');
-    _nameArCtrl = TextEditingController(text: widget.initial?.nameAr ?? '');
+    _nameCtrl = TextEditingController(text: widget.initial?.displayNameEn ?? '');
+    _nameArCtrl = TextEditingController(text: widget.initial?.displayNameAr ?? '');
     _colorCtrl = TextEditingController(text: widget.initial?.color ?? '#6366f1');
     _sortOrderCtrl = TextEditingController(text: '${widget.initial?.sortOrder ?? 1}');
     _isDefault = widget.initial?.isDefault ?? false;

@@ -27,6 +27,7 @@ class CityForm extends ConsumerStatefulWidget {
 class _CityFormState extends ConsumerState<CityForm> {
   late final TextEditingController _nameCtrl;
   late final TextEditingController _nameArCtrl;
+  late final TextEditingController _codeCtrl;
   late final TextEditingController _deliveryFeeCtrl;
   late bool _isActive;
   int? _selectedGovId;
@@ -34,9 +35,10 @@ class _CityFormState extends ConsumerState<CityForm> {
   @override
   void initState() {
     super.initState();
-    _nameCtrl = TextEditingController(text: widget.initial?.name ?? '');
+    _nameCtrl = TextEditingController(text: widget.initial?.nameEn ?? widget.initial?.name ?? '');
     _nameArCtrl = TextEditingController(text: widget.initial?.nameAr ?? '');
-    _deliveryFeeCtrl = TextEditingController(text: widget.initial?.deliveryFee?.toString() ?? '0');
+    _codeCtrl = TextEditingController(text: widget.initial?.code ?? '');
+    _deliveryFeeCtrl = TextEditingController(text: widget.initial?.deliveryFee.toString() ?? '0');
     _isActive = widget.initial?.isActive ?? true;
     _selectedGovId = widget.initial?.governorateId;
   }
@@ -45,6 +47,7 @@ class _CityFormState extends ConsumerState<CityForm> {
   void dispose() {
     _nameCtrl.dispose();
     _nameArCtrl.dispose();
+    _codeCtrl.dispose();
     _deliveryFeeCtrl.dispose();
     super.dispose();
   }
@@ -62,7 +65,9 @@ class _CityFormState extends ConsumerState<CityForm> {
     widget.onSave({
       if (_selectedGovId != null) 'governorate_id': _selectedGovId,
       'name': _nameCtrl.text.trim(),
+      'name_en': _nameCtrl.text.trim(),
       'name_ar': _nameArCtrl.text.trim(),
+      'code': _codeCtrl.text.trim(),
       'shipping_cost': fee, // Strictly using shipping_cost as confirmed
       'is_active': _isActive,
     });
@@ -98,6 +103,13 @@ class _CityFormState extends ConsumerState<CityForm> {
           controller: _nameArCtrl,
           label: 'City Name (AR)',
           hint: 'مثلاً حولي',
+          borderRadius: 14,
+        ),
+        const SizedBox(height: 18),
+        AppTextField(
+          controller: _codeCtrl,
+          label: 'Code',
+          hint: 'e.g. CAI',
           borderRadius: 14,
         ),
         const SizedBox(height: 18),

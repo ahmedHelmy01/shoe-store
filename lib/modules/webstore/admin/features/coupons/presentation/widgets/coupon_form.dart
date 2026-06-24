@@ -122,11 +122,27 @@ class _CouponFormState extends State<CouponForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AppTextField(
-            controller: _codeCtrl,
-            label: 'Coupon Code',
-            hint: 'e.g. SAVE20',
-            borderRadius: 14,
+          Row(
+            children: [
+              Expanded(
+                child: AppTextField(
+                  controller: _codeCtrl,
+                  label: 'Coupon Code',
+                  hint: 'e.g. SAVE20',
+                  borderRadius: 14,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: AppTextField(
+                  controller: _minOrderCtrl,
+                  label: 'Minimum Order Value',
+                  hint: '0',
+                  keyboardType: TextInputType.number,
+                  borderRadius: 14,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 18),
           Row(
@@ -153,14 +169,6 @@ class _CouponFormState extends State<CouponForm> {
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: 18),
-          AppTextField(
-            controller: _minOrderCtrl,
-            label: 'Minimum Order Value',
-            hint: '0',
-            keyboardType: TextInputType.number,
-            borderRadius: 14,
           ),
           const SizedBox(height: 18),
           Row(

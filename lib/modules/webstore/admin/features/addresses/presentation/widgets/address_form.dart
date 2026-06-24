@@ -29,6 +29,10 @@ class _AddressFormState extends ConsumerState<AddressForm> {
   late final TextEditingController _nameCtrl;
   late final TextEditingController _mobileCtrl;
   late final TextEditingController _addressDetailsCtrl;
+  late final TextEditingController _codeCtrl;
+  late final TextEditingController _notesCtrl;
+  late final TextEditingController _latitudeCtrl;
+  late final TextEditingController _longitudeCtrl;
   
   int? _selectedGovernorateId;
   int? _selectedCityId;
@@ -40,6 +44,10 @@ class _AddressFormState extends ConsumerState<AddressForm> {
     _nameCtrl = TextEditingController(text: widget.initial?.name ?? '');
     _mobileCtrl = TextEditingController(text: widget.initial?.mobile ?? '');
     _addressDetailsCtrl = TextEditingController(text: widget.initial?.addressDetails ?? '');
+    _codeCtrl = TextEditingController(text: widget.initial?.code ?? '');
+    _notesCtrl = TextEditingController(text: widget.initial?.notes ?? '');
+    _latitudeCtrl = TextEditingController(text: widget.initial?.latitude?.toString() ?? '');
+    _longitudeCtrl = TextEditingController(text: widget.initial?.longitude?.toString() ?? '');
     _selectedGovernorateId = widget.initial?.governorateId;
     _selectedCityId = widget.initial?.cityId;
     _isDefault = widget.initial?.isDefault ?? false;
@@ -56,6 +64,10 @@ class _AddressFormState extends ConsumerState<AddressForm> {
     _nameCtrl.dispose();
     _mobileCtrl.dispose();
     _addressDetailsCtrl.dispose();
+    _codeCtrl.dispose();
+    _notesCtrl.dispose();
+    _latitudeCtrl.dispose();
+    _longitudeCtrl.dispose();
     super.dispose();
   }
 
@@ -65,6 +77,10 @@ class _AddressFormState extends ConsumerState<AddressForm> {
         'name': _nameCtrl.text.trim(),
         'mobile': _mobileCtrl.text.trim(),
         'address_details': _addressDetailsCtrl.text.trim(),
+        'code': _codeCtrl.text.trim(),
+        'notes': _notesCtrl.text.trim(),
+        'latitude': double.tryParse(_latitudeCtrl.text.trim()) ?? 0,
+        'longitude': double.tryParse(_longitudeCtrl.text.trim()) ?? 0,
         'governorate_id': _selectedGovernorateId,
         'city_id': _selectedCityId,
         'is_default': _isDefault,
@@ -90,20 +106,46 @@ class _AddressFormState extends ConsumerState<AddressForm> {
             hint: 'e.g. Home, Office',
             validator: (v) => v == null || v.isEmpty ? 'Required' : null,
           ),
-          const SizedBox(height: 16),
-          AppTextField(
-            controller: _mobileCtrl,
-            label: 'Mobile Number',
-            hint: '966500000000',
-            keyboardType: TextInputType.phone,
+          Row(
+            children: [
+              Expanded(
+                child: AppTextField(
+                  controller: _mobileCtrl,
+                  label: 'Mobile Number',
+                  hint: '966500000000',
+                  keyboardType: TextInputType.phone,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: AppTextField(
+                  controller: _addressDetailsCtrl,
+                  label: 'Address Details',
+                  hint: 'Block 1, Street 2...',
+                  validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 16),
-          AppTextField(
-            controller: _addressDetailsCtrl,
-            label: 'Address Details',
-            hint: 'Block 1, Street 2...',
-            maxLines: 2,
-            validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+          Row(
+            children: [
+              Expanded(
+                child: AppTextField(
+                  controller: _codeCtrl,
+                  label: 'Code',
+                  hint: 'e.g. HOM-01',
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: AppTextField(
+                  controller: _notesCtrl,
+                  label: 'Notes',
+                  hint: 'Any additional notes...',
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           Row(
@@ -130,6 +172,28 @@ class _AddressFormState extends ConsumerState<AddressForm> {
                   value: _selectedCityId,
                   items: _buildCityItems(citiesState),
                   onChanged: (val) => setState(() => _selectedCityId = val),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: AppTextField(
+                  controller: _latitudeCtrl,
+                  label: 'Latitude',
+                  hint: '0.0',
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: AppTextField(
+                  controller: _longitudeCtrl,
+                  label: 'Longitude',
+                  hint: '0.0',
+                  keyboardType: TextInputType.number,
                 ),
               ),
             ],
