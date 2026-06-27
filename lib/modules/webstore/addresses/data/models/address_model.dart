@@ -50,7 +50,7 @@ class AddressModel {
       building: json['building']?.toString(),
       floor: json['floor']?.toString(),
       apartment: json['apartment']?.toString(),
-      phone: json['phone']?.toString(),
+      phone: json['mobile']?.toString(),
       notes: json['notes']?.toString(),
       isDefault: json['is_default'] is bool
           ? json['is_default'] as bool
@@ -70,7 +70,7 @@ class AddressModel {
       if (building != null) 'building': building,
       if (floor != null) 'floor': floor,
       if (apartment != null) 'apartment': apartment,
-      if (phone != null) 'phone': phone,
+      if (phone != null) 'mobile': phone,
       if (notes != null) 'notes': notes,
       'is_default': isDefault,
     };

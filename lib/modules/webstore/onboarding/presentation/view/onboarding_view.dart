@@ -5,11 +5,11 @@ import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/modules/webstore/onboarding/presentation/view_model/onboarding_view_model.dart';
 import 'package:erp/modules/webstore/onboarding/presentation/state/onboarding_state.dart';
-import 'package:erp/modules/webstore/onboarding/widgets/animated_background.dart';
-import 'package:erp/modules/webstore/onboarding/widgets/floating_particles.dart';
-import 'package:erp/modules/webstore/onboarding/widgets/skip_button.dart';
-import 'package:erp/modules/webstore/onboarding/widgets/onboarding_bottom_controls.dart';
-import 'package:erp/modules/webstore/onboarding/widgets/onboarding_page_content.dart';
+import 'package:erp/modules/webstore/onboarding/presentation/widgets/animated_background.dart';
+import 'package:erp/modules/webstore/onboarding/presentation/widgets/floating_particles.dart';
+import 'package:erp/modules/webstore/onboarding/presentation/widgets/skip_button.dart';
+import 'package:erp/modules/webstore/onboarding/presentation/widgets/onboarding_bottom_controls.dart';
+import 'package:erp/modules/webstore/onboarding/presentation/widgets/onboarding_page_content.dart';
 // Session handled via `sessionManagerProvider`
 import 'package:erp/modules/webstore/onboarding/data/models/boarding_model.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -222,10 +222,8 @@ class _OnBoardingState extends ConsumerState<OnBoarding>
                             itemCount: boardings.length,
                             itemBuilder: (context, index) {
                               final page = boardings[index];
-                              
                               final double position = index - pageOffset;
                               final double translation = position * 100.w;
-
                               return Transform.translate(
                                 offset: Offset(translation, 0),
                                 child: OnboardingPageContent(

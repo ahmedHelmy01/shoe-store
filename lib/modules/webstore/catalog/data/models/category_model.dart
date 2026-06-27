@@ -38,7 +38,7 @@ class WebStoreCategory extends BaseEntity with JsonSerializable {
       nameEn: json['name_en'],
       nameAr: json['name_ar'],
       description: json['description'],
-      image: json['image'] ?? json['thumb'],
+      image: json['image_url'] ?? json['thumb'],
       parentId: json['parent_id'],
       productsCount: json['products_count'],
       isActive: json['is_active'],

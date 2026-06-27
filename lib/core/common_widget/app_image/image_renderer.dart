@@ -26,7 +26,6 @@ class ImageRenderer {
 
     // Clean the image path from any double slashes if they exist
     String cleanPath = imagePath.replaceAll('//', '/').replaceFirst('https:/', 'https://');
-
     switch (cleanPath.imageType) {
       case ImageType.network:
         if (kIsWeb) {

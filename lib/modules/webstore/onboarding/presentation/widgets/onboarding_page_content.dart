@@ -82,10 +82,7 @@ class OnboardingPageContent extends StatelessWidget {
                                       color: Colors.white,
                                     ),
                                   )
-                                : Padding(
-                                    padding: EdgeInsets.all(35.w),
-                                    child: AppImage(imagePath: imageUrl, fit: BoxFit.contain),
-                                  ),
+                                : AppImage(imagePath: imageUrl, fit: BoxFit.cover),
                           ),
                         ),
                       ),

@@ -29,7 +29,7 @@ class BoardingModel {
       titleAr: json['title_ar'] as String? ?? '',
       content: json['content'] as String? ?? '',
       contentAr: json['content_ar'] as String? ?? '',
-      image: json['image'] as String? ?? '',
+      image: json['image_url'] as String? ?? '',
       position: json['position'] as int? ?? 0,
     );
   }

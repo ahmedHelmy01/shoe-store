@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/core/common_widget/main_layout/webstore_main_layout.dart';
-import 'package:erp/modules/webstore/onboarding/onboarding_view.dart';
+import 'package:erp/modules/webstore/onboarding/presentation/view/onboarding_view.dart';
 import 'package:erp/modules/webstore/splash/animated_splash_screen.dart';
 import 'package:erp/modules/webstore/splash/splash_logic.dart';
 

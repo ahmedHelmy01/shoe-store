@@ -36,8 +36,8 @@ class AdminPrescriptionRow {
       image: json['image'] as String? ?? '',
       imageUrl: json['image_url'] as String? ?? '',
       status: json['status'] as String? ?? 'pending',
-      reviewedBy: json['reviewed_by'] as int?,
-      reviewer: json['reviewer'] != null
+      reviewedBy: (json['reviewed_by'] is int) ? json['reviewed_by'] as int : null,
+      reviewer: (json['reviewer'] is Map)
           ? AdminReviewer.fromJson(json['reviewer'] as Map<String, dynamic>)
           : null,
       customer: json['customer'] != null
