@@ -3,6 +3,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_tabl
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/features/sliders/data/models/slider_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class SlidersTable extends StatelessWidget {
   final List<SliderRow> items;
@@ -24,12 +25,12 @@ class SlidersTable extends StatelessWidget {
       rows: items,
       idOf: (s) => '${s.id}',
       exportBaseName: 'sliders',
-      searchHint: 'Search sliders…',
+      searchHint: AdminLocalizations.translate(context, 'search sliders…'),
       searchText: (s) => '${s.id} ${s.title} ${s.titleAr ?? ''}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<SliderRow>(
-          title: 'ID',
+          title: AdminLocalizations.translate(context, 'id'),
           sortable: true,
           sortValue: (s) => s.id,
           exportValue: (s) => '${s.id}',
@@ -37,7 +38,7 @@ class SlidersTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<SliderRow>(
-          title: 'Image',
+          title: AdminLocalizations.translate(context, 'image'),
           cell: (_, s) => s.imageUrl != null
               ? Image.network(
                   s.imageUrl!,
@@ -50,7 +51,7 @@ class SlidersTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<SliderRow>(
-          title: 'Title',
+          title: AdminLocalizations.translate(context, 'title (en)'),
           sortable: true,
           sortValue: (s) => s.title,
           exportValue: (s) => s.title,
@@ -58,7 +59,7 @@ class SlidersTable extends StatelessWidget {
           width: 250,
         ),
         AdminColumn<SliderRow>(
-          title: 'Pos',
+          title: AdminLocalizations.translate(context, 'pos'),
           sortable: true,
           sortValue: (s) => s.position,
           exportValue: (s) => '${s.position}',
@@ -66,15 +67,15 @@ class SlidersTable extends StatelessWidget {
           width: 60,
         ),
         AdminColumn<SliderRow>(
-          title: 'Status',
+          title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (s) => s.isActive ? 1 : 0,
-          exportValue: (s) => s.isActive ? 'Active' : 'Inactive',
+          exportValue: (s) => s.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'),
           cell: (_, s) => AdminStatusBadge(isActive: s.isActive),
           width: 100,
         ),
         AdminColumn<SliderRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'actions'),
           cell: (_, s) => AdminTableActionsCell<SliderRow>(
             row: s,
             onView: (slider) {
@@ -101,7 +102,7 @@ class SliderDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminDetailsDialog(
-      title: 'Slider Details',
+      title: AdminLocalizations.translate(context, 'slider details'),
       id: slider.id.toString(),
       icon: Icons.slideshow_rounded,
       children: [
@@ -128,7 +129,7 @@ class SliderDetailsDialog extends StatelessWidget {
                         Icon(Icons.image_outlined, size: 36, color: Colors.grey.withValues(alpha: 0.5)),
                         const SizedBox(height: 8),
                         Text(
-                          'Image saved on server',
+                          AdminLocalizations.translate(context, 'image saved on server'),
                           style: TextStyle(color: Colors.grey.withValues(alpha: 0.7), fontSize: 12, fontWeight: FontWeight.w600),
                         ),
                       ],
@@ -140,22 +141,22 @@ class SliderDetailsDialog extends StatelessWidget {
           ),
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Title (EN)', slider.title, Icons.title_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'title (en)'), slider.title, Icons.title_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Title (AR)', slider.titleAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'title (ar)'), slider.titleAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.translate_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Position', '${slider.position}', Icons.sort_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'position'), '${slider.position}', Icons.sort_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Status', slider.isActive ? 'Active' : 'Inactive', Icons.check_circle_outline_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'status'), slider.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'), Icons.check_circle_outline_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
-        AdminDetailsDialog.buildDetailRow(context, 'Content (EN)', slider.content ?? 'N/A', Icons.description_rounded),
-        AdminDetailsDialog.buildDetailRow(context, 'Content (AR)', slider.contentAr ?? 'N/A', Icons.description_outlined),
+        AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'content (en)'), slider.content ?? AdminLocalizations.translate(context, 'n/a'), Icons.description_rounded),
+        AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'content (ar)'), slider.contentAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.description_outlined),
       ],
     );
   }

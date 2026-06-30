@@ -5,6 +5,7 @@ import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/filters/data/models/filter_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/filters_view_model.dart';
 
 class FilterForm extends ConsumerStatefulWidget {
@@ -89,20 +90,20 @@ class _FilterFormState extends ConsumerState<FilterForm> {
               Expanded(
                 child: AppTextField(
                   controller: _nameCtrl,
-                  label: 'Name (English)',
-                  hint: 'e.g. Featured',
+                  label: AdminLocalizations.translate(context, 'name (english)'),
+                  hint: AdminLocalizations.translate(context, 'e.g. featured'),
                   borderRadius: 14,
-                  validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
+                  validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'name is required') : null,
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: AppTextField(
                   controller: _nameArCtrl,
-                  label: 'Name (Arabic)',
-                  hint: 'e.g. مميز',
+                  label: AdminLocalizations.translate(context, 'name (arabic)'),
+                  hint: AdminLocalizations.translate(context, 'e.g. featured (arabic)'),
                   borderRadius: 14,
-                  validator: (v) => v == null || v.isEmpty ? 'Arabic name is required' : null,
+                  validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'arabic name is required') : null,
                 ),
               ),
             ],
@@ -113,7 +114,7 @@ class _FilterFormState extends ConsumerState<FilterForm> {
               Expanded(
                 child: AppTextField(
                   controller: _colorCtrl,
-                  label: 'Color (Hex)',
+                  label: AdminLocalizations.translate(context, 'color (hex)'),
                   hint: '#6366f1',
                   borderRadius: 14,
                   suffixIcon: Padding(
@@ -134,14 +135,14 @@ class _FilterFormState extends ConsumerState<FilterForm> {
               const SizedBox(width: 16),
               Expanded(
                 child: AppDropdown<int>(
-                  label: 'Parent Tag',
+                  label: AdminLocalizations.translate(context, 'parent tag'),
                   value: parentOptions.any((f) => f.id == _selectedParentId) ? _selectedParentId : null,
-                  hint: 'None (لا يوجد)',
+                  hint: AdminLocalizations.translate(context, 'none'),
                   onChanged: (value) => setState(() => _selectedParentId = value),
                   items: [
-                    const DropdownMenuItem<int>(
+                    DropdownMenuItem<int>(
                       value: null,
-                      child: Text('None (لا يوجد)'),
+                      child: Text(AdminLocalizations.translate(context, 'none')),
                     ),
                     ...parentOptions.map(
                       (f) => DropdownMenuItem<int>(
@@ -156,7 +157,7 @@ class _FilterFormState extends ConsumerState<FilterForm> {
           ),
           const SizedBox(height: 16),
           SwitchListTile(
-            title: const Text('Is Active'),
+            title: Text(AdminLocalizations.translate(context, 'is active')),
             value: _isActive,
             onChanged: (val) => setState(() => _isActive = val),
             contentPadding: EdgeInsets.zero,
@@ -165,7 +166,7 @@ class _FilterFormState extends ConsumerState<FilterForm> {
           AppButton(
             onPressed: _submit,
             isLoading: widget.isSaving,
-            child: Text(widget.initial == null ? 'Add Tag' : 'Save Changes'),
+            child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'add tag') : AdminLocalizations.translate(context, 'save changes')),
           ),
         ],
       ),

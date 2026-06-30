@@ -9,6 +9,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dia
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/modules/webstore/admin/features/properties/data/models/property_row.dart';
 import '../view_model/properties_view_model.dart';
 import '../widgets/properties_table.dart';
@@ -32,9 +33,9 @@ class PropertiesView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Product Properties',
+                title: AdminLocalizations.translate(context, 'product properties'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add Property',
+                primaryActionLabel: AdminLocalizations.translate(context, 'add property'),
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 12),
@@ -46,7 +47,7 @@ class PropertiesView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Create Property' : 'Edit Property',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'create property') : AdminLocalizations.translate(context, 'edit property'),
             size: AdminDialogSize.medium,
             child: PropertyForm(
               key: ValueKey(state.isAdding ? 'property-add' : 'property-edit-${state.editingItem?.id ?? 0}'),
@@ -61,15 +62,15 @@ class PropertiesView extends ConsumerWidget {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: state.isAdding ? 'Property Created' : 'Property Updated',
-                    message: 'The property has been saved successfully.',
+                    title: state.isAdding ? AdminLocalizations.translate(context, 'property created') : AdminLocalizations.translate(context, 'property updated'),
+                    message: AdminLocalizations.translate(context, 'the property has been saved successfully.'),
                   );
                 } else {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.error,
-                    title: 'Save Failed',
-                    message: 'Could not save the property. Please try again.',
+                    title: AdminLocalizations.translate(context, 'save failed'),
+                    message: AdminLocalizations.translate(context, 'could not save the property. please try again.'),
                   );
                 }
               },
@@ -118,18 +119,18 @@ class PropertiesView extends ConsumerWidget {
   void _confirmAndDelete(BuildContext context, PropertiesVm notifier, int id, String title) {
     AppDialog.show(
       context,
-      title: 'Delete Property',
-      message: 'Are you sure you want to delete "$title"?',
-      cancelText: 'Cancel',
-      confirmText: 'Delete',
+      title: AdminLocalizations.translate(context, 'delete property'),
+      message: '${AdminLocalizations.translate(context, 'are you sure you want to delete')} "$title"?',
+      cancelText: AdminLocalizations.translate(context, 'cancel'),
+      confirmText: AdminLocalizations.translate(context, 'delete'),
       onConfirm: () async {
         Navigator.pop(context);
         final success = await notifier.commitDelete(id);
         if (!context.mounted) return;
         if (success) {
-          AppStatusDialog.show(context, status: AppDialogStatus.success, title: 'Deleted', message: 'Property deleted successfully.');
+          AppStatusDialog.show(context, status: AppDialogStatus.success, title: AdminLocalizations.translate(context, 'deleted'), message: AdminLocalizations.translate(context, 'property deleted successfully.'));
         } else {
-          AppStatusDialog.show(context, status: AppDialogStatus.error, title: 'Delete Failed', message: 'Could not delete property.');
+          AppStatusDialog.show(context, status: AppDialogStatus.error, title: AdminLocalizations.translate(context, 'delete failed'), message: AdminLocalizations.translate(context, 'could not delete property.'));
         }
       },
     );
@@ -176,7 +177,7 @@ class _PropertyCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Default: ${property.isDefault ? 'Yes' : 'No'}',
+                      '${AdminLocalizations.translate(context, 'default')}: ${property.isDefault ? AdminLocalizations.translate(context, 'yes') : AdminLocalizations.translate(context, 'no')}',
                       style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6)),
                     ),
                   ],
@@ -195,7 +196,7 @@ class _PropertyCard extends StatelessWidget {
             children: [
               AdminStatusBadge(isActive: property.isActive),
               Text(
-                'ID: ${property.id}',
+                '${AdminLocalizations.translate(context, 'id')}: ${property.id}',
                 style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.4)),
               ),
             ],

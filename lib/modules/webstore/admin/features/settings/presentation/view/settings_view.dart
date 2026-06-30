@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/settings_view_model.dart';
 import '../../data/models/store_settings_model.dart';
 
@@ -83,10 +84,10 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
 
     ref.listen(adminSettingsProvider, (previous, next) {
       if (next.isSuccess) {
-        _showStatusDialog('Changes Saved!', 'Your store settings have been updated successfully.', false);
+        _showStatusDialog(AdminLocalizations.translate(context, 'changes saved!'), AdminLocalizations.translate(context, 'your store settings have been updated successfully.'), false);
         notifier.clearStates();
       } else if (next.error != null && !next.isSaving) {
-        _showStatusDialog('Update Failed', next.error!, true);
+        _showStatusDialog(AdminLocalizations.translate(context, 'update failed'), next.error!, true);
         notifier.clearStates();
       }
     });
@@ -138,7 +139,7 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
                 icon: isSaving
                     ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                     : const Icon(Icons.save_rounded),
-                label: Text(isSaving ? 'Saving...' : 'Save Changes'),
+                label: Text(isSaving ? AdminLocalizations.translate(context, 'saving...') : AdminLocalizations.translate(context, 'save changes')),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
@@ -188,15 +189,15 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle(Icons.store_rounded, 'Brand Identity'),
+          _buildSectionTitle(Icons.store_rounded, AdminLocalizations.translate(context, 'brand identity')),
           const SizedBox(height: 24),
-          AppTextField(controller: _logoCtrl, label: 'Logo', hint: 'URL or path'),
+          AppTextField(controller: _logoCtrl, label: AdminLocalizations.translate(context, 'logo'), hint: AdminLocalizations.translate(context, 'url or path')),
           const SizedBox(height: 16),
-          AppTextField(controller: _logoDarkCtrl, label: 'Logo (Dark)', hint: 'URL or path'),
+          AppTextField(controller: _logoDarkCtrl, label: AdminLocalizations.translate(context, 'logo (dark)'), hint: AdminLocalizations.translate(context, 'url or path')),
           const SizedBox(height: 16),
-          AppTextField(controller: _addressArCtrl, label: 'Address (Arabic)', hint: 'Store address in Arabic', maxLines: 2),
+          AppTextField(controller: _addressArCtrl, label: AdminLocalizations.translate(context, 'address (arabic)'), hint: AdminLocalizations.translate(context, 'store address in arabic'), maxLines: 2),
           const SizedBox(height: 16),
-          AppTextField(controller: _addressEnCtrl, label: 'Address (English)', hint: 'Store address in English', maxLines: 2),
+          AppTextField(controller: _addressEnCtrl, label: AdminLocalizations.translate(context, 'address (english)'), hint: AdminLocalizations.translate(context, 'store address in english'), maxLines: 2),
         ],
       ),
     );
@@ -207,15 +208,15 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle(Icons.phone_android_rounded, 'Contact Info'),
+          _buildSectionTitle(Icons.phone_android_rounded, AdminLocalizations.translate(context, 'contact info')),
           const SizedBox(height: 24),
-          AppTextField(controller: _mobileCtrl, label: 'Mobile', hint: 'e.g. 96512345678', keyboardType: TextInputType.phone),
+          AppTextField(controller: _mobileCtrl, label: AdminLocalizations.translate(context, 'mobile'), hint: AdminLocalizations.translate(context, 'e.g. 96512345678'), keyboardType: TextInputType.phone),
           const SizedBox(height: 16),
-          AppTextField(controller: _emailCtrl, label: 'Email', hint: 'e.g. info@store.com', keyboardType: TextInputType.emailAddress),
+          AppTextField(controller: _emailCtrl, label: AdminLocalizations.translate(context, 'email'), hint: AdminLocalizations.translate(context, 'e.g. info@store.com'), keyboardType: TextInputType.emailAddress),
           const SizedBox(height: 16),
-          AppTextField(controller: _shippingCtrl, label: 'Shipping Value', hint: 'e.g. 2.500', keyboardType: const TextInputType.numberWithOptions(decimal: true)),
+          AppTextField(controller: _shippingCtrl, label: AdminLocalizations.translate(context, 'shipping value'), hint: AdminLocalizations.translate(context, 'e.g. 2.500'), keyboardType: const TextInputType.numberWithOptions(decimal: true)),
           const SizedBox(height: 16),
-          AppTextField(controller: _pointsCtrl, label: 'Points EGP Rate', hint: 'e.g. 1.0', keyboardType: const TextInputType.numberWithOptions(decimal: true)),
+          AppTextField(controller: _pointsCtrl, label: AdminLocalizations.translate(context, 'points egp rate'), hint: AdminLocalizations.translate(context, 'e.g. 1.0'), keyboardType: const TextInputType.numberWithOptions(decimal: true)),
         ],
       ),
     );
@@ -226,15 +227,15 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle(Icons.share_rounded, 'Social Media'),
+          _buildSectionTitle(Icons.share_rounded, AdminLocalizations.translate(context, 'social media')),
           const SizedBox(height: 24),
-          AppTextField(controller: _facebookCtrl, label: 'Facebook', hint: 'URL or username'),
+          AppTextField(controller: _facebookCtrl, label: 'Facebook', hint: AdminLocalizations.translate(context, 'url or username')),
           const SizedBox(height: 16),
-          AppTextField(controller: _twitterCtrl, label: 'Twitter', hint: 'URL or username'),
+          AppTextField(controller: _twitterCtrl, label: 'Twitter', hint: AdminLocalizations.translate(context, 'url or username')),
           const SizedBox(height: 16),
-          AppTextField(controller: _instagramCtrl, label: 'Instagram', hint: 'URL or username'),
+          AppTextField(controller: _instagramCtrl, label: 'Instagram', hint: AdminLocalizations.translate(context, 'url or username')),
           const SizedBox(height: 16),
-          AppTextField(controller: _telegramCtrl, label: 'Telegram', hint: 'URL or username'),
+          AppTextField(controller: _telegramCtrl, label: 'Telegram', hint: AdminLocalizations.translate(context, 'url or username')),
         ],
       ),
     );
@@ -245,7 +246,7 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle(Icons.info_outline_rounded, 'Notes'),
+          _buildSectionTitle(Icons.info_outline_rounded, AdminLocalizations.translate(context, 'notes')),
           const SizedBox(height: 24),
           Container(
             padding: const EdgeInsets.all(16),
@@ -260,7 +261,7 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'These settings will affect the storefront checkout process and contact information immediately after saving.',
+                    AdminLocalizations.translate(context, 'these settings will affect the storefront checkout process and contact information immediately after saving.'),
                     style: TextStyle(color: AppColors.primary.withValues(alpha: 0.8), fontWeight: FontWeight.w600, fontSize: 13),
                   ),
                 ),
@@ -314,7 +315,7 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
-                  child: Text(isError ? 'Try Again' : 'Done', style: const TextStyle(fontWeight: FontWeight.bold)),
+                  child: Text(isError ? AdminLocalizations.translate(context, 'try again') : AdminLocalizations.translate(context, 'done'), style: const TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
             ],

@@ -4,6 +4,7 @@ import 'package:erp/modules/webstore/admin/features/catalog/products/presentatio
 import 'package:erp/modules/webstore/admin/features/catalog/categories/presentation/view/categories_view.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/companies/presentation/view/companies_view.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/filters/presentation/view/filters_view.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class CatalogView extends ConsumerStatefulWidget {
   const CatalogView({super.key});
@@ -52,11 +53,11 @@ class _CatalogViewState extends ConsumerState<CatalogView> with SingleTickerProv
             unselectedLabelStyle: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
             dividerColor: Colors.transparent,
             indicatorColor: theme.primaryColor,
-            tabs: const [
-              Tab(text: 'Products', icon: Icon(Icons.inventory_2_rounded, size: 20)),
-              Tab(text: 'Categories', icon: Icon(Icons.account_tree_rounded, size: 20)),
-              Tab(text: 'Companies', icon: Icon(Icons.apartment_rounded, size: 20)),
-              Tab(text: 'Tags', icon: Icon(Icons.tune_rounded, size: 20)),
+            tabs: [
+              Tab(text: AdminLocalizations.translate(context, 'products'), icon: const Icon(Icons.inventory_2_rounded, size: 20)),
+              Tab(text: AdminLocalizations.translate(context, 'categories'), icon: const Icon(Icons.account_tree_rounded, size: 20)),
+              Tab(text: AdminLocalizations.translate(context, 'companies'), icon: const Icon(Icons.apartment_rounded, size: 20)),
+              Tab(text: AdminLocalizations.translate(context, 'tags'), icon: const Icon(Icons.tune_rounded, size: 20)),
             ],
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../../data/models/user_row.dart';
 
 class UsersTable extends StatelessWidget {
@@ -24,12 +25,12 @@ class UsersTable extends StatelessWidget {
       rows: items,
       idOf: (item) => '${item.id}',
       exportBaseName: 'users',
-      searchHint: 'Search users...',
+      searchHint: AdminLocalizations.translate(context, 'search users...'),
       searchText: (item) => '${item.name} ${item.email ?? ""} ${item.mobile ?? ""}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<UserRow>(
-          title: 'User',
+          title: AdminLocalizations.translate(context, 'user'),
           width: 280,
           cell: (_, item) => Row(
             children: [
@@ -62,12 +63,12 @@ class UsersTable extends StatelessWidget {
           ),
         ),
         AdminColumn<UserRow>(
-          title: 'Mobile',
+          title: AdminLocalizations.translate(context, 'mobile'),
           width: 160,
           cell: (_, item) => Text(item.mobile ?? '—'),
         ),
         AdminColumn<UserRow>(
-          title: 'Orders',
+          title: AdminLocalizations.translate(context, 'orders'),
           width: 100,
           cell: (_, item) => Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -86,7 +87,7 @@ class UsersTable extends StatelessWidget {
           ),
         ),
         AdminColumn<UserRow>(
-          title: 'Total Spent',
+          title: AdminLocalizations.translate(context, 'total spent'),
           width: 140,
           cell: (_, item) => Text(
             '${item.totalSpent.toStringAsFixed(2)} EGP',
@@ -94,7 +95,7 @@ class UsersTable extends StatelessWidget {
           ),
         ),
         AdminColumn<UserRow>(
-          title: 'Joined',
+          title: AdminLocalizations.translate(context, 'joined'),
           width: 140,
           cell: (_, item) => Text(
             item.createdAt != null ? DateFormat('MMM dd, yyyy').format(item.createdAt!) : '—',
@@ -102,12 +103,12 @@ class UsersTable extends StatelessWidget {
           ),
         ),
         AdminColumn<UserRow>(
-          title: 'Status',
+          title: AdminLocalizations.translate(context, 'status'),
           width: 100,
           cell: (_, item) => _StatusBadge(isActive: item.isActive),
         ),
         AdminColumn<UserRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'actions'),
           width: 120,
           cell: (_, item) => AdminTableActionsCell<UserRow>(
             row: item,
@@ -132,26 +133,26 @@ class UserDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminDetailsDialog(
-      title: 'User Details',
+      title: AdminLocalizations.translate(context, 'user details'),
       id: user.id.toString(),
       icon: Icons.person_rounded,
       children: [
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Full Name', user.name, Icons.person_outline_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'full name'), user.name, Icons.person_outline_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Mobile', user.mobile ?? 'N/A', Icons.phone_android_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'mobile'), user.mobile ?? AdminLocalizations.translate(context, 'n/a'), Icons.phone_android_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 24),
-        AdminDetailsDialog.buildDetailRow(context, 'Email Address', user.email ?? 'No email provided', Icons.email_outlined),
+        AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'email address'), user.email ?? AdminLocalizations.translate(context, 'no email provided'), Icons.email_outlined),
         const SizedBox(height: 8),
         Row(
           children: [
             Expanded(
               child: _buildMetricTile(
                 context,
-                'Total Orders',
+                AdminLocalizations.translate(context, 'total orders'),
                 '${user.ordersCount}',
                 Icons.shopping_bag_outlined,
                 Colors.blue,
@@ -161,7 +162,7 @@ class UserDetailsDialog extends StatelessWidget {
             Expanded(
               child: _buildMetricTile(
                 context,
-                'Total Spent',
+                AdminLocalizations.translate(context, 'total spent'),
                 '${user.totalSpent.toStringAsFixed(2)} EGP',
                 Icons.account_balance_wallet_outlined,
                 Colors.green,
@@ -175,7 +176,7 @@ class UserDetailsDialog extends StatelessWidget {
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
                 context,
-                'Joined On',
+                AdminLocalizations.translate(context, 'joined on'),
                 user.createdAt != null ? DateFormat('MMMM dd, yyyy').format(user.createdAt!) : 'N/A',
                 Icons.calendar_today_rounded,
                 bottomPadding: 0,
@@ -265,7 +266,7 @@ class _StatusBadge extends StatelessWidget {
         border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Text(
-        isActive ? 'Active' : 'Inactive',
+        isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'),
         style: TextStyle(
           color: color,
           fontSize: 10,

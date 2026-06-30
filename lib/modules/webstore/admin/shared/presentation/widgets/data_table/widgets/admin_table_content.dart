@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'admin_table_models.dart';
 
 class AdminTableContent<T> extends StatelessWidget {
@@ -75,7 +76,7 @@ class AdminTableContent<T> extends StatelessWidget {
                 onSort: columns[i].sortable ? (_, asc) => onSort(i, asc) : null,
                 label: SizedBox(
                   width: columns[i].width,
-                  child: Text(columns[i].title),
+                  child: Text(AdminLocalizations.translate(context, columns[i].title)),
                 ),
               ),
           ],

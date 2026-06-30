@@ -7,6 +7,7 @@ import 'package:erp/core/common_widget/app_dropdown/category_tree_dropdown.dart'
 import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
 import 'package:erp/modules/webstore/admin/features/ads/data/models/ad_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class AdForm extends ConsumerStatefulWidget {
   final AdRow? initial;
@@ -97,18 +98,18 @@ class _AdFormState extends ConsumerState<AdForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _titleCtrl,
-                    label: 'Title (EN)',
-                    hint: 'e.g. Special Offer',
-                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    label: AdminLocalizations.translate(context, 'title (en)'),
+                    hint: AdminLocalizations.translate(context, 'e.g. special offer'),
+                    validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'required') : null,
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: AppTextField(
                     controller: _titleArCtrl,
-                    label: 'Title (AR)',
+                    label: AdminLocalizations.translate(context, 'title (ar)'),
                     hint: 'عرض خاص',
-                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'required') : null,
                   ),
                 ),
               ],
@@ -119,7 +120,7 @@ class _AdFormState extends ConsumerState<AdForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _contentCtrl,
-                    label: 'Content (EN)',
+                    label: AdminLocalizations.translate(context, 'content (en)'),
                     hint: 'Buy 1 Get 1',
                   ),
                 ),
@@ -127,7 +128,7 @@ class _AdFormState extends ConsumerState<AdForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _contentArCtrl,
-                    label: 'Content (AR)',
+                    label: AdminLocalizations.translate(context, 'content (ar)'),
                     hint: 'اشتري 1 واحصل على 1',
                   ),
                 ),
@@ -139,7 +140,7 @@ class _AdFormState extends ConsumerState<AdForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _locationCtrl,
-                    label: 'Location',
+                    label: AdminLocalizations.translate(context, 'location'),
                     hint: 'home',
                   ),
                 ),
@@ -147,7 +148,7 @@ class _AdFormState extends ConsumerState<AdForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _linkUrlCtrl,
-                    label: 'Link URL',
+                    label: AdminLocalizations.translate(context, 'link url'),
                     hint: '/offers',
                   ),
                 ),
@@ -158,27 +159,27 @@ class _AdFormState extends ConsumerState<AdForm> {
               data: (tree) {
                 final items = CategoryTreeDropdown.flattenTree(tree);
                 return CategoryTreeDropdown(
-                  label: 'Category Link',
-                  hint: 'Select Category (Optional)',
+                  label: AdminLocalizations.translate(context, 'category link'),
+                  hint: AdminLocalizations.translate(context, 'select category (optional)'),
                   value: items.any((c) => c.id == _selectedCategoryId) ? _selectedCategoryId : null,
                   items: items,
                   onChanged: (v) => setState(() => _selectedCategoryId = v),
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => const Text('Error loading categories'),
+              error: (e, _) => Text(AdminLocalizations.translate(context, 'error loading categories')),
             ),
             const SizedBox(height: 20),
             AdminImagePicker(
-              label: 'Ad Image',
+              label: AdminLocalizations.translate(context, 'ad image'),
               initialImage: widget.initial?.imageUrl,
               onImageSelected: (file) => setState(() => _imageFile = file),
               onRemoveInitial: () => setState(() => _removeInitialImage = true),
             ),
             const SizedBox(height: 20),
             SwitchListTile(
-              title: const Text('Is Active'),
-              subtitle: const Text('Hide or show this ad on the storefront'),
+              title: Text(AdminLocalizations.translate(context, 'is active')),
+              subtitle: Text(AdminLocalizations.translate(context, 'hide or show this ad on the storefront')),
               value: _isActive,
               onChanged: (v) => setState(() => _isActive = v),
               contentPadding: EdgeInsets.zero,
@@ -187,7 +188,7 @@ class _AdFormState extends ConsumerState<AdForm> {
             AppButton(
               onPressed: _submit,
               isLoading: widget.isSaving,
-              child: Text(widget.initial == null ? 'Create Ad' : 'Save Changes'),
+              child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'create ad') : AdminLocalizations.translate(context, 'save changes')),
             ),
           ],
         ),

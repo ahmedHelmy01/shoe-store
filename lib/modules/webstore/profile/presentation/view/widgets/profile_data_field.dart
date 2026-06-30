@@ -9,6 +9,7 @@ class ProfileDataField extends StatelessWidget {
   final IconData icon;
   final bool isEditing;
   final bool isLast;
+  final VoidCallback? onTap;
 
   const ProfileDataField({
     super.key,
@@ -17,15 +18,18 @@ class ProfileDataField extends StatelessWidget {
     required this.icon,
     required this.isEditing,
     this.isLast = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
+    final showTappable = isEditing && onTap != null;
+
     return Column(
       children: [
-        if (isEditing)
+        if (isEditing && onTap == null)
           Padding(
             padding: EdgeInsets.only(bottom: isLast ? 0 : 16.h),
             child: AppTextField(
@@ -36,29 +40,38 @@ class ProfileDataField extends StatelessWidget {
             ),
           )
         else
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(8.w),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryOrange.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Icon(icon, color: AppColors.primaryOrange, size: 18.sp),
+          InkWell(
+            onTap: showTappable ? onTap : null,
+            borderRadius: BorderRadius.circular(12.r),
+            child: Padding(
+              padding: EdgeInsets.only(bottom: isLast || showTappable ? 0 : 16.h),
+              child: Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(8.w),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryOrange.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: Icon(icon, color: AppColors.primaryOrange, size: 18.sp),
+                  ),
+                  16.horizontalSpace,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(label, style: TextStyle(fontSize: 12.sp, color: theme.hintColor)),
+                        Text(controller.text, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600)),
+                      ],
+                    ),
+                  ),
+                  if (showTappable)
+                    Icon(Icons.chevron_right_rounded, color: theme.hintColor, size: 20.sp),
+                ],
               ),
-              16.horizontalSpace,
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(label, style: TextStyle(fontSize: 12.sp, color: theme.hintColor)),
-                    Text(controller.text, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600)),
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
-        if (!isEditing && !isLast)
+        if (!isLast && (!isEditing || showTappable))
           Divider(height: 24.h, thickness: 0.5, color: theme.dividerColor.withValues(alpha: 0.5)),
       ],
     );

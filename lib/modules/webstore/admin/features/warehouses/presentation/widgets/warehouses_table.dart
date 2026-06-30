@@ -4,6 +4,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_tabl
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/data/models/warehouse_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class WarehousesTable extends StatelessWidget {
   final List<WarehouseRow> items;
@@ -27,12 +28,12 @@ class WarehousesTable extends StatelessWidget {
       rows: items,
       idOf: (w) => '${w.id}',
       exportBaseName: 'warehouses',
-      searchHint: 'Search warehouses…',
+      searchHint: AdminLocalizations.translate(context, 'search warehouses…'),
       searchText: (w) => '${w.id} ${w.name} ${w.location ?? ''}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<WarehouseRow>(
-          title: 'ID',
+          title: AdminLocalizations.translate(context, 'id'),
           sortable: true,
           sortValue: (w) => w.id,
           exportValue: (w) => '${w.id}',
@@ -40,7 +41,7 @@ class WarehousesTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<WarehouseRow>(
-          title: 'Name',
+          title: AdminLocalizations.translate(context, 'name'),
           sortable: true,
           sortValue: (w) => w.name,
           exportValue: (w) => w.name,
@@ -48,7 +49,7 @@ class WarehousesTable extends StatelessWidget {
           width: 280,
         ),
         AdminColumn<WarehouseRow>(
-          title: 'Address',
+          title: AdminLocalizations.translate(context, 'address'),
           sortable: true,
           sortValue: (w) => w.location ?? '',
           exportValue: (w) => w.location ?? '',
@@ -56,15 +57,15 @@ class WarehousesTable extends StatelessWidget {
           width: 200,
         ),
         AdminColumn<WarehouseRow>(
-          title: 'Active',
+          title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (w) => w.isActive ? 1 : 0,
-          exportValue: (w) => w.isActive ? 'Active' : 'Inactive',
+          exportValue: (w) => w.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'),
           cell: (_, w) => AdminStatusBadge(isActive: w.isActive),
           width: 100,
         ),
         AdminColumn<WarehouseRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'actions'),
           cell: (_, w) => AdminTableActionsCell<WarehouseRow>(
             row: w,
             onView: onView,

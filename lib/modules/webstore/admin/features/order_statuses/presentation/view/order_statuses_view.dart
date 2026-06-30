@@ -9,6 +9,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dia
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/modules/webstore/admin/features/order_statuses/data/models/order_status_row.dart';
 import '../view_model/order_statuses_view_model.dart';
 import '../widgets/order_statuses_table.dart';
@@ -32,9 +33,9 @@ class OrderStatusesView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Order Statuses',
+                title: AdminLocalizations.translate(context, 'order statuses'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add Status',
+                primaryActionLabel: AdminLocalizations.translate(context, 'add status'),
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 12),
@@ -46,7 +47,7 @@ class OrderStatusesView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Create Status' : 'Edit Status',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'create status') : AdminLocalizations.translate(context, 'edit status'),
             size: AdminDialogSize.medium,
             child: OrderStatusForm(
               key: ValueKey(state.isAdding ? 'status-add' : 'status-edit-${state.editingItem?.id ?? 0}'),
@@ -61,15 +62,15 @@ class OrderStatusesView extends ConsumerWidget {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: state.isAdding ? 'Status Created' : 'Status Updated',
-                    message: 'The order status has been saved successfully.',
+                    title: state.isAdding ? AdminLocalizations.translate(context, 'status created') : AdminLocalizations.translate(context, 'status updated'),
+                    message: AdminLocalizations.translate(context, 'the order status has been saved successfully.'),
                   );
                 } else {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.error,
-                    title: 'Save Failed',
-                    message: 'Could not save the order status. Please try again.',
+                    title: AdminLocalizations.translate(context, 'save failed'),
+                    message: AdminLocalizations.translate(context, 'could not save the order status. please try again.'),
                   );
                 }
               },
@@ -118,18 +119,18 @@ class OrderStatusesView extends ConsumerWidget {
   void _confirmAndDelete(BuildContext context, OrderStatusesVm notifier, int id, String title) {
     AppDialog.show(
       context,
-      title: 'Delete Status',
-      message: 'Are you sure you want to delete "$title"?',
-      cancelText: 'Cancel',
-      confirmText: 'Delete',
+      title: AdminLocalizations.translate(context, 'delete status'),
+      message: '${AdminLocalizations.translate(context, 'are you sure you want to delete')} "$title"?',
+      cancelText: AdminLocalizations.translate(context, 'cancel'),
+      confirmText: AdminLocalizations.translate(context, 'delete'),
       onConfirm: () async {
         Navigator.pop(context);
         final success = await notifier.commitDelete(id);
         if (!context.mounted) return;
         if (success) {
-          AppStatusDialog.show(context, status: AppDialogStatus.success, title: 'Deleted', message: 'Status deleted successfully.');
+          AppStatusDialog.show(context, status: AppDialogStatus.success, title: AdminLocalizations.translate(context, 'deleted'), message: AdminLocalizations.translate(context, 'status deleted successfully.'));
         } else {
-          AppStatusDialog.show(context, status: AppDialogStatus.error, title: 'Delete Failed', message: 'Could not delete status.');
+          AppStatusDialog.show(context, status: AppDialogStatus.error, title: AdminLocalizations.translate(context, 'delete failed'), message: AdminLocalizations.translate(context, 'could not delete status.'));
         }
       },
     );
@@ -201,7 +202,7 @@ class _StatusCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    'Default',
+                    AdminLocalizations.translate(context, 'default'),
                     style: theme.textTheme.labelSmall?.copyWith(color: theme.primaryColor, fontWeight: FontWeight.bold),
                   ),
                 ),

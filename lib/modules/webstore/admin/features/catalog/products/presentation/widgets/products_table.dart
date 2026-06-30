@@ -4,6 +4,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_tabl
 import 'package:erp/modules/webstore/admin/features/catalog/products/data/models/product_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class ProductsTable extends StatelessWidget {
   final AdminCrudData<ProductRow> state;
@@ -45,11 +46,11 @@ class ProductsTable extends StatelessWidget {
       rows: state.items,
       idOf: (p) => '${p.id}',
       exportBaseName: 'products',
-      searchHint: 'Search by name or code…',
+      searchHint: AdminLocalizations.translate(context, 'search by name or code…'),
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<ProductRow>(
-          title: 'ID',
+          title: AdminLocalizations.translate(context, 'id'),
           sortable: true,
           sortValue: (p) => p.id,
           exportValue: (p) => '${p.id}',
@@ -57,7 +58,7 @@ class ProductsTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<ProductRow>(
-          title: 'Product',
+          title: AdminLocalizations.translate(context, 'product'),
           sortable: true,
           sortValue: (p) => p.name,
           exportValue: (p) => p.name,
@@ -81,7 +82,7 @@ class ProductsTable extends StatelessWidget {
           width: 250,
         ),
         AdminColumn<ProductRow>(
-          title: 'SKU',
+          title: AdminLocalizations.translate(context, 'sku'),
           sortable: true,
           sortValue: (p) => p.sku,
           exportValue: (p) => p.sku,
@@ -89,7 +90,7 @@ class ProductsTable extends StatelessWidget {
           width: 150,
         ),
         AdminColumn<ProductRow>(
-          title: 'Sale Price',
+          title: AdminLocalizations.translate(context, 'sale price'),
           sortable: true,
           sortValue: (p) => double.tryParse(p.salePrice ?? '0') ?? 0,
           exportValue: (p) => p.salePrice ?? '0',
@@ -97,7 +98,7 @@ class ProductsTable extends StatelessWidget {
           width: 120,
         ),
         AdminColumn<ProductRow>(
-          title: 'Status',
+          title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (p) => p.isActive ? 1 : 0,
           exportValue: (p) => p.isActive ? 'Active' : 'Inactive',
@@ -105,7 +106,7 @@ class ProductsTable extends StatelessWidget {
           width: 100,
         ),
         AdminColumn<ProductRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'actions'),
           cell: (context, p) => AdminTableActionsCell<ProductRow>(
             row: p,
             onView: onView,
@@ -128,7 +129,7 @@ class ProductDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminDetailsDialog(
-      title: 'Product Details',
+      title: AdminLocalizations.translate(context, 'product details'),
       id: product.id.toString(),
       icon: Icons.inventory_2_rounded,
       children: [
@@ -204,36 +205,36 @@ class ProductDetailsDialog extends StatelessWidget {
         // Name (EN) + Name (AR)
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', product.nameEn ?? product.name, Icons.title_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (en)'), product.nameEn ?? product.name, Icons.title_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', product.nameAr ?? 'N/A', Icons.title_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (ar)'), product.nameAr ?? 'N/A', Icons.title_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
         // SKU + Code
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'SKU', product.sku, Icons.tag_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'sku'), product.sku, Icons.tag_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Code', product.code ?? 'N/A', Icons.qr_code_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'code'), product.code ?? 'N/A', Icons.qr_code_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
         // Sale Price + Purchase Price
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Sale Price', '${product.salePrice ?? '0'} EGP', Icons.sell_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'sale price'), '${product.salePrice ?? '0'} EGP', Icons.sell_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Purchase Price', '${product.purchasePrice ?? '0'} EGP', Icons.shopping_cart_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'purchase price'), '${product.purchasePrice ?? '0'} EGP', Icons.shopping_cart_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
         // Description EN + Description AR
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Description (EN)', product.description ?? 'N/A', Icons.description_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'description (en)'), product.description ?? 'N/A', Icons.description_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Description (AR)', product.descriptionAr ?? 'N/A', Icons.description_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'description (ar)'), product.descriptionAr ?? 'N/A', Icons.description_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),

@@ -8,6 +8,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_pag
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
 import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/governorates_view_model.dart';
 import '../widgets/governorates_table.dart';
 import '../widgets/governorate_form.dart';
@@ -31,9 +32,9 @@ class GovernoratesView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Governorates',
+                title: AdminLocalizations.translate(context, 'governorates'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add Gov',
+                primaryActionLabel: AdminLocalizations.translate(context, 'add gov'),
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 12),
@@ -45,7 +46,7 @@ class GovernoratesView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: true,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Create Governorate' : 'Edit Governorate',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'create governorate') : AdminLocalizations.translate(context, 'edit governorate'),
             size: AdminDialogSize.small,
             child: GovernorateForm(
               initial: state.editingItem,
@@ -56,12 +57,12 @@ class GovernoratesView extends ConsumerWidget {
                   AppStatusDialog.showSuccess(
                     context,
                     message: state.isAdding 
-                        ? 'Governorate created successfully'
-                        : 'Governorate updated successfully',
+                        ? AdminLocalizations.translate(context, 'governorate created successfully')
+                        : AdminLocalizations.translate(context, 'governorate updated successfully'),
                   );
                   notifier.closePanel();
                 } else if (!success && context.mounted) {
-                  AppStatusDialog.showError(context, message: 'Failed to save governorate');
+                  AppStatusDialog.showError(context, message: AdminLocalizations.translate(context, 'failed to save governorate'));
                 }
               },
             ),
@@ -115,18 +116,18 @@ class GovernoratesView extends ConsumerWidget {
                 onDelete: () {
                   AppDialog.show(
                     context,
-                    title: 'Delete Governorate',
-                    message: 'Are you sure you want to delete this governorate?',
-                    confirmText: 'Delete',
-                    cancelText: 'Cancel',
+                    title: AdminLocalizations.translate(context, 'delete governorate'),
+                    message: AdminLocalizations.translate(context, 'are you sure you want to delete this governorate?'),
+                    confirmText: AdminLocalizations.translate(context, 'delete'),
+                    cancelText: AdminLocalizations.translate(context, 'cancel'),
                     onConfirm: () async {
                       Navigator.pop(context);
                       final success = await notifier.commitDelete(g.id);
                       if (context.mounted) {
                         if (success) {
-                          AppStatusDialog.showSuccess(context, message: 'Governorate deleted successfully');
+                    AppStatusDialog.showSuccess(context, message: AdminLocalizations.translate(context, 'governorate deleted successfully'));
                         } else {
-                          AppStatusDialog.showError(context, message: 'Failed to delete governorate');
+                    AppStatusDialog.showError(context, message: AdminLocalizations.translate(context, 'failed to delete governorate'));
                         }
                       }
                     },
@@ -180,7 +181,7 @@ class _GovernorateCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      gov.nameAr ?? 'No Arabic name',
+                      gov.nameAr ?? AdminLocalizations.translate(context, 'no arabic name'),
                       style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6)),
                     ),
                   ],
@@ -204,12 +205,12 @@ class _GovernorateCard extends StatelessWidget {
                   color: (gov.isActive ? Colors.green : Colors.red).withValues(alpha: 0.1),
                 ),
                 child: Text(
-                  gov.isActive ? 'Active' : 'Inactive',
+                   gov.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'),
                   style: theme.textTheme.labelSmall?.copyWith(color: gov.isActive ? Colors.green : Colors.red, fontWeight: FontWeight.bold),
                 ),
               ),
               Text(
-                'ID: ${gov.id}',
+                '${AdminLocalizations.translate(context, 'id')}: ${gov.id}',
                 style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.4)),
               ),
             ],

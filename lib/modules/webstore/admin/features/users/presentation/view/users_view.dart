@@ -1,4 +1,3 @@
-import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/widgets/admin_table_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
@@ -6,6 +5,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_card_popup_menu.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/users_view_model.dart';
 import '../../data/models/user_row.dart';
 import '../widgets/users_table.dart';
@@ -27,7 +27,7 @@ class UsersView extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AdminPageHeader(
-            title: 'Users',
+            title: AdminLocalizations.translate(context, 'users'),
             onRefresh: () => notifier.fetch(),
           ),
           const SizedBox(height: 24),
@@ -149,9 +149,9 @@ class _UserCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _InfoItem(label: 'Orders', value: '${user.ordersCount}', color: theme.primaryColor),
-              _InfoItem(label: 'Total Spent', value: '${user.totalSpent.toStringAsFixed(0)} EGP', color: Colors.green),
-              _InfoItem(label: 'Mobile', value: user.mobile ?? '—'),
+              _InfoItem(label: AdminLocalizations.translate(context, 'orders'), value: '${user.ordersCount}', color: theme.primaryColor),
+              _InfoItem(label: AdminLocalizations.translate(context, 'total spent'), value: '${user.totalSpent.toStringAsFixed(0)} EGP', color: Colors.green),
+              _InfoItem(label: AdminLocalizations.translate(context, 'mobile'), value: user.mobile ?? '—'),
             ],
           ),
         ],

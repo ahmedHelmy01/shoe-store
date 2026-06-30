@@ -136,6 +136,7 @@ class _WebStorePrescriptions {
   final status_pending = 'webstore.prescriptions.status_pending';
   final status_reviewed = 'webstore.prescriptions.status_reviewed';
   final status_rejected = 'webstore.prescriptions.status_rejected';
+  final status_approved = 'webstore.prescriptions.status_approved';
   final no_notes = 'webstore.prescriptions.no_notes';
   final edit_notes = 'webstore.prescriptions.edit_notes';
   final edit_notes_hint = 'webstore.prescriptions.edit_notes_hint';

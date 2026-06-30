@@ -3,6 +3,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_tabl
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/features/ads/data/models/ad_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class AdsTable extends StatelessWidget {
   final List<AdRow> items;
@@ -24,12 +25,12 @@ class AdsTable extends StatelessWidget {
       rows: items,
       idOf: (a) => '${a.id}',
       exportBaseName: 'ads',
-      searchHint: 'Search advertisements…',
+      searchHint: AdminLocalizations.translate(context, 'search advertisements…'),
       searchText: (a) => '${a.id} ${a.title} ${a.location ?? ''}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<AdRow>(
-          title: 'ID',
+          title: AdminLocalizations.translate(context, 'id'),
           sortable: true,
           sortValue: (a) => a.id,
           exportValue: (a) => '${a.id}',
@@ -37,7 +38,7 @@ class AdsTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<AdRow>(
-          title: 'Image',
+          title: AdminLocalizations.translate(context, 'image'),
           cell: (_, a) => a.imageUrl != null
               ? Image.network(
                   a.imageUrl!,
@@ -50,7 +51,7 @@ class AdsTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<AdRow>(
-          title: 'Title',
+          title: AdminLocalizations.translate(context, 'title (en)'),
           sortable: true,
           sortValue: (a) => a.title,
           exportValue: (a) => a.title,
@@ -58,20 +59,20 @@ class AdsTable extends StatelessWidget {
           width: 260,
         ),
         AdminColumn<AdRow>(
-          title: 'Location',
+          title: AdminLocalizations.translate(context, 'location'),
           cell: (_, a) => Text(a.location ?? '-', maxLines: 1, overflow: TextOverflow.ellipsis),
           width: 150,
         ),
         AdminColumn<AdRow>(
-          title: 'Status',
+          title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (a) => a.isActive ? 1 : 0,
-          exportValue: (a) => a.isActive ? 'Active' : 'Inactive',
+          exportValue: (a) => a.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'),
           cell: (_, a) => AdminStatusBadge(isActive: a.isActive),
           width: 100,
         ),
         AdminColumn<AdRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'actions'),
           cell: (_, a) => AdminTableActionsCell<AdRow>(
             row: a,
             onView: (ad) {
@@ -98,7 +99,7 @@ class AdDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminDetailsDialog(
-      title: 'Advertisement Details',
+      title: AdminLocalizations.translate(context, 'advertisement details'),
       id: ad.id.toString(),
       icon: Icons.ads_click_rounded,
       children: [
@@ -118,25 +119,25 @@ class AdDetailsDialog extends StatelessWidget {
           ),
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Title (EN)', ad.title, Icons.title_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'title (en)'), ad.title, Icons.title_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Title (AR)', ad.titleAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'title (ar)'), ad.titleAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.translate_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Location', ad.location ?? 'N/A', Icons.location_on_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'location'), ad.location ?? AdminLocalizations.translate(context, 'n/a'), Icons.location_on_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Status', ad.isActive ? 'Active' : 'Inactive', Icons.check_circle_outline_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'status'), ad.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'), Icons.check_circle_outline_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
-        AdminDetailsDialog.buildDetailRow(context, 'Content (EN)', ad.content ?? 'N/A', Icons.description_rounded),
-        AdminDetailsDialog.buildDetailRow(context, 'Content (AR)', ad.contentAr ?? 'N/A', Icons.description_outlined),
-        AdminDetailsDialog.buildDetailRow(context, 'Target URL', ad.linkUrl ?? 'N/A', Icons.link_rounded),
+        AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'content (en)'), ad.content ?? AdminLocalizations.translate(context, 'n/a'), Icons.description_rounded),
+        AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'content (ar)'), ad.contentAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.description_outlined),
+        AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'target url'), ad.linkUrl ?? AdminLocalizations.translate(context, 'n/a'), Icons.link_rounded),
         if (ad.productCategoryId != null)
-          AdminDetailsDialog.buildDetailRow(context, 'Category Link ID', ad.productCategoryId.toString(), Icons.category_rounded),
+          AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'category link id'), ad.productCategoryId.toString(), Icons.category_rounded),
       ],
     );
   }

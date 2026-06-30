@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class AdminPageHeader extends StatelessWidget {
   final String title;
@@ -22,13 +23,14 @@ class AdminPageHeader extends StatelessWidget {
     final theme = Theme.of(context);
     final width = MediaQuery.of(context).size.width;
     final isMobile = width < 600;
+    final translatedTitle = AdminLocalizations.translate(context, title);
 
     if (isMobile) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
+            translatedTitle,
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w900, 
               letterSpacing: -1,
@@ -46,7 +48,7 @@ class AdminPageHeader extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            title,
+            translatedTitle,
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w900, 
               letterSpacing: -0.5,
@@ -62,6 +64,8 @@ class AdminPageHeader extends StatelessWidget {
 
   Widget _buildPrimaryButton(BuildContext context, {bool isFullWidth = false}) {
     final theme = Theme.of(context);
+    final label = primaryActionLabel ?? 'Add New';
+    final translatedLabel = AdminLocalizations.translate(context, label);
     
     return SizedBox(
       width: isFullWidth ? double.infinity : null,
@@ -70,7 +74,7 @@ class AdminPageHeader extends StatelessWidget {
         onPressed: onPrimaryAction,
         icon: Icon(primaryActionIcon ?? Icons.add_rounded, size: 20),
         label: Text(
-          primaryActionLabel ?? 'Add New',
+          translatedLabel,
           style: const TextStyle(fontWeight: FontWeight.w800, letterSpacing: 0.2),
         ),
         style: FilledButton.styleFrom(

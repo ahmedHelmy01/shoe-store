@@ -28,6 +28,10 @@ class _PrescriptionsListViewState extends ConsumerState<PrescriptionsListView> {
   @override
   void initState() {
     super.initState();
+    // Fetch fresh data every time the page is opened
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(prescriptionsVmProvider.notifier).fetchFirstPage();
+    });
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
         ref.read(prescriptionsVmProvider.notifier).fetchNextPage();
@@ -84,17 +88,25 @@ class _PrescriptionsListViewState extends ConsumerState<PrescriptionsListView> {
   }
 
   Widget _buildEmptyView() {
-    return AppEmptyWidget(
-      message: LocaleKeys.webstore.prescriptions.empty_title,
-      subtitle: LocaleKeys.webstore.prescriptions.empty_subtitle,
-      icon: Icons.receipt_long_rounded,
-      actionText: LocaleKeys.webstore.prescriptions.upload_new,
+    return CustomScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      slivers: [
+        SliverFillRemaining(
+          child: AppEmptyWidget(
+            message: LocaleKeys.webstore.prescriptions.empty_title,
+            subtitle: LocaleKeys.webstore.prescriptions.empty_subtitle,
+            icon: Icons.receipt_long_rounded,
+            actionText: LocaleKeys.webstore.prescriptions.upload_new,
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildListView(List<PrescriptionModel> list, bool hasMore) {
     return ListView.builder(
       controller: _scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
       itemCount: list.length + (hasMore ? 1 : 0),
       itemBuilder: (context, index) {
@@ -120,29 +132,36 @@ class _PrescriptionsListViewState extends ConsumerState<PrescriptionsListView> {
   }
 
   Widget _buildErrorView(String err, bool isDark) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(24.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline_rounded, size: 60.sp, color: AppColors.error),
-            16.verticalSpace,
-            Text(err, textAlign: TextAlign.center, style: TextStyle(fontSize: 16.sp, color: isDark ? Colors.white70 : AppColors.textColor)),
-            24.verticalSpace,
-            ElevatedButton(
-              onPressed: () => ref.read(prescriptionsVmProvider.notifier).fetchFirstPage(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryOrange,
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+    return CustomScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      slivers: [
+        SliverFillRemaining(
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.all(24.w),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error_outline_rounded, size: 60.sp, color: AppColors.error),
+                  16.verticalSpace,
+                  Text(err, textAlign: TextAlign.center, style: TextStyle(fontSize: 16.sp, color: isDark ? Colors.white70 : AppColors.textColor)),
+                  24.verticalSpace,
+                  ElevatedButton(
+                    onPressed: () => ref.read(prescriptionsVmProvider.notifier).fetchFirstPage(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryOrange,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                    ),
+                    child: Text(LocaleKeys.webstore.prescriptions.retry.tr(context: context)),
+                  ),
+                ],
               ),
-              child: Text(LocaleKeys.webstore.prescriptions.retry.tr(context: context)),
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 

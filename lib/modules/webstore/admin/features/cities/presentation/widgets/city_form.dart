@@ -7,6 +7,7 @@ import 'package:erp/modules/webstore/admin/features/cities/data/models/city_row.
 import 'package:erp/modules/webstore/admin/features/governorates/presentation/view_model/governorates_view_model.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/features/governorates/data/models/governorate_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class CityForm extends ConsumerStatefulWidget {
   final CityRow? initial;
@@ -55,7 +56,7 @@ class _CityFormState extends ConsumerState<CityForm> {
   void _submit() {
     if (_selectedGovId == null && widget.initial == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a governorate')),
+        SnackBar(content: Text(AdminLocalizations.translate(context, 'please select a governorate'))),
       );
       return;
     }
@@ -82,8 +83,8 @@ class _CityFormState extends ConsumerState<CityForm> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         AppDropdown<int>(
-          label: 'Governorate',
-          hint: 'Select Governorate',
+          label: AdminLocalizations.translate(context, 'governorate'),
+          hint: AdminLocalizations.translate(context, 'select governorate'),
           value: _selectedGovId,
           items: items.map((g) => DropdownMenuItem<int>(
             value: g.id,
@@ -94,35 +95,35 @@ class _CityFormState extends ConsumerState<CityForm> {
         const SizedBox(height: 18),
         AppTextField(
           controller: _nameCtrl,
-          label: 'City Name (EN)',
-          hint: 'e.g. Hawalli',
+          label: AdminLocalizations.translate(context, 'city name (en)'),
+          hint: AdminLocalizations.translate(context, 'e.g. hawalli'),
           borderRadius: 14,
         ),
         const SizedBox(height: 18),
         AppTextField(
           controller: _nameArCtrl,
-          label: 'City Name (AR)',
+          label: AdminLocalizations.translate(context, 'city name (ar)'),
           hint: 'مثلاً حولي',
           borderRadius: 14,
         ),
         const SizedBox(height: 18),
         AppTextField(
           controller: _codeCtrl,
-          label: 'Code',
-          hint: 'e.g. CAI',
+          label: AdminLocalizations.translate(context, 'code'),
+          hint: AdminLocalizations.translate(context, 'e.g. cai'),
           borderRadius: 14,
         ),
         const SizedBox(height: 18),
         AppTextField(
           controller: _deliveryFeeCtrl,
-          label: 'Delivery Fee',
+          label: AdminLocalizations.translate(context, 'delivery fee'),
           hint: '1.5',
           keyboardType: TextInputType.number,
           borderRadius: 14,
         ),
         const SizedBox(height: 18),
         SwitchListTile(
-          title: const Text('Is Active'),
+          title: Text(AdminLocalizations.translate(context, 'is active')),
           value: _isActive,
           onChanged: (v) => setState(() => _isActive = v),
           contentPadding: EdgeInsets.zero,
@@ -131,7 +132,7 @@ class _CityFormState extends ConsumerState<CityForm> {
         AppButton(
           onPressed: _submit,
           isLoading: widget.isSaving,
-          child: Text(widget.initial == null ? 'Create City' : 'Save Changes'),
+          child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'create city') : AdminLocalizations.translate(context, 'save changes')),
         ),
       ],
     );

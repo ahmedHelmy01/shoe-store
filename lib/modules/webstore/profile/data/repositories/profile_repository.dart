@@ -10,6 +10,7 @@ abstract class IProfileRepository {
     String? email,
     String? mobile,
     String? password,
+    int? branchId,
   });
   Future<ApiResult<void>> deleteAccount();
 }
@@ -34,6 +35,7 @@ class ProfileRepository extends BaseRepository implements IProfileRepository {
     String? email,
     String? mobile,
     String? password,
+    int? branchId,
   }) {
     return safeApiCall<WebStoreUser>(() async {
       final response = await _dataSource.updateProfile(
@@ -41,6 +43,7 @@ class ProfileRepository extends BaseRepository implements IProfileRepository {
         email: email,
         mobile: mobile,
         password: password,
+        branchId: branchId,
       );
       final data = response['data'] ?? response;
       return WebStoreUser.fromJson(data as Map<String, dynamic>);

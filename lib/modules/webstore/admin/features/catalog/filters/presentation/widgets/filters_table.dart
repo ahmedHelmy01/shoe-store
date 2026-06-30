@@ -3,6 +3,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_tabl
 import 'package:erp/modules/webstore/admin/features/catalog/filters/data/models/filter_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
 
@@ -86,7 +87,7 @@ class FiltersTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<FilterRow>(
-          title: 'Status',
+          title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (f) => f.isActive ? 1 : 0,
           exportValue: (f) => f.isActive ? 'Active' : 'Inactive',
@@ -94,7 +95,7 @@ class FiltersTable extends StatelessWidget {
           width: 100,
         ),
         AdminColumn<FilterRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'actions'),
           cell: (_, f) => AdminTableActionsCell<FilterRow>(
             row: f,
             onView: (f) {
@@ -110,21 +111,21 @@ class FiltersTable extends StatelessWidget {
               showDialog(
                 context: context,
                 builder: (context) => AdminDetailsDialog(
-                  title: 'Tag Details',
+                  title: AdminLocalizations.translate(context, 'tag details'),
                   id: f.id.toString(),
                   icon: Icons.local_offer_rounded,
                   children: [
                     Row(
                       children: [
-                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', f.nameEn ?? f.name, Icons.language_rounded, bottomPadding: 0)),
+                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (en)'), f.nameEn ?? f.name, Icons.language_rounded, bottomPadding: 0)),
                         const SizedBox(width: 16),
-                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', f.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (ar)'), f.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
                       ],
                     ),
                     const SizedBox(height: 20),
                     Row(
                       children: [
-                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Parent Tag', parentTagName, Icons.account_tree_rounded, bottomPadding: 0)),
+                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'parent tag'), parentTagName, Icons.account_tree_rounded, bottomPadding: 0)),
                         const SizedBox(width: 16),
                         Expanded(
                           child: Row(
@@ -133,7 +134,7 @@ class FiltersTable extends StatelessWidget {
                               Expanded(
                                 child: AdminDetailsDialog.buildDetailRow(
                                   context,
-                                  'Color',
+                                  AdminLocalizations.translate(context, 'color'),
                                   f.colorCode ?? '#6366f1',
                                   Icons.palette_rounded,
                                   bottomPadding: 0,

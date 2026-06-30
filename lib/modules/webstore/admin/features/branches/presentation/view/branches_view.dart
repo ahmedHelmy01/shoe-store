@@ -11,6 +11,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/branches_view_model.dart';
 import '../widgets/branches_table.dart';
 import '../widgets/branch_form.dart';
@@ -42,9 +43,9 @@ class _BranchesViewState extends ConsumerState<BranchesView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Business Branches',
+                title: AdminLocalizations.translate(context, 'business branches'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add Branch',
+                primaryActionLabel: AdminLocalizations.translate(context, 'add branch'),
                 onPrimaryAction: () {
                   notifier.openAdd();
                 },
@@ -58,7 +59,7 @@ class _BranchesViewState extends ConsumerState<BranchesView> {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Create Branch' : 'Edit Branch',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'create branch') : AdminLocalizations.translate(context, 'edit branch'),
             size: AdminDialogSize.medium,
             child: BranchForm(
               initial: state.editingItem,
@@ -72,15 +73,15 @@ class _BranchesViewState extends ConsumerState<BranchesView> {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: state.isAdding ? 'Branch Created' : 'Branch Updated',
-                    message: 'The branch has been saved successfully.',
+                    title: state.isAdding ? AdminLocalizations.translate(context, 'branch created') : AdminLocalizations.translate(context, 'branch updated'),
+                    message: AdminLocalizations.translate(context, 'the branch has been saved successfully.'),
                   );
                 } else {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.error,
-                    title: 'Save Failed',
-                    message: 'An error occurred while saving the branch.',
+                    title: AdminLocalizations.translate(context, 'save failed'),
+                    message: AdminLocalizations.translate(context, 'an error occurred while saving the branch.'),
                   );
                 }
               },
@@ -130,10 +131,10 @@ class _BranchesViewState extends ConsumerState<BranchesView> {
   void _confirmAndDelete(BuildContext context, BranchesVm notifier, int id, String name) {
     AppDialog.show(
       context,
-      title: 'Delete Branch',
-      message: 'Are you sure you want to delete branch "$name"?',
-      cancelText: 'Cancel',
-      confirmText: 'Delete',
+      title: AdminLocalizations.translate(context, 'delete branch'),
+      message: '${AdminLocalizations.translate(context, 'are you sure you want to delete branch')} "$name"?',
+      cancelText: AdminLocalizations.translate(context, 'cancel'),
+      confirmText: AdminLocalizations.translate(context, 'delete'),
       onConfirm: () async {
         Navigator.pop(context);
         final success = await notifier.commitDelete(id);
@@ -142,15 +143,15 @@ class _BranchesViewState extends ConsumerState<BranchesView> {
           AppStatusDialog.show(
             context,
             status: AppDialogStatus.success,
-            title: 'Deleted',
-            message: 'Branch deleted successfully.',
+            title: AdminLocalizations.translate(context, 'deleted'),
+            message: AdminLocalizations.translate(context, 'branch deleted successfully.'),
           );
         } else {
           AppStatusDialog.show(
             context,
             status: AppDialogStatus.error,
-            title: 'Delete Failed',
-            message: 'Could not delete the branch. Please try again.',
+            title: AdminLocalizations.translate(context, 'delete failed'),
+            message: AdminLocalizations.translate(context, 'could not delete the branch. please try again.'),
           );
         }
       },
@@ -198,7 +199,7 @@ class _BranchCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      branch.nameAr ?? 'No Arabic name',
+                      branch.nameAr ?? AdminLocalizations.translate(context, 'no arabic name'),
                       style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6)),
                     ),
                   ],
@@ -228,8 +229,8 @@ class _BranchCard extends StatelessWidget {
                 ),
               AdminStatusBadge(
                 isActive: branch.isActive,
-                activeLabel: 'Open',
-                inactiveLabel: 'Closed',
+                activeLabel: AdminLocalizations.translate(context, 'open'),
+                inactiveLabel: AdminLocalizations.translate(context, 'closed'),
               ),
             ],
           ),
@@ -247,66 +248,66 @@ class _BranchDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminDetailsDialog(
-      title: 'Branch Details',
+      title: AdminLocalizations.translate(context, 'branch details'),
       id: item.id.toString(),
       icon: Icons.storefront_rounded,
       children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', item.name, Icons.title_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (en)'), item.name, Icons.title_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', item.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (ar)'), item.nameAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.translate_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Code', item.code ?? 'N/A', Icons.qr_code_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'code'), item.code ?? AdminLocalizations.translate(context, 'n/a'), Icons.qr_code_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Phone', item.phone ?? 'N/A', Icons.phone_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'phone'), item.phone ?? AdminLocalizations.translate(context, 'n/a'), Icons.phone_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
-        AdminDetailsDialog.buildDetailRow(context, 'Email', item.email ?? 'N/A', Icons.email_rounded),
+        AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'email'), item.email ?? AdminLocalizations.translate(context, 'n/a'), Icons.email_rounded),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Address (EN)', item.address ?? 'N/A', Icons.location_on_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'address (english)'), item.address ?? AdminLocalizations.translate(context, 'n/a'), Icons.location_on_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Address (AR)', item.addressAr ?? 'N/A', Icons.location_on_rounded, bottomPadding: 0)),
-          ],
-        ),
-        const SizedBox(height: 20),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'City', item.city ?? 'N/A', Icons.location_city_rounded, bottomPadding: 0)),
-            const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Country', item.country ?? 'N/A', Icons.public_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'address (arabic)'), item.addressAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.location_on_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Latitude', item.latitude?.toString() ?? 'N/A', Icons.map_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'city'), item.city ?? AdminLocalizations.translate(context, 'n/a'), Icons.location_city_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Longitude', item.longitude?.toString() ?? 'N/A', Icons.map_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'country'), item.country ?? AdminLocalizations.translate(context, 'n/a'), Icons.public_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Description (EN)', item.description ?? 'N/A', Icons.description_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'latitude'), item.latitude?.toString() ?? AdminLocalizations.translate(context, 'n/a'), Icons.map_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Description (AR)', item.descriptionAr ?? 'N/A', Icons.description_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'longitude'), item.longitude?.toString() ?? AdminLocalizations.translate(context, 'n/a'), Icons.map_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
-        AdminDetailsDialog.buildDetailRow(context, 'Type', item.isMain ? 'Main Branch' : 'Standard Branch', Icons.info_outline_rounded),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'description'), item.description ?? AdminLocalizations.translate(context, 'n/a'), Icons.description_rounded, bottomPadding: 0)),
+            const SizedBox(width: 16),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'description (arabic)'), item.descriptionAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.description_rounded, bottomPadding: 0)),
+          ],
+        ),
+        const SizedBox(height: 20),
+        AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'type'), item.isMain ? AdminLocalizations.translate(context, 'main branch') : AdminLocalizations.translate(context, 'standard branch'), Icons.info_outline_rounded),
         const SizedBox(height: 12),
         AdminDetailsDialog.buildStatusRow(context, item.isActive),
       ],

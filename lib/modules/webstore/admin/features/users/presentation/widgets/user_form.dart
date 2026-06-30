@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../../data/models/user_row.dart';
 
 class UserForm extends StatefulWidget {
@@ -60,21 +61,21 @@ class _UserFormState extends State<UserForm> {
         children: [
           AppTextField(
             controller: _nameController,
-            label: 'Full Name',
-            hint: 'Enter user name',
-            validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
+            label: AdminLocalizations.translate(context, 'full name'),
+            hint: AdminLocalizations.translate(context, 'enter user name'),
+            validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'name is required') : null,
           ),
           const SizedBox(height: 20),
           AppTextField(
             controller: _emailController,
-            label: 'Email Address',
+            label: AdminLocalizations.translate(context, 'email address'),
             hint: 'user@example.com',
             keyboardType: TextInputType.emailAddress,
           ),
           const SizedBox(height: 20),
           AppTextField(
             controller: _mobileController,
-            label: 'Mobile Number',
+            label: AdminLocalizations.translate(context, 'mobile number'),
             hint: '+20 10xxxxxxxx',
             keyboardType: TextInputType.phone,
           ),
@@ -82,7 +83,7 @@ class _UserFormState extends State<UserForm> {
           AppButton(
             onPressed: _submit,
             isLoading: widget.isSaving,
-            child: Text(widget.initial == null ? 'Add User' : 'Save Changes'),
+            child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'add user') : AdminLocalizations.translate(context, 'save changes')),
           ),
         ],
       ),

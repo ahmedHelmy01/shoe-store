@@ -174,12 +174,12 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
           children: [
             const Icon(Icons.error_outline_rounded, size: 64, color: AppColors.error),
             const SizedBox(height: 16),
-            Text('Error: ${dashboardState.error}', style: Theme.of(context).textTheme.titleMedium),
+            Text('${AdminLocalizations.translate(context, 'error:')} ${dashboardState.error}', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: () => ref.read(adminDashboardProvider.notifier).getStatistics(),
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Try Again'),
+              label: Text(AdminLocalizations.translate(context, 'try again')),
             ),
           ],
         ),
@@ -220,8 +220,8 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
               charts: [
                 GlassPanel(
                   title: _selectedPeriod == 'months'
-                      ? (isAr ? 'حركة المخزون (آخر 6 أشهر)' : 'Inventory Movement (Last 6 Months)')
-                      : (isAr ? 'حركة المخزون (آخر 6 أسابيع)' : 'Inventory Movement (Last 6 Weeks)'),
+                      ? AdminLocalizations.translate(context, 'inventory movement (last 6 months)')
+                      : AdminLocalizations.translate(context, 'inventory movement (last 6 weeks)'),
                   action: Container(
                     padding: const EdgeInsets.all(2),
                     decoration: BoxDecoration(
@@ -232,12 +232,12 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         _buildToggleButton(
-                          label: isAr ? 'شهور' : 'Months',
+                          label: AdminLocalizations.translate(context, 'months'),
                           isSelected: _selectedPeriod == 'months',
                           onTap: () => setState(() => _selectedPeriod = 'months'),
                         ),
                         _buildToggleButton(
-                          label: isAr ? 'أسابيع' : 'Weeks',
+                          label: AdminLocalizations.translate(context, 'weeks'),
                           isSelected: _selectedPeriod == 'weeks',
                           onTap: () => setState(() => _selectedPeriod = 'weeks'),
                         ),

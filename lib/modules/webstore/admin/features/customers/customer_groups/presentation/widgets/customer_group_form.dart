@@ -4,6 +4,7 @@ import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
 import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/modules/webstore/admin/features/customers/customer_groups/data/models/customer_group_row.dart';
 
 class CustomerGroupForm extends ConsumerStatefulWidget {
@@ -73,17 +74,17 @@ class _CustomerGroupFormState extends ConsumerState<CustomerGroupForm> {
               Expanded(
                 child: AppTextField(
                   controller: _titleCtrl,
-                  label: 'Title (EN)',
-                  hint: 'e.g. VIP Customers',
+                  label: AdminLocalizations.translate(context, 'Title (EN)'),
+                  hint: AdminLocalizations.translate(context, 'e.g. VIP Customers'),
                   borderRadius: 14,
-                  validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                  validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'Required') : null,
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: AppTextField(
                   controller: _titleArCtrl,
-                  label: 'Title (AR)',
+                  label: AdminLocalizations.translate(context, 'Title (AR)'),
                   hint: 'مثال: عملاء مميزون',
                   borderRadius: 14,
                 ),
@@ -97,14 +98,14 @@ class _CustomerGroupFormState extends ConsumerState<CustomerGroupForm> {
                   ? groups.where((g) => g.id != widget.initial!.id).toList()
                   : groups;
               return AppDropdown<int>(
-                label: 'Parent Group',
+                label: AdminLocalizations.translate(context, 'Parent Group'),
                 value: filtered.any((g) => g.id == _selectedParentId) ? _selectedParentId : null,
-                hint: 'None (لا يوجد)',
+                hint: AdminLocalizations.translate(context, 'None (لا يوجد)'),
                 onChanged: (value) => setState(() => _selectedParentId = value),
                 items: [
-                  const DropdownMenuItem<int>(
+                  DropdownMenuItem<int>(
                     value: null,
-                    child: Text('None (لا يوجد)'),
+                    child: Text(AdminLocalizations.translate(context, 'None (لا يوجد)')),
                   ),
                   ...filtered.map(
                     (g) => DropdownMenuItem<int>(
@@ -117,18 +118,18 @@ class _CustomerGroupFormState extends ConsumerState<CustomerGroupForm> {
               );
             },
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => const Text('Failed to load groups'),
+            error: (e, _) => Text(AdminLocalizations.translate(context, 'Failed to load groups')),
           ),
           const SizedBox(height: 18),
           SwitchListTile(
-            title: const Text('Default Group', style: TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: const Text('New customers will be assigned to this group by default'),
+            title: Text(AdminLocalizations.translate(context, 'Default Group'), style: const TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Text(AdminLocalizations.translate(context, 'New customers will be assigned to this group by default')),
             value: _isDefault,
             onChanged: (v) => setState(() => _isDefault = v),
             contentPadding: EdgeInsets.zero,
           ),
           SwitchListTile(
-            title: const Text('Active', style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(AdminLocalizations.translate(context, 'Active'), style: const TextStyle(fontWeight: FontWeight.bold)),
             value: _isActive,
             onChanged: (v) => setState(() => _isActive = v),
             contentPadding: EdgeInsets.zero,
@@ -137,7 +138,7 @@ class _CustomerGroupFormState extends ConsumerState<CustomerGroupForm> {
           AppButton(
             onPressed: _submit,
             isLoading: widget.isSaving,
-            child: Text(widget.initial == null ? 'Create Group' : 'Save Changes'),
+            child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'Create Group') : AdminLocalizations.translate(context, 'Save Changes')),
           ),
         ],
       ),

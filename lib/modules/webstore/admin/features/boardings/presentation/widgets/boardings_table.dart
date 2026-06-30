@@ -3,6 +3,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_tabl
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/features/boardings/data/models/boarding_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class BoardingsTable extends StatelessWidget {
   final List<BoardingRow> items;
@@ -24,12 +25,12 @@ class BoardingsTable extends StatelessWidget {
       rows: items,
       idOf: (b) => '${b.id}',
       exportBaseName: 'boardings',
-      searchHint: 'Search boardings…',
+      searchHint: AdminLocalizations.translate(context, 'search boardings…'),
       searchText: (b) => '${b.id} ${b.title} ${b.titleAr ?? ''}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<BoardingRow>(
-          title: 'ID',
+          title: AdminLocalizations.translate(context, 'id'),
           sortable: true,
           sortValue: (b) => b.id,
           exportValue: (b) => '${b.id}',
@@ -37,7 +38,7 @@ class BoardingsTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<BoardingRow>(
-          title: 'Image',
+          title: AdminLocalizations.translate(context, 'image'),
           cell: (_, b) => b.imageUrl != null
               ? Image.network(
                   b.imageUrl!,
@@ -50,7 +51,7 @@ class BoardingsTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<BoardingRow>(
-          title: 'Title',
+          title: AdminLocalizations.translate(context, 'title (en)'),
           sortable: true,
           sortValue: (b) => b.title,
           exportValue: (b) => b.title,
@@ -58,7 +59,7 @@ class BoardingsTable extends StatelessWidget {
           width: 250,
         ),
         AdminColumn<BoardingRow>(
-          title: 'Pos',
+          title: AdminLocalizations.translate(context, 'pos'),
           sortable: true,
           sortValue: (b) => b.position,
           exportValue: (b) => '${b.position}',
@@ -66,15 +67,15 @@ class BoardingsTable extends StatelessWidget {
           width: 60,
         ),
         AdminColumn<BoardingRow>(
-          title: 'Status',
+          title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (b) => b.isActive ? 1 : 0,
-          exportValue: (b) => b.isActive ? 'Active' : 'Inactive',
+          exportValue: (b) => b.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'),
           cell: (_, b) => AdminStatusBadge(isActive: b.isActive),
           width: 100,
         ),
         AdminColumn<BoardingRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'actions'),
           cell: (_, b) => AdminTableActionsCell<BoardingRow>(
             row: b,
             onView: (boarding) {
@@ -101,7 +102,7 @@ class BoardingDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminDetailsDialog(
-      title: 'Onboarding Screen Details',
+      title: AdminLocalizations.translate(context, 'onboarding screen details'),
       id: boarding.id.toString(),
       icon: Icons.info_outline_rounded,
       children: [
@@ -121,22 +122,22 @@ class BoardingDetailsDialog extends StatelessWidget {
           ),
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Title (EN)', boarding.title, Icons.title_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'title (en)'), boarding.title, Icons.title_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Title (AR)', boarding.titleAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'title (ar)'), boarding.titleAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.translate_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Position', '${boarding.position}', Icons.sort_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'position'), '${boarding.position}', Icons.sort_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Status', boarding.isActive ? 'Active' : 'Inactive', Icons.check_circle_outline_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'status'), boarding.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'), Icons.check_circle_outline_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
-        AdminDetailsDialog.buildDetailRow(context, 'Content (EN)', boarding.content ?? 'N/A', Icons.description_rounded),
-        AdminDetailsDialog.buildDetailRow(context, 'Content (AR)', boarding.contentAr ?? 'N/A', Icons.description_outlined),
+        AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'content (en)'), boarding.content ?? AdminLocalizations.translate(context, 'n/a'), Icons.description_rounded),
+        AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'content (ar)'), boarding.contentAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.description_outlined),
       ],
     );
   }

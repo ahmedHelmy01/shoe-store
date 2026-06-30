@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/features/ads/data/models/ad_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class AdsMobileList extends StatelessWidget {
   final List<AdRow> items;
@@ -27,7 +28,7 @@ class AdsMobileList extends StatelessWidget {
           ),
           title: Text(a.title, maxLines: 1, overflow: TextOverflow.ellipsis),
           subtitle: Text('${a.location ?? '-'} • ${a.titleAr ?? '-'}'),
-          trailing: Text(a.isActive ? 'Active' : 'Disabled'),
+          trailing: Text(a.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'disabled')),
         );
       },
     );

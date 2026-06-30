@@ -349,6 +349,7 @@
       "status_pending": "قيد المراجعة",
       "status_reviewed": "تمت المراجعة",
       "status_rejected": "مرفوضة",
+      "status_approved": "تمت الموافقة",
       "no_notes": "لا توجد ملاحظات",
       "edit_notes": "تعديل الملاحظات",
       "edit_notes_hint": "اكتب ملاحظاتك هنا...",

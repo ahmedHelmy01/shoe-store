@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../../data/models/admin_prescription_row.dart';
 
 class AdminPrescriptionsTable extends StatelessWidget {
@@ -39,18 +40,18 @@ class AdminPrescriptionsTable extends StatelessWidget {
       exportBaseName: 'prescriptions',
       columns: [
         AdminColumn<AdminPrescriptionRow>(
-          title: 'ID',
+          title: AdminLocalizations.translate(context, 'ID'),
           cell: (_, p) => Text('#${p.id}'),
           width: 80,
         ),
         AdminColumn<AdminPrescriptionRow>(
-          title: 'Customer',
+          title: AdminLocalizations.translate(context, 'Customer'),
           cell: (_, p) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                p.customer?.name ?? 'Unknown',
+                p.customer?.name ?? AdminLocalizations.translate(context, 'Unknown'),
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               if (p.customer?.mobile != null)
@@ -63,7 +64,7 @@ class AdminPrescriptionsTable extends StatelessWidget {
           width: 200,
         ),
         AdminColumn<AdminPrescriptionRow>(
-          title: 'Status',
+          title: AdminLocalizations.translate(context, 'Status'),
           cell: (_, p) => AdminStatusBadge(
             isActive: true,
             label: p.status.toUpperCase(),
@@ -72,18 +73,18 @@ class AdminPrescriptionsTable extends StatelessWidget {
           width: 120,
         ),
         AdminColumn<AdminPrescriptionRow>(
-          title: 'Reviewer',
+          title: AdminLocalizations.translate(context, 'Reviewer'),
           cell: (_, p) => Text(p.reviewer?.name ?? '-'),
           width: 150,
         ),
         AdminColumn<AdminPrescriptionRow>(
-          title: 'Date',
+          title: AdminLocalizations.translate(context, 'Date'),
           cell: (_, p) =>
               Text(DateFormat('yyyy-MM-dd HH:mm').format(p.createdAt)),
           width: 180,
         ),
         AdminColumn<AdminPrescriptionRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'Actions'),
           cell: (context, p) => AdminTableActionsCell<AdminPrescriptionRow>(
             row: p,
             onView: onView,

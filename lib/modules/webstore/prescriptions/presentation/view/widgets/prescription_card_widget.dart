@@ -134,6 +134,7 @@ class PrescriptionCardWidget extends StatelessWidget {
 
   (Color, String) _statusInfo(BuildContext ctx) {
     switch (prescription.status.toLowerCase()) {
+      case 'approved': return (AppColors.success, LocaleKeys.webstore.prescriptions.status_approved.tr(context: ctx));
       case 'reviewed': return (AppColors.success, LocaleKeys.webstore.prescriptions.status_reviewed.tr(context: ctx));
       case 'rejected': return (AppColors.error, LocaleKeys.webstore.prescriptions.status_rejected.tr(context: ctx));
       default: return (AppColors.orange, LocaleKeys.webstore.prescriptions.status_pending.tr(context: ctx));

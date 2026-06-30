@@ -4,6 +4,7 @@ import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/modules/webstore/admin/features/pages/data/models/page_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class PageForm extends StatefulWidget {
   final PageRow? initial;
@@ -99,17 +100,17 @@ class _PageFormState extends State<PageForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _titleCtrl,
-                    label: 'Page Title (EN)',
-                    hint: 'e.g. Terms & Conditions',
+                    label: AdminLocalizations.translate(context, 'page title (en)'),
+                    hint: AdminLocalizations.translate(context, 'e.g. terms & conditions'),
                     borderRadius: 14,
-                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'required') : null,
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: AppTextField(
                     controller: _titleArCtrl,
-                    label: 'Page Title (AR)',
+                    label: AdminLocalizations.translate(context, 'page title (ar)'),
                     hint: 'مثال: الشروط والأحكام',
                     borderRadius: 14,
                   ),
@@ -119,38 +120,38 @@ class _PageFormState extends State<PageForm> {
             const SizedBox(height: 18),
             AppTextField(
               controller: _slugCtrl,
-              label: 'Slug (URL)',
-              hint: 'e.g. terms-and-conditions',
+              label: AdminLocalizations.translate(context, 'slug (url)'),
+              hint: AdminLocalizations.translate(context, 'e.g. terms-and-conditions'),
               borderRadius: 14,
-              validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+              validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'required') : null,
             ),
             const SizedBox(height: 18),
             AppTextField(
               controller: _contentCtrl,
-              label: 'Page Content (EN)',
-              hint: 'Enter page content in English...',
+              label: AdminLocalizations.translate(context, 'page content (en)'),
+              hint: AdminLocalizations.translate(context, 'enter page content in english...'),
               maxLines: 6,
               borderRadius: 14,
             ),
             const SizedBox(height: 18),
             AppTextField(
               controller: _contentArCtrl,
-              label: 'Page Content (AR)',
+              label: AdminLocalizations.translate(context, 'page content (ar)'),
               hint: 'أدخل محتوى الصفحة باللغة العربية...',
               maxLines: 6,
               borderRadius: 14,
             ),
             const SizedBox(height: 20),
             AdminImagePicker(
-              label: 'Featured Image',
+              label: AdminLocalizations.translate(context, 'featured image'),
               initialImage: widget.initial?.imageUrl,
               onImageSelected: (file) => setState(() => _imageFile = file),
               onRemoveInitial: () => setState(() => _removeInitialImage = true),
             ),
             const SizedBox(height: 20),
             SwitchListTile(
-              title: const Text('Published', style: TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: const Text('Make this page visible to customers'),
+              title: Text(AdminLocalizations.translate(context, 'published'), style: const TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: Text(AdminLocalizations.translate(context, 'make this page visible to customers')),
               value: _isActive,
               onChanged: (v) => setState(() => _isActive = v),
               contentPadding: EdgeInsets.zero,
@@ -159,7 +160,7 @@ class _PageFormState extends State<PageForm> {
             AppButton(
               onPressed: _submit,
               isLoading: widget.isSaving,
-              child: Text(widget.initial == null ? 'Create Page' : 'Save Changes'),
+              child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'create page') : AdminLocalizations.translate(context, 'save changes')),
             ),
           ],
         ),

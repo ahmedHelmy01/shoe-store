@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/admin/features/dashboard/presentation/widgets/glass_panel.dart';
@@ -21,7 +22,7 @@ class ClientGrowthCharts extends StatelessWidget {
                 child: SizedBox(
                   height: 360,
                   child: GlassPanel(
-                    title: 'Customer Growth (Last 6 Months)',
+                    title: AdminLocalizations.translate(context, 'Customer Growth (Last 6 Months)'),
                     child: _buildGrowthChart(context),
                   ),
                 ),
@@ -32,7 +33,7 @@ class ClientGrowthCharts extends StatelessWidget {
                 child: SizedBox(
                   height: 360,
                   child: GlassPanel(
-                    title: 'Customer Segments',
+                    title: AdminLocalizations.translate(context, 'Customer Segments'),
                     child: _buildSegmentsChart(context),
                   ),
                 ),
@@ -45,7 +46,7 @@ class ClientGrowthCharts extends StatelessWidget {
             SizedBox(
               height: 340,
               child: GlassPanel(
-                title: 'Customer Growth (Last 6 Months)',
+                title: AdminLocalizations.translate(context, 'Customer Growth (Last 6 Months)'),
                 child: _buildGrowthChart(context),
               ),
             ),
@@ -53,7 +54,7 @@ class ClientGrowthCharts extends StatelessWidget {
             SizedBox(
               height: 340,
               child: GlassPanel(
-                title: 'Customer Segments',
+                title: AdminLocalizations.translate(context, 'Customer Segments'),
                 child: _buildSegmentsChart(context),
               ),
             ),
@@ -65,12 +66,12 @@ class ClientGrowthCharts extends StatelessWidget {
 
   Widget _buildGrowthChart(BuildContext context) {
     final data = [
-      ChartData('Jan', 8500),
-      ChartData('Feb', 9200),
-      ChartData('Mar', 9800),
-      ChartData('Apr', 10500),
-      ChartData('May', 11400),
-      ChartData('Jun', 12458),
+      ChartData(AdminLocalizations.translate(context, 'Jan'), 8500),
+      ChartData(AdminLocalizations.translate(context, 'Feb'), 9200),
+      ChartData(AdminLocalizations.translate(context, 'Mar'), 9800),
+      ChartData(AdminLocalizations.translate(context, 'Apr'), 10500),
+      ChartData(AdminLocalizations.translate(context, 'May'), 11400),
+      ChartData(AdminLocalizations.translate(context, 'Jun'), 12458),
     ];
 
     return SfCartesianChart(
@@ -86,7 +87,7 @@ class ClientGrowthCharts extends StatelessWidget {
           dataSource: data,
           xValueMapper: (ChartData d, _) => d.x,
           yValueMapper: (ChartData d, _) => d.y,
-          name: 'Clients',
+          name: AdminLocalizations.translate(context, 'Clients'),
           gradient: LinearGradient(
             colors: [
               AppColors.primary.withValues(alpha: 0.3),
@@ -105,10 +106,10 @@ class ClientGrowthCharts extends StatelessWidget {
 
   Widget _buildSegmentsChart(BuildContext context) {
     final data = [
-      ChartData('VIP', 15),
-      ChartData('Loyal', 35),
-      ChartData('Regular', 40),
-      ChartData('New', 10),
+      ChartData(AdminLocalizations.translate(context, 'VIP'), 15),
+      ChartData(AdminLocalizations.translate(context, 'Loyal'), 35),
+      ChartData(AdminLocalizations.translate(context, 'Regular'), 40),
+      ChartData(AdminLocalizations.translate(context, 'New'), 10),
     ];
 
     return SfCircularChart(

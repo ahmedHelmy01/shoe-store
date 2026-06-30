@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class AdminDataTableFooter extends StatelessWidget {
   final int page;
@@ -28,26 +29,37 @@ class AdminDataTableFooter extends StatelessWidget {
     final start = total == 0 ? 0 : ((page - 1) * pageSize) + 1;
     final end = min(page * pageSize, total);
 
+    String footerText;
+    if (total == 0) {
+      footerText = AdminLocalizations.translate(context, 'No rows');
+    } else {
+      final showing = AdminLocalizations.translate(context, 'Showing');
+      final ofText = AdminLocalizations.translate(context, 'of');
+      footerText = '$showing $start–$end $ofText $total';
+    }
+
+    final pageText = AdminLocalizations.translate(context, 'Page');
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Row(
         children: [
           Text(
-            total == 0 ? 'No rows' : 'Showing $start–$end of $total',
+            footerText,
             style: theme.textTheme.bodySmall?.copyWith(color: muted, fontWeight: FontWeight.w700),
           ),
           const Spacer(),
           IconButton(
-            tooltip: 'Prev',
+            tooltip: AdminLocalizations.translate(context, 'Prev'),
             onPressed: onPrev,
             icon: const Icon(Icons.chevron_left_rounded),
           ),
           Text(
-            'Page $page / $pageCount',
+            '$pageText $page / $pageCount',
             style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w900),
           ),
           IconButton(
-            tooltip: 'Next',
+            tooltip: AdminLocalizations.translate(context, 'Next'),
             onPressed: onNext,
             icon: const Icon(Icons.chevron_right_rounded),
           ),

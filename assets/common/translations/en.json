@@ -343,6 +343,7 @@
       "status_pending": "Under Review",
       "status_reviewed": "Reviewed",
       "status_rejected": "Rejected",
+      "status_approved": "Approved",
       "no_notes": "No notes",
       "edit_notes": "Edit Notes",
       "edit_notes_hint": "Write your notes here...",

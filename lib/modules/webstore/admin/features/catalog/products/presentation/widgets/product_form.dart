@@ -9,6 +9,7 @@ import 'package:erp/core/common_widget/app_dropdown/app_multi_dropdown.dart';
 import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/products/data/models/product_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/core/network/network_url.dart';
 
 class ProductForm extends ConsumerStatefulWidget {
@@ -148,20 +149,20 @@ class _ProductFormState extends ConsumerState<ProductForm> {
             Row(
               children: [
                 Expanded(
-                  child: AppTextField(
-                    controller: _nameArCtrl,
-                    label: 'Name (Arabic)',
-                    hint: 'اسم المنتج بالعربي',
-                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    child: AppTextField(
+                      controller: _nameArCtrl,
+                      label: AdminLocalizations.translate(context, 'name (arabic)'),
+                      hint: AdminLocalizations.translate(context, 'product name in arabic'),
+                      validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'required') : null,
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: AppTextField(
-                    controller: _nameEnCtrl,
-                    label: 'Name (English)',
-                    hint: 'Product name in English',
-                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    child: AppTextField(
+                      controller: _nameEnCtrl,
+                      label: AdminLocalizations.translate(context, 'name (english)'),
+                      hint: AdminLocalizations.translate(context, 'product name in english'),
+                      validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'required') : null,
                   ),
                 ),
               ],
@@ -170,11 +171,11 @@ class _ProductFormState extends ConsumerState<ProductForm> {
             Row(
               children: [
                 Expanded(
-                  child: AppTextField(
-                    controller: _skuCtrl,
-                    label: 'SKU / Barcode',
-                    hint: 'e.g. SKU-12345',
-                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    child: AppTextField(
+                      controller: _skuCtrl,
+                      label: AdminLocalizations.translate(context, 'sku / barcode'),
+                      hint: AdminLocalizations.translate(context, 'e.g. sku-12345'),
+                      validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'required') : null,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -183,15 +184,15 @@ class _ProductFormState extends ConsumerState<ProductForm> {
                     data: (tree) {
                       final items = CategoryTreeDropdown.flattenTree(tree);
                       return CategoryTreeDropdown(
-                        label: 'Category',
-                        hint: 'Select Category',
+                        label: AdminLocalizations.translate(context, 'category'),
+                        hint: AdminLocalizations.translate(context, 'select category'),
                         value: items.any((c) => c.id == _selectedCategoryId) ? _selectedCategoryId : null,
                         items: items,
                         onChanged: (v) => setState(() => _selectedCategoryId = v),
                       );
                     },
                     loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => const Text('Error loading categories'),
+                    error: (e, _) => Text(AdminLocalizations.translate(context, 'error loading categories')),
                   ),
                 ),
               ],
@@ -199,8 +200,8 @@ class _ProductFormState extends ConsumerState<ProductForm> {
             const SizedBox(height: 20),
             companiesAsync.when(
               data: (list) => AppDropdown<int>(
-                label: 'Company / Manufacturer',
-                hint: 'Select Company',
+                label: AdminLocalizations.translate(context, 'company / manufacturer'),
+                hint: AdminLocalizations.translate(context, 'select company'),
                 value: list.any((c) => c.id == _selectedCompanyId) ? _selectedCompanyId : null,
                 items: list.map((c) => DropdownMenuItem(
                   value: c.id,
@@ -209,25 +210,25 @@ class _ProductFormState extends ConsumerState<ProductForm> {
                 onChanged: (v) => setState(() => _selectedCompanyId = v),
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => const Text('Error loading companies'),
+              error: (e, _) => Text(AdminLocalizations.translate(context, 'error loading companies')),
             ),
             const SizedBox(height: 20),
             Row(
               children: [
                 Expanded(
-                  child: AppTextField(
-                    controller: _purchasePriceCtrl,
-                    label: 'Purchase Price',
-                    hint: '0.00',
+                    child: AppTextField(
+                      controller: _purchasePriceCtrl,
+                      label: AdminLocalizations.translate(context, 'purchase price'),
+                      hint: AdminLocalizations.translate(context, '0.00'),
                     keyboardType: TextInputType.number,
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: AppTextField(
-                    controller: _salePriceCtrl,
-                    label: 'Sale Price',
-                    hint: '0.00',
+                    child: AppTextField(
+                      controller: _salePriceCtrl,
+                      label: AdminLocalizations.translate(context, 'sale price'),
+                      hint: AdminLocalizations.translate(context, '0.00'),
                     keyboardType: TextInputType.number,
                   ),
                 ),
@@ -236,15 +237,15 @@ class _ProductFormState extends ConsumerState<ProductForm> {
             const SizedBox(height: 20),
             AppTextField(
               controller: _descArCtrl,
-              label: 'Description (Arabic)',
-              hint: 'وصف المنتج بالعربي...',
+              label: AdminLocalizations.translate(context, 'description (arabic)'),
+              hint: AdminLocalizations.translate(context, 'product description in arabic...'),
               maxLines: 3,
             ),
             const SizedBox(height: 20),
             AppTextField(
               controller: _descEnCtrl,
-              label: 'Description (English)',
-              hint: 'Product description in English...',
+              label: AdminLocalizations.translate(context, 'description (english)'),
+              hint: AdminLocalizations.translate(context, 'product description in english...'),
               maxLines: 3,
             ),
             const SizedBox(height: 20),
@@ -254,8 +255,8 @@ class _ProductFormState extends ConsumerState<ProductForm> {
                 Expanded(
                   child: tagsAsync.when(
                     data: (list) => AppMultiDropdown<int>(
-                      label: 'Tags',
-                      hint: 'Select Tags',
+                      label: AdminLocalizations.translate(context, 'tags'),
+                      hint: AdminLocalizations.translate(context, 'select tags'),
                       selectedValues: _selectedTagIds,
                       items: list.map((t) => DropdownMenuItem(
                         value: t.id,
@@ -269,15 +270,15 @@ class _ProductFormState extends ConsumerState<ProductForm> {
                         child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
                       ),
                     ),
-                    error: (e, _) => const Text('Error loading tags'),
+                    error: (e, _) => Text(AdminLocalizations.translate(context, 'error loading tags')),
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: propertiesAsync.when(
                     data: (list) => AppMultiDropdown<int>(
-                      label: 'Properties',
-                      hint: 'Select Properties',
+                      label: AdminLocalizations.translate(context, 'properties'),
+                      hint: AdminLocalizations.translate(context, 'select properties'),
                       selectedValues: _selectedPropertyIds,
                       items: list.map((p) => DropdownMenuItem(
                         value: p.id,
@@ -291,7 +292,7 @@ class _ProductFormState extends ConsumerState<ProductForm> {
                         child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
                       ),
                     ),
-                    error: (e, _) => const Text('Error loading properties'),
+                    error: (e, _) => Text(AdminLocalizations.translate(context, 'error loading properties')),
                   ),
                 ),
               ],
@@ -303,7 +304,7 @@ class _ProductFormState extends ConsumerState<ProductForm> {
                 Expanded(
                   flex: 1,
                   child: AdminImagePicker(
-                      label: 'Product Image',
+                      label: AdminLocalizations.translate(context, 'product image'),
                       initialImage: widget.initial?.imageUrl,
                       onImageSelected: (file) => setState(() => _imageFile = file),
                       onRemoveInitial: () => setState(() => _removeInitialImage = true),
@@ -313,7 +314,7 @@ class _ProductFormState extends ConsumerState<ProductForm> {
                   Expanded(
                     flex: 2,
                     child: AdminImagePicker(
-                      label: 'Gallery Images',
+                      label: AdminLocalizations.translate(context, 'gallery images'),
                       isMultiple: true,
                       initialGallery: widget.initial?.imageUrls,
                       onGallerySelected: (files) => setState(() => _galleryFiles = files),
@@ -323,7 +324,7 @@ class _ProductFormState extends ConsumerState<ProductForm> {
             ),
             const SizedBox(height: 20),
             SwitchListTile(
-              title: const Text('Is Active'),
+              title: Text(AdminLocalizations.translate(context, 'is active')),
               value: _isActive,
               onChanged: (v) => setState(() => _isActive = v),
               contentPadding: EdgeInsets.zero,
@@ -332,7 +333,7 @@ class _ProductFormState extends ConsumerState<ProductForm> {
             AppButton(
               onPressed: _submit,
               isLoading: widget.isSaving,
-              child: Text(widget.initial == null ? 'Add Product' : 'Save Changes'),
+              child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'add product') : AdminLocalizations.translate(context, 'save changes')),
             ),
           ],
         ),

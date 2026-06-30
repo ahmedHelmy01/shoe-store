@@ -5,6 +5,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
@@ -32,9 +33,9 @@ class FiltersView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Tags',
+                title: AdminLocalizations.translate(context, 'tags'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add Tag',
+                primaryActionLabel: AdminLocalizations.translate(context, 'add tag'),
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 24),
@@ -46,7 +47,7 @@ class FiltersView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Add Tag' : 'Edit Tag',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'add tag') : AdminLocalizations.translate(context, 'edit tag'),
             size: AdminDialogSize.medium,
             child: FilterForm(
               initial: state.editingItem,
@@ -60,15 +61,15 @@ class FiltersView extends ConsumerWidget {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: state.editingItem == null ? 'Tag Added' : 'Tag Updated',
-                    message: 'The tag has been saved successfully.',
+                    title: state.editingItem == null ? AdminLocalizations.translate(context, 'tag added') : AdminLocalizations.translate(context, 'tag updated'),
+                    message: AdminLocalizations.translate(context, 'the tag has been saved successfully.'),
                   );
                 } else {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.error,
-                    title: 'Save Failed',
-                    message: 'Failed to save tag. Please try again.',
+                    title: AdminLocalizations.translate(context, 'save failed'),
+                    message: AdminLocalizations.translate(context, 'failed to save tag. please try again.'),
                   );
                 }
               },
@@ -130,7 +131,7 @@ class FiltersView extends ConsumerWidget {
   void _showDetails(BuildContext context, WidgetRef ref, FilterRow f) {
     final parentTagName = () {
       final parentId = f.parentId;
-      if (parentId == null || parentId == 0) return 'None (لا يوجد)';
+      if (parentId == null || parentId == 0) return AdminLocalizations.translate(context, 'none');
       final state = ref.read(filtersVmProvider);
       if (state is AdminCrudData<FilterRow>) {
         for (final item in state.items) {
@@ -143,21 +144,21 @@ class FiltersView extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AdminDetailsDialog(
-        title: 'Tag Details',
+        title: AdminLocalizations.translate(context, 'tag details'),
         id: f.id.toString(),
         icon: Icons.local_offer_rounded,
         children: [
           Row(
             children: [
-              Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', f.nameEn ?? f.name, Icons.language_rounded, bottomPadding: 0)),
+              Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (english)'), f.nameEn ?? f.name, Icons.language_rounded, bottomPadding: 0)),
               const SizedBox(width: 16),
-              Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', f.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+              Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (arabic)'), f.nameAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.translate_rounded, bottomPadding: 0)),
             ],
           ),
           const SizedBox(height: 20),
           Row(
             children: [
-              Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Parent Tag', parentTagName, Icons.account_tree_rounded, bottomPadding: 0)),
+              Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'parent tag'), parentTagName, Icons.account_tree_rounded, bottomPadding: 0)),
               const SizedBox(width: 16),
               Expanded(
                 child: Row(
@@ -166,7 +167,7 @@ class FiltersView extends ConsumerWidget {
                     Expanded(
                       child: AdminDetailsDialog.buildDetailRow(
                         context,
-                        'Color',
+                        AdminLocalizations.translate(context, 'color'),
                         f.colorCode ?? '#6366f1',
                         Icons.palette_rounded,
                         bottomPadding: 0,
@@ -208,10 +209,10 @@ class FiltersView extends ConsumerWidget {
   void _confirmAndDelete(BuildContext context, FiltersVm notifier, int id, String name) {
     AppDialog.show(
       context,
-      title: 'Delete Tag',
-      message: 'Are you sure you want to delete tag "$name"?',
-      cancelText: 'Cancel',
-      confirmText: 'Delete',
+      title: AdminLocalizations.translate(context, 'delete tag'),
+      message: '${AdminLocalizations.translate(context, 'are you sure you want to delete')} "$name"?',
+      cancelText: AdminLocalizations.translate(context, 'cancel'),
+      confirmText: AdminLocalizations.translate(context, 'delete'),
       onConfirm: () async {
         Navigator.pop(context);
         final success = await notifier.commitDelete(id);
@@ -220,15 +221,15 @@ class FiltersView extends ConsumerWidget {
           AppStatusDialog.show(
             context,
             status: AppDialogStatus.success,
-            title: 'Deleted',
-            message: 'Tag deleted successfully.',
+            title: AdminLocalizations.translate(context, 'deleted'),
+            message: AdminLocalizations.translate(context, 'tag deleted successfully.'),
           );
         } else {
           AppStatusDialog.show(
             context,
             status: AppDialogStatus.error,
-            title: 'Delete Failed',
-            message: 'Could not delete tag. Please try again.',
+            title: AdminLocalizations.translate(context, 'delete failed'),
+            message: AdminLocalizations.translate(context, 'could not delete tag. please try again.'),
           );
         }
       },
@@ -295,15 +296,15 @@ class _FilterCard extends StatelessWidget {
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     onTap: onView,
-                    child: const Row(children: [Icon(Icons.visibility_outlined), SizedBox(width: 8), Text('Details')]),
+                    child: Row(children: [const Icon(Icons.visibility_outlined), const SizedBox(width: 8), Text(AdminLocalizations.translate(context, 'details'))]),
                   ),
                   PopupMenuItem(
                     onTap: onEdit,
-                    child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: 8), Text('Edit')]),
+                    child: Row(children: [const Icon(Icons.edit_outlined), const SizedBox(width: 8), Text(AdminLocalizations.translate(context, 'edit'))]),
                   ),
                   PopupMenuItem(
                     onTap: onDelete,
-                    child: const Row(children: [Icon(Icons.delete_outline_rounded, color: Colors.red), SizedBox(width: 8), Text('Delete')]),
+                    child: Row(children: [const Icon(Icons.delete_outline_rounded, color: Colors.red), const SizedBox(width: 8), Text(AdminLocalizations.translate(context, 'delete'))]),
                   ),
                 ],
               ),

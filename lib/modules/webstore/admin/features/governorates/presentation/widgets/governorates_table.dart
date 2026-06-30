@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/governorates/data/models/governorate_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 
@@ -24,12 +25,12 @@ class GovernoratesTable extends StatelessWidget {
       rows: items,
       idOf: (g) => '${g.id}',
       exportBaseName: 'governorates',
-      searchHint: 'Search governorates…',
+      searchHint: AdminLocalizations.translate(context, 'search governorates…'),
       searchText: (g) => '${g.id} ${g.name} ${g.nameEn ?? ''} ${g.nameAr ?? ''}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<GovernorateRow>(
-          title: 'ID',
+          title: AdminLocalizations.translate(context, 'id'),
           sortable: true,
           sortValue: (g) => g.id,
           exportValue: (g) => '${g.id}',
@@ -37,7 +38,7 @@ class GovernoratesTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<GovernorateRow>(
-          title: 'Name (EN)',
+          title: AdminLocalizations.translate(context, 'name (en)'),
           sortable: true,
           sortValue: (g) => g.nameEn ?? g.name,
           exportValue: (g) => g.nameEn ?? g.name,
@@ -45,7 +46,7 @@ class GovernoratesTable extends StatelessWidget {
           width: 260,
         ),
         AdminColumn<GovernorateRow>(
-          title: 'Name (AR)',
+          title: AdminLocalizations.translate(context, 'name (ar)'),
           sortable: true,
           sortValue: (g) => g.nameAr ?? '',
           exportValue: (g) => g.nameAr ?? '',
@@ -53,15 +54,15 @@ class GovernoratesTable extends StatelessWidget {
           width: 260,
         ),
         AdminColumn<GovernorateRow>(
-          title: 'Active',
+          title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (g) => g.isActive ? 1 : 0,
-          exportValue: (g) => g.isActive ? 'Yes' : 'No',
+          exportValue: (g) => g.isActive ? AdminLocalizations.translate(context, 'yes') : AdminLocalizations.translate(context, 'no'),
           cell: (_, g) => AdminStatusBadge(isActive: g.isActive),
           width: 120,
         ),
         AdminColumn<GovernorateRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'actions'),
           cell: (_, g) => AdminTableActionsCell<GovernorateRow>(
             row: g,
             onEdit: onEdit,
@@ -87,7 +88,7 @@ class GovernorateDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminDetailsDialog(
-      title: 'Governorate Details',
+      title: AdminLocalizations.translate(context, 'governorate details'),
       id: gov.id.toString(),
       icon: Icons.map_rounded,
       children: [
@@ -97,7 +98,7 @@ class GovernorateDetailsDialog extends StatelessWidget {
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
                 context,
-                'Name (EN)',
+                AdminLocalizations.translate(context, 'name (en)'),
                 gov.nameEn ?? gov.name,
                 Icons.title_rounded,
                 bottomPadding: 0,
@@ -107,8 +108,8 @@ class GovernorateDetailsDialog extends StatelessWidget {
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
                 context,
-                'Name (AR)',
-                gov.nameAr ?? 'N/A',
+                AdminLocalizations.translate(context, 'name (ar)'),
+                gov.nameAr ?? AdminLocalizations.translate(context, 'n/a'),
                 Icons.translate_rounded,
                 bottomPadding: 0,
               ),
@@ -122,8 +123,8 @@ class GovernorateDetailsDialog extends StatelessWidget {
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
                 context,
-                'Country',
-                gov.countryName ?? 'N/A',
+                AdminLocalizations.translate(context, 'country'),
+                gov.countryName ?? AdminLocalizations.translate(context, 'n/a'),
                 Icons.public_rounded,
                 bottomPadding: 0,
               ),

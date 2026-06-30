@@ -9,6 +9,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dia
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/ads_view_model.dart';
 import '../widgets/ads_table.dart';
 import '../widgets/ad_form.dart';
@@ -32,9 +33,9 @@ class AdsView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Advertisements',
+                title: AdminLocalizations.translate(context, 'advertisements'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add Ad',
+                primaryActionLabel: AdminLocalizations.translate(context, 'add ad'),
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 12),
@@ -46,7 +47,7 @@ class AdsView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Create New Ad' : 'Edit Ad',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'create new ad') : AdminLocalizations.translate(context, 'edit ad'),
             size: AdminDialogSize.medium,
             child: AdForm(
               key: ValueKey(state.isAdding ? 'ad-add' : 'ad-edit-${state.editingItem?.id ?? 0}'),
@@ -61,15 +62,15 @@ class AdsView extends ConsumerWidget {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: state.isAdding ? 'Ad Created' : 'Ad Updated',
-                    message: 'The advertisement has been saved successfully.',
+                    title: state.isAdding ? AdminLocalizations.translate(context, 'ad created') : AdminLocalizations.translate(context, 'ad updated'),
+                    message: AdminLocalizations.translate(context, 'the advertisement has been saved successfully.'),
                   );
                 } else {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.error,
-                    title: 'Save Failed',
-                    message: 'Could not save the advertisement. Please try again.',
+                    title: AdminLocalizations.translate(context, 'save failed'),
+                    message: AdminLocalizations.translate(context, 'could not save the advertisement. please try again.'),
                   );
                 }
               },
@@ -118,18 +119,18 @@ class AdsView extends ConsumerWidget {
   void _confirmAndDelete(BuildContext context, AdsVm notifier, int id, String title) {
     AppDialog.show(
       context,
-      title: 'Delete Advertisement',
-      message: 'Are you sure you want to delete "$title"?',
-      cancelText: 'Cancel',
-      confirmText: 'Delete',
+      title: AdminLocalizations.translate(context, 'delete advertisement'),
+      message: '${AdminLocalizations.translate(context, 'are you sure you want to delete')} "$title"?',
+      cancelText: AdminLocalizations.translate(context, 'cancel'),
+      confirmText: AdminLocalizations.translate(context, 'delete'),
       onConfirm: () async {
         Navigator.pop(context);
         final success = await notifier.commitDelete(id);
         if (!context.mounted) return;
         if (success) {
-          AppStatusDialog.show(context, status: AppDialogStatus.success, title: 'Deleted', message: 'Advertisement deleted successfully.');
+          AppStatusDialog.show(context, status: AppDialogStatus.success, title: AdminLocalizations.translate(context, 'deleted'), message: AdminLocalizations.translate(context, 'advertisement deleted successfully.'));
         } else {
-          AppStatusDialog.show(context, status: AppDialogStatus.error, title: 'Delete Failed', message: 'Could not delete advertisement.');
+          AppStatusDialog.show(context, status: AppDialogStatus.error, title: AdminLocalizations.translate(context, 'delete failed'), message: AdminLocalizations.translate(context, 'could not delete advertisement.'));
         }
       },
     );
@@ -182,7 +183,7 @@ class _AdCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Location: ${ad.location ?? "Global"}',
+                      '${AdminLocalizations.translate(context, 'location:')} ${ad.location ?? AdminLocalizations.translate(context, 'global')}',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.textTheme.bodySmall?.color?.withValues(
                           alpha: 0.6,
@@ -212,7 +213,7 @@ class _AdCard extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  ad.isActive ? 'Active' : 'Disabled',
+                  ad.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'disabled'),
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: ad.isActive ? Colors.green : Colors.red,
                     fontWeight: FontWeight.bold,
@@ -220,7 +221,7 @@ class _AdCard extends StatelessWidget {
                 ),
               ),
               Text(
-                'ID: ${ad.id}',
+                '${AdminLocalizations.translate(context, 'id')}: ${ad.id}',
                 style: theme.textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: theme.textTheme.bodySmall?.color?.withValues(

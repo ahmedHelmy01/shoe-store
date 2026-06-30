@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/modules/webstore/admin/features/countries/presentation/view_model/countries_view_model.dart';
 import 'package:erp/modules/webstore/admin/features/countries/presentation/widgets/countries_table.dart';
 import 'package:erp/modules/webstore/admin/features/countries/presentation/widgets/country_form.dart';
@@ -31,8 +32,8 @@ class CountriesView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Countries',
-                primaryActionLabel: 'Add Country',
+                title: AdminLocalizations.translate(context, 'countries'),
+                primaryActionLabel: AdminLocalizations.translate(context, 'add country'),
                 onPrimaryAction: () => vm.openAdd(),
                 onRefresh: () => vm.fetch(),
               ),
@@ -45,7 +46,7 @@ class CountriesView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: true,
             onClose: () => vm.closePanel(),
-            title: state.editingItem == null ? 'Add Country' : 'Edit Country',
+            title: state.editingItem == null ? AdminLocalizations.translate(context, 'add country') : AdminLocalizations.translate(context, 'edit country'),
             child: CountryForm(
               initial: state.editingItem,
               isSaving: state.isSaving,
@@ -58,14 +59,14 @@ class CountriesView extends ConsumerWidget {
                   AppStatusDialog.showSuccess(
                     context,
                     message: state.editingItem == null
-                        ? 'Country created successfully'
-                        : 'Country updated successfully',
+                        ? AdminLocalizations.translate(context, 'country created successfully')
+                        : AdminLocalizations.translate(context, 'country updated successfully'),
                   );
                   vm.closePanel();
                 } else if (!success && context.mounted) {
                   AppStatusDialog.showError(
                     context,
-                    message: 'Failed to save country',
+                    message: AdminLocalizations.translate(context, 'failed to save country'),
                   );
                 }
               },
@@ -127,12 +128,12 @@ class CountriesView extends ConsumerWidget {
               if (success) {
                 AppStatusDialog.showSuccess(
                   context,
-                  message: 'Country deleted successfully',
+                  message: AdminLocalizations.translate(context, 'country deleted successfully'),
                 );
               } else {
                 AppStatusDialog.showError(
                   context,
-                  message: 'Failed to delete country',
+                  message: AdminLocalizations.translate(context, 'failed to delete country'),
                 );
               }
             }

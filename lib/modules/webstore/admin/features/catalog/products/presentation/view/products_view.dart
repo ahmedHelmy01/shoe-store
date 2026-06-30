@@ -8,6 +8,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/products_view_model.dart';
 import '../widgets/products_table.dart';
 import '../widgets/product_form.dart';
@@ -33,9 +34,9 @@ class ProductsView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Products Catalog',
+                title: AdminLocalizations.translate(context, 'products catalog'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add Product',
+                primaryActionLabel: AdminLocalizations.translate(context, 'add product'),
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 24),
@@ -47,7 +48,7 @@ class ProductsView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Add Product' : 'Edit Product',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'add product') : AdminLocalizations.translate(context, 'edit product'),
             size: AdminDialogSize.large,
             child: ProductForm(
               initial: state.editingItem,
@@ -66,15 +67,15 @@ class ProductsView extends ConsumerWidget {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: state.isAdding ? 'Product Added' : 'Product Updated',
-                    message: 'The product has been saved successfully.',
+                    title: state.isAdding ? AdminLocalizations.translate(context, 'product added') : AdminLocalizations.translate(context, 'product updated'),
+                    message: AdminLocalizations.translate(context, 'the product has been saved successfully.'),
                   );
                 } else {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.error,
-                    title: 'Save Failed',
-                    message: 'An error occurred while saving the product.',
+                    title: AdminLocalizations.translate(context, 'save failed'),
+                    message: AdminLocalizations.translate(context, 'an error occurred while saving the product.'),
                   );
                 }
               },
@@ -166,10 +167,10 @@ class ProductsView extends ConsumerWidget {
   ) {
     AppDialog.show(
       context,
-      title: 'Delete Product',
-      message: 'Are you sure you want to delete product "$name"?',
-      cancelText: 'Cancel',
-      confirmText: 'Delete',
+      title: AdminLocalizations.translate(context, 'delete product'),
+      message: '${AdminLocalizations.translate(context, 'are you sure you want to delete')} "$name"?',
+      cancelText: AdminLocalizations.translate(context, 'cancel'),
+      confirmText: AdminLocalizations.translate(context, 'delete'),
       onConfirm: () async {
         Navigator.pop(context);
         final success = await notifier.commitDelete(id);
@@ -178,15 +179,15 @@ class ProductsView extends ConsumerWidget {
           AppStatusDialog.show(
             context,
             status: AppDialogStatus.success,
-            title: 'Deleted',
-            message: 'Product deleted successfully.',
+            title: AdminLocalizations.translate(context, 'deleted'),
+            message: AdminLocalizations.translate(context, 'product deleted successfully.'),
           );
         } else {
           AppStatusDialog.show(
             context,
             status: AppDialogStatus.error,
-            title: 'Delete Failed',
-            message: 'Could not delete the product. Please try again.',
+            title: AdminLocalizations.translate(context, 'delete failed'),
+            message: AdminLocalizations.translate(context, 'could not delete the product. please try again.'),
           );
         }
       },
@@ -260,7 +261,7 @@ class _ProductCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'SKU: ${product.sku}',
+                      '${AdminLocalizations.translate(context, 'sku:')} ${product.sku}',
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontFamily: 'monospace',
                         color: theme.textTheme.bodySmall?.color?.withValues(

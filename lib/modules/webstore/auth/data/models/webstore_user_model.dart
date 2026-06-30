@@ -9,6 +9,7 @@ class WebStoreUser {
   final String? email;
   final String? mobile;
   final int? branchId;
+  final String? branchName;
   final int? governorateId;
   final int? cityId;
   final String? address;
@@ -21,6 +22,7 @@ class WebStoreUser {
     this.email,
     this.mobile,
     this.branchId,
+    this.branchName,
     this.governorateId,
     this.cityId,
     this.address,
@@ -35,6 +37,7 @@ class WebStoreUser {
       email: json['email'] as String?,
       mobile: json['mobile'] as String?,
       branchId: json['branch_id'] as int?,
+      branchName: json['branch_name'] as String?,
       governorateId: json['governorate_id'] as int?,
       cityId: json['city_id'] as int?,
       address: json['address'] as String?,
@@ -50,6 +53,7 @@ class WebStoreUser {
       'email': email,
       'mobile': mobile,
       'branch_id': branchId,
+      'branch_name': branchName,
       'governorate_id': governorateId,
       'city_id': cityId,
       'address': address,

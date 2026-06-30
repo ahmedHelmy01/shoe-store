@@ -73,6 +73,7 @@ class ProfileViewModel extends Notifier<ProfileState> {
     required String email,
     required String mobile,
     String? password,
+    int? branchId,
   }) async {
     state = const ProfileLoading();
 
@@ -81,6 +82,7 @@ class ProfileViewModel extends Notifier<ProfileState> {
           email: email,
           mobile: mobile,
           password: password,
+          branchId: branchId,
         );
 
     result.when(

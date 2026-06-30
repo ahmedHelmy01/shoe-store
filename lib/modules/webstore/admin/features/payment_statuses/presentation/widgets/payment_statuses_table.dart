@@ -3,6 +3,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_tabl
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/features/payment_statuses/data/models/payment_status_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class PaymentStatusesTable extends StatelessWidget {
   final List<PaymentStatusRow> items;
@@ -24,12 +25,12 @@ class PaymentStatusesTable extends StatelessWidget {
       rows: items,
       idOf: (s) => '${s.id}',
       exportBaseName: 'payment_statuses',
-      searchHint: 'Search statuses…',
+      searchHint: AdminLocalizations.translate(context, 'search statuses…'),
       searchText: (s) => '${s.id} ${s.nameEn ?? s.name} ${s.nameAr ?? ''}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<PaymentStatusRow>(
-          title: 'ID',
+          title: AdminLocalizations.translate(context, 'id'),
           sortable: true,
           sortValue: (s) => s.id,
           exportValue: (s) => '${s.id}',
@@ -37,7 +38,7 @@ class PaymentStatusesTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<PaymentStatusRow>(
-          title: 'Name',
+          title: AdminLocalizations.translate(context, 'name'),
           sortable: true,
           sortValue: (s) => s.nameEn ?? s.name,
           exportValue: (s) => s.nameEn ?? s.name,
@@ -45,7 +46,7 @@ class PaymentStatusesTable extends StatelessWidget {
           width: 200,
         ),
         AdminColumn<PaymentStatusRow>(
-          title: 'Arabic Name',
+          title: AdminLocalizations.translate(context, 'arabic name'),
           sortable: true,
           sortValue: (s) => s.nameAr ?? '',
           exportValue: (s) => s.nameAr ?? '',
@@ -53,7 +54,7 @@ class PaymentStatusesTable extends StatelessWidget {
           width: 200,
         ),
         AdminColumn<PaymentStatusRow>(
-          title: 'Order',
+          title: AdminLocalizations.translate(context, 'order'),
           sortable: true,
           sortValue: (s) => s.sortOrder,
           exportValue: (s) => '${s.sortOrder}',
@@ -61,15 +62,15 @@ class PaymentStatusesTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<PaymentStatusRow>(
-          title: 'Status',
+          title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (s) => s.isActive ? 1 : 0,
-          exportValue: (s) => s.isActive ? 'Active' : 'Inactive',
+          exportValue: (s) => s.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'),
           cell: (_, s) => AdminStatusBadge(isActive: s.isActive),
           width: 110,
         ),
         AdminColumn<PaymentStatusRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'actions'),
           cell: (_, s) => AdminTableActionsCell<PaymentStatusRow>(
             row: s,
             onView: (s) {
@@ -96,23 +97,23 @@ class PaymentStatusDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminDetailsDialog(
-      title: 'Payment Status Details',
+      title: AdminLocalizations.translate(context, 'payment status details'),
       id: status.id.toString(),
       icon: Icons.info_rounded,
       children: [
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', status.nameEn ?? status.name, Icons.language_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (en)'), status.nameEn ?? status.name, Icons.language_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', status.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (ar)'), status.nameAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.translate_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Sort Order', '${status.sortOrder}', Icons.sort_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'sort order'), '${status.sortOrder}', Icons.sort_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Active', status.isActive ? 'Yes' : 'No', Icons.check_circle_outline_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'active'), status.isActive ? AdminLocalizations.translate(context, 'yes') : AdminLocalizations.translate(context, 'no'), Icons.check_circle_outline_rounded, bottomPadding: 0)),
           ],
         ),
       ],

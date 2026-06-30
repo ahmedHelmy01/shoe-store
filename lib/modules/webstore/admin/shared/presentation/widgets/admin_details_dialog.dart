@@ -1,5 +1,7 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class AdminDetailsDialog extends StatelessWidget {
   final String title;
@@ -98,8 +100,16 @@ class AdminDetailsDialog extends StatelessWidget {
             ),
             Divider(height: 1, color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.05)),
             Flexible(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24.0),
+              child: ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(
+                  dragDevices: {
+                    PointerDeviceKind.touch,
+                    PointerDeviceKind.mouse,
+                    PointerDeviceKind.trackpad,
+                  },
+                ),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(24.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: children.map((child) {
@@ -117,6 +127,7 @@ class AdminDetailsDialog extends StatelessWidget {
                     }
                     return child;
                   }).toList(),
+                ),
                 ),
               ),
             ),
@@ -176,7 +187,7 @@ class AdminDetailsDialog extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Status',
+                AdminLocalizations.translate(context, 'status'),
                 style: theme.textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.5),

@@ -12,6 +12,7 @@ import '../widgets/addresses_table.dart';
 import '../widgets/address_form.dart';
 import 'package:erp/modules/webstore/admin/features/addresses/data/models/address_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class AddressesView extends ConsumerStatefulWidget {
   final int? customerId;
@@ -70,10 +71,10 @@ class _AddressesViewState extends ConsumerState<AddressesView> {
             children: [
               AdminPageHeader(
                 title: _selectedCustomerName != null 
-                    ? 'Addresses: $_selectedCustomerName'
-                    : 'Manage Addresses',
+                    ? '${AdminLocalizations.translate(context, 'Addresses')}: $_selectedCustomerName'
+                    : AdminLocalizations.translate(context, 'Manage Addresses'),
                 onRefresh: _selectedCustomerId == null ? null : () => notifier.fetch(),
-                primaryActionLabel: _selectedCustomerId == null ? null : 'Add Address',
+                primaryActionLabel: _selectedCustomerId == null ? null : AdminLocalizations.translate(context, 'Add Address'),
                 onPrimaryAction: _selectedCustomerId == null ? null : () => notifier.openAdd(),
               ),
               const SizedBox(height: 24),
@@ -86,7 +87,7 @@ class _AddressesViewState extends ConsumerState<AddressesView> {
 
               Expanded(
                 child: _selectedCustomerId == null
-                    ? const Center(child: Text('Please select a customer to view and manage addresses.'))
+                    ? Center(child: Text(AdminLocalizations.translate(context, 'Please select a customer to view and manage addresses.')))
                     : _buildBody(context, state, notifier),
               ),
             ],
@@ -96,7 +97,7 @@ class _AddressesViewState extends ConsumerState<AddressesView> {
           AdminDialogForm(
             isOpen: true,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'New Address' : 'Edit Address',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'New Address') : AdminLocalizations.translate(context, 'Edit Address'),
             child: AddressForm(
               initial: state.editingItem,
               isSaving: state.isSaving,
@@ -104,7 +105,7 @@ class _AddressesViewState extends ConsumerState<AddressesView> {
                 final result = await notifier.commitSave(data, id: state.editingItem?.id);
                 if (result && context.mounted) {
                   notifier.closePanel();
-                  AppStatusDialog.show(context, status: AppDialogStatus.success, title: 'Success', message: 'Address saved successfully');
+                  AppStatusDialog.show(context, status: AppDialogStatus.success, title: AdminLocalizations.translate(context, 'Success'), message: AdminLocalizations.translate(context, 'Address saved successfully'));
                 }
               },
             ),
@@ -128,12 +129,12 @@ class _AddressesViewState extends ConsumerState<AddressesView> {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<int>(
           isExpanded: true,
-          hint: const Text('Select a Customer'),
+          hint: Text(AdminLocalizations.translate(context, 'Select a Customer')),
           value: _selectedCustomerId,
           items: usersState.items.map((user) {
             return DropdownMenuItem<int>(
               value: user.id,
-              child: Text('${user.name} (${user.mobile ?? "No Mobile"})'),
+              child: Text('${user.name} (${user.mobile ?? AdminLocalizations.translate(context, "No Mobile")})'),
             );
           }).toList(),
           onChanged: (val) {
@@ -150,7 +151,7 @@ class _AddressesViewState extends ConsumerState<AddressesView> {
       AdminCrudLoading() => const Center(child: CircularProgressIndicator()),
       AdminCrudError(:final message) => AdminStateWidget(message: message, onRetry: () => notifier.fetch()),
       AdminCrudData(:final items) => items.isEmpty 
-          ? const Center(child: Text('No addresses found for this customer.'))
+          ? Center(child: Text(AdminLocalizations.translate(context, 'No addresses found for this customer.')))
           : AddressesTable(
               items: items,
               onEdit: (a) => notifier.openEdit(a),
@@ -160,8 +161,8 @@ class _AddressesViewState extends ConsumerState<AddressesView> {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: 'Deleted',
-                    message: 'Address deleted successfully',
+                    title: AdminLocalizations.translate(context, 'Deleted'),
+                    message: AdminLocalizations.translate(context, 'Address deleted successfully'),
                   );
                 }
               },

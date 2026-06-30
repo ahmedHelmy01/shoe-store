@@ -9,6 +9,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dia
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/modules/webstore/admin/features/payment_statuses/data/models/payment_status_row.dart';
 import '../view_model/payment_statuses_view_model.dart';
 import '../widgets/payment_statuses_table.dart';
@@ -32,9 +33,9 @@ class PaymentStatusesView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Transaction Statuses',
+                title: AdminLocalizations.translate(context, 'transaction statuses'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add Status',
+                primaryActionLabel: AdminLocalizations.translate(context, 'add status'),
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 12),
@@ -46,7 +47,7 @@ class PaymentStatusesView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Create Status' : 'Edit Status',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'create payment status') : AdminLocalizations.translate(context, 'edit payment status'),
             size: AdminDialogSize.small,
             child: PaymentStatusForm(
               key: ValueKey(state.isAdding ? 'ps-add' : 'ps-edit-${state.editingItem?.id ?? 0}'),
@@ -61,15 +62,15 @@ class PaymentStatusesView extends ConsumerWidget {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: state.isAdding ? 'Status Created' : 'Status Updated',
-                    message: 'The payment status has been saved successfully.',
+                    title: state.isAdding ? AdminLocalizations.translate(context, 'payment status created') : AdminLocalizations.translate(context, 'payment status updated'),
+                    message: AdminLocalizations.translate(context, 'the payment status has been saved successfully.'),
                   );
                 } else {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.error,
-                    title: 'Save Failed',
-                    message: 'Could not save the payment status. Please try again.',
+                    title: AdminLocalizations.translate(context, 'save failed'),
+                    message: AdminLocalizations.translate(context, 'could not save the payment status. please try again.'),
                   );
                 }
               },
@@ -118,18 +119,18 @@ class PaymentStatusesView extends ConsumerWidget {
   void _confirmAndDelete(BuildContext context, PaymentStatusesVm notifier, int id, String name) {
     AppDialog.show(
       context,
-      title: 'Delete Payment Status',
-      message: 'Are you sure you want to delete "$name"?',
-      cancelText: 'Cancel',
-      confirmText: 'Delete',
+      title: AdminLocalizations.translate(context, 'delete payment status'),
+      message: '${AdminLocalizations.translate(context, 'are you sure you want to delete')} "$name"?',
+      cancelText: AdminLocalizations.translate(context, 'cancel'),
+      confirmText: AdminLocalizations.translate(context, 'delete'),
       onConfirm: () async {
         Navigator.pop(context);
         final success = await notifier.commitDelete(id);
         if (!context.mounted) return;
         if (success) {
-          AppStatusDialog.show(context, status: AppDialogStatus.success, title: 'Deleted', message: 'Payment status deleted successfully.');
+          AppStatusDialog.show(context, status: AppDialogStatus.success, title: AdminLocalizations.translate(context, 'deleted'), message: AdminLocalizations.translate(context, 'payment status deleted successfully.'));
         } else {
-          AppStatusDialog.show(context, status: AppDialogStatus.error, title: 'Delete Failed', message: 'Could not delete payment status.');
+          AppStatusDialog.show(context, status: AppDialogStatus.error, title: AdminLocalizations.translate(context, 'delete failed'), message: AdminLocalizations.translate(context, 'could not delete payment status.'));
         }
       },
     );
@@ -199,7 +200,7 @@ class _PaymentStatusCard extends StatelessWidget {
             children: [
               AdminStatusBadge(isActive: status.isActive),
               Text(
-                'ID: ${status.id}',
+                '${AdminLocalizations.translate(context, 'id')}: ${status.id}',
                 style: theme.textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.4),

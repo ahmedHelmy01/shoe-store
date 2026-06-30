@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_card_popup_menu.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
 import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/modules/webstore/admin/features/branches/data/models/branch_row.dart';
 import 'package:erp/modules/webstore/admin/features/branches/presentation/view_model/branches_view_model.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
-import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_action_icon_button.dart';
-import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_panel.dart';
-import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
-import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 import '../view_model/warehouses_view_model.dart';
 import '../widgets/warehouses_table.dart';
@@ -60,9 +56,9 @@ class _WarehousesViewState extends ConsumerState<WarehousesView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Inventory Warehouses',
+                title: AdminLocalizations.translate(context, 'inventory warehouses'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add Warehouse',
+                primaryActionLabel: AdminLocalizations.translate(context, 'add warehouse'),
                 onPrimaryAction: () {
                   print('[WAREHOUSE_UI] Add button clicked');
                   notifier.openAdd();
@@ -78,7 +74,7 @@ class _WarehousesViewState extends ConsumerState<WarehousesView> {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Create Warehouse' : 'Edit Warehouse',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'create warehouse') : AdminLocalizations.translate(context, 'edit warehouse'),
             size: AdminDialogSize.medium,
             closeOnBackdropTap: false,
             child: WarehouseForm(
@@ -94,15 +90,15 @@ class _WarehousesViewState extends ConsumerState<WarehousesView> {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: state.isAdding ? 'Warehouse Created' : 'Warehouse Updated',
-                    message: 'The warehouse has been saved successfully.',
+                    title: state.isAdding ? AdminLocalizations.translate(context, 'warehouse created') : AdminLocalizations.translate(context, 'warehouse updated'),
+                    message: AdminLocalizations.translate(context, 'the warehouse has been saved successfully.'),
                   );
                 } else {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.error,
-                    title: 'Save Failed',
-                    message: 'Could not save the warehouse. Please try again.',
+                    title: AdminLocalizations.translate(context, 'save failed'),
+                    message: AdminLocalizations.translate(context, 'could not save the warehouse. please try again.'),
                   );
                 }
               },
@@ -157,10 +153,10 @@ class _WarehousesViewState extends ConsumerState<WarehousesView> {
     print('[WAREHOUSE_UI] delete requested -> id=${warehouse.id}');
     AppDialog.show(
       context,
-      title: 'Delete Warehouse',
-      message: 'Are you sure you want to delete "${warehouse.name}"?',
-      cancelText: 'Cancel',
-      confirmText: 'Delete',
+      title: AdminLocalizations.translate(context, 'delete warehouse'),
+      message: '${AdminLocalizations.translate(context, 'are you sure you want to delete')} "${warehouse.name}"?',
+      cancelText: AdminLocalizations.translate(context, 'cancel'),
+      confirmText: AdminLocalizations.translate(context, 'delete'),
       onCancel: () => Navigator.of(context).pop(),
       onConfirm: () async {
         Navigator.of(context).pop();
@@ -172,15 +168,15 @@ class _WarehousesViewState extends ConsumerState<WarehousesView> {
             await AppStatusDialog.show(
               context,
               status: AppDialogStatus.success,
-              title: 'Deleted',
-              message: 'Warehouse deleted successfully.',
+              title: AdminLocalizations.translate(context, 'deleted'),
+              message: AdminLocalizations.translate(context, 'warehouse deleted successfully.'),
             );
           },
           failure: (e) async {
             await AppStatusDialog.show(
               context,
               status: AppDialogStatus.error,
-              title: 'Delete Failed',
+              title: AdminLocalizations.translate(context, 'delete failed'),
               message: e.message,
             );
           },
@@ -201,7 +197,7 @@ class _WarehousesViewState extends ConsumerState<WarehousesView> {
 
     final parentWarehouseName = () {
       final parentId = w.parentWarehouseId;
-      if (parentId == null || parentId == 0) return 'None (لا يوجد)';
+      if (parentId == null || parentId == 0) return AdminLocalizations.translate(context, 'none (لا يوجد)');
       
       final state = ref.read(warehousesVmProvider);
       if (state is AdminCrudData<WarehouseRow>) {
@@ -209,7 +205,7 @@ class _WarehousesViewState extends ConsumerState<WarehousesView> {
           if (wh.id == parentId) return wh.name;
         }
       }
-      return 'ID: $parentId';
+      return '${AdminLocalizations.translate(context, 'id')}: $parentId';
     }();
 
     showDialog(
@@ -284,7 +280,7 @@ class _WarehouseCard extends StatelessWidget {
             children: [
               AdminStatusBadge(isActive: warehouse.isActive),
               Text(
-                'ID: ${warehouse.id}',
+                '${AdminLocalizations.translate(context, 'id')}: ${warehouse.id}',
                 style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.4)),
               ),
             ],
@@ -309,36 +305,36 @@ class _WarehouseDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminDetailsDialog(
-      title: 'Warehouse Details',
+      title: AdminLocalizations.translate(context, 'warehouse details'),
       id: item.id.toString(),
       icon: Icons.warehouse_rounded,
       children: [
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (EN)', item.name, Icons.title_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (en)'), item.name, Icons.title_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Name (AR)', item.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (ar)'), item.nameAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.translate_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Code', item.code ?? 'N/A', Icons.qr_code_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'code'), item.code ?? AdminLocalizations.translate(context, 'n/a'), Icons.qr_code_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Branch', branchName, Icons.storefront_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'branch'), branchName, Icons.storefront_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Parent Warehouse', parentWarehouseName, Icons.account_tree_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'parent warehouse'), parentWarehouseName, Icons.account_tree_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Notes', (item.notes?.isNotEmpty == true) ? item.notes! : 'N/A', Icons.note_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'notes'), (item.notes?.isNotEmpty == true) ? item.notes! : AdminLocalizations.translate(context, 'n/a'), Icons.note_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
-        AdminDetailsDialog.buildDetailRow(context, 'Address', item.location ?? 'N/A', Icons.location_on_rounded),
-        AdminDetailsDialog.buildDetailRow(context, 'Phone', item.phone ?? 'N/A', Icons.phone_rounded),
+        AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'address'), item.location ?? AdminLocalizations.translate(context, 'n/a'), Icons.location_on_rounded),
+        AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'phone'), item.phone ?? AdminLocalizations.translate(context, 'n/a'), Icons.phone_rounded),
         const SizedBox(height: 12),
         AdminDetailsDialog.buildStatusRow(context, item.isActive),
       ],

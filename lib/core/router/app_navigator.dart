@@ -37,6 +37,7 @@ class AppRouteNames {
   static const String webstoreAdminPrescriptions = '/webstore/admin/prescriptions';
   static const String webstoreAdminOrderCreate = '/webstore/admin/orders/new';
   static const String webstoreAdminCoupons = '/webstore/admin/coupons';
+  static const String webstoreAdminOffers = '/webstore/admin/offers';
   static const String webstoreAdminBranches = '/webstore/admin/branches';
   static const String webstoreAdminWarehouses = '/webstore/admin/warehouses';
   static const String webstoreAdminSliders = '/webstore/admin/sliders';

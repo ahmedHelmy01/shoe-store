@@ -9,6 +9,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dia
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/boardings_view_model.dart';
 import '../widgets/boardings_table.dart';
 import '../widgets/boarding_form.dart';
@@ -32,9 +33,9 @@ class BoardingsView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Onboarding Screens',
+                title: AdminLocalizations.translate(context, 'onboarding screens'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'New Screen',
+                primaryActionLabel: AdminLocalizations.translate(context, 'new screen'),
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 12),
@@ -46,7 +47,7 @@ class BoardingsView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Create Boarding' : 'Edit Boarding',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'create boarding') : AdminLocalizations.translate(context, 'edit boarding'),
             size: AdminDialogSize.medium,
             child: BoardingForm(
               key: ValueKey(state.isAdding ? 'boarding-add' : 'boarding-edit-${state.editingItem?.id ?? 0}'),
@@ -61,15 +62,15 @@ class BoardingsView extends ConsumerWidget {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: state.isAdding ? 'Boarding Created' : 'Boarding Updated',
-                    message: 'The onboarding screen has been saved successfully.',
+                    title: state.isAdding ? AdminLocalizations.translate(context, 'boarding created') : AdminLocalizations.translate(context, 'boarding updated'),
+                    message: AdminLocalizations.translate(context, 'the onboarding screen has been saved successfully.'),
                   );
                 } else {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.error,
-                    title: 'Save Failed',
-                    message: 'Could not save the onboarding screen. Please try again.',
+                    title: AdminLocalizations.translate(context, 'save failed'),
+                    message: AdminLocalizations.translate(context, 'could not save the onboarding screen. please try again.'),
                   );
                 }
               },
@@ -118,18 +119,18 @@ class BoardingsView extends ConsumerWidget {
   void _confirmAndDelete(BuildContext context, BoardingsVm notifier, int id, String title) {
     AppDialog.show(
       context,
-      title: 'Delete Onboarding Screen',
-      message: 'Are you sure you want to delete "$title"?',
-      cancelText: 'Cancel',
-      confirmText: 'Delete',
+      title: AdminLocalizations.translate(context, 'delete onboarding screen'),
+      message: '${AdminLocalizations.translate(context, 'are you sure you want to delete')} "$title"?',
+      cancelText: AdminLocalizations.translate(context, 'cancel'),
+      confirmText: AdminLocalizations.translate(context, 'delete'),
       onConfirm: () async {
         Navigator.pop(context);
         final success = await notifier.commitDelete(id);
         if (!context.mounted) return;
         if (success) {
-          AppStatusDialog.show(context, status: AppDialogStatus.success, title: 'Deleted', message: 'Onboarding screen deleted successfully.');
+          AppStatusDialog.show(context, status: AppDialogStatus.success, title: AdminLocalizations.translate(context, 'deleted'), message: AdminLocalizations.translate(context, 'onboarding screen deleted successfully.'));
         } else {
-          AppStatusDialog.show(context, status: AppDialogStatus.error, title: 'Delete Failed', message: 'Could not delete onboarding screen.');
+          AppStatusDialog.show(context, status: AppDialogStatus.error, title: AdminLocalizations.translate(context, 'delete failed'), message: AdminLocalizations.translate(context, 'could not delete onboarding screen.'));
         }
       },
     );
@@ -177,7 +178,7 @@ class _BoardingCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      boarding.titleAr ?? 'No Arabic Title',
+                      boarding.titleAr ?? AdminLocalizations.translate(context, 'no arabic title'),
                       style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6)),
                     ),
                   ],
@@ -196,7 +197,7 @@ class _BoardingCard extends StatelessWidget {
             children: [
               AdminStatusBadge(isActive: boarding.isActive),
               Text(
-                'ID: ${boarding.id}',
+                '${AdminLocalizations.translate(context, 'id')}: ${boarding.id}',
                 style: theme.textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.4),

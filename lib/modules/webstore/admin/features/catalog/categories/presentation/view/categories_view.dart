@@ -8,6 +8,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/categories_view_model.dart';
 import '../widgets/categories_table.dart';
 import '../widgets/category_form.dart';
@@ -31,9 +32,9 @@ class CategoriesView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Categories',
+                title: AdminLocalizations.translate(context, 'categories'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add Category',
+                primaryActionLabel: AdminLocalizations.translate(context, 'add category'),
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 24),
@@ -45,7 +46,7 @@ class CategoriesView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Add Category' : 'Edit Category',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'add category') : AdminLocalizations.translate(context, 'edit category'),
             size: AdminDialogSize.medium,
             child: CategoryForm(
               initial: state.editingItem,
@@ -61,15 +62,15 @@ class CategoriesView extends ConsumerWidget {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: state.isAdding ? 'Category Added' : 'Category Updated',
-                    message: 'The category was saved successfully.',
+                    title: state.isAdding ? AdminLocalizations.translate(context, 'category added') : AdminLocalizations.translate(context, 'category updated'),
+                    message: AdminLocalizations.translate(context, 'the category was saved successfully.'),
                   );
                 } else {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.error,
-                    title: 'Save Failed',
-                    message: 'An error occurred while saving the category.',
+                    title: AdminLocalizations.translate(context, 'save failed'),
+                    message: AdminLocalizations.translate(context, 'an error occurred while saving the category.'),
                   );
                 }
               },
@@ -131,10 +132,10 @@ class CategoriesView extends ConsumerWidget {
   void _confirmAndDelete(BuildContext context, CategoriesVm notifier, int id, String name) {
     AppDialog.show(
       context,
-      title: 'Delete Category',
-      message: 'Are you sure you want to delete category "$name"?',
-      cancelText: 'Cancel',
-      confirmText: 'Delete',
+      title: AdminLocalizations.translate(context, 'delete category'),
+      message: '${AdminLocalizations.translate(context, 'are you sure you want to delete')} "$name"?',
+      cancelText: AdminLocalizations.translate(context, 'cancel'),
+      confirmText: AdminLocalizations.translate(context, 'delete'),
       onConfirm: () async {
         Navigator.pop(context);
         final success = await notifier.commitDelete(id);
@@ -143,15 +144,15 @@ class CategoriesView extends ConsumerWidget {
           AppStatusDialog.show(
             context,
             status: AppDialogStatus.success,
-            title: 'Deleted',
-            message: 'Category deleted successfully.',
+            title: AdminLocalizations.translate(context, 'deleted'),
+            message: AdminLocalizations.translate(context, 'category deleted successfully.'),
           );
         } else {
           AppStatusDialog.show(
             context,
             status: AppDialogStatus.error,
-            title: 'Delete Failed',
-            message: 'Could not delete the category. Please try again.',
+            title: AdminLocalizations.translate(context, 'delete failed'),
+            message: AdminLocalizations.translate(context, 'could not delete the category. please try again.'),
           );
         }
       },
@@ -213,7 +214,7 @@ class _CategoryCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Code: ${category.code ?? "None"}',
+                      '${AdminLocalizations.translate(context, 'code:')} ${category.code ?? AdminLocalizations.translate(context, 'none')}',
                       style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6)),
                     ),
                   ],
@@ -223,15 +224,15 @@ class _CategoryCard extends StatelessWidget {
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     onTap: onView,
-                    child: const Row(children: [Icon(Icons.visibility_outlined, color: Colors.blue), SizedBox(width: 8), Text('View Details')]),
+                    child: Row(children: [const Icon(Icons.visibility_outlined, color: Colors.blue), const SizedBox(width: 8), Text(AdminLocalizations.translate(context, 'view details'))]),
                   ),
                   PopupMenuItem(
                     onTap: onEdit,
-                    child: const Row(children: [Icon(Icons.edit_outlined), SizedBox(width: 8), Text('Edit')]),
+                    child: Row(children: [const Icon(Icons.edit_outlined), const SizedBox(width: 8), Text(AdminLocalizations.translate(context, 'edit'))]),
                   ),
                   PopupMenuItem(
                     onTap: onDelete,
-                    child: const Row(children: [Icon(Icons.delete_outline_rounded, color: Colors.red), SizedBox(width: 8), Text('Delete')]),
+                    child: Row(children: [const Icon(Icons.delete_outline_rounded, color: Colors.red), const SizedBox(width: 8), Text(AdminLocalizations.translate(context, 'delete'))]),
                   ),
                 ],
               ),

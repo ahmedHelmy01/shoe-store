@@ -3,6 +3,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_tabl
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/features/pages/data/models/page_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class PagesTable extends StatelessWidget {
   final List<PageRow> items;
@@ -24,12 +25,12 @@ class PagesTable extends StatelessWidget {
       rows: items,
       idOf: (p) => '${p.id}',
       exportBaseName: 'pages',
-      searchHint: 'Search pages…',
+      searchHint: AdminLocalizations.translate(context, 'search pages…'),
       searchText: (p) => '${p.id} ${p.title} ${p.slug}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<PageRow>(
-          title: 'ID',
+          title: AdminLocalizations.translate(context, 'id'),
           sortable: true,
           sortValue: (p) => p.id,
           exportValue: (p) => '${p.id}',
@@ -37,7 +38,7 @@ class PagesTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<PageRow>(
-          title: 'Image',
+          title: AdminLocalizations.translate(context, 'image'),
           cell: (_, p) => p.imageUrl != null
               ? Image.network(
                   p.imageUrl!,
@@ -50,7 +51,7 @@ class PagesTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<PageRow>(
-          title: 'Title',
+          title: AdminLocalizations.translate(context, 'title (en)'),
           sortable: true,
           sortValue: (p) => p.title,
           exportValue: (p) => p.title,
@@ -58,7 +59,7 @@ class PagesTable extends StatelessWidget {
           width: 250,
         ),
         AdminColumn<PageRow>(
-          title: 'Slug',
+          title: AdminLocalizations.translate(context, 'slug'),
           sortable: true,
           sortValue: (p) => p.slug,
           exportValue: (p) => p.slug,
@@ -66,15 +67,15 @@ class PagesTable extends StatelessWidget {
           width: 180,
         ),
         AdminColumn<PageRow>(
-          title: 'Status',
+          title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (p) => p.isActive ? 1 : 0,
-          exportValue: (p) => p.isActive ? 'Active' : 'Inactive',
+          exportValue: (p) => p.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'),
           cell: (_, p) => AdminStatusBadge(isActive: p.isActive),
           width: 100,
         ),
         AdminColumn<PageRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'actions'),
           cell: (_, p) => AdminTableActionsCell<PageRow>(
             row: p,
             onView: (page) {
@@ -101,7 +102,7 @@ class PageDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminDetailsDialog(
-      title: 'Page Details',
+      title: AdminLocalizations.translate(context, 'page details'),
       id: page.id.toString(),
       icon: Icons.article_rounded,
       children: [
@@ -121,22 +122,22 @@ class PageDetailsDialog extends StatelessWidget {
           ),
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Title (EN)', page.title, Icons.title_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'title (en)'), page.title, Icons.title_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Title (AR)', page.titleAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'title (ar)'), page.titleAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.translate_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Slug', '/${page.slug}', Icons.link_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'slug'), '/${page.slug}', Icons.link_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Status', page.isActive ? 'Published' : 'Draft', Icons.check_circle_outline_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'status'), page.isActive ? AdminLocalizations.translate(context, 'published') : AdminLocalizations.translate(context, 'draft'), Icons.check_circle_outline_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
-        AdminDetailsDialog.buildDetailRow(context, 'Content (EN)', page.content ?? 'N/A', Icons.description_rounded),
-        AdminDetailsDialog.buildDetailRow(context, 'Content (AR)', page.contentAr ?? 'N/A', Icons.description_outlined),
+        AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'content (en)'), page.content ?? AdminLocalizations.translate(context, 'n/a'), Icons.description_rounded),
+        AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'content (ar)'), page.contentAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.description_outlined),
       ],
     );
   }

@@ -27,6 +27,7 @@ import 'package:erp/modules/webstore/admin/features/boardings/presentation/view/
 import 'package:erp/modules/webstore/admin/features/branches/presentation/view/branches_view.dart';
 import 'package:erp/modules/webstore/admin/features/cities/presentation/view/cities_view.dart';
 import 'package:erp/modules/webstore/admin/features/coupons/presentation/view/coupons_view.dart';
+import 'package:erp/modules/webstore/admin/features/offers/presentation/view/offers_view.dart';
 import 'package:erp/modules/webstore/admin/features/governorates/presentation/view/governorates_view.dart';
 import 'package:erp/modules/webstore/admin/features/pages/presentation/view/pages_view.dart';
 import 'package:erp/modules/webstore/admin/features/payment_methods/presentation/view/payment_methods_view.dart';
@@ -104,7 +105,9 @@ class _AdminShellState extends ConsumerState<AdminShell> {
         final authStatus = ref.watch(authStateProvider.select((s) => s.status));
 
         if (authStatus == AuthStatus.initial) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
 
         if (authStatus == AuthStatus.unauthenticated) {
@@ -135,13 +138,22 @@ class _AdminShellState extends ConsumerState<AdminShell> {
                           switchInCurve: Curves.easeOutCubic,
                           switchOutCurve: Curves.easeInCubic,
                           transitionBuilder: (child, anim) {
-                            final slide = Tween<Offset>(
-                              begin: const Offset(0.02, 0),
-                              end: Offset.zero,
-                            ).animate(CurvedAnimation(parent: anim, curve: Curves.easeOutCubic));
+                            final slide =
+                                Tween<Offset>(
+                                  begin: const Offset(0.02, 0),
+                                  end: Offset.zero,
+                                ).animate(
+                                  CurvedAnimation(
+                                    parent: anim,
+                                    curve: Curves.easeOutCubic,
+                                  ),
+                                );
                             return FadeTransition(
                               opacity: anim,
-                              child: SlideTransition(position: slide, child: child),
+                              child: SlideTransition(
+                                position: slide,
+                                child: child,
+                              ),
                             );
                           },
                           child: _buildBody(key: ValueKey(_selected)),
@@ -172,6 +184,7 @@ class _AdminShellState extends ConsumerState<AdminShell> {
       AdminRouteId.orderCreate => const OrderCreateView(),
       AdminRouteId.orderStatuses => const OrderStatusesView(),
       AdminRouteId.coupons => const CouponsView(),
+      AdminRouteId.offers => const OffersView(),
       AdminRouteId.branches => const BranchesView(),
       AdminRouteId.warehouses => const WarehousesView(),
       AdminRouteId.sliders => const SlidersView(),
@@ -186,11 +199,12 @@ class _AdminShellState extends ConsumerState<AdminShell> {
       AdminRouteId.countries => const CountriesView(),
       AdminRouteId.addresses => const AddressesView(),
       AdminRouteId.settings => SettingsView(
-          key: key,
-          title: 'Settings',
-          subtitle: 'Configure storefront behavior, delivery, payments, and branding.',
-          icon: Icons.settings_rounded,
-        ),
+        key: key,
+        title: 'Settings',
+        subtitle:
+            'Configure storefront behavior, delivery, payments, and branding.',
+        icon: Icons.settings_rounded,
+      ),
       AdminRouteId.catalog => const CatalogView(),
       AdminRouteId.operations => const BranchesView(),
       AdminRouteId.storefront => const SlidersView(),

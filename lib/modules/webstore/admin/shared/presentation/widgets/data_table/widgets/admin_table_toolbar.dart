@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class AdminDataTableToolbar extends StatelessWidget {
   final int selectedCount;
@@ -78,9 +79,9 @@ class AdminDataTableToolbar extends StatelessWidget {
                     },
                     onSubmitted: onSearchSubmitted,
                     decoration: InputDecoration(
-                      hintText: searchHint,
+                      hintText: AdminLocalizations.translate(context, searchHint),
                       prefixIcon: IconButton(
-                        tooltip: 'Search',
+                        tooltip: AdminLocalizations.translate(context, 'Search'),
                         icon: const Icon(Icons.search_rounded),
                         onPressed: () => onSearchSubmitted?.call(searchController.text),
                       ),
@@ -98,7 +99,7 @@ class AdminDataTableToolbar extends StatelessWidget {
                       suffixIcon: searchController.text.isEmpty
                           ? null
                           : IconButton(
-                              tooltip: 'Clear',
+                              tooltip: AdminLocalizations.translate(context, 'Clear'),
                               onPressed: () {
                                 searchController.clear();
                                 onSearchChanged('');
@@ -124,13 +125,13 @@ class AdminDataTableToolbar extends StatelessWidget {
                         border: Border.all(color: AppColors.primaryOrange.withValues(alpha: 0.25)),
                       ),
                       child: Text(
-                        '$selectedCount selected',
+                        '$selectedCount ${AdminLocalizations.translate(context, 'selected')}',
                         style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w900),
                       ),
                     ),
                     TextButton(
                       onPressed: onClearSelection,
-                      child: const Text('Clear'),
+                      child: Text(AdminLocalizations.translate(context, 'Clear')),
                     ),
                   ],
                   SizedBox(
@@ -142,21 +143,21 @@ class AdminDataTableToolbar extends StatelessWidget {
                           const Icon(Icons.table_rows_rounded, size: 18),
                           const SizedBox(width: 8),
                           PopupMenuButton<int>(
-                            tooltip: 'Rows per page',
+                            tooltip: AdminLocalizations.translate(context, 'Rows per page'),
                             padding: EdgeInsets.zero,
-                            color: Colors.white,
-                            surfaceTintColor: Colors.white,
+                            color: isDark ? const Color(0xFF1E2A3A) : Colors.white,
+                            surfaceTintColor: isDark ? const Color(0xFF1E2A3A) : Colors.white,
                             onSelected: onPageSize,
-                            itemBuilder: (_) => const [
-                              PopupMenuItem(value: 10, child: Text('Rows 10')),
-                              PopupMenuItem(value: 25, child: Text('Rows 25')),
-                              PopupMenuItem(value: 50, child: Text('Rows 50')),
+                            itemBuilder: (_) => [
+                              PopupMenuItem(value: 10, child: Text('${AdminLocalizations.translate(context, 'Rows')} 10')),
+                              PopupMenuItem(value: 25, child: Text('${AdminLocalizations.translate(context, 'Rows')} 25')),
+                              PopupMenuItem(value: 50, child: Text('${AdminLocalizations.translate(context, 'Rows')} 50')),
                             ],
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  'Rows $pageSize',
+                                  '${AdminLocalizations.translate(context, 'Rows')} $pageSize',
                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                         fontWeight: FontWeight.w700,
                                       ),
@@ -180,23 +181,23 @@ class AdminDataTableToolbar extends StatelessWidget {
                           const SizedBox(width: 8),
                           PopupMenuButton<String>(
                             padding: EdgeInsets.zero,
-                            color: Colors.white,
-                            surfaceTintColor: Colors.white,
+                            color: isDark ? const Color(0xFF1E2A3A) : Colors.white,
+                            surfaceTintColor: isDark ? const Color(0xFF1E2A3A) : Colors.white,
                             onSelected: (v) {
                               if (v == 'all') onExportAllCsv();
                               if (v == 'selected') onExportSelectedCsv?.call();
                             },
                             itemBuilder: (_) => [
-                              const PopupMenuItem(value: 'all', child: Text('Export CSV')),
+                              PopupMenuItem(value: 'all', child: Text(AdminLocalizations.translate(context, 'Export CSV'))),
                               if (onExportSelectedCsv != null)
-                                const PopupMenuItem(value: 'selected', child: Text('Export selected')),
+                                PopupMenuItem(value: 'selected', child: Text(AdminLocalizations.translate(context, 'Export selected'))),
                             ],
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
-                              children: const [
-                                Text('CSV'),
-                                SizedBox(width: 2),
-                                Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+                              children: [
+                                Text(AdminLocalizations.translate(context, 'CSV')),
+                                const SizedBox(width: 2),
+                                const Icon(Icons.keyboard_arrow_down_rounded, size: 18),
                               ],
                             ),
                           ),
@@ -214,23 +215,23 @@ class AdminDataTableToolbar extends StatelessWidget {
                           const SizedBox(width: 8),
                           PopupMenuButton<String>(
                             padding: EdgeInsets.zero,
-                            color: Colors.white,
-                            surfaceTintColor: Colors.white,
+                            color: isDark ? const Color(0xFF1E2A3A) : Colors.white,
+                            surfaceTintColor: isDark ? const Color(0xFF1E2A3A) : Colors.white,
                             onSelected: (v) {
                               if (v == 'all') onExportAllPdf();
                               if (v == 'selected') onExportSelectedPdf?.call();
                             },
                             itemBuilder: (_) => [
-                              const PopupMenuItem(value: 'all', child: Text('Export PDF')),
+                              PopupMenuItem(value: 'all', child: Text(AdminLocalizations.translate(context, 'Export PDF'))),
                               if (onExportSelectedPdf != null)
-                                const PopupMenuItem(value: 'selected', child: Text('Export selected')),
+                                PopupMenuItem(value: 'selected', child: Text(AdminLocalizations.translate(context, 'Export selected'))),
                             ],
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
-                              children: const [
-                                Text('PDF'),
-                                SizedBox(width: 2),
-                                Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+                              children: [
+                                Text(AdminLocalizations.translate(context, 'PDF')),
+                                const SizedBox(width: 2),
+                                const Icon(Icons.keyboard_arrow_down_rounded, size: 18),
                               ],
                             ),
                           ),
@@ -248,23 +249,23 @@ class AdminDataTableToolbar extends StatelessWidget {
                           const SizedBox(width: 8),
                           PopupMenuButton<String>(
                             padding: EdgeInsets.zero,
-                            color: Colors.white,
-                            surfaceTintColor: Colors.white,
+                            color: isDark ? const Color(0xFF1E2A3A) : Colors.white,
+                            surfaceTintColor: isDark ? const Color(0xFF1E2A3A) : Colors.white,
                             onSelected: (v) {
                               if (v == 'all') onExportAllExcel();
                               if (v == 'selected') onExportSelectedExcel?.call();
                             },
                             itemBuilder: (_) => [
-                              const PopupMenuItem(value: 'all', child: Text('Export Excel')),
+                              PopupMenuItem(value: 'all', child: Text(AdminLocalizations.translate(context, 'Export Excel'))),
                               if (onExportSelectedExcel != null)
-                                const PopupMenuItem(value: 'selected', child: Text('Export selected')),
+                                PopupMenuItem(value: 'selected', child: Text(AdminLocalizations.translate(context, 'Export selected'))),
                             ],
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
-                              children: const [
-                                Text('Excel'),
-                                SizedBox(width: 2),
-                                Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+                              children: [
+                                Text(AdminLocalizations.translate(context, 'Excel')),
+                                const SizedBox(width: 2),
+                                const Icon(Icons.keyboard_arrow_down_rounded, size: 18),
                               ],
                             ),
                           ),

@@ -4,6 +4,7 @@ import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/companies/data/models/company_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class CompanyForm extends StatefulWidget {
   final CompanyRow? initial;
@@ -82,18 +83,18 @@ class _CompanyFormState extends State<CompanyForm> {
               Expanded(
                 child: AppTextField(
                   controller: _nameCtrl,
-                  label: 'Company Name (English)',
-                  hint: 'e.g. Pfizer',
-                  validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
+                  label: AdminLocalizations.translate(context, 'company name (english)'),
+                  hint: AdminLocalizations.translate(context, 'e.g. pfizer'),
+                  validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'name is required') : null,
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: AppTextField(
                   controller: _nameArCtrl,
-                  label: 'Company Name (Arabic)',
-                  hint: 'e.g. فايزر',
-                  validator: (v) => v == null || v.isEmpty ? 'Arabic name is required' : null,
+                  label: AdminLocalizations.translate(context, 'company name (arabic)'),
+                  hint: AdminLocalizations.translate(context, 'e.g. pfizer (arabic)'),
+                  validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'arabic name is required') : null,
                 ),
               ),
             ],
@@ -105,8 +106,8 @@ class _CompanyFormState extends State<CompanyForm> {
               Expanded(
                 child: AppTextField(
                   controller: _descCtrl,
-                  label: 'Description (English)',
-                  hint: 'Enter description in English',
+                  label: AdminLocalizations.translate(context, 'description (english)'),
+                  hint: AdminLocalizations.translate(context, 'enter description in english'),
                   maxLines: 3,
                 ),
               ),
@@ -114,8 +115,8 @@ class _CompanyFormState extends State<CompanyForm> {
               Expanded(
                 child: AppTextField(
                   controller: _descArCtrl,
-                  label: 'Description (Arabic)',
-                  hint: 'أدخل الوصف بالعربية',
+                  label: AdminLocalizations.translate(context, 'description (arabic)'),
+                  hint: AdminLocalizations.translate(context, 'enter description in arabic'),
                   maxLines: 3,
                 ),
               ),
@@ -123,14 +124,14 @@ class _CompanyFormState extends State<CompanyForm> {
           ),
           const SizedBox(height: 24),
           AdminImagePicker(
-            label: 'Company Logo',
+            label: AdminLocalizations.translate(context, 'company logo'),
             initialImage: widget.initial?.logoUrl,
             onImageSelected: (file) => setState(() => _logoFile = file),
             onRemoveInitial: () => setState(() => _removeInitialLogo = true),
           ),
           const SizedBox(height: 20),
           SwitchListTile(
-            title: const Text('Is Active'),
+            title: Text(AdminLocalizations.translate(context, 'is active')),
             value: _isActive,
             onChanged: (val) => setState(() => _isActive = val),
             contentPadding: EdgeInsets.zero,
@@ -139,7 +140,7 @@ class _CompanyFormState extends State<CompanyForm> {
           AppButton(
             onPressed: _submit,
             isLoading: widget.isSaving,
-            child: Text(widget.initial == null ? 'Add Company' : 'Save Changes'),
+            child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'add company') : AdminLocalizations.translate(context, 'save changes')),
           ),
         ],
       ),

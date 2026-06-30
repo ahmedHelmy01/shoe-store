@@ -15,6 +15,7 @@ import 'package:erp/modules/webstore/admin/features/catalog/companies/data/datas
 import 'package:erp/modules/webstore/admin/features/catalog/filters/data/datasource/filters_remote_datasource.dart';
 import 'package:erp/modules/webstore/admin/features/cities/data/datasource/cities_remote_datasource.dart';
 import 'package:erp/modules/webstore/admin/features/coupons/data/datasource/coupons_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/offers/data/datasource/offers_remote_datasource.dart';
 import 'package:erp/modules/webstore/admin/features/governorates/data/datasource/governorates_remote_datasource.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/datasource/orders_remote_datasource.dart';
 import 'package:erp/modules/webstore/admin/features/pages/data/datasource/pages_remote_datasource.dart';
@@ -39,6 +40,7 @@ import 'package:erp/modules/webstore/admin/features/catalog/companies/data/repos
 import 'package:erp/modules/webstore/admin/features/catalog/filters/data/repositories/filters_repository.dart';
 import 'package:erp/modules/webstore/admin/features/cities/data/repositories/cities_repository.dart';
 import 'package:erp/modules/webstore/admin/features/coupons/data/repositories/coupons_repository.dart';
+import 'package:erp/modules/webstore/admin/features/offers/data/repositories/offers_repository.dart';
 import 'package:erp/modules/webstore/admin/features/governorates/data/repositories/governorates_repository.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/repositories/orders_repository.dart';
 import 'package:erp/modules/webstore/admin/features/pages/data/repositories/pages_repository.dart';
@@ -50,6 +52,7 @@ import 'package:erp/modules/webstore/admin/features/order_statuses/data/reposito
 import 'package:erp/modules/webstore/admin/features/customers/customer_groups/data/repositories/customer_groups_repository.dart';
 import 'package:erp/modules/webstore/admin/features/countries/data/repositories/countries_repository.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/data/repositories/warehouses_repository.dart';
+import 'package:erp/modules/webstore/admin/features/offers/data/models/offer_row.dart';
 
 // --- DataSources ---
 
@@ -64,6 +67,7 @@ final companiesDataSourceProvider = Provider((ref) => CompaniesRemoteDataSource(
 final filtersDataSourceProvider = Provider((ref) => FiltersRemoteDataSource(ref.read(networkServiceProvider)));
 final citiesDataSourceProvider = Provider((ref) => CitiesRemoteDataSource(ref.read(networkServiceProvider)));
 final couponsDataSourceProvider = Provider((ref) => CouponsRemoteDataSource(ref.read(networkServiceProvider)));
+final offersDataSourceProvider = Provider((ref) => OffersRemoteDataSource(ref.read(networkServiceProvider)));
 final governoratesDataSourceProvider = Provider((ref) => GovernoratesRemoteDataSource(ref.read(networkServiceProvider)));
 final ordersDataSourceProvider = Provider((ref) => OrdersRemoteDataSource(ref.read(networkServiceProvider)));
 final pagesDataSourceProvider = Provider((ref) => PagesRemoteDataSource(ref.read(networkServiceProvider)));
@@ -127,6 +131,10 @@ final citiesRepositoryProvider = Provider<ICitiesRepository>((ref) {
 
 final couponsRepositoryProvider = Provider<ICouponsRepository>((ref) {
   return CouponsRepository(ref.read(couponsDataSourceProvider));
+});
+
+final offersRepositoryProvider = Provider<IOffersRepository>((ref) {
+  return OffersRepository(ref.read(offersDataSourceProvider));
 });
 
 final governoratesRepositoryProvider = Provider<IGovernoratesRepository>((ref) {
@@ -224,6 +232,15 @@ final allPropertiesProvider = FutureProvider((ref) async {
   );
 });
 
+final allProductsProvider = FutureProvider((ref) async {
+  final repo = ref.read(productsRepositoryProvider);
+  final res = await repo.getProducts(page: 1, perPage: 1000);
+  return res.when(
+    success: (paged) => paged.items,
+    failure: (e) => throw e,
+  );
+});
+
 final allCustomerGroupsProvider = FutureProvider((ref) async {
   final repo = ref.read(customerGroupsRepositoryProvider);
   final res = await repo.getCustomerGroups(page: 1);
@@ -247,6 +264,15 @@ final paymentMethodTypesProvider = FutureProvider((ref) async {
   final res = await repo.getPaymentMethodTypes();
   return res.when(
     success: (list) => list,
+    failure: (e) => throw e,
+  );
+});
+
+final singleOfferProvider = FutureProvider.family<OfferRow, int>((ref, id) async {
+  final repo = ref.read(offersRepositoryProvider);
+  final res = await repo.getOffer(id);
+  return res.when(
+    success: (data) => data,
     failure: (e) => throw e,
   );
 });

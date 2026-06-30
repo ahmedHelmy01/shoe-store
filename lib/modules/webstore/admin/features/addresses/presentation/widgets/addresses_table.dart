@@ -7,6 +7,7 @@ import 'package:erp/modules/webstore/admin/features/addresses/data/models/addres
 import 'package:erp/modules/webstore/admin/features/governorates/presentation/view_model/governorates_view_model.dart';
 import 'package:erp/modules/webstore/admin/features/cities/presentation/view_model/cities_view_model.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class AddressesTable extends ConsumerWidget {
   final List<AddressRow> items;
@@ -31,7 +32,7 @@ class AddressesTable extends ConsumerWidget {
       exportBaseName: 'addresses',
       columns: [
         AdminColumn<AddressRow>(
-          title: 'Name',
+          title: AdminLocalizations.translate(context, 'Name'),
           cell: (_, s) => Row(
             children: [
               Text(s.name, style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -46,9 +47,9 @@ class AddressesTable extends ConsumerWidget {
                     color: Colors.blue.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child: const Text(
-                    'DEFAULT',
-                    style: TextStyle(
+                  child: Text(
+                    AdminLocalizations.translate(context, 'DEFAULT'),
+                    style: const TextStyle(
                       color: Colors.blue,
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
@@ -61,16 +62,16 @@ class AddressesTable extends ConsumerWidget {
           width: 150,
         ),
         AdminColumn<AddressRow>(
-          title: 'Details',
+          title: AdminLocalizations.translate(context, 'Details'),
           cell: (_, s) => Text(
-            s.addressDetails ?? 'N/A',
+            s.addressDetails ?? AdminLocalizations.translate(context, 'N/A'),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
           width: 300,
         ),
         AdminColumn<AddressRow>(
-          title: 'Location',
+          title: AdminLocalizations.translate(context, 'Location'),
           cell: (_, s) {
             String govName = '-';
             String cityName = '-';
@@ -82,7 +83,7 @@ class AddressesTable extends ConsumerWidget {
                       .where((g) => g.id == s.governorateId)
                       .map((g) => g.name)
                       .firstOrNull ??
-                  '${s.governorateId ?? "-"}';
+                  '${s.governorateId ?? AdminLocalizations.translate(context, "-")}';
             }
 
             final cityState = citiesState;
@@ -92,7 +93,7 @@ class AddressesTable extends ConsumerWidget {
                       .where((c) => c.id == s.cityId)
                       .map((c) => c.name)
                       .firstOrNull ??
-                  '${s.cityId ?? "-"}';
+                  '${s.cityId ?? AdminLocalizations.translate(context, "-")}';
             }
 
             return Text('$govName / $cityName');
@@ -100,12 +101,12 @@ class AddressesTable extends ConsumerWidget {
           width: 250,
         ),
         AdminColumn<AddressRow>(
-          title: 'Mobile',
-          cell: (_, s) => Text(s.mobile ?? 'N/A'),
+          title: AdminLocalizations.translate(context, 'Mobile'),
+          cell: (_, s) => Text(s.mobile ?? AdminLocalizations.translate(context, 'N/A')),
           width: 150,
         ),
         AdminColumn<AddressRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'Actions'),
           cell: (_, s) => AdminTableActionsCell<AddressRow>(
             row: s,
             showView: false,

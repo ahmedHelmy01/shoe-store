@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
@@ -13,7 +14,7 @@ class TopSpendersTable extends StatelessWidget {
     return SizedBox(
       height: 500,
       child: GlassPanel(
-        title: 'Top Spenders',
+        title: AdminLocalizations.translate(context, 'Top Spenders'),
         child: AdminDataTable<TopSpenderRow>(
           exportBaseName: 'top_spenders',
           idOf: (r) => r.name,
@@ -21,7 +22,7 @@ class TopSpendersTable extends StatelessWidget {
           cardBuilder: (context, r) => _TopSpenderCard(spender: r),
           columns: [
             AdminColumn(
-              title: 'Client Name',
+              title: AdminLocalizations.translate(context, 'Client Name'),
               width: 250,
               cell: (context, r) => Text(
                 r.name,
@@ -31,30 +32,30 @@ class TopSpendersTable extends StatelessWidget {
               sortValue: (r) => r.name,
             ),
             AdminColumn(
-              title: 'Total Orders',
+              title: AdminLocalizations.translate(context, 'Total Orders'),
               width: 150,
               cell: (context, r) => Text(r.orders.toString()),
               sortable: true,
               sortValue: (r) => r.orders,
             ),
             AdminColumn(
-              title: 'Total Spent',
+              title: AdminLocalizations.translate(context, 'Total Spent'),
               width: 200,
               cell: (context, r) => Text('${r.spent} ${AppConstants.currency}'),
               sortable: true,
               sortValue: (r) => r.spent,
             ),
             AdminColumn(
-              title: 'Status',
+              title: AdminLocalizations.translate(context, 'Status'),
               width: 150,
               cell: (context, r) => AdminStatusBadge(
                 isActive: r.isActive,
-                activeLabel: 'Active',
-                inactiveLabel: 'Inactive',
+                activeLabel: AdminLocalizations.translate(context, 'Active'),
+                inactiveLabel: AdminLocalizations.translate(context, 'Inactive'),
               ),
             ),
             AdminColumn(
-              title: 'Last Order',
+              title: AdminLocalizations.translate(context, 'Last Order'),
               width: 200,
               cell: (context, r) => Text(r.lastOrder),
               sortable: true,
@@ -113,21 +114,21 @@ class _TopSpenderCard extends StatelessWidget {
           const SizedBox(height: 12),
           _buildInfoRow(
             context,
-            'Total Orders',
+            AdminLocalizations.translate(context, 'Total Orders'),
             spender.orders.toString(),
             Icons.shopping_bag_outlined,
           ),
           const SizedBox(height: 8),
           _buildInfoRow(
             context,
-            'Total Spent',
+            AdminLocalizations.translate(context, 'Total Spent'),
             '${spender.spent} ${AppConstants.currency}',
             Icons.payments_outlined,
           ),
           const SizedBox(height: 8),
           _buildInfoRow(
             context,
-            'Last Order',
+            AdminLocalizations.translate(context, 'Last Order'),
             spender.lastOrder,
             Icons.calendar_today_outlined,
           ),

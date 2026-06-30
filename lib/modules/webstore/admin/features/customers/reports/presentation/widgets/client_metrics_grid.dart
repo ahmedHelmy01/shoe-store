@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/admin/features/dashboard/presentation/widgets/stat_card.dart';
 
@@ -32,24 +33,24 @@ class ClientMetricsGrid extends StatelessWidget {
           mainAxisSpacing: 16,
           childAspectRatio: ratio,
           children: [
-            const StatCard(
-              title: 'Total Clients',
+            StatCard(
+              title: AdminLocalizations.translate(context, 'Total Clients'),
               value: '12,458',
               deltaPercent: 12,
               positive: true,
               icon: Icons.people_alt_rounded,
               color: AppColors.primary,
             ),
-            const StatCard(
-              title: 'Active Clients',
+            StatCard(
+              title: AdminLocalizations.translate(context, 'Active Clients'),
               value: '8,234',
               deltaPercent: 5,
               positive: true,
               icon: Icons.how_to_reg_rounded,
               color: AppColors.secondary,
             ),
-            const StatCard(
-              title: 'New This Month',
+            StatCard(
+              title: AdminLocalizations.translate(context, 'New This Month'),
               value: '452',
               deltaPercent: 2,
               positive: false,
@@ -57,7 +58,7 @@ class ClientMetricsGrid extends StatelessWidget {
               color: AppColors.info,
             ),
             StatCard(
-              title: 'Avg. Revenue/Client',
+              title: AdminLocalizations.translate(context, 'Avg. Revenue/Client'),
               value: '850 ${AppConstants.currency}',
               deltaPercent: 8,
               positive: true,

@@ -5,6 +5,7 @@ import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
 import 'package:erp/modules/webstore/admin/features/coupons/data/models/coupon_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class CouponForm extends StatefulWidget {
   final CouponRow? initial;
@@ -127,8 +128,8 @@ class _CouponFormState extends State<CouponForm> {
               Expanded(
                 child: AppTextField(
                   controller: _codeCtrl,
-                  label: 'Coupon Code',
-                  hint: 'e.g. SAVE20',
+                  label: AdminLocalizations.translate(context, 'coupon code'),
+                  hint: AdminLocalizations.translate(context, 'e.g. save20'),
                   borderRadius: 14,
                 ),
               ),
@@ -136,7 +137,7 @@ class _CouponFormState extends State<CouponForm> {
               Expanded(
                 child: AppTextField(
                   controller: _minOrderCtrl,
-                  label: 'Minimum Order Value',
+                  label: AdminLocalizations.translate(context, 'minimum order value'),
                   hint: '0',
                   keyboardType: TextInputType.number,
                   borderRadius: 14,
@@ -150,7 +151,7 @@ class _CouponFormState extends State<CouponForm> {
               Expanded(
                 child: AppTextField(
                   controller: _discountCtrl,
-                  label: 'Discount Value',
+                  label: AdminLocalizations.translate(context, 'discount value'),
                   hint: '0.0',
                   keyboardType: TextInputType.number,
                   borderRadius: 14,
@@ -160,10 +161,10 @@ class _CouponFormState extends State<CouponForm> {
               Expanded(
                 child: AppDropdown<String>(
                   value: _discountType,
-                  label: 'Discount Type',
-                  items: const [
-                    DropdownMenuItem(value: 'percentage', child: Text('Percentage %')),
-                    DropdownMenuItem(value: 'fixed', child: Text('Fixed Amount')),
+                  label: AdminLocalizations.translate(context, 'discount type'),
+                  items: [
+                    DropdownMenuItem(value: 'percentage', child: Text(AdminLocalizations.translate(context, 'percentage %'))),
+                    DropdownMenuItem(value: 'fixed', child: Text(AdminLocalizations.translate(context, 'fixed amount'))),
                   ],
                   onChanged: (v) => setState(() => _discountType = v!),
                 ),
@@ -176,7 +177,7 @@ class _CouponFormState extends State<CouponForm> {
               Expanded(
                 child: AppTextField(
                   controller: _maxUsesCtrl,
-                  label: 'Max Uses',
+                  label: AdminLocalizations.translate(context, 'max uses'),
                   hint: '100',
                   keyboardType: TextInputType.number,
                   borderRadius: 14,
@@ -186,7 +187,7 @@ class _CouponFormState extends State<CouponForm> {
               Expanded(
                 child: AppTextField(
                   controller: _maxUsesPerCustomerCtrl,
-                  label: 'Max Uses Per Customer',
+                  label: AdminLocalizations.translate(context, 'max uses per customer'),
                   hint: '1',
                   keyboardType: TextInputType.number,
                   borderRadius: 14,
@@ -203,7 +204,7 @@ class _CouponFormState extends State<CouponForm> {
                   child: AbsorbPointer(
                     child: AppTextField(
                       controller: _startsAtCtrl,
-                      label: 'Starts At',
+                      label: AdminLocalizations.translate(context, 'starts at'),
                       hint: '2026-01-01',
                       borderRadius: 14,
                       suffixIcon: const Icon(Icons.calendar_month_rounded, size: 20),
@@ -218,7 +219,7 @@ class _CouponFormState extends State<CouponForm> {
                   child: AbsorbPointer(
                     child: AppTextField(
                       controller: _expiresAtCtrl,
-                      label: 'Expires At',
+                      label: AdminLocalizations.translate(context, 'expires at'),
                       hint: '2026-12-31',
                       borderRadius: 14,
                       suffixIcon: const Icon(Icons.calendar_month_rounded, size: 20),
@@ -230,14 +231,14 @@ class _CouponFormState extends State<CouponForm> {
           ),
           const SizedBox(height: 24),
           AdminImagePicker(
-            label: 'Coupon Image',
+            label: AdminLocalizations.translate(context, 'coupon image'),
             initialImage: widget.initial?.imageUrl,
             onImageSelected: (file) => setState(() => _imageFile = file),
             onRemoveInitial: () => setState(() => _removeInitialImage = true),
           ),
           const SizedBox(height: 20),
           SwitchListTile(
-            title: const Text('Is Active'),
+            title: Text(AdminLocalizations.translate(context, 'is active')),
             value: _isActive,
             onChanged: (v) => setState(() => _isActive = v),
             contentPadding: EdgeInsets.zero,
@@ -246,7 +247,7 @@ class _CouponFormState extends State<CouponForm> {
           AppButton(
             onPressed: _submit,
             isLoading: widget.isSaving,
-            child: Text(widget.initial == null ? 'Create Coupon' : 'Save Changes'),
+            child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'create coupon') : AdminLocalizations.translate(context, 'save changes')),
           ),
         ],
       ),

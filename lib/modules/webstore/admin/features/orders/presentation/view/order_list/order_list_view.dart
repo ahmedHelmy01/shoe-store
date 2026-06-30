@@ -7,6 +7,7 @@ import 'widgets/order_status_tabs.dart';
 import 'widgets/order_data_table.dart';
 import 'widgets/order_mobile_list.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class OrderListView extends StatelessWidget {
   final TabController tabController;
@@ -75,7 +76,7 @@ class OrderListView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AdminPageHeader(
-            title: 'Orders',
+            title: AdminLocalizations.translate(context, 'orders'),
             onRefresh: onRefresh,
           ),
           const SizedBox(height: 12),

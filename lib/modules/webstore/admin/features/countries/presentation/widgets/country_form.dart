@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/modules/webstore/admin/features/countries/data/models/country_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class CountryForm extends StatefulWidget {
   final CountryRow? initial;
@@ -70,16 +71,16 @@ class _CountryFormState extends State<CountryForm> {
               Expanded(
                 child: AppTextField(
                   controller: _nameEnCtrl,
-                  label: 'Name (English)',
-                  hint: 'e.g. Egypt',
-                  validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                  label: AdminLocalizations.translate(context, 'name (english)'),
+                  hint: AdminLocalizations.translate(context, 'e.g. egypt'),
+                  validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'required') : null,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: AppTextField(
                   controller: _nameArCtrl,
-                  label: 'Name (Arabic)',
+                  label: AdminLocalizations.translate(context, 'name (arabic)'),
                   hint: 'مثال: مصر',
                 ),
               ),
@@ -91,23 +92,23 @@ class _CountryFormState extends State<CountryForm> {
               Expanded(
                 child: AppTextField(
                   controller: _codeCtrl,
-                  label: 'Country Code',
-                  hint: 'e.g. EG',
+                  label: AdminLocalizations.translate(context, 'country code'),
+                  hint: AdminLocalizations.translate(context, 'e.g. eg'),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: AppTextField(
                   controller: _phoneCodeCtrl,
-                  label: 'Phone Code',
-                  hint: 'e.g. +20',
+                  label: AdminLocalizations.translate(context, 'phone code'),
+                  hint: AdminLocalizations.translate(context, 'e.g. +20'),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 16),
           SwitchListTile(
-            title: const Text('Is Active'),
+            title: Text(AdminLocalizations.translate(context, 'is active')),
             value: _isActive,
             onChanged: (v) => setState(() => _isActive = v),
             contentPadding: EdgeInsets.zero,
@@ -116,7 +117,7 @@ class _CountryFormState extends State<CountryForm> {
           AppButton(
             onPressed: _submit,
             isLoading: widget.isSaving,
-            child: Text(widget.initial == null ? 'Add Country' : 'Save Changes'),
+            child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'add country') : AdminLocalizations.translate(context, 'save changes')),
           ),
         ],
       ),

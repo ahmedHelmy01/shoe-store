@@ -164,6 +164,7 @@ class _WebStoreAdmin {
 
   // Marketing
   final String coupons = '/api/store/admin/coupons';
+  final String offers = '/api/store/admin/offers';
 
   // Other
   final String contacts = '/api/store/admin/contacts';

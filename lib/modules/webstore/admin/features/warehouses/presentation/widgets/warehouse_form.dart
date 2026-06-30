@@ -7,6 +7,7 @@ import 'package:erp/modules/webstore/admin/features/branches/data/models/branch_
 import 'package:erp/modules/webstore/admin/features/branches/presentation/view_model/branches_view_model.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/data/models/warehouse_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/warehouses_view_model.dart';
 
 class WarehouseForm extends ConsumerStatefulWidget {
@@ -103,12 +104,12 @@ class _WarehouseFormState extends ConsumerState<WarehouseForm> {
               Expanded(
                 child: AppTextField(
                   controller: _nameCtrl,
-                  label: 'Warehouse Name',
-                  hint: 'e.g. Main Warehouse',
+                  label: AdminLocalizations.translate(context, 'warehouse name'),
+                  hint: AdminLocalizations.translate(context, 'e.g. main warehouse'),
                   borderRadius: 14,
                   validator: (value) {
                     if ((value ?? '').trim().isEmpty) {
-                      return 'Name is required';
+                      return AdminLocalizations.translate(context, 'name is required');
                     }
                     return null;
                   },
@@ -118,7 +119,7 @@ class _WarehouseFormState extends ConsumerState<WarehouseForm> {
               Expanded(
                 child: AppTextField(
                   controller: _nameArCtrl,
-                  label: 'Warehouse Name (Arabic)',
+                  label: AdminLocalizations.translate(context, 'warehouse name (arabic)'),
                   hint: 'e.g. المخزن الرئيسي',
                   borderRadius: 14,
                 ),
@@ -131,19 +132,19 @@ class _WarehouseFormState extends ConsumerState<WarehouseForm> {
               Expanded(
                 child: AppTextField(
                   controller: _codeCtrl,
-                  label: 'Code',
-                  hint: 'e.g. WH-001',
+                  label: AdminLocalizations.translate(context, 'code'),
+                  hint: AdminLocalizations.translate(context, 'e.g. wh-001'),
                   borderRadius: 14,
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: AppDropdown<int>(
-                  label: 'Branch',
+                  label: AdminLocalizations.translate(context, 'branch'),
                   value: branches.any((b) => b.id == _selectedBranchId) ? _selectedBranchId : null,
                   hint: branchesState is AdminCrudLoading<BranchRow>
-                      ? 'Loading branches...'
-                      : 'Select branch',
+                      ? AdminLocalizations.translate(context, 'loading branches...')
+                      : AdminLocalizations.translate(context, 'select branch'),
                   enabled: branches.isNotEmpty && !widget.isSaving,
                   onChanged: (value) => setState(() => _selectedBranchId = value),
                   items: branches
@@ -164,8 +165,8 @@ class _WarehouseFormState extends ConsumerState<WarehouseForm> {
               Expanded(
                 child: AppTextField(
                   controller: _addressCtrl,
-                  label: 'Address',
-                  hint: 'Warehouse address',
+                  label: AdminLocalizations.translate(context, 'address'),
+                  hint: AdminLocalizations.translate(context, 'warehouse address'),
                   borderRadius: 14,
                 ),
               ),
@@ -173,8 +174,8 @@ class _WarehouseFormState extends ConsumerState<WarehouseForm> {
               Expanded(
                 child: AppTextField(
                   controller: _phoneCtrl,
-                  label: 'Phone',
-                  hint: 'e.g. 01000000000',
+                  label: AdminLocalizations.translate(context, 'phone'),
+                  hint: AdminLocalizations.translate(context, 'e.g. 01000000000'),
                   keyboardType: TextInputType.phone,
                   borderRadius: 14,
                 ),
@@ -186,14 +187,14 @@ class _WarehouseFormState extends ConsumerState<WarehouseForm> {
             children: [
               Expanded(
                 child: AppDropdown<int>(
-                  label: 'Parent Warehouse',
+                  label: AdminLocalizations.translate(context, 'parent warehouse'),
                   value: parentOptions.any((w) => w.id == _selectedParentId) ? _selectedParentId : null,
-                  hint: 'None (لا يوجد)',
+                  hint: AdminLocalizations.translate(context, 'none (لا يوجد)'),
                   onChanged: (value) => setState(() => _selectedParentId = value),
                   items: [
-                    const DropdownMenuItem<int>(
+                    DropdownMenuItem<int>(
                       value: null,
-                      child: Text('None (لا يوجد)'),
+                      child: Text(AdminLocalizations.translate(context, 'none (لا يوجد)')),
                     ),
                     ...parentOptions.map(
                       (w) => DropdownMenuItem<int>(
@@ -208,8 +209,10 @@ class _WarehouseFormState extends ConsumerState<WarehouseForm> {
               Expanded(
                 child: AppTextField(
                   controller: _notesCtrl,
-                  label: 'Notes',
-                  hint: 'Warehouse notes',
+                  label: AdminLocalizations.translate(context, 'notes'),
+                  hint: AdminLocalizations.translate(context, 'warehouse notes'),
+
+
                   borderRadius: 14,
                 ),
               ),
@@ -220,18 +223,18 @@ class _WarehouseFormState extends ConsumerState<WarehouseForm> {
             value: _isActive,
             onChanged: (value) => setState(() => _isActive = value),
             contentPadding: EdgeInsets.zero,
-            title: const Text('Active'),
+            title: Text(AdminLocalizations.translate(context, 'active')),
             subtitle: Text(
               _isEdit
-                  ? 'Update active status for this warehouse'
-                  : 'Set initial active status',
+                  ? AdminLocalizations.translate(context, 'update active status for this warehouse')
+                  : AdminLocalizations.translate(context, 'set initial active status'),
             ),
           ),
           const SizedBox(height: 24),
           AppButton(
             onPressed: _submit,
             isLoading: widget.isSaving,
-            child: Text(_isEdit ? 'Save Changes' : 'Create Warehouse'),
+            child: Text(_isEdit ? AdminLocalizations.translate(context, 'save changes') : AdminLocalizations.translate(context, 'create warehouse')),
           ),
         ],
       ),

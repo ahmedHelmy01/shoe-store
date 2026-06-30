@@ -7,6 +7,7 @@ import 'package:erp/core/common_widget/app_dropdown/category_tree_dropdown.dart'
 import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/categories/data/models/category_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class CategoryForm extends ConsumerStatefulWidget {
   final CategoryRow? initial;
@@ -50,9 +51,23 @@ class _CategoryFormState extends ConsumerState<CategoryForm> {
     _codeCtrl = TextEditingController(text: widget.initial?.code ?? '');
     _descCtrl = TextEditingController(text: widget.initial?.descriptionEn ?? widget.initial?.description ?? '');
     _descArCtrl = TextEditingController(text: widget.initial?.descriptionAr ?? '');
-    _parentId = widget.initial?.parentId;
+    _parentId = switch (widget.initial?.parentId) {
+      0 => null,
+      final v => v,
+    };
     _hasChildren = widget.initial?.hasChildren ?? false;
     _isActive = widget.initial?.isActive ?? true;
+  }
+
+  @override
+  void didUpdateWidget(CategoryForm oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initial?.id != oldWidget.initial?.id) {
+      _parentId = switch (widget.initial?.parentId) {
+        0 => null,
+        final v => v,
+      };
+    }
   }
 
   @override
@@ -92,40 +107,12 @@ class _CategoryFormState extends ConsumerState<CategoryForm> {
   }
 
   List<CategoryTreeItem> _buildDropdownItems(List<dynamic> tree) {
-    final result = <CategoryTreeItem>[];
-    
-    // Add "None" option first
-    result.add(const CategoryTreeItem(id: 0, name: 'None (لا يوجد)', isChild: false));
-    
-    for (final cat in tree) {
-      final map = cat as Map<String, dynamic>;
-      final id = map['id'] as int;
-      
-      // If this top-level category is the one we are editing, we skip the entire branch!
-      if (widget.initial != null && id == widget.initial!.id) {
-        continue;
-      }
-      
-      final name = (map['name'] ?? map['name_ar'] ?? map['name_en'] ?? 'بدون اسم').toString();
-      result.add(CategoryTreeItem(id: id, name: name, isChild: false));
-
-      final children = map['children'] as List?;
-      if (children != null) {
-        for (final child in children) {
-          final childMap = child as Map<String, dynamic>;
-          final childId = childMap['id'] as int;
-          
-          // If this child category is the one we are editing, we skip it
-          if (widget.initial != null && childId == widget.initial!.id) {
-            continue;
-          }
-          
-          final childName = (childMap['name'] ?? childMap['name_ar'] ?? childMap['name_en'] ?? 'بدون اسم').toString();
-          result.add(CategoryTreeItem(id: childId, name: childName, isChild: true));
-        }
-      }
-    }
-    return result;
+    final items = CategoryTreeDropdown.flattenTree(tree);
+    // Remove the current category (prevent self-parenting)
+    items.removeWhere((item) => item.id == widget.initial?.id);
+    // Add "None" option at the top
+    items.insert(0, const CategoryTreeItem(id: 0, name: 'None (لا يوجد)', isChild: false));
+    return items;
   }
 
   @override
@@ -141,19 +128,19 @@ class _CategoryFormState extends ConsumerState<CategoryForm> {
             Row(
               children: [
                 Expanded(
-                  child: AppTextField(
-                    controller: _nameCtrl,
-                    label: 'Category Name (English)',
-                    hint: 'e.g. Electronics',
-                    validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
+                    child: AppTextField(
+                      controller: _nameCtrl,
+                      label: AdminLocalizations.translate(context, 'category name (english)'),
+                      hint: AdminLocalizations.translate(context, 'e.g. electronics'),
+                      validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'name is required') : null,
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: AppTextField(
-                    controller: _nameArCtrl,
-                    label: 'Category Name (Arabic)',
-                    hint: 'e.g. إلكترونيات',
+                    child: AppTextField(
+                      controller: _nameArCtrl,
+                      label: AdminLocalizations.translate(context, 'category name (arabic)'),
+                      hint: AdminLocalizations.translate(context, 'e.g. electronics'),
                   ),
                 ),
               ],
@@ -163,19 +150,19 @@ class _CategoryFormState extends ConsumerState<CategoryForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: AppTextField(
-                    controller: _descCtrl,
-                    label: 'Description (English)',
-                    hint: 'e.g. Items related to consumer electronics',
+                    child: AppTextField(
+                      controller: _descCtrl,
+                      label: AdminLocalizations.translate(context, 'description (english)'),
+                      hint: AdminLocalizations.translate(context, 'e.g. items related to consumer electronics'),
                     maxLines: 2,
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: AppTextField(
-                    controller: _descArCtrl,
-                    label: 'Description (Arabic)',
-                    hint: 'e.g. الأجهزة والمعدات الإلكترونية الاستهلاكية',
+                    child: AppTextField(
+                      controller: _descArCtrl,
+                      label: AdminLocalizations.translate(context, 'description (arabic)'),
+                      hint: AdminLocalizations.translate(context, 'e.g. consumer electronics (arabic)'),
                     maxLines: 2,
                   ),
                 ),
@@ -185,10 +172,10 @@ class _CategoryFormState extends ConsumerState<CategoryForm> {
             Row(
               children: [
                 Expanded(
-                  child: AppTextField(
-                    controller: _codeCtrl,
-                    label: 'Code',
-                    hint: 'e.g. ELEC',
+                    child: AppTextField(
+                      controller: _codeCtrl,
+                      label: AdminLocalizations.translate(context, 'code'),
+                      hint: AdminLocalizations.translate(context, 'e.g. elec'),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -197,9 +184,9 @@ class _CategoryFormState extends ConsumerState<CategoryForm> {
                     data: (tree) {
                       final items = _buildDropdownItems(tree);
                       return CategoryTreeDropdown(
-                        label: 'Parent Category',
-                        hint: 'None (لا يوجد)',
-                        value: items.any((c) => c.id == _parentId) ? _parentId : null,
+                        label: AdminLocalizations.translate(context, 'parent category'),
+                        hint: AdminLocalizations.translate(context, 'none'),
+                        value: _parentId,
                         items: items,
                         onChanged: (val) {
                           setState(() {
@@ -211,14 +198,14 @@ class _CategoryFormState extends ConsumerState<CategoryForm> {
                     loading: () => const Center(
                       child: CircularProgressIndicator(),
                     ),
-                    error: (e, _) => const Text('Error loading categories'),
+                    error: (e, _) => Text(AdminLocalizations.translate(context, 'error loading categories')),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 24),
             AdminImagePicker(
-              label: 'Category Image',
+              label: AdminLocalizations.translate(context, 'category image'),
               initialImage: widget.initial?.imageUrl,
               uploadProgress: widget.uploadProgress,
               onImageSelected: (file) => setState(() => _imageFile = file),
@@ -226,15 +213,15 @@ class _CategoryFormState extends ConsumerState<CategoryForm> {
             ),
             const SizedBox(height: 12),
             SwitchListTile(
-              title: const Text('Has Children', style: TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: const Text('Allow subcategories under this category'),
+              title: Text(AdminLocalizations.translate(context, 'has children'), style: const TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: Text(AdminLocalizations.translate(context, 'allow subcategories under this category')),
               value: _hasChildren,
               onChanged: (v) => setState(() => _hasChildren = v),
               contentPadding: EdgeInsets.zero,
             ),
             const SizedBox(height: 12),
             SwitchListTile(
-              title: const Text('Is Active'),
+              title: Text(AdminLocalizations.translate(context, 'is active')),
               value: _isActive,
               onChanged: (val) => setState(() => _isActive = val),
               contentPadding: EdgeInsets.zero,
@@ -243,7 +230,7 @@ class _CategoryFormState extends ConsumerState<CategoryForm> {
             AppButton(
               onPressed: _submit,
               isLoading: widget.isSaving,
-              child: Text(widget.initial == null ? 'Add Category' : 'Save Changes'),
+              child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'add category') : AdminLocalizations.translate(context, 'save changes')),
             ),
           ],
         ),

@@ -23,4 +23,18 @@ class CategoriesVm extends AdminCrudVm<CategoryRow> {
   Future<ApiResult<void>> deleteItem(id) {
     return ref.read(categoriesRepositoryProvider).deleteCategory(id as int);
   }
+
+  @override
+  Future<bool> commitSave(Map<String, dynamic> body, {dynamic id, XFile? imageFile, Map<String, dynamic>? extraData}) async {
+    final result = await super.commitSave(body, id: id, imageFile: imageFile, extraData: extraData);
+    if (result) ref.invalidate(categoryTreeProvider);
+    return result;
+  }
+
+  @override
+  Future<bool> commitDelete(dynamic id) async {
+    final result = await super.commitDelete(id);
+    if (result) ref.invalidate(categoryTreeProvider);
+    return result;
+  }
 }

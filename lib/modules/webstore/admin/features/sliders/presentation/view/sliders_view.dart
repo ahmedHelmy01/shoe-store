@@ -8,6 +8,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/sliders_view_model.dart';
 import '../widgets/sliders_table.dart';
 import '../widgets/slider_form.dart';
@@ -31,9 +32,9 @@ class SlidersView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Homepage Sliders',
+                title: AdminLocalizations.translate(context, 'homepage sliders'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add Slider',
+                primaryActionLabel: AdminLocalizations.translate(context, 'add slider'),
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 12),
@@ -45,7 +46,7 @@ class SlidersView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Create Slider' : 'Edit Slider',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'create slider') : AdminLocalizations.translate(context, 'edit slider'),
             size: AdminDialogSize.medium,
             child: SliderForm(
               key: ValueKey(state.isAdding ? 'slider-add' : 'slider-edit-${state.editingItem?.id ?? 0}'),
@@ -60,15 +61,15 @@ class SlidersView extends ConsumerWidget {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: state.isAdding ? 'Slider Created' : 'Slider Updated',
-                    message: 'The slider has been saved successfully.',
+                    title: state.isAdding ? AdminLocalizations.translate(context, 'slider created') : AdminLocalizations.translate(context, 'slider updated'),
+                    message: AdminLocalizations.translate(context, 'the slider has been saved successfully.'),
                   );
                 } else {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.error,
-                    title: 'Save Failed',
-                    message: 'Could not save the slider. Please try again.',
+                    title: AdminLocalizations.translate(context, 'save failed'),
+                    message: AdminLocalizations.translate(context, 'could not save the slider. please try again.'),
                   );
                 }
               },
@@ -117,18 +118,18 @@ class SlidersView extends ConsumerWidget {
   void _confirmAndDelete(BuildContext context, SlidersVm notifier, int id, String title) {
     AppDialog.show(
       context,
-      title: 'Delete Slider',
-      message: 'Are you sure you want to delete "$title"?',
-      cancelText: 'Cancel',
-      confirmText: 'Delete',
+      title: AdminLocalizations.translate(context, 'delete slider'),
+      message: '${AdminLocalizations.translate(context, 'are you sure you want to delete')} "$title"?',
+      cancelText: AdminLocalizations.translate(context, 'cancel'),
+      confirmText: AdminLocalizations.translate(context, 'delete'),
       onConfirm: () async {
         Navigator.pop(context);
         final success = await notifier.commitDelete(id);
         if (!context.mounted) return;
         if (success) {
-          AppStatusDialog.show(context, status: AppDialogStatus.success, title: 'Deleted', message: 'Slider deleted successfully.');
+          AppStatusDialog.show(context, status: AppDialogStatus.success, title: AdminLocalizations.translate(context, 'deleted'), message: AdminLocalizations.translate(context, 'slider deleted successfully.'));
         } else {
-          AppStatusDialog.show(context, status: AppDialogStatus.error, title: 'Delete Failed', message: 'Could not delete slider.');
+          AppStatusDialog.show(context, status: AppDialogStatus.error, title: AdminLocalizations.translate(context, 'delete failed'), message: AdminLocalizations.translate(context, 'could not delete slider.'));
         }
       },
     );
@@ -176,7 +177,7 @@ class _SliderCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      slider.titleAr ?? 'No Arabic Title',
+                      slider.titleAr ?? AdminLocalizations.translate(context, 'no arabic title'),
                       style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6)),
                     ),
                   ],
@@ -200,12 +201,12 @@ class _SliderCard extends StatelessWidget {
                   color: (slider.isActive ? Colors.green : Colors.red).withValues(alpha: 0.1),
                 ),
                 child: Text(
-                  slider.isActive ? 'Active' : 'Disabled',
+                  slider.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'disabled'),
                   style: theme.textTheme.labelSmall?.copyWith(color: slider.isActive ? Colors.green : Colors.red, fontWeight: FontWeight.bold),
                 ),
               ),
               Text(
-                'ID: ${slider.id}',
+                '${AdminLocalizations.translate(context, 'id')}: ${slider.id}',
                 style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.4)),
               ),
             ],

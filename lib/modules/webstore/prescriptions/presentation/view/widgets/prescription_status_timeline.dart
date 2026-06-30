@@ -20,7 +20,9 @@ class PrescriptionStatusTimeline extends StatelessWidget {
     final statusLower = status.toLowerCase();
     final bool isPending = statusLower == 'pending';
     final bool isReviewed = statusLower == 'reviewed';
+    final bool isApproved = statusLower == 'approved';
     final bool isRejected = statusLower == 'rejected';
+    final bool isCompleted = isReviewed || isApproved;
 
     return AppAnimation.fadeInUp(
       duration: const Duration(milliseconds: 600),
@@ -60,16 +62,18 @@ class PrescriptionStatusTimeline extends StatelessWidget {
                 _TimelineStep(
                   title: isRejected
                       ? LocaleKeys.webstore.prescriptions.status_rejected.tr(context: context)
-                      : LocaleKeys.webstore.prescriptions.status_pending.tr(context: context),
-                  isActive: isPending || isReviewed || isRejected,
-                  isCompleted: isReviewed || isRejected,
+                      : isApproved
+                          ? LocaleKeys.webstore.prescriptions.status_approved.tr(context: context)
+                          : LocaleKeys.webstore.prescriptions.status_pending.tr(context: context),
+                  isActive: isPending || isCompleted || isRejected,
+                  isCompleted: isCompleted || isRejected,
                   isError: isRejected,
                   isLast: false,
                 ),
                 _TimelineStep(
                   title: LocaleKeys.webstore.prescriptions.status_ready.tr(context: context),
-                  isActive: isReviewed,
-                  isCompleted: isReviewed,
+                  isActive: isCompleted,
+                  isCompleted: isCompleted,
                   isLast: true,
                 ),
               ],

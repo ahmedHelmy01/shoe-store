@@ -17,6 +17,7 @@ class ProfileRemoteDataSource {
     String? email,
     String? mobile,
     String? password,
+    int? branchId,
   }) {
     return _networkService.put(
       ApiEndpoints.webstore.profile.profile,
@@ -25,6 +26,7 @@ class ProfileRemoteDataSource {
         if (email != null) 'email': email,
         if (mobile != null) 'mobile': mobile,
         if (password != null) 'password': password,
+        if (branchId != null) 'branch_id': branchId,
       },
     );
   }

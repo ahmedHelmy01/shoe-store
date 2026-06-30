@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/modules/webstore/admin/features/payment_statuses/data/models/payment_status_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class PaymentStatusForm extends StatefulWidget {
   final PaymentStatusRow? initial;
@@ -82,8 +83,8 @@ class _PaymentStatusFormState extends State<PaymentStatusForm> {
             Expanded(
               child: AppTextField(
                 controller: _nameCtrl,
-                label: 'Name (English)',
-                hint: 'e.g. Paid, Pending',
+                label: AdminLocalizations.translate(context, 'name (english)'),
+                hint: AdminLocalizations.translate(context, 'e.g. paid, pending'),
                 borderRadius: 14,
               ),
             ),
@@ -91,7 +92,7 @@ class _PaymentStatusFormState extends State<PaymentStatusForm> {
             Expanded(
               child: AppTextField(
                 controller: _nameArCtrl,
-                label: 'Name (Arabic)',
+                label: AdminLocalizations.translate(context, 'name (arabic)'),
                 hint: 'مثال: مدفوع, معلق',
                 borderRadius: 14,
               ),
@@ -101,15 +102,15 @@ class _PaymentStatusFormState extends State<PaymentStatusForm> {
         const SizedBox(height: 18),
         AppTextField(
           controller: _sortOrderCtrl,
-          label: 'Sort Order',
+          label: AdminLocalizations.translate(context, 'sort order'),
           hint: '0',
           keyboardType: TextInputType.number,
           borderRadius: 14,
         ),
         const SizedBox(height: 12),
         SwitchListTile(
-          title: const Text('Is Active'),
-          subtitle: const Text('Enable or disable this payment status'),
+          title: Text(AdminLocalizations.translate(context, 'is active')),
+          subtitle: Text(AdminLocalizations.translate(context, 'enable or disable this payment status')),
           value: _isActive,
           onChanged: (v) => setState(() => _isActive = v),
           contentPadding: EdgeInsets.zero,
@@ -118,7 +119,7 @@ class _PaymentStatusFormState extends State<PaymentStatusForm> {
         AppButton(
           onPressed: _submit,
           isLoading: widget.isSaving,
-          child: Text(widget.initial == null ? 'Create Status' : 'Save Changes'),
+          child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'create payment status') : AdminLocalizations.translate(context, 'save changes')),
         ),
       ],
     );

@@ -3,6 +3,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_tabl
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_default_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/modules/webstore/admin/features/customers/customer_groups/data/models/customer_group_row.dart';
 
 class CustomerGroupsTable extends StatelessWidget {
@@ -25,12 +26,12 @@ class CustomerGroupsTable extends StatelessWidget {
       rows: items,
       idOf: (g) => '${g.id}',
       exportBaseName: 'customer_groups',
-      searchHint: 'Search groups…',
+      searchHint: AdminLocalizations.translate(context, 'Search groups…'),
       searchText: (g) => '${g.id} ${g.title} ${g.titleAr ?? ''}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<CustomerGroupRow>(
-          title: 'ID',
+          title: AdminLocalizations.translate(context, 'ID'),
           sortable: true,
           sortValue: (g) => g.id,
           exportValue: (g) => '${g.id}',
@@ -38,7 +39,7 @@ class CustomerGroupsTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<CustomerGroupRow>(
-          title: 'Title',
+          title: AdminLocalizations.translate(context, 'Title'),
           sortable: true,
           sortValue: (g) => g.title,
           exportValue: (g) => g.title,
@@ -46,23 +47,23 @@ class CustomerGroupsTable extends StatelessWidget {
           width: 300,
         ),
         AdminColumn<CustomerGroupRow>(
-          title: 'Default',
+          title: AdminLocalizations.translate(context, 'Default'),
           sortable: true,
           sortValue: (g) => g.isDefault ? 1 : 0,
-          exportValue: (g) => g.isDefault ? 'Yes' : 'No',
+          exportValue: (g) => g.isDefault ? AdminLocalizations.translate(context, 'Yes') : AdminLocalizations.translate(context, 'No'),
           cell: (_, g) => AdminDefaultBadge(isDefault: g.isDefault),
           width: 120,
         ),
         AdminColumn<CustomerGroupRow>(
-          title: 'Status',
+          title: AdminLocalizations.translate(context, 'Status'),
           sortable: true,
           sortValue: (g) => g.isActive ? 1 : 0,
-          exportValue: (g) => g.isActive ? 'Active' : 'Inactive',
+          exportValue: (g) => g.isActive ? AdminLocalizations.translate(context, 'Active') : AdminLocalizations.translate(context, 'Inactive'),
           cell: (_, g) => AdminStatusBadge(isActive: g.isActive),
           width: 120,
         ),
         AdminColumn<CustomerGroupRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'Actions'),
           cell: (_, g) => AdminTableActionsCell<CustomerGroupRow>(
             row: g,
             onView: (group) {
@@ -89,15 +90,15 @@ class CustomerGroupDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminDetailsDialog(
-      title: 'Group Details',
+      title: AdminLocalizations.translate(context, 'Group Details'),
       id: group.id.toString(),
       icon: Icons.groups_rounded,
       children: [
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Title (EN)', group.title, Icons.title_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'Title (EN)'), group.title, Icons.title_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Title (AR)', group.titleAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'Title (AR)'), group.titleAr ?? AdminLocalizations.translate(context, 'N/A'), Icons.translate_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
@@ -105,27 +106,27 @@ class CustomerGroupDetailsDialog extends StatelessWidget {
           children: [
             Expanded(
               child: group.parentId != null
-                  ? AdminDetailsDialog.buildDetailRow(context, 'Parent ID', '${group.parentId}', Icons.account_tree_rounded, bottomPadding: 0)
-                  : AdminDetailsDialog.buildDetailRow(context, 'Parent ID', 'N/A', Icons.account_tree_rounded, bottomPadding: 0),
+                  ? AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'Parent ID'), '${group.parentId}', Icons.account_tree_rounded, bottomPadding: 0)
+                  : AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'Parent ID'), AdminLocalizations.translate(context, 'N/A'), Icons.account_tree_rounded, bottomPadding: 0),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: group.companyId != null
-                  ? AdminDetailsDialog.buildDetailRow(context, 'Company ID', '${group.companyId}', Icons.business_rounded, bottomPadding: 0)
-                  : AdminDetailsDialog.buildDetailRow(context, 'Company ID', 'N/A', Icons.business_rounded, bottomPadding: 0),
+                  ? AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'Company ID'), '${group.companyId}', Icons.business_rounded, bottomPadding: 0)
+                  : AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'Company ID'), AdminLocalizations.translate(context, 'N/A'), Icons.business_rounded, bottomPadding: 0),
             ),
           ],
         ),
         const SizedBox(height: 20),
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Default', group.isDefault ? 'Yes' : 'No', Icons.check_circle_outline_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'Default'), group.isDefault ? AdminLocalizations.translate(context, 'Yes') : AdminLocalizations.translate(context, 'No'), Icons.check_circle_outline_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Status', group.isActive ? 'Active' : 'Inactive', Icons.toggle_on_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'Status'), group.isActive ? AdminLocalizations.translate(context, 'Active') : AdminLocalizations.translate(context, 'Inactive'), Icons.toggle_on_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
-        AdminDetailsDialog.buildDetailRow(context, 'Created At', group.createdAt?.toString() ?? 'N/A', Icons.calendar_today_rounded),
+        AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'Created At'), group.createdAt?.toString() ?? AdminLocalizations.translate(context, 'N/A'), Icons.calendar_today_rounded),
       ],
     );
   }

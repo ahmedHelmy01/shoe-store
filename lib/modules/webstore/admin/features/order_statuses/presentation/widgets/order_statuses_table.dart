@@ -4,6 +4,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_det
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_default_badge.dart';
 import 'package:erp/modules/webstore/admin/features/order_statuses/data/models/order_status_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class OrderStatusesTable extends StatelessWidget {
   final List<OrderStatusRow> items;
@@ -25,12 +26,12 @@ class OrderStatusesTable extends StatelessWidget {
       rows: items,
       idOf: (s) => '${s.id}',
       exportBaseName: 'order_statuses',
-      searchHint: 'Search statuses…',
+      searchHint: AdminLocalizations.translate(context, 'search statuses…'),
       searchText: (s) => '${s.id} ${s.name} ${s.nameAr ?? ''}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<OrderStatusRow>(
-          title: 'ID',
+          title: AdminLocalizations.translate(context, 'id'),
           sortable: true,
           sortValue: (s) => s.id,
           exportValue: (s) => '${s.id}',
@@ -38,7 +39,7 @@ class OrderStatusesTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<OrderStatusRow>(
-          title: 'Color',
+          title: AdminLocalizations.translate(context, 'color'),
           cell: (_, s) => Container(
             width: 24,
             height: 24,
@@ -51,7 +52,7 @@ class OrderStatusesTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<OrderStatusRow>(
-          title: 'Name',
+          title: AdminLocalizations.translate(context, 'name'),
           sortable: true,
           sortValue: (s) => s.name,
           exportValue: (s) => s.name,
@@ -64,7 +65,7 @@ class OrderStatusesTable extends StatelessWidget {
           width: 250,
         ),
         AdminColumn<OrderStatusRow>(
-          title: 'Order',
+          title: AdminLocalizations.translate(context, 'order'),
           sortable: true,
           sortValue: (s) => s.sortOrder,
           exportValue: (s) => '${s.sortOrder}',
@@ -72,23 +73,23 @@ class OrderStatusesTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<OrderStatusRow>(
-          title: 'Default',
+          title: AdminLocalizations.translate(context, 'default'),
           sortable: true,
           sortValue: (s) => s.isDefault ? 1 : 0,
-          exportValue: (s) => s.isDefault ? 'Yes' : 'No',
+          exportValue: (s) => s.isDefault ? AdminLocalizations.translate(context, 'yes') : AdminLocalizations.translate(context, 'no'),
           cell: (_, s) => AdminDefaultBadge(isDefault: s.isDefault),
           width: 100,
         ),
         AdminColumn<OrderStatusRow>(
-          title: 'Status',
+          title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (s) => s.isActive ? 1 : 0,
-          exportValue: (s) => s.isActive ? 'Active' : 'Inactive',
+          exportValue: (s) => s.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'),
           cell: (_, s) => AdminStatusBadge(isActive: s.isActive),
           width: 100,
         ),
         AdminColumn<OrderStatusRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'actions'),
           cell: (_, s) => AdminTableActionsCell<OrderStatusRow>(
             row: s,
             onView: (status) {
@@ -124,7 +125,7 @@ class OrderStatusDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminDetailsDialog(
-      title: 'Status Details',
+      title: AdminLocalizations.translate(context, 'status details'),
       id: status.id.toString(),
       icon: Icons.flag_rounded,
       children: [
@@ -133,8 +134,8 @@ class OrderStatusDetailsDialog extends StatelessWidget {
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
                 context,
-                'Name (EN)',
-                status.displayNameEn.isNotEmpty ? status.displayNameEn : 'N/A',
+                AdminLocalizations.translate(context, 'name (en)'),
+                status.displayNameEn.isNotEmpty ? status.displayNameEn : AdminLocalizations.translate(context, 'n/a'),
                 Icons.title_rounded,
                 bottomPadding: 0,
               ),
@@ -143,8 +144,8 @@ class OrderStatusDetailsDialog extends StatelessWidget {
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
                 context,
-                'Name (AR)',
-                status.displayNameAr.isNotEmpty ? status.displayNameAr : 'N/A',
+                AdminLocalizations.translate(context, 'name (ar)'),
+                status.displayNameAr.isNotEmpty ? status.displayNameAr : AdminLocalizations.translate(context, 'n/a'),
                 Icons.translate_rounded,
                 bottomPadding: 0,
               ),
@@ -158,9 +159,9 @@ class OrderStatusDetailsDialog extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Color Indicator',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                  Text(
+                    AdminLocalizations.translate(context, 'color indicator'),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                   ),
                   const SizedBox(height: 8),
                   Container(
@@ -188,7 +189,7 @@ class OrderStatusDetailsDialog extends StatelessWidget {
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
                 context,
-                'Sort Order',
+                AdminLocalizations.translate(context, 'sort order'),
                 '${status.sortOrder}',
                 Icons.sort_rounded,
                 bottomPadding: 0,
@@ -202,8 +203,8 @@ class OrderStatusDetailsDialog extends StatelessWidget {
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
                 context,
-                'Default',
-                status.isDefault ? 'Yes' : 'No',
+                AdminLocalizations.translate(context, 'default'),
+                status.isDefault ? AdminLocalizations.translate(context, 'yes') : AdminLocalizations.translate(context, 'no'),
                 Icons.check_circle_outline_rounded,
                 bottomPadding: 0,
               ),
@@ -212,8 +213,8 @@ class OrderStatusDetailsDialog extends StatelessWidget {
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
                 context,
-                'Active',
-                status.isActive ? 'Yes' : 'No',
+                AdminLocalizations.translate(context, 'active'),
+                status.isActive ? AdminLocalizations.translate(context, 'yes') : AdminLocalizations.translate(context, 'no'),
                 Icons.toggle_on_rounded,
                 bottomPadding: 0,
               ),

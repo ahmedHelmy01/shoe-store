@@ -5,6 +5,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_row.dart';
 import 'package:erp/modules/webstore/admin/features/orders/presentation/view_model/orders_view_model.dart';
 import 'package:erp/modules/webstore/admin/features/users/presentation/view_model/users_view_model.dart';
@@ -40,7 +41,7 @@ class _OrdersViewState extends ConsumerState<OrdersView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Customer Orders',
+                title: AdminLocalizations.translate(context, 'customer orders'),
                 onRefresh: () => notifier.fetch(),
               ),
               const SizedBox(height: 16),
@@ -56,7 +57,7 @@ class _OrdersViewState extends ConsumerState<OrdersView> {
           AdminDialogForm(
             isOpen: state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: 'Manage Order #${state.editingItem?.id}',
+            title: '${AdminLocalizations.translate(context, 'manage order')} #${state.editingItem?.id}',
             size: AdminDialogSize.large,
             child: OrderForm(
               initial: state.editingItem,
@@ -87,17 +88,17 @@ class _OrdersViewState extends ConsumerState<OrdersView> {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<int>(
           isExpanded: true,
-          hint: const Text('Filter by Customer (Optional)'),
+          hint: Text(AdminLocalizations.translate(context, 'filter by customer (optional)')),
           value: _selectedCustomerId,
           items: [
-            const DropdownMenuItem<int>(
+            DropdownMenuItem<int>(
               value: null,
-              child: Text('All Customers'),
+              child: Text(AdminLocalizations.translate(context, 'all customers')),
             ),
             ...usersState.items.map((user) {
               return DropdownMenuItem<int>(
                 value: user.id,
-                child: Text('${user.name} (${user.mobile ?? "No Mobile"})'),
+                child: Text('${user.name} (${user.mobile ?? AdminLocalizations.translate(context, 'no mobile')})'),
               );
             }),
           ],
@@ -132,9 +133,9 @@ class _OrdersViewState extends ConsumerState<OrdersView> {
             ),
             clipBehavior: Clip.antiAlias,
             child: items.isEmpty 
-              ? const Center(child: Padding(
-                  padding: EdgeInsets.all(40.0),
-                  child: Text('No orders found for this selection.'),
+              ? Center(child: Padding(
+                  padding: const EdgeInsets.all(40.0),
+                  child: Text(AdminLocalizations.translate(context, 'no orders found for this selection.')),
                 ))
               : OrdersTable(
                   items: items,

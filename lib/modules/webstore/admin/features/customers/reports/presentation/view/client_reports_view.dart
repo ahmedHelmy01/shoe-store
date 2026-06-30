@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import '../widgets/client_metrics_grid.dart';
@@ -10,13 +11,13 @@ class ClientReportsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
+    return SingleChildScrollView(
       padding: EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AdminPageHeader(
-            title: 'Clients Reports',
+            title: AdminLocalizations.translate(context, 'Clients Reports'),
           ),
           SizedBox(height: 24),
           

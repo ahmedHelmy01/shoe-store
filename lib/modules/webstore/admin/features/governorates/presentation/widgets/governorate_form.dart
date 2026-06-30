@@ -4,6 +4,7 @@ import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
 import 'package:erp/modules/webstore/admin/features/governorates/data/models/governorate_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/modules/webstore/admin/features/countries/presentation/view_model/countries_view_model.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/features/countries/data/models/country_row.dart';
@@ -49,7 +50,7 @@ class _GovernorateFormState extends ConsumerState<GovernorateForm> {
   void _submit() {
     if (_selectedCountryId == null && widget.initial == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a country')),
+        SnackBar(content: Text(AdminLocalizations.translate(context, 'please select a country'))),
       );
       return;
     }
@@ -72,8 +73,8 @@ class _GovernorateFormState extends ConsumerState<GovernorateForm> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         AppDropdown<int>(
-          label: 'Country',
-          hint: 'Select Country',
+          label: AdminLocalizations.translate(context, 'country'),
+          hint: AdminLocalizations.translate(context, 'select country'),
           value: _selectedCountryId,
           items: items.map((c) => DropdownMenuItem<int>(
             value: c.id,
@@ -84,20 +85,20 @@ class _GovernorateFormState extends ConsumerState<GovernorateForm> {
         const SizedBox(height: 18),
         AppTextField(
           controller: _nameCtrl,
-          label: 'Governorate Name (EN)',
-          hint: 'e.g. Cairo',
+          label: AdminLocalizations.translate(context, 'governorate name (en)'),
+          hint: AdminLocalizations.translate(context, 'e.g. cairo'),
           borderRadius: 14,
         ),
         const SizedBox(height: 18),
         AppTextField(
           controller: _nameArCtrl,
-          label: 'Governorate Name (AR)',
+          label: AdminLocalizations.translate(context, 'governorate name (ar)'),
           hint: 'مثلاً القاهرة',
           borderRadius: 14,
         ),
         const SizedBox(height: 18),
         SwitchListTile(
-          title: const Text('Is Active'),
+          title: Text(AdminLocalizations.translate(context, 'is active')),
           value: _isActive,
           onChanged: (v) => setState(() => _isActive = v),
           contentPadding: EdgeInsets.zero,
@@ -106,7 +107,7 @@ class _GovernorateFormState extends ConsumerState<GovernorateForm> {
         AppButton(
           onPressed: _submit,
           isLoading: widget.isSaving,
-          child: Text(widget.initial == null ? 'Create Governorate' : 'Save Changes'),
+          child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'create governorate') : AdminLocalizations.translate(context, 'save changes')),
         ),
       ],
     );

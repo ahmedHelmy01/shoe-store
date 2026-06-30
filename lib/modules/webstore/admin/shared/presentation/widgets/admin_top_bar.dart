@@ -1,7 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/core/providers/core_providers.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
-class AdminTopBar extends StatelessWidget {
+class AdminTopBar extends ConsumerWidget {
   final String title;
   final VoidCallback onToggleNav;
   final bool isNavCollapsed;
@@ -16,9 +20,11 @@ class AdminTopBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final currentLocale = context.locale;
+    final isAr = currentLocale.languageCode == 'ar';
 
     return Container(
       height: 64,
@@ -41,13 +47,35 @@ class AdminTopBar extends StatelessWidget {
           const SizedBox(width: 6),
           Expanded(
             child: Text(
-              title,
+              AdminLocalizations.translate(context, title),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w900,
                 letterSpacing: -0.2,
               ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          TextButton.icon(
+            style: TextButton.styleFrom(
+              foregroundColor: theme.primaryColor,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: () async {
+              final nextCode = isAr ? 'en' : 'ar';
+              await ref.read(sessionManagerProvider).setLocale(nextCode);
+              if (context.mounted) {
+                await context.setLocale(Locale(nextCode));
+              }
+            },
+            icon: const Icon(Icons.translate_rounded, size: 16),
+            label: Text(
+              isAr ? 'English' : 'العربية',
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
             ),
           ),
           const SizedBox(width: 10),

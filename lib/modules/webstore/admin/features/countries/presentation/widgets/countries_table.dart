@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/features/countries/data/models/country_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
@@ -22,11 +23,11 @@ class CountriesTable extends StatelessWidget {
       rows: items,
       idOf: (item) => item.id.toString(),
       exportBaseName: 'countries',
-      searchHint: 'Search countries...',
+      searchHint: AdminLocalizations.translate(context, 'search countries...'),
       searchText: (item) => '${item.name} ${item.nameAr ?? ""} ${item.code ?? ""}',
       columns: [
         AdminColumn<CountryRow>(
-          title: 'Country',
+          title: AdminLocalizations.translate(context, 'country'),
           width: 250,
           cell: (_, item) => Row(
             children: [
@@ -56,22 +57,22 @@ class CountriesTable extends StatelessWidget {
           ),
         ),
         AdminColumn<CountryRow>(
-          title: 'Code',
+          title: AdminLocalizations.translate(context, 'code'),
           width: 100,
           cell: (_, item) => Text(item.code ?? '-', style: const TextStyle(fontFamily: 'monospace', fontWeight: FontWeight.w600)),
         ),
         AdminColumn<CountryRow>(
-          title: 'Phone',
+          title: AdminLocalizations.translate(context, 'phone'),
           width: 120,
           cell: (_, item) => Text(item.phoneCode ?? '-', style: const TextStyle(fontWeight: FontWeight.w500)),
         ),
         AdminColumn<CountryRow>(
-          title: 'Status',
+          title: AdminLocalizations.translate(context, 'status'),
           width: 120,
           cell: (_, item) => AdminStatusBadge(isActive: item.isActive),
         ),
         AdminColumn<CountryRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'actions'),
           width: 120,
           cell: (_, item) => AdminTableActionsCell<CountryRow>(
             row: item,
@@ -97,7 +98,7 @@ class CountryDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminDetailsDialog(
-      title: 'Country Details',
+      title: AdminLocalizations.translate(context, 'country details'),
       id: country.id.toString(),
       icon: Icons.public_rounded,
       children: [
@@ -130,16 +131,16 @@ class CountryDetailsDialog extends StatelessWidget {
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
                 context,
-                'Phone Code',
-                country.phoneCode ?? 'N/A',
+                AdminLocalizations.translate(context, 'phone code'),
+                country.phoneCode ?? AdminLocalizations.translate(context, 'n/a'),
                 Icons.phone_enabled_rounded,
               ),
             ),
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
                 context,
-                'ISO Code',
-                country.code ?? 'N/A',
+                AdminLocalizations.translate(context, 'iso code'),
+                country.code ?? AdminLocalizations.translate(context, 'n/a'),
                 Icons.code_rounded,
               ),
             ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../../data/models/admin_prescription_row.dart';
 
 class AdminPrescriptionReviewForm extends StatefulWidget {
@@ -55,33 +56,33 @@ class _AdminPrescriptionReviewFormState extends State<AdminPrescriptionReviewFor
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            'Review Prescription',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            AdminLocalizations.translate(context, 'review prescription'),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
           AppDropdown<String>(
-            label: 'Status',
+            label: AdminLocalizations.translate(context, 'status'),
             value: _selectedStatus,
-            items: const [
-              DropdownMenuItem(value: 'approved', child: Text('Approved')),
-              DropdownMenuItem(value: 'rejected', child: Text('Rejected')),
-              DropdownMenuItem(value: 'pending', child: Text('Pending')),
+            items: [
+              DropdownMenuItem(value: 'approved', child: Text(AdminLocalizations.translate(context, 'approved'))),
+              DropdownMenuItem(value: 'rejected', child: Text(AdminLocalizations.translate(context, 'rejected'))),
+              DropdownMenuItem(value: 'pending', child: Text(AdminLocalizations.translate(context, 'pending'))),
             ],
             onChanged: (val) => setState(() => _selectedStatus = val),
           ),
           const SizedBox(height: 20),
           AppTextField(
             controller: _noteCtrl,
-            label: 'Admin Note',
-            hint: 'Add instructions or reason for rejection...',
+            label: AdminLocalizations.translate(context, 'admin note'),
+            hint: AdminLocalizations.translate(context, 'add instructions or reason for rejection...'),
             maxLines: 4,
           ),
           const SizedBox(height: 32),
           AppButton(
             onPressed: _submit,
             isLoading: widget.isSaving,
-            child: const Text('Confirm Review'),
+            child: Text(AdminLocalizations.translate(context, 'confirm review')),
           ),
         ],
       ),

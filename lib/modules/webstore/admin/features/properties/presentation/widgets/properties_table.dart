@@ -4,6 +4,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_det
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_default_badge.dart';
 import 'package:erp/modules/webstore/admin/features/properties/data/models/property_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class PropertiesTable extends StatelessWidget {
   final List<PropertyRow> items;
@@ -25,12 +26,12 @@ class PropertiesTable extends StatelessWidget {
       rows: items,
       idOf: (p) => '${p.id}',
       exportBaseName: 'properties',
-      searchHint: 'Search properties…',
+      searchHint: AdminLocalizations.translate(context, 'search properties…'),
       searchText: (p) => '${p.id} ${p.title} ${p.titleAr ?? ''}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<PropertyRow>(
-          title: 'ID',
+          title: AdminLocalizations.translate(context, 'id'),
           sortable: true,
           sortValue: (p) => p.id,
           exportValue: (p) => '${p.id}',
@@ -38,7 +39,7 @@ class PropertiesTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<PropertyRow>(
-          title: 'Title',
+          title: AdminLocalizations.translate(context, 'title (en)'),
           sortable: true,
           sortValue: (p) => p.title,
           exportValue: (p) => p.title,
@@ -46,23 +47,23 @@ class PropertiesTable extends StatelessWidget {
           width: 300,
         ),
         AdminColumn<PropertyRow>(
-          title: 'Default',
+          title: AdminLocalizations.translate(context, 'default'),
           sortable: true,
           sortValue: (p) => p.isDefault ? 1 : 0,
-          exportValue: (p) => p.isDefault ? 'Yes' : 'No',
+          exportValue: (p) => p.isDefault ? AdminLocalizations.translate(context, 'yes') : AdminLocalizations.translate(context, 'no'),
           cell: (_, p) => AdminDefaultBadge(isDefault: p.isDefault),
           width: 120,
         ),
         AdminColumn<PropertyRow>(
-          title: 'Status',
+          title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (p) => p.isActive ? 1 : 0,
-          exportValue: (p) => p.isActive ? 'Active' : 'Inactive',
+          exportValue: (p) => p.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'),
           cell: (_, p) => AdminStatusBadge(isActive: p.isActive),
           width: 100,
         ),
         AdminColumn<PropertyRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'actions'),
           cell: (_, p) => AdminTableActionsCell<PropertyRow>(
             row: p,
             onView: (prop) {
@@ -89,31 +90,31 @@ class PropertyDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminDetailsDialog(
-      title: 'Property Details',
+      title: AdminLocalizations.translate(context, 'property details'),
       id: property.id.toString(),
       icon: Icons.settings_input_component_rounded,
       children: [
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Title (EN)', property.title, Icons.title_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'title (en)'), property.title, Icons.title_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Title (AR)', property.titleAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'title (ar)'), property.titleAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.translate_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Default', property.isDefault ? 'Yes' : 'No', Icons.check_circle_outline_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'default'), property.isDefault ? AdminLocalizations.translate(context, 'yes') : AdminLocalizations.translate(context, 'no'), Icons.check_circle_outline_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, 'Status', property.isActive ? 'Active' : 'Inactive', Icons.toggle_on_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'status'), property.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'), Icons.toggle_on_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
-        AdminDetailsDialog.buildDetailRow(context, 'Property URL', property.propertyUrl ?? 'N/A', Icons.link_rounded),
+        AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'property url'), property.propertyUrl ?? AdminLocalizations.translate(context, 'n/a'), Icons.link_rounded),
         if (property.parentId != null)
-          AdminDetailsDialog.buildDetailRow(context, 'Parent ID', '${property.parentId}', Icons.account_tree_rounded),
+          AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'parent id'), '${property.parentId}', Icons.account_tree_rounded),
         if (property.companyId != null)
-          AdminDetailsDialog.buildDetailRow(context, 'Company ID', '${property.companyId}', Icons.business_rounded),
+          AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'company id'), '${property.companyId}', Icons.business_rounded),
       ],
     );
   }

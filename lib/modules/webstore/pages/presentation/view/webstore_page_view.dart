@@ -1,3 +1,4 @@
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -49,22 +50,37 @@ class _WebStorePageViewState extends ConsumerState<WebStorePageView> {
 
   Future<void> _fetchPage() async {
     setState(() => _pageState = const AsyncValue.loading());
-    
+
     final targetSlug = _cleanSlug(widget.slug);
-    final result = await ref.read(cmsRepositoryProvider).getPageBySlug(targetSlug);
-    
+    final result = await ref
+        .read(cmsRepositoryProvider)
+        .getPageBySlug(targetSlug);
+
     if (mounted) {
       result.when(
         success: (data) {
           final pageData = data['data'];
           if (pageData != null) {
-            setState(() => _pageState = AsyncValue.data(CmsPageModel.fromJson(pageData)));
+            setState(
+              () =>
+                  _pageState = AsyncValue.data(CmsPageModel.fromJson(pageData)),
+            );
           } else {
-            setState(() => _pageState = AsyncValue.error(LocaleKeys.common.page_not_found.tr(), StackTrace.current));
+            setState(
+              () => _pageState = AsyncValue.error(
+                LocaleKeys.common.page_not_found.tr(),
+                StackTrace.current,
+              ),
+            );
           }
         },
         failure: (error) {
-          setState(() => _pageState = AsyncValue.error(error.message, StackTrace.current));
+          setState(
+            () => _pageState = AsyncValue.error(
+              error.message,
+              StackTrace.current,
+            ),
+          );
         },
       );
     }
@@ -74,7 +90,9 @@ class _WebStorePageViewState extends ConsumerState<WebStorePageView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final contentColor = isDark ? Colors.white.withValues(alpha: 0.9) : Colors.black87;
+    final contentColor = isDark
+        ? Colors.white.withValues(alpha: 0.9)
+        : Colors.black87;
     final titleColor = isDark ? Colors.white : Colors.black;
 
     return WebStoreBaseScaffold(
@@ -83,26 +101,15 @@ class _WebStorePageViewState extends ConsumerState<WebStorePageView> {
         style: TextStyle(color: isDark ? Colors.white : Colors.black87),
       ),
       showBack: true,
-      body: _pageState?.when(
+      extendBodyBehindAppBar: false,
+      body:
+          _pageState?.when(
             data: (page) => SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 20.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (page.image != null && page.image!.isNotEmpty) ...[
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16.r),
-                        child: Image.network(
-                          page.image!,
-                          width: double.infinity,
-                          height: 200.h,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
-                        ),
-                      ),
-                    ),
+                  if (page.imageUrl != null && page.imageUrl!.isNotEmpty) ...[
+                    AppImage(imagePath: page.imageUrl!, width: double.infinity, fit: BoxFit.contain),
                     24.verticalSpace,
                   ],
                   Padding(
@@ -164,7 +171,11 @@ class _WebStorePageViewState extends ConsumerState<WebStorePageView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.error_outline_rounded, size: 60.sp, color: Colors.redAccent),
+                    Icon(
+                      Icons.error_outline_rounded,
+                      size: 60.sp,
+                      color: Colors.redAccent,
+                    ),
                     20.verticalSpace,
                     Text(
                       err.toString(),
@@ -174,8 +185,12 @@ class _WebStorePageViewState extends ConsumerState<WebStorePageView> {
                     24.verticalSpace,
                     ElevatedButton(
                       onPressed: _fetchPage,
-                      style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryOrange),
-                      child: Text(LocaleKeys.common.try_again.tr(context: context)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryOrange,
+                      ),
+                      child: Text(
+                        LocaleKeys.common.try_again.tr(context: context),
+                      ),
                     ),
                   ],
                 ),

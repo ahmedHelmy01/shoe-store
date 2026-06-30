@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/modules/webstore/admin/features/branches/data/models/branch_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class BranchForm extends StatefulWidget {
   final BranchRow? initial;
@@ -121,12 +122,12 @@ class _BranchFormState extends State<BranchForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _nameCtrl,
-                    label: 'Branch Name',
-                    hint: 'e.g. Main Branch',
+                    label: AdminLocalizations.translate(context, 'branch name'),
+                    hint: AdminLocalizations.translate(context, 'e.g. main branch'),
                     borderRadius: 14,
                     validator: (value) {
                       if ((value ?? '').trim().isEmpty) {
-                        return 'Required';
+                        return AdminLocalizations.translate(context, 'required');
                       }
                       return null;
                     },
@@ -136,12 +137,12 @@ class _BranchFormState extends State<BranchForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _nameArCtrl,
-                    label: 'Branch Name (Arabic)',
+                    label: AdminLocalizations.translate(context, 'branch name (arabic)'),
                     hint: 'e.g. الفرع الرئيسي',
                     borderRadius: 14,
                     validator: (value) {
                       if ((value ?? '').trim().isEmpty) {
-                        return 'Required';
+                        return AdminLocalizations.translate(context, 'required');
                       }
                       return null;
                     },
@@ -155,8 +156,8 @@ class _BranchFormState extends State<BranchForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _codeCtrl,
-                    label: 'Code',
-                    hint: 'e.g. BR-01',
+                    label: AdminLocalizations.translate(context, 'code'),
+                    hint: AdminLocalizations.translate(context, 'e.g. br-01'),
                     borderRadius: 14,
                   ),
                 ),
@@ -164,8 +165,8 @@ class _BranchFormState extends State<BranchForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _phoneCtrl,
-                    label: 'Phone',
-                    hint: 'e.g. 01000000000',
+                    label: AdminLocalizations.translate(context, 'phone'),
+                    hint: AdminLocalizations.translate(context, 'e.g. 01000000000'),
                     keyboardType: TextInputType.phone,
                     borderRadius: 14,
                   ),
@@ -175,15 +176,15 @@ class _BranchFormState extends State<BranchForm> {
             const SizedBox(height: 20),
             AppTextField(
               controller: _emailCtrl,
-              label: 'Email',
-              hint: 'e.g. branch@example.com',
+              label: AdminLocalizations.translate(context, 'email'),
+              hint: AdminLocalizations.translate(context, 'e.g. branch@example.com'),
               keyboardType: TextInputType.emailAddress,
               borderRadius: 14,
               validator: (value) {
                 final email = (value ?? '').trim();
                 if (email.isEmpty) return null;
                 final isValid = RegExp(r'^[\w\.-]+@[\w\.-]+\.\w+$').hasMatch(email);
-                if (!isValid) return 'Enter a valid email';
+                if (!isValid) return AdminLocalizations.translate(context, 'enter a valid email');
                 return null;
               },
             ),
@@ -193,8 +194,8 @@ class _BranchFormState extends State<BranchForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _addressCtrl,
-                    label: 'Address',
-                    hint: 'e.g. Kuwait City',
+                    label: AdminLocalizations.translate(context, 'address'),
+                    hint: AdminLocalizations.translate(context, 'e.g. kuwait city'),
                     borderRadius: 14,
                   ),
                 ),
@@ -202,7 +203,7 @@ class _BranchFormState extends State<BranchForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _addressArCtrl,
-                    label: 'Address (Arabic)',
+                    label: AdminLocalizations.translate(context, 'address (arabic)'),
                     hint: 'e.g. الكويت، العاصمة',
                     borderRadius: 14,
                   ),
@@ -215,8 +216,8 @@ class _BranchFormState extends State<BranchForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _cityCtrl,
-                    label: 'City',
-                    hint: 'e.g. Hawally',
+                    label: AdminLocalizations.translate(context, 'city'),
+                    hint: AdminLocalizations.translate(context, 'e.g. kuwait city'),
                     borderRadius: 14,
                   ),
                 ),
@@ -224,8 +225,8 @@ class _BranchFormState extends State<BranchForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _countryCtrl,
-                    label: 'Country Code',
-                    hint: 'e.g. KW',
+                    label: AdminLocalizations.translate(context, 'country code'),
+                    hint: AdminLocalizations.translate(context, 'e.g. eg'),
                     borderRadius: 14,
                   ),
                 ),
@@ -237,7 +238,7 @@ class _BranchFormState extends State<BranchForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _latitudeCtrl,
-                    label: 'Latitude',
+                    label: AdminLocalizations.translate(context, 'latitude'),
                     hint: 'e.g. 29.37',
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     borderRadius: 14,
@@ -247,7 +248,7 @@ class _BranchFormState extends State<BranchForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _longitudeCtrl,
-                    label: 'Longitude',
+                    label: AdminLocalizations.translate(context, 'longitude'),
                     hint: 'e.g. 47.97',
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     borderRadius: 14,
@@ -258,15 +259,15 @@ class _BranchFormState extends State<BranchForm> {
             const SizedBox(height: 20),
             AppTextField(
               controller: _descCtrl,
-              label: 'Description',
-              hint: 'Branch description...',
+              label: AdminLocalizations.translate(context, 'description'),
+              hint: AdminLocalizations.translate(context, 'description'),
               maxLines: 2,
               borderRadius: 14,
             ),
             const SizedBox(height: 20),
             AppTextField(
               controller: _descArCtrl,
-              label: 'Description (Arabic)',
+              label: AdminLocalizations.translate(context, 'description (arabic)'),
               hint: 'وصف الفرع...',
               maxLines: 2,
               borderRadius: 14,
@@ -279,8 +280,8 @@ class _BranchFormState extends State<BranchForm> {
                     value: _isActive,
                     onChanged: (value) => setState(() => _isActive = value),
                     contentPadding: EdgeInsets.zero,
-                    title: const Text('Active', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                    subtitle: const Text('Visible to users', style: TextStyle(fontSize: 12)),
+                    title: Text(AdminLocalizations.translate(context, 'active'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                    subtitle: Text(AdminLocalizations.translate(context, 'visible to users'), style: const TextStyle(fontSize: 12)),
                   ),
                 ),
                 const SizedBox(width: 20),
@@ -289,8 +290,8 @@ class _BranchFormState extends State<BranchForm> {
                     value: _isMain,
                     onChanged: (value) => setState(() => _isMain = value),
                     contentPadding: EdgeInsets.zero,
-                    title: const Text('Main Branch', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                    subtitle: const Text('Primary location', style: TextStyle(fontSize: 12)),
+                    title: Text(AdminLocalizations.translate(context, 'main branch'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                    subtitle: Text(AdminLocalizations.translate(context, 'primary location'), style: const TextStyle(fontSize: 12)),
                   ),
                 ),
               ],
@@ -299,7 +300,7 @@ class _BranchFormState extends State<BranchForm> {
             AppButton(
               onPressed: _submit,
               isLoading: widget.isSaving,
-              child: Text(_isEdit ? 'Save Changes' : 'Create Branch'),
+              child: Text(_isEdit ? AdminLocalizations.translate(context, 'save changes') : AdminLocalizations.translate(context, 'create branch')),
             ),
           ],
         ),

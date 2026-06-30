@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class AdminStatusBadge extends StatelessWidget {
   final bool isActive;
@@ -22,7 +23,18 @@ class AdminStatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final color = isActive ? activeColor! : inactiveColor!;
-    final text = label ?? (isActive ? activeLabel! : inactiveLabel!);
+    
+    final translatedActive = activeLabel == 'Active' 
+        ? AdminLocalizations.translate(context, 'active') 
+        : AdminLocalizations.translate(context, activeLabel!);
+        
+    final translatedInactive = inactiveLabel == 'Inactive' 
+        ? AdminLocalizations.translate(context, 'inactive') 
+        : AdminLocalizations.translate(context, inactiveLabel!);
+        
+    final text = label != null 
+        ? AdminLocalizations.translate(context, label!) 
+        : (isActive ? translatedActive : translatedInactive);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/modules/webstore/admin/features/order_statuses/data/models/order_status_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class OrderStatusForm extends StatefulWidget {
   final OrderStatusRow? initial;
@@ -75,17 +76,17 @@ class _OrderStatusFormState extends State<OrderStatusForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _nameCtrl,
-                    label: 'Status Name (EN)',
-                    hint: 'e.g. Processing',
+                    label: AdminLocalizations.translate(context, 'status name (en)'),
+                    hint: AdminLocalizations.translate(context, 'e.g. processing'),
                     borderRadius: 14,
-                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'required') : null,
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: AppTextField(
                     controller: _nameArCtrl,
-                    label: 'Status Name (AR)',
+                    label: AdminLocalizations.translate(context, 'status name (ar)'),
                     hint: 'مثال: قيد التجهيز',
                     borderRadius: 14,
                   ),
@@ -98,7 +99,7 @@ class _OrderStatusFormState extends State<OrderStatusForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _colorCtrl,
-                    label: 'Color (Hex)',
+                    label: AdminLocalizations.translate(context, 'color (hex)'),
                     hint: '#6366f1',
                     borderRadius: 14,
                     suffixIcon: Padding(
@@ -120,7 +121,7 @@ class _OrderStatusFormState extends State<OrderStatusForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _sortOrderCtrl,
-                    label: 'Sort Order',
+                    label: AdminLocalizations.translate(context, 'sort order'),
                     hint: '1',
                     borderRadius: 14,
                     keyboardType: TextInputType.number,
@@ -130,14 +131,14 @@ class _OrderStatusFormState extends State<OrderStatusForm> {
             ),
             const SizedBox(height: 18),
             SwitchListTile(
-              title: const Text('Default Status', style: TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: const Text('New orders will start with this status'),
+              title: Text(AdminLocalizations.translate(context, 'default status'), style: const TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: Text(AdminLocalizations.translate(context, 'new orders will start with this status')),
               value: _isDefault,
               onChanged: (v) => setState(() => _isDefault = v),
               contentPadding: EdgeInsets.zero,
             ),
             SwitchListTile(
-              title: const Text('Active', style: TextStyle(fontWeight: FontWeight.bold)),
+              title: Text(AdminLocalizations.translate(context, 'active'), style: const TextStyle(fontWeight: FontWeight.bold)),
               value: _isActive,
               onChanged: (v) => setState(() => _isActive = v),
               contentPadding: EdgeInsets.zero,
@@ -146,7 +147,7 @@ class _OrderStatusFormState extends State<OrderStatusForm> {
             AppButton(
               onPressed: _submit,
               isLoading: widget.isSaving,
-              child: Text(widget.initial == null ? 'Create Status' : 'Save Changes'),
+              child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'create status') : AdminLocalizations.translate(context, 'save changes')),
             ),
           ],
         ),

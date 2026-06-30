@@ -4,6 +4,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_
 import 'package:erp/modules/webstore/admin/features/catalog/categories/data/models/category_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class CategoriesTable extends StatelessWidget {
   final AdminCrudData<CategoryRow> state;
@@ -43,12 +44,12 @@ class CategoriesTable extends StatelessWidget {
       rows: state.items,
       idOf: (c) => '${c.id}',
       exportBaseName: 'categories',
-      searchHint: 'Search categories by name or code…',
+      searchHint: AdminLocalizations.translate(context, 'search categories by name or code…'),
       searchText: (c) => '${c.id} ${c.code ?? ''} ${c.name} ${c.nameEn ?? ''} ${c.nameAr ?? ''}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<CategoryRow>(
-          title: 'ID',
+          title: AdminLocalizations.translate(context, 'id'),
           sortable: true,
           sortValue: (c) => c.id,
           exportValue: (c) => '${c.id}',
@@ -56,7 +57,7 @@ class CategoriesTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<CategoryRow>(
-          title: 'Name',
+          title: AdminLocalizations.translate(context, 'name'),
           sortable: true,
           sortValue: (c) => c.name,
           exportValue: (c) => c.name,
@@ -82,7 +83,7 @@ class CategoriesTable extends StatelessWidget {
           width: 200,
         ),
         AdminColumn<CategoryRow>(
-          title: 'English Name',
+          title: AdminLocalizations.translate(context, 'english name'),
           sortable: true,
           sortValue: (c) => c.nameEn ?? '',
           exportValue: (c) => c.nameEn ?? '',
@@ -90,7 +91,7 @@ class CategoriesTable extends StatelessWidget {
           width: 200,
         ),
         AdminColumn<CategoryRow>(
-          title: 'Code',
+          title: AdminLocalizations.translate(context, 'code'),
           sortable: true,
           sortValue: (c) => c.code ?? '',
           exportValue: (c) => c.code ?? '',
@@ -98,15 +99,15 @@ class CategoriesTable extends StatelessWidget {
           width: 120,
         ),
         AdminColumn<CategoryRow>(
-          title: 'Status',
+          title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (c) => c.isActive ? 1 : 0,
-          exportValue: (c) => c.isActive ? 'Active' : 'Inactive',
+          exportValue: (c) => c.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'),
           cell: (_, c) => AdminStatusBadge(isActive: c.isActive),
           width: 100,
         ),
         AdminColumn<CategoryRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'actions'),
           cell: (_, c) => AdminTableActionsCell<CategoryRow>(
             row: c,
             onView: (c) {
@@ -137,7 +138,7 @@ class CategoryDetailsDialog extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return AdminDetailsDialog(
-      title: 'Category Details',
+      title: AdminLocalizations.translate(context, 'category details'),
       id: category.id.toString(),
       icon: Icons.category_rounded,
       maxWidth: 600,
@@ -165,12 +166,12 @@ class CategoryDetailsDialog extends StatelessWidget {
           children: [
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
-                context, 'Name (English)', category.nameEn ?? category.name, Icons.language_rounded),
+                context, AdminLocalizations.translate(context, 'name (english)'), category.nameEn ?? category.name, Icons.language_rounded),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
-                context, 'Name (Arabic)', category.nameAr ?? 'N/A', Icons.translate_rounded),
+                context, AdminLocalizations.translate(context, 'name (arabic)'), category.nameAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.translate_rounded),
             ),
           ],
         ),
@@ -181,12 +182,12 @@ class CategoryDetailsDialog extends StatelessWidget {
           children: [
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
-                context, 'Code', category.code ?? 'N/A', Icons.qr_code_rounded),
+                context, AdminLocalizations.translate(context, 'code'), category.code ?? 'N/A', Icons.qr_code_rounded),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
-                context, 'Parent ID', category.parentId?.toString() ?? 'None', Icons.account_tree_rounded),
+                context, AdminLocalizations.translate(context, 'parent id'), category.parentId?.toString() ?? 'None', Icons.account_tree_rounded),
             ),
           ],
         ),
@@ -197,12 +198,12 @@ class CategoryDetailsDialog extends StatelessWidget {
           children: [
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
-                context, 'Description (English)', category.descriptionEn ?? 'N/A', Icons.description_rounded),
+                context, AdminLocalizations.translate(context, 'description (english)'), category.descriptionEn ?? 'N/A', Icons.description_rounded),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
-                context, 'Description (Arabic)', category.descriptionAr ?? 'N/A', Icons.description_rounded),
+                context, AdminLocalizations.translate(context, 'description (arabic)'), category.descriptionAr ?? 'N/A', Icons.description_rounded),
             ),
           ],
         ),

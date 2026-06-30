@@ -12,6 +12,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_sta
 import 'package:erp/modules/webstore/admin/features/customers/customer_groups/data/models/customer_group_row.dart';
 import '../view_model/customer_groups_view_model.dart';
 import '../widgets/customer_groups_table.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../widgets/customer_group_form.dart';
 
 class CustomerGroupsView extends ConsumerWidget {
@@ -32,9 +33,9 @@ class CustomerGroupsView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Customer Groups',
+                title: AdminLocalizations.translate(context, 'Customer Groups'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add Group',
+                primaryActionLabel: AdminLocalizations.translate(context, 'Add Group'),
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 12),
@@ -46,7 +47,7 @@ class CustomerGroupsView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Create Group' : 'Edit Group',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'Create Group') : AdminLocalizations.translate(context, 'Edit Group'),
             size: AdminDialogSize.medium,
             child: CustomerGroupForm(
               key: ValueKey(state.isAdding ? 'group-add' : 'group-edit-${state.editingItem?.id ?? 0}'),
@@ -61,15 +62,15 @@ class CustomerGroupsView extends ConsumerWidget {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: state.isAdding ? 'Group Created' : 'Group Updated',
-                    message: 'The customer group has been saved successfully.',
+                    title: state.isAdding ? AdminLocalizations.translate(context, 'Group Created') : AdminLocalizations.translate(context, 'Group Updated'),
+                    message: AdminLocalizations.translate(context, 'The customer group has been saved successfully.'),
                   );
                 } else {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.error,
-                    title: 'Save Failed',
-                    message: 'Could not save the group. Please try again.',
+                    title: AdminLocalizations.translate(context, 'Save Failed'),
+                    message: AdminLocalizations.translate(context, 'Could not save the group. Please try again.'),
                   );
                 }
               },
@@ -116,23 +117,23 @@ class CustomerGroupsView extends ConsumerWidget {
   }
 
   void _confirmAndDelete(BuildContext context, CustomerGroupsVm notifier, int id, String title) {
-    AppDialog.show(
-      context,
-      title: 'Delete Group',
-      message: 'Are you sure you want to delete "$title"?',
-      cancelText: 'Cancel',
-      confirmText: 'Delete',
-      onConfirm: () async {
-        Navigator.pop(context);
-        final success = await notifier.commitDelete(id);
-        if (!context.mounted) return;
-        if (success) {
-          AppStatusDialog.show(context, status: AppDialogStatus.success, title: 'Deleted', message: 'Group deleted successfully.');
-        } else {
-          AppStatusDialog.show(context, status: AppDialogStatus.error, title: 'Delete Failed', message: 'Could not delete group.');
-        }
-      },
-    );
+      AppDialog.show(
+        context,
+        title: AdminLocalizations.translate(context, 'Delete Group'),
+        message: '${AdminLocalizations.translate(context, 'Are you sure you want to delete')} "$title"?',
+        cancelText: AdminLocalizations.translate(context, 'Cancel'),
+        confirmText: AdminLocalizations.translate(context, 'Delete'),
+        onConfirm: () async {
+          Navigator.pop(context);
+          final success = await notifier.commitDelete(id);
+          if (!context.mounted) return;
+          if (success) {
+            AppStatusDialog.show(context, status: AppDialogStatus.success, title: AdminLocalizations.translate(context, 'Deleted'), message: AdminLocalizations.translate(context, 'Group deleted successfully.'));
+          } else {
+            AppStatusDialog.show(context, status: AppDialogStatus.error, title: AdminLocalizations.translate(context, 'Delete Failed'), message: AdminLocalizations.translate(context, 'Could not delete group.'));
+          }
+        },
+      );
   }
 }
 
@@ -192,7 +193,7 @@ class _GroupCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    'Default',
+                    AdminLocalizations.translate(context, 'Default'),
                     style: theme.textTheme.labelSmall?.copyWith(color: theme.primaryColor, fontWeight: FontWeight.bold),
                   ),
                 ),

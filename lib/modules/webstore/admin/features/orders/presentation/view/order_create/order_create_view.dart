@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/modules/webstore/admin/features/users/presentation/view_model/users_view_model.dart';
 import 'package:erp/modules/webstore/admin/features/users/data/models/user_row.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/products/data/models/product_row.dart';
@@ -97,14 +98,14 @@ class _OrderCreateViewState extends ConsumerState<OrderCreateView> {
   void _submitOrder(OrderCreateVm b) async {
     if (b.customerId == null || b.addressId == null || b.paymentMethodId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please complete order information (Customer, Address, Payment)')),
+        SnackBar(content: Text(AdminLocalizations.translate(context, 'please complete order information (customer, address, payment)'))),
       );
       return;
     }
 
     if (b.cart.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Your cart is empty')),
+        SnackBar(content: Text(AdminLocalizations.translate(context, 'your cart is empty'))),
       );
       return;
     }
@@ -138,8 +139,8 @@ class _OrderCreateViewState extends ConsumerState<OrderCreateView> {
           AppStatusDialog.show(
             context,
             status: AppDialogStatus.success,
-            title: 'Success',
-            message: 'Order #${order.id} created successfully',
+            title: AdminLocalizations.translate(context, 'success'),
+            message: '${AdminLocalizations.translate(context, 'order #')}${order.id} ${AdminLocalizations.translate(context, 'created successfully')}',
           );
           // Clear cart and state after success
           setState(() {
@@ -154,7 +155,7 @@ class _OrderCreateViewState extends ConsumerState<OrderCreateView> {
           AppStatusDialog.show(
             context,
             status: AppDialogStatus.error,
-            title: 'Failed',
+            title: AdminLocalizations.translate(context, 'failed'),
             message: e.message,
           );
         },
@@ -386,7 +387,7 @@ class _OrderCreateViewState extends ConsumerState<OrderCreateView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (wide) ...[
-            Text('New Order', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900)),
+            Text(AdminLocalizations.translate(context, 'new order'), style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900)),
             const SizedBox(height: 16),
           ] else ...[
              Padding(

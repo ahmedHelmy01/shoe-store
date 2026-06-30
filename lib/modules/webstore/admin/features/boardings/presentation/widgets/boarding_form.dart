@@ -4,6 +4,7 @@ import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/modules/webstore/admin/features/boardings/data/models/boarding_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class BoardingForm extends StatefulWidget {
   final BoardingRow? initial;
@@ -90,18 +91,18 @@ class _BoardingFormState extends State<BoardingForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _titleCtrl,
-                    label: 'Title (EN)',
-                    hint: 'e.g. Welcome',
-                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    label: AdminLocalizations.translate(context, 'title (en)'),
+                    hint: AdminLocalizations.translate(context, 'e.g. welcome'),
+                    validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'required') : null,
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: AppTextField(
                     controller: _titleArCtrl,
-                    label: 'Title (AR)',
+                    label: AdminLocalizations.translate(context, 'title (ar)'),
                     hint: 'مرحبا',
-                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'required') : null,
                   ),
                 ),
               ],
@@ -112,15 +113,15 @@ class _BoardingFormState extends State<BoardingForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _contentCtrl,
-                    label: 'Content (EN)',
-                    hint: 'Welcome to our store',
+                    label: AdminLocalizations.translate(context, 'content (en)'),
+                    hint: AdminLocalizations.translate(context, 'welcome to our store'),
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: AppTextField(
                     controller: _contentArCtrl,
-                    label: 'Content (AR)',
+                    label: AdminLocalizations.translate(context, 'content (ar)'),
                     hint: 'مرحبا بك في متجرنا',
                   ),
                 ),
@@ -128,7 +129,7 @@ class _BoardingFormState extends State<BoardingForm> {
             ),
             const SizedBox(height: 20),
             AdminImagePicker(
-              label: 'Onboarding Image',
+              label: AdminLocalizations.translate(context, 'onboarding image'),
               initialImage: widget.initial?.imageUrl,
               onImageSelected: (file) => setState(() => _imageFile = file),
               onRemoveInitial: () => setState(() => _removeInitialImage = true),
@@ -140,7 +141,7 @@ class _BoardingFormState extends State<BoardingForm> {
                   flex: 1,
                   child: AppTextField(
                     controller: _positionCtrl,
-                    label: 'Position',
+                    label: AdminLocalizations.translate(context, 'position'),
                     keyboardType: TextInputType.number,
                   ),
                 ),
@@ -148,7 +149,7 @@ class _BoardingFormState extends State<BoardingForm> {
                 Expanded(
                   flex: 2,
                   child: SwitchListTile(
-                    title: const Text('Is Active'),
+                    title: Text(AdminLocalizations.translate(context, 'is active')),
                     value: _isActive,
                     onChanged: (v) => setState(() => _isActive = v),
                     contentPadding: EdgeInsets.zero,
@@ -160,7 +161,7 @@ class _BoardingFormState extends State<BoardingForm> {
             AppButton(
               onPressed: _submit,
               isLoading: widget.isSaving,
-              child: Text(widget.initial == null ? 'Create Boarding' : 'Save Changes'),
+              child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'create boarding') : AdminLocalizations.translate(context, 'save changes')),
             ),
           ],
         ),

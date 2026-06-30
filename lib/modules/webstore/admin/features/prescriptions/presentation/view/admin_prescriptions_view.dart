@@ -4,6 +4,7 @@ import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import '../view_model/admin_prescriptions_view_model.dart';
 import '../widgets/admin_prescriptions_table.dart';
@@ -27,7 +28,7 @@ class AdminPrescriptionsView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Prescription Requests',
+                title: AdminLocalizations.translate(context, 'prescription requests'),
                 onRefresh: () => notifier.fetch(),
               ),
               const SizedBox(height: 24),
@@ -39,7 +40,7 @@ class AdminPrescriptionsView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: true,
             onClose: () => notifier.closePanel(),
-            title: 'Review Prescription #${state.editingItem!.id}',
+            title: '${AdminLocalizations.translate(context, 'review prescription')} #${state.editingItem!.id}',
             child: AdminPrescriptionReviewForm(
               prescription: state.editingItem!,
               isSaving: state.isSaving,
@@ -50,8 +51,8 @@ class AdminPrescriptionsView extends ConsumerWidget {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: 'Review Confirmed',
-                    message: 'Prescription has been updated.',
+                    title: AdminLocalizations.translate(context, 'review confirmed'),
+                    message: AdminLocalizations.translate(context, 'prescription has been updated.'),
                   );
                 }
               },

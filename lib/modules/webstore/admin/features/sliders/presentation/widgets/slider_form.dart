@@ -4,6 +4,7 @@ import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/modules/webstore/admin/features/sliders/data/models/slider_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class SliderForm extends StatefulWidget {
   final SliderRow? initial;
@@ -85,18 +86,18 @@ class _SliderFormState extends State<SliderForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _titleCtrl,
-                    label: 'Title (EN)',
-                    hint: 'e.g. Summer Sale',
-                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    label: AdminLocalizations.translate(context, 'title (en)'),
+                    hint: AdminLocalizations.translate(context, 'e.g. summer sale'),
+                    validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'required') : null,
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: AppTextField(
                     controller: _titleArCtrl,
-                    label: 'Title (AR)',
+                    label: AdminLocalizations.translate(context, 'title (ar)'),
                     hint: 'تخفيضات الصيف',
-                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'required') : null,
                   ),
                 ),
               ],
@@ -107,7 +108,7 @@ class _SliderFormState extends State<SliderForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _contentCtrl,
-                    label: 'Content (EN)',
+                    label: AdminLocalizations.translate(context, 'content (en)'),
                     hint: 'Up to 50% off',
                   ),
                 ),
@@ -115,7 +116,7 @@ class _SliderFormState extends State<SliderForm> {
                 Expanded(
                   child: AppTextField(
                     controller: _contentArCtrl,
-                    label: 'Content (AR)',
+                    label: AdminLocalizations.translate(context, 'content (ar)'),
                     hint: 'خصم حتى 50%',
                   ),
                 ),
@@ -123,15 +124,15 @@ class _SliderFormState extends State<SliderForm> {
             ),
             const SizedBox(height: 24),
             AdminImagePicker(
-              label: 'Slider Image',
+              label: AdminLocalizations.translate(context, 'slider image'),
               initialImage: widget.initial?.imageUrl,
               onImageSelected: (file) => setState(() => _imageFile = file),
               onRemoveInitial: () => setState(() => _removeInitialImage = true),
             ),
             const SizedBox(height: 20),
             SwitchListTile(
-              title: const Text('Is Active'),
-              subtitle: const Text('Display this slider on the screen'),
+              title: Text(AdminLocalizations.translate(context, 'is active')),
+              subtitle: Text(AdminLocalizations.translate(context, 'display this slider on the screen')),
               value: _isActive,
               onChanged: (v) => setState(() => _isActive = v),
               contentPadding: EdgeInsets.zero,
@@ -140,7 +141,7 @@ class _SliderFormState extends State<SliderForm> {
             AppButton(
               onPressed: _submit,
               isLoading: widget.isSaving,
-              child: Text(widget.initial == null ? 'Create Slider' : 'Save Changes'),
+              child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'create slider') : AdminLocalizations.translate(context, 'save changes')),
             ),
           ],
         ),

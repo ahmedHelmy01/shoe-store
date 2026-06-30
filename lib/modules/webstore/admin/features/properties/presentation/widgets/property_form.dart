@@ -5,6 +5,7 @@ import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
 import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
 import 'package:erp/modules/webstore/admin/features/properties/data/models/property_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class PropertyForm extends ConsumerStatefulWidget {
   final PropertyRow? initial;
@@ -77,17 +78,17 @@ class _PropertyFormState extends ConsumerState<PropertyForm> {
               Expanded(
                 child: AppTextField(
                   controller: _titleCtrl,
-                  label: 'Title (EN)',
-                  hint: 'e.g. Color',
+                  label: AdminLocalizations.translate(context, 'title (en)'),
+                  hint: AdminLocalizations.translate(context, 'e.g. color'),
                   borderRadius: 14,
-                  validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                  validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'required') : null,
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: AppTextField(
                   controller: _titleArCtrl,
-                  label: 'Title (AR)',
+                  label: AdminLocalizations.translate(context, 'title (ar)'),
                   hint: 'مثال: اللون',
                   borderRadius: 14,
                 ),
@@ -100,8 +101,8 @@ class _PropertyFormState extends ConsumerState<PropertyForm> {
               Expanded(
                 child: AppTextField(
                   controller: _urlCtrl,
-                  label: 'Property URL (Optional)',
-                  hint: 'e.g. colors-selector',
+                  label: AdminLocalizations.translate(context, 'property url (optional)'),
+                  hint: AdminLocalizations.translate(context, 'e.g. colors-selector'),
                   borderRadius: 14,
                 ),
               ),
@@ -113,14 +114,14 @@ class _PropertyFormState extends ConsumerState<PropertyForm> {
                         ? properties.where((p) => p.id != widget.initial!.id).toList()
                         : properties;
                     return AppDropdown<int>(
-                      label: 'Parent Property',
+                      label: AdminLocalizations.translate(context, 'parent property'),
                       value: filtered.any((p) => p.id == _selectedParentId) ? _selectedParentId : null,
-                      hint: 'None (لا يوجد)',
+                      hint: AdminLocalizations.translate(context, 'none'),
                       onChanged: (value) => setState(() => _selectedParentId = value),
                       items: [
-                        const DropdownMenuItem<int>(
+                        DropdownMenuItem<int>(
                           value: null,
-                          child: Text('None (لا يوجد)'),
+                          child: Text(AdminLocalizations.translate(context, 'none')),
                         ),
                         ...filtered.map(
                           (p) => DropdownMenuItem<int>(
@@ -133,21 +134,21 @@ class _PropertyFormState extends ConsumerState<PropertyForm> {
                     );
                   },
                   loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (e, _) => const Text('Failed to load properties'),
+                  error: (e, _) => Text(AdminLocalizations.translate(context, 'failed to load properties')),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 18),
           SwitchListTile(
-            title: const Text('Default Property', style: TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: const Text('Mark this as a default property for new products'),
+            title: Text(AdminLocalizations.translate(context, 'default property'), style: const TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Text(AdminLocalizations.translate(context, 'mark this as a default property for new products')),
             value: _isDefault,
             onChanged: (v) => setState(() => _isDefault = v),
             contentPadding: EdgeInsets.zero,
           ),
           SwitchListTile(
-            title: const Text('Active', style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(AdminLocalizations.translate(context, 'active'), style: const TextStyle(fontWeight: FontWeight.bold)),
             value: _isActive,
             onChanged: (v) => setState(() => _isActive = v),
             contentPadding: EdgeInsets.zero,
@@ -156,7 +157,7 @@ class _PropertyFormState extends ConsumerState<PropertyForm> {
           AppButton(
             onPressed: _submit,
             isLoading: widget.isSaving,
-            child: Text(widget.initial == null ? 'Create Property' : 'Save Changes'),
+            child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'create property') : AdminLocalizations.translate(context, 'save changes')),
           ),
         ],
       ),

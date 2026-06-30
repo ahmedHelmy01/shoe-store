@@ -8,6 +8,7 @@ class PrescriptionShimmerList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: EdgeInsets.all(16.w),
       itemCount: 5,
       itemBuilder: (context, index) => Container(

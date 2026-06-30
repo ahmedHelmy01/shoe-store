@@ -7,6 +7,7 @@ import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
 import 'package:erp/modules/webstore/admin/features/payment_methods/data/models/payment_method_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class PaymentMethodForm extends ConsumerStatefulWidget {
   final PaymentMethodRow? initial;
@@ -94,8 +95,8 @@ class _PaymentMethodFormState extends ConsumerState<PaymentMethodForm> {
               Expanded(
                 child: AppTextField(
                   controller: _nameCtrl,
-                  label: 'Name (English)',
-                  hint: 'e.g. Credit Card',
+                  label: AdminLocalizations.translate(context, 'name (english)'),
+                  hint: AdminLocalizations.translate(context, 'e.g. credit card'),
                   borderRadius: 14,
                 ),
               ),
@@ -103,7 +104,7 @@ class _PaymentMethodFormState extends ConsumerState<PaymentMethodForm> {
               Expanded(
                 child: AppTextField(
                   controller: _nameArCtrl,
-                  label: 'Name (Arabic)',
+                  label: AdminLocalizations.translate(context, 'name (arabic)'),
                   hint: 'مثال: بطاقة ائتمان',
                   borderRadius: 14,
                 ),
@@ -116,8 +117,8 @@ class _PaymentMethodFormState extends ConsumerState<PaymentMethodForm> {
               Expanded(
                 child: AppTextField(
                   controller: _noteCtrl,
-                  label: 'Note (English)',
-                  hint: 'e.g. Additional fees apply',
+                  label: AdminLocalizations.translate(context, 'note (english)'),
+                  hint: AdminLocalizations.translate(context, 'e.g. additional fees apply'),
                   borderRadius: 14,
                 ),
               ),
@@ -125,7 +126,7 @@ class _PaymentMethodFormState extends ConsumerState<PaymentMethodForm> {
               Expanded(
                 child: AppTextField(
                   controller: _noteArCtrl,
-                  label: 'Note (Arabic)',
+                  label: AdminLocalizations.translate(context, 'note (arabic)'),
                   hint: 'مثال: تطبق رسوم إضافية',
                   borderRadius: 14,
                 ),
@@ -139,8 +140,8 @@ class _PaymentMethodFormState extends ConsumerState<PaymentMethodForm> {
               Expanded(
                 child: ref.watch(paymentMethodTypesProvider).when(
                   data: (types) => AppDropdown<String>(
-                    label: 'Type',
-                    hint: 'Select Type',
+                    label: AdminLocalizations.translate(context, 'type'),
+                    hint: AdminLocalizations.translate(context, 'select type'),
                     value: types.any((t) => t['value'] == _type) ? _type : null,
                     items: types.map((t) => DropdownMenuItem<String>(
                       value: t['value'] as String,
@@ -162,7 +163,7 @@ class _PaymentMethodFormState extends ConsumerState<PaymentMethodForm> {
                   ),
                   error: (e, _) => Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('Error loading types: $e', style: const TextStyle(color: Colors.red, fontSize: 12)),
+                    child: Text('${AdminLocalizations.translate(context, 'error loading types')}: $e', style: const TextStyle(color: Colors.red, fontSize: 12)),
                   ),
                 ),
               ),
@@ -170,7 +171,7 @@ class _PaymentMethodFormState extends ConsumerState<PaymentMethodForm> {
               Expanded(
                 child: AppTextField(
                   controller: _sortOrderCtrl,
-                  label: 'Sort Order',
+                  label: AdminLocalizations.translate(context, 'sort order'),
                   hint: '0',
                   keyboardType: TextInputType.number,
                   borderRadius: 14,
@@ -180,14 +181,14 @@ class _PaymentMethodFormState extends ConsumerState<PaymentMethodForm> {
           ),
           const SizedBox(height: 20),
           AdminImagePicker(
-            label: 'Method Icon',
+            label: AdminLocalizations.translate(context, 'method icon'),
             initialImage: widget.initial?.imageUrl,
             onImageSelected: (file) => setState(() => _imageFile = file),
             onRemoveInitial: () => setState(() => _removeInitialImage = true),
           ),
           const SizedBox(height: 20),
           SwitchListTile(
-            title: const Text('Is Active'),
+            title: Text(AdminLocalizations.translate(context, 'is active')),
             value: _isActive,
             onChanged: (v) => setState(() => _isActive = v),
             contentPadding: EdgeInsets.zero,
@@ -196,7 +197,7 @@ class _PaymentMethodFormState extends ConsumerState<PaymentMethodForm> {
           AppButton(
             onPressed: _submit,
             isLoading: widget.isSaving,
-            child: Text(widget.initial == null ? 'Create Method' : 'Save Changes'),
+            child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'create method') : AdminLocalizations.translate(context, 'save changes')),
           ),
         ],
       ),

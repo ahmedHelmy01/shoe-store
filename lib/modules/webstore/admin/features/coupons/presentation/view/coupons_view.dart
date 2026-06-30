@@ -9,6 +9,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dia
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/coupons_view_model.dart';
 import '../widgets/coupons_table.dart';
 import '../widgets/coupon_form.dart';
@@ -32,9 +33,9 @@ class CouponsView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Discount Coupons',
+                title: AdminLocalizations.translate(context, 'discount coupons'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add Coupon',
+                primaryActionLabel: AdminLocalizations.translate(context, 'add coupon'),
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 12),
@@ -46,7 +47,7 @@ class CouponsView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Create Coupon' : 'Edit Coupon',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'create coupon') : AdminLocalizations.translate(context, 'edit coupon'),
             size: AdminDialogSize.medium,
             child: CouponForm(
               key: ValueKey(state.isAdding ? 'coupon-add' : 'coupon-edit-${state.editingItem?.id ?? 0}'),
@@ -61,15 +62,15 @@ class CouponsView extends ConsumerWidget {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: state.isAdding ? 'Coupon Created' : 'Coupon Updated',
-                    message: 'The coupon has been saved successfully.',
+                    title: state.isAdding ? AdminLocalizations.translate(context, 'coupon created') : AdminLocalizations.translate(context, 'coupon updated'),
+                    message: AdminLocalizations.translate(context, 'the coupon has been saved successfully.'),
                   );
                 } else {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.error,
-                    title: 'Save Failed',
-                    message: 'Could not save the coupon. Please try again.',
+                    title: AdminLocalizations.translate(context, 'save failed'),
+                    message: AdminLocalizations.translate(context, 'could not save the coupon. please try again.'),
                   );
                 }
               },
@@ -118,18 +119,18 @@ class CouponsView extends ConsumerWidget {
   void _confirmAndDelete(BuildContext context, CouponsVm notifier, int id, String name) {
     AppDialog.show(
       context,
-      title: 'Delete Coupon',
-      message: 'Are you sure you want to delete coupon "$name"?',
-      cancelText: 'Cancel',
-      confirmText: 'Delete',
+      title: AdminLocalizations.translate(context, 'delete coupon'),
+      message: '${AdminLocalizations.translate(context, 'are you sure you want to delete coupon')} "$name"?',
+      cancelText: AdminLocalizations.translate(context, 'cancel'),
+      confirmText: AdminLocalizations.translate(context, 'delete'),
       onConfirm: () async {
         Navigator.pop(context);
         final success = await notifier.commitDelete(id);
         if (!context.mounted) return;
         if (success) {
-          AppStatusDialog.show(context, status: AppDialogStatus.success, title: 'Deleted', message: 'Coupon deleted successfully.');
+          AppStatusDialog.show(context, status: AppDialogStatus.success, title: AdminLocalizations.translate(context, 'deleted'), message: AdminLocalizations.translate(context, 'coupon deleted successfully.'));
         } else {
-          AppStatusDialog.show(context, status: AppDialogStatus.error, title: 'Delete Failed', message: 'Could not delete coupon. Please try again.');
+          AppStatusDialog.show(context, status: AppDialogStatus.error, title: AdminLocalizations.translate(context, 'delete failed'), message: AdminLocalizations.translate(context, 'could not delete coupon. please try again.'));
         }
       },
     );
@@ -187,7 +188,7 @@ class _CouponCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      coupon.isPercentage ? '${coupon.discountValue}% Discount' : '\$${coupon.discountValue} Off',
+                      coupon.isPercentage ? '${coupon.discountValue}% ${AdminLocalizations.translate(context, 'discount')}' : '\$${coupon.discountValue} ${AdminLocalizations.translate(context, 'off')}',
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -206,7 +207,7 @@ class _CouponCard extends StatelessWidget {
             children: [
               AdminStatusBadge(isActive: coupon.isActive),
               Text(
-                'ID: ${coupon.id}',
+                '${AdminLocalizations.translate(context, 'id')}: ${coupon.id}',
                 style: theme.textTheme.labelSmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.4)),
               ),
             ],

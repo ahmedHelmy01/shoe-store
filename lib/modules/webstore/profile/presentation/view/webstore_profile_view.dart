@@ -14,6 +14,7 @@ import 'package:erp/modules/webstore/auth/data/models/webstore_user_model.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
 import 'package:erp/modules/webstore/profile/presentation/state/profile_state.dart';
 import 'package:erp/modules/webstore/profile/presentation/view_model/profile_providers.dart';
+import 'package:erp/core/common_widget/app_bottom_sheet/branch_selection_sheet.dart';
 import 'widgets/profile_header.dart';
 import 'widgets/profile_data_field.dart';
 import 'widgets/profile_info_section.dart';
@@ -55,9 +56,12 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
     phoneController.text = user.mobile ?? '';
     addressController.text = user.address ?? '';
     _selectedBranchId = user.branchId;
+    _originalBranchId = user.branchId;
   }
 
   int? _selectedBranchId;
+  int? _originalBranchId;
+  String? _selectedBranchName;
 
   @override
   void dispose() {
@@ -74,6 +78,7 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
       name: nameController.text.trim(),
       email: emailController.text.trim(),
       mobile: phoneController.text.trim(),
+      branchId: (_selectedBranchId != _originalBranchId) ? _selectedBranchId : null,
     );
   }
 
@@ -111,11 +116,15 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
           _populateFields(next.user);
         });
       } else if (next is ProfileError) {
-        AppStatusDialog.showError(
-          context,
-          title: LocaleKeys.common.error.tr(context: context),
-          message: next.message,
-        );
+        if (nameController.text.isNotEmpty) {
+          AppSnackBar.showError(context, next.message);
+        } else {
+          AppStatusDialog.showError(
+            context,
+            title: LocaleKeys.common.error.tr(context: context),
+            message: next.message,
+          );
+        }
       } else if (next is ProfileDeleted) {
         AppNavigator.replace(context, AppRouteNames.webstoreMain);
       }
@@ -123,7 +132,7 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
 
     final hasAddress = addressController.text.isNotEmpty;
     final hasBranch = _selectedBranchId != null;
-    final hasUserData = state is ProfileLoaded || state is ProfileUpdateSuccess || (state is ProfileLoading && nameController.text.isNotEmpty);
+    final hasUserData = state is ProfileLoaded || state is ProfileUpdateSuccess || (state is ProfileLoading && nameController.text.isNotEmpty) || (state is ProfileError && nameController.text.isNotEmpty);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -211,17 +220,48 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
                         if (hasBranch)
                           Builder(
                             builder: (_) {
-                              branchController.text = (branchState is BranchLoaded)
-                                  ? (branchState.branches.any((b) => b.id == _selectedBranchId)
-                                      ? branchState.branches.firstWhere((b) => b.id == _selectedBranchId).name
-                                      : 'Branch ID: $_selectedBranchId')
-                                  : '...';
+                              final userModel = state is ProfileLoaded
+                                  ? state.user
+                                  : state is ProfileUpdateSuccess
+                                      ? state.user
+                                      : null;
+                              branchController.text = _selectedBranchName ??
+                                  userModel?.branchName ??
+                                  ((branchState is BranchLoaded)
+                                      ? (branchState.branches.any((b) => b.id == _selectedBranchId)
+                                          ? branchState.branches.firstWhere((b) => b.id == _selectedBranchId).name
+                                          : 'Branch ID: $_selectedBranchId')
+                                      : '...');
                               return ProfileDataField(
                                 label: LocaleKeys.webstore.profile.your_branch.tr(context: context),
                                 controller: branchController,
                                 icon: Icons.storefront_outlined,
-                                isEditing: false,
+                                isEditing: isEditing,
                                 isLast: !hasAddress,
+                                onTap: () async {
+                                  final locale = context.locale.languageCode;
+                                  final selected = await showModalBottomSheet<int>(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (_) => const BranchSelectionSheet(),
+                                  );
+                                  if (selected != null && mounted) {
+                                    final bs = ref.read(branchVmProvider);
+                                    String name;
+                                    if (bs is BranchLoaded) {
+                                      final b = bs.branches.firstWhere((b) => b.id == selected);
+                                      name = locale == 'ar' ? b.nameAr : b.name;
+                                    } else {
+                                      name = 'Branch ID: $selected';
+                                    }
+                                    setState(() {
+                                      _selectedBranchId = selected;
+                                      _selectedBranchName = name;
+                                      branchController.text = name;
+                                    });
+                                  }
+                                },
                               );
                             },
                           ),

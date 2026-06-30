@@ -10,6 +10,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_pag
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/features/pages/data/models/page_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/pages_view_model.dart';
 import '../widgets/pages_table.dart';
 import '../widgets/page_form.dart';
@@ -32,9 +33,9 @@ class PagesView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Content Pages',
+                title: AdminLocalizations.translate(context, 'content pages'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add Page',
+                primaryActionLabel: AdminLocalizations.translate(context, 'add page'),
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 12),
@@ -46,7 +47,7 @@ class PagesView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Create Page' : 'Edit Page',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'create page') : AdminLocalizations.translate(context, 'edit page'),
             size: AdminDialogSize.large,
             child: PageForm(
               key: ValueKey(state.isAdding ? 'page-add' : 'page-edit-${state.editingItem?.id ?? 0}'),
@@ -61,15 +62,15 @@ class PagesView extends ConsumerWidget {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: state.isAdding ? 'Page Created' : 'Page Updated',
-                    message: 'The page has been saved successfully.',
+                    title: state.isAdding ? AdminLocalizations.translate(context, 'page created') : AdminLocalizations.translate(context, 'page updated'),
+                    message: AdminLocalizations.translate(context, 'the page has been saved successfully.'),
                   );
                 } else {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.error,
-                    title: 'Save Failed',
-                    message: 'Could not save the page. Please try again.',
+                    title: AdminLocalizations.translate(context, 'save failed'),
+                    message: AdminLocalizations.translate(context, 'could not save the page. please try again.'),
                   );
                 }
               },
@@ -118,18 +119,18 @@ class PagesView extends ConsumerWidget {
   void _confirmAndDelete(BuildContext context, PagesVm notifier, int id, String title) {
     AppDialog.show(
       context,
-      title: 'Delete Page',
-      message: 'Are you sure you want to delete "$title"?',
-      cancelText: 'Cancel',
-      confirmText: 'Delete',
+      title: AdminLocalizations.translate(context, 'delete page'),
+      message: '${AdminLocalizations.translate(context, 'are you sure you want to delete')} "$title"?',
+      cancelText: AdminLocalizations.translate(context, 'cancel'),
+      confirmText: AdminLocalizations.translate(context, 'delete'),
       onConfirm: () async {
         Navigator.pop(context);
         final success = await notifier.commitDelete(id);
         if (!context.mounted) return;
         if (success) {
-          AppStatusDialog.show(context, status: AppDialogStatus.success, title: 'Deleted', message: 'Page deleted successfully.');
+          AppStatusDialog.show(context, status: AppDialogStatus.success, title: AdminLocalizations.translate(context, 'deleted'), message: AdminLocalizations.translate(context, 'page deleted successfully.'));
         } else {
-          AppStatusDialog.show(context, status: AppDialogStatus.error, title: 'Delete Failed', message: 'Could not delete page.');
+          AppStatusDialog.show(context, status: AppDialogStatus.error, title: AdminLocalizations.translate(context, 'delete failed'), message: AdminLocalizations.translate(context, 'could not delete page.'));
         }
       },
     );
@@ -199,7 +200,7 @@ class _PageCard extends StatelessWidget {
             children: [
               AdminStatusBadge(isActive: page.isActive),
               Text(
-                'ID: ${page.id}',
+                '${AdminLocalizations.translate(context, 'id')}: ${page.id}',
                 style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.4)),
               ),
             ],

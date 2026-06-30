@@ -7,6 +7,7 @@ import 'package:erp/modules/webstore/admin/features/addresses/data/models/addres
 import 'package:erp/modules/webstore/admin/features/governorates/presentation/view_model/governorates_view_model.dart';
 import 'package:erp/modules/webstore/admin/features/cities/presentation/view_model/cities_view_model.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class AddressForm extends ConsumerStatefulWidget {
   final AddressRow? initial;
@@ -102,17 +103,17 @@ class _AddressFormState extends ConsumerState<AddressForm> {
         children: [
           AppTextField(
             controller: _nameCtrl,
-            label: 'Name',
-            hint: 'e.g. Home, Office',
-            validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+            label: AdminLocalizations.translate(context, 'Name'),
+            hint: AdminLocalizations.translate(context, 'e.g. Home, Office'),
+            validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'Required') : null,
           ),
           Row(
             children: [
               Expanded(
                 child: AppTextField(
                   controller: _mobileCtrl,
-                  label: 'Mobile Number',
-                  hint: '966500000000',
+                  label: AdminLocalizations.translate(context, 'Mobile Number'),
+                  hint: AdminLocalizations.translate(context, '966500000000'),
                   keyboardType: TextInputType.phone,
                 ),
               ),
@@ -120,9 +121,9 @@ class _AddressFormState extends ConsumerState<AddressForm> {
               Expanded(
                 child: AppTextField(
                   controller: _addressDetailsCtrl,
-                  label: 'Address Details',
-                  hint: 'Block 1, Street 2...',
-                  validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                  label: AdminLocalizations.translate(context, 'Address Details'),
+                  hint: AdminLocalizations.translate(context, 'Block 1, Street 2...'),
+                  validator: (v) => v == null || v.isEmpty ? AdminLocalizations.translate(context, 'Required') : null,
                 ),
               ),
             ],
@@ -133,16 +134,16 @@ class _AddressFormState extends ConsumerState<AddressForm> {
               Expanded(
                 child: AppTextField(
                   controller: _codeCtrl,
-                  label: 'Code',
-                  hint: 'e.g. HOM-01',
+                  label: AdminLocalizations.translate(context, 'Code'),
+                  hint: AdminLocalizations.translate(context, 'e.g. HOM-01'),
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: AppTextField(
                   controller: _notesCtrl,
-                  label: 'Notes',
-                  hint: 'Any additional notes...',
+                  label: AdminLocalizations.translate(context, 'Notes'),
+                  hint: AdminLocalizations.translate(context, 'Any additional notes...'),
                 ),
               ),
             ],
@@ -152,8 +153,8 @@ class _AddressFormState extends ConsumerState<AddressForm> {
             children: [
               Expanded(
                 child: AppDropdown<int>(
-                  label: 'Governorate',
-                  hint: 'Select Governorate',
+                  label: AdminLocalizations.translate(context, 'Governorate'),
+                  hint: AdminLocalizations.translate(context, 'Select Governorate'),
                   value: _selectedGovernorateId,
                   items: _buildGovernorateItems(governoratesState),
                   onChanged: (val) {
@@ -167,8 +168,8 @@ class _AddressFormState extends ConsumerState<AddressForm> {
               const SizedBox(width: 16),
               Expanded(
                 child: AppDropdown<int>(
-                  label: 'City',
-                  hint: 'Select City',
+                  label: AdminLocalizations.translate(context, 'City'),
+                  hint: AdminLocalizations.translate(context, 'Select City'),
                   value: _selectedCityId,
                   items: _buildCityItems(citiesState),
                   onChanged: (val) => setState(() => _selectedCityId = val),
@@ -182,8 +183,8 @@ class _AddressFormState extends ConsumerState<AddressForm> {
               Expanded(
                 child: AppTextField(
                   controller: _latitudeCtrl,
-                  label: 'Latitude',
-                  hint: '0.0',
+                  label: AdminLocalizations.translate(context, 'Latitude'),
+                  hint: AdminLocalizations.translate(context, '0.0'),
                   keyboardType: TextInputType.number,
                 ),
               ),
@@ -191,8 +192,8 @@ class _AddressFormState extends ConsumerState<AddressForm> {
               Expanded(
                 child: AppTextField(
                   controller: _longitudeCtrl,
-                  label: 'Longitude',
-                  hint: '0.0',
+                  label: AdminLocalizations.translate(context, 'Longitude'),
+                  hint: AdminLocalizations.translate(context, '0.0'),
                   keyboardType: TextInputType.number,
                 ),
               ),
@@ -200,7 +201,7 @@ class _AddressFormState extends ConsumerState<AddressForm> {
           ),
           const SizedBox(height: 16),
           SwitchListTile(
-            title: const Text('Set as Default'),
+            title: Text(AdminLocalizations.translate(context, 'Set as Default')),
             value: _isDefault,
             onChanged: (v) => setState(() => _isDefault = v),
             contentPadding: EdgeInsets.zero,
@@ -209,7 +210,7 @@ class _AddressFormState extends ConsumerState<AddressForm> {
           AppButton(
             onPressed: _submit,
             isLoading: widget.isSaving,
-            child: Text(widget.initial == null ? 'Add Address' : 'Save Changes'),
+            child: Text(widget.initial == null ? AdminLocalizations.translate(context, 'Add Address') : AdminLocalizations.translate(context, 'Save Changes')),
           ),
         ],
       ),

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:intl/intl.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/contacts_view_model.dart';
 
 class ContactsView extends ConsumerWidget {
@@ -55,14 +56,14 @@ class ContactsView extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Customer Messages',
+                  AdminLocalizations.translate(context, 'customer messages'),
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w900,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Manage inquiries and support requests from your store',
+                  AdminLocalizations.translate(context, 'manage inquiries and support requests from your store'),
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
                   ),
@@ -75,7 +76,7 @@ class ContactsView extends ConsumerWidget {
             icon: isLoading 
               ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
               : const Icon(Icons.refresh_rounded),
-            tooltip: 'Refresh',
+            tooltip: AdminLocalizations.translate(context, 'refresh'),
           ),
         ],
       ),
@@ -92,7 +93,7 @@ class ContactsView extends ConsumerWidget {
             Icon(Icons.mark_email_read_outlined, size: 64, color: AppColors.primary.withOpacity(0.3)),
             const SizedBox(height: 16),
             Text(
-              'No messages found', 
+              AdminLocalizations.translate(context, 'no messages found'), 
               style: theme.textTheme.titleMedium?.copyWith(
                 color: theme.textTheme.titleMedium?.color?.withOpacity(0.5),
               ),
@@ -180,8 +181,8 @@ class _ContactListItem extends ConsumerWidget {
                                 color: AppColors.primary.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(6),
                               ),
-                              child: const Text(
-                                'NEW',
+                              child: Text(
+                                AdminLocalizations.translate(context, 'new'),
                                 style: TextStyle(
                                   color: AppColors.primary,
                                   fontSize: 10,
@@ -192,7 +193,7 @@ class _ContactListItem extends ConsumerWidget {
                           Text(
                             contact.createdAt != null 
                               ? DateFormat('hh:mm a').format(contact.createdAt!)
-                              : 'Now',
+                              : AdminLocalizations.translate(context, 'now'),
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
                               fontWeight: FontWeight.bold,
@@ -353,7 +354,7 @@ class _ContactListItem extends ConsumerWidget {
               ),
               const SizedBox(height: 32),
               Text(
-                'MESSAGE CONTENT',
+                AdminLocalizations.translate(context, 'message content'),
                 style: theme.textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.w900,
                   letterSpacing: 1.5,
@@ -388,7 +389,7 @@ class _ContactListItem extends ConsumerWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   ),
                   child: Text(
-                    'Close Reader',
+                    AdminLocalizations.translate(context, 'close reader'),
                     style: TextStyle(
                       color: theme.textTheme.bodyLarge?.color, 
                       fontWeight: FontWeight.bold,
@@ -431,14 +432,14 @@ class _ContactListItem extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
               Text(
-                'Are you sure?',
+                AdminLocalizations.translate(context, 'are you sure?'),
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w900,
                 ),
               ),
               const SizedBox(height: 12),
               Text(
-                'This message will be permanently removed. This action cannot be undone.',
+                AdminLocalizations.translate(context, 'this message will be permanently removed. this action cannot be undone.'),
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
@@ -459,7 +460,7 @@ class _ContactListItem extends ConsumerWidget {
                         ),
                       ),
                       child: Text(
-                        'Cancel',
+                        AdminLocalizations.translate(context, 'cancel'),
                         style: TextStyle(
                           color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7), 
                           fontWeight: FontWeight.bold,
@@ -481,8 +482,8 @@ class _ContactListItem extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                       ),
-                      child: const Text(
-                        'Delete Now',
+                      child: Text(
+                        AdminLocalizations.translate(context, 'delete now'),
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),

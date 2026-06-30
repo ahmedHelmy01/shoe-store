@@ -9,6 +9,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/companies_view_model.dart';
 import '../widgets/companies_table.dart';
 import '../widgets/company_form.dart';
@@ -32,9 +33,9 @@ class CompaniesView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Brands & Companies',
+                title: AdminLocalizations.translate(context, 'brands & companies'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add Company',
+                primaryActionLabel: AdminLocalizations.translate(context, 'add company'),
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 24),
@@ -46,7 +47,7 @@ class CompaniesView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Add Company' : 'Edit Company',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'add company') : AdminLocalizations.translate(context, 'edit company'),
             size: AdminDialogSize.medium,
             child: CompanyForm(
               initial: state.editingItem,
@@ -64,15 +65,15 @@ class CompaniesView extends ConsumerWidget {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: state.isAdding ? 'Company Added' : 'Company Updated',
-                    message: 'The company has been saved successfully.',
+                    title: state.isAdding ? AdminLocalizations.translate(context, 'company added') : AdminLocalizations.translate(context, 'company updated'),
+                    message: AdminLocalizations.translate(context, 'the company has been saved successfully.'),
                   );
                 } else {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.error,
-                    title: 'Save Failed',
-                    message: 'Failed to save company. Please try again.',
+                    title: AdminLocalizations.translate(context, 'save failed'),
+                    message: AdminLocalizations.translate(context, 'failed to save company. please try again.'),
                   );
                 }
               },
@@ -140,7 +141,7 @@ class CompaniesView extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AdminDetailsDialog(
-        title: 'Company Details',
+        title: AdminLocalizations.translate(context, 'company details'),
         id: c.id.toString(),
         icon: Icons.business_rounded,
         children: [
@@ -149,7 +150,7 @@ class CompaniesView extends ConsumerWidget {
               Expanded(
                 child: AdminDetailsDialog.buildDetailRow(
                   context,
-                  'Name (EN)',
+                  AdminLocalizations.translate(context, 'name (english)'),
                   c.name,
                   Icons.language_rounded,
                   bottomPadding: 0,
@@ -159,8 +160,8 @@ class CompaniesView extends ConsumerWidget {
               Expanded(
                 child: AdminDetailsDialog.buildDetailRow(
                   context,
-                  'Name (AR)',
-                  c.nameAr ?? 'N/A',
+                  AdminLocalizations.translate(context, 'name (arabic)'),
+                  c.nameAr ?? AdminLocalizations.translate(context, 'n/a'),
                   Icons.translate_rounded,
                   bottomPadding: 0,
                 ),
@@ -173,8 +174,8 @@ class CompaniesView extends ConsumerWidget {
               Expanded(
                 child: AdminDetailsDialog.buildDetailRow(
                   context,
-                  'Description (EN)',
-                  c.description?.isNotEmpty == true ? c.description! : 'N/A',
+                  AdminLocalizations.translate(context, 'description (english)'),
+                  c.description?.isNotEmpty == true ? c.description! : AdminLocalizations.translate(context, 'n/a'),
                   Icons.description_rounded,
                   bottomPadding: 0,
                 ),
@@ -183,8 +184,8 @@ class CompaniesView extends ConsumerWidget {
               Expanded(
                 child: AdminDetailsDialog.buildDetailRow(
                   context,
-                  'Description (AR)',
-                  c.descriptionAr?.isNotEmpty == true ? c.descriptionAr! : 'N/A',
+                  AdminLocalizations.translate(context, 'description (arabic)'),
+                  c.descriptionAr?.isNotEmpty == true ? c.descriptionAr! : AdminLocalizations.translate(context, 'n/a'),
                   Icons.description_outlined,
                   bottomPadding: 0,
                 ),
@@ -206,10 +207,10 @@ class CompaniesView extends ConsumerWidget {
   ) {
     AppDialog.show(
       context,
-      title: 'Delete Company',
-      message: 'Are you sure you want to delete company "$name"?',
-      cancelText: 'Cancel',
-      confirmText: 'Delete',
+      title: AdminLocalizations.translate(context, 'delete company'),
+      message: '${AdminLocalizations.translate(context, 'are you sure you want to delete')} "$name"?',
+      cancelText: AdminLocalizations.translate(context, 'cancel'),
+      confirmText: AdminLocalizations.translate(context, 'delete'),
       onConfirm: () async {
         Navigator.pop(context);
         final success = await notifier.commitDelete(id);
@@ -218,15 +219,15 @@ class CompaniesView extends ConsumerWidget {
           AppStatusDialog.show(
             context,
             status: AppDialogStatus.success,
-            title: 'Deleted',
-            message: 'Company deleted successfully.',
+            title: AdminLocalizations.translate(context, 'deleted'),
+            message: AdminLocalizations.translate(context, 'company deleted successfully.'),
           );
         } else {
           AppStatusDialog.show(
             context,
             status: AppDialogStatus.error,
-            title: 'Delete Failed',
-            message: 'Could not delete company. Please try again.',
+            title: AdminLocalizations.translate(context, 'delete failed'),
+            message: AdminLocalizations.translate(context, 'could not delete company. please try again.'),
           );
         }
       },
@@ -279,31 +280,31 @@ class _CompanyCard extends StatelessWidget {
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     onTap: onView,
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(Icons.visibility_outlined),
-                        SizedBox(width: 8),
-                        Text('Details'),
+                        const Icon(Icons.visibility_outlined),
+                        const SizedBox(width: 8),
+                        Text(AdminLocalizations.translate(context, 'details')),
                       ],
                     ),
                   ),
                   PopupMenuItem(
                     onTap: onEdit,
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(Icons.edit_outlined),
-                        SizedBox(width: 8),
-                        Text('Edit'),
+                        const Icon(Icons.edit_outlined),
+                        const SizedBox(width: 8),
+                        Text(AdminLocalizations.translate(context, 'edit')),
                       ],
                     ),
                   ),
                   PopupMenuItem(
                     onTap: onDelete,
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(Icons.delete_outline_rounded, color: Colors.red),
-                        SizedBox(width: 8),
-                        Text('Delete'),
+                        const Icon(Icons.delete_outline_rounded, color: Colors.red),
+                        const SizedBox(width: 8),
+                        Text(AdminLocalizations.translate(context, 'delete')),
                       ],
                     ),
                   ),

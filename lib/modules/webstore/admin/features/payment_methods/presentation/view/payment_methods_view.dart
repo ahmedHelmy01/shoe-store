@@ -9,6 +9,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dia
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/payment_methods_view_model.dart';
 import '../widgets/payment_methods_table.dart';
 import '../widgets/payment_method_form.dart';
@@ -32,9 +33,9 @@ class PaymentMethodsView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Payment Gateways',
+                title: AdminLocalizations.translate(context, 'payment gateways'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add Method',
+                primaryActionLabel: AdminLocalizations.translate(context, 'add method'),
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 12),
@@ -46,7 +47,7 @@ class PaymentMethodsView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: state.isAdding || state.editingItem != null,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Create Method' : 'Edit Method',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'create method') : AdminLocalizations.translate(context, 'edit method'),
             size: AdminDialogSize.medium,
             child: PaymentMethodForm(
               key: ValueKey(state.isAdding ? 'pm-add' : 'pm-edit-${state.editingItem?.id ?? 0}'),
@@ -61,15 +62,15 @@ class PaymentMethodsView extends ConsumerWidget {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.success,
-                    title: state.isAdding ? 'Method Created' : 'Method Updated',
-                    message: 'The payment method has been saved successfully.',
+                    title: state.isAdding ? AdminLocalizations.translate(context, 'method created') : AdminLocalizations.translate(context, 'method updated'),
+                    message: AdminLocalizations.translate(context, 'the payment method has been saved successfully.'),
                   );
                 } else {
                   AppStatusDialog.show(
                     context,
                     status: AppDialogStatus.error,
-                    title: 'Save Failed',
-                    message: 'Could not save the payment method. Please try again.',
+                    title: AdminLocalizations.translate(context, 'save failed'),
+                    message: AdminLocalizations.translate(context, 'could not save the payment method. please try again.'),
                   );
                 }
               },
@@ -118,18 +119,18 @@ class PaymentMethodsView extends ConsumerWidget {
   void _confirmAndDelete(BuildContext context, PaymentMethodsVm notifier, int id, String name) {
     AppDialog.show(
       context,
-      title: 'Delete Payment Method',
-      message: 'Are you sure you want to delete "$name"?',
-      cancelText: 'Cancel',
-      confirmText: 'Delete',
+      title: AdminLocalizations.translate(context, 'delete payment method'),
+      message: '${AdminLocalizations.translate(context, 'are you sure you want to delete')} "$name"?',
+      cancelText: AdminLocalizations.translate(context, 'cancel'),
+      confirmText: AdminLocalizations.translate(context, 'delete'),
       onConfirm: () async {
         Navigator.pop(context);
         final success = await notifier.commitDelete(id);
         if (!context.mounted) return;
         if (success) {
-          AppStatusDialog.show(context, status: AppDialogStatus.success, title: 'Deleted', message: 'Payment method deleted successfully.');
+          AppStatusDialog.show(context, status: AppDialogStatus.success, title: AdminLocalizations.translate(context, 'deleted'), message: AdminLocalizations.translate(context, 'payment method deleted successfully.'));
         } else {
-          AppStatusDialog.show(context, status: AppDialogStatus.error, title: 'Delete Failed', message: 'Could not delete payment method.');
+          AppStatusDialog.show(context, status: AppDialogStatus.error, title: AdminLocalizations.translate(context, 'delete failed'), message: AdminLocalizations.translate(context, 'could not delete payment method.'));
         }
       },
     );
@@ -202,7 +203,7 @@ class _PaymentMethodCard extends StatelessWidget {
             children: [
               AdminStatusBadge(isActive: method.isActive),
               Text(
-                'ID: ${method.id}',
+                '${AdminLocalizations.translate(context, 'id')}: ${method.id}',
                 style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.4)),
               ),
             ],

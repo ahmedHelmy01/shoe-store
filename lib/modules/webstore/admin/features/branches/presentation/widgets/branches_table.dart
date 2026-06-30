@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/branches/data/models/branch_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 
 class BranchesTable extends StatelessWidget {
@@ -25,12 +26,12 @@ class BranchesTable extends StatelessWidget {
       rows: items,
       idOf: (b) => '${b.id}',
       exportBaseName: 'branches',
-      searchHint: 'Search branches…',
+      searchHint: AdminLocalizations.translate(context, 'search branches…'),
       searchText: (b) => '${b.id} ${b.name} ${b.nameAr ?? ''} ${b.phone ?? ''}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<BranchRow>(
-          title: 'ID',
+          title: AdminLocalizations.translate(context, 'id'),
           sortable: true,
           sortValue: (b) => b.id,
           exportValue: (b) => '${b.id}',
@@ -38,7 +39,7 @@ class BranchesTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<BranchRow>(
-          title: 'Name',
+          title: AdminLocalizations.translate(context, 'name'),
           sortable: true,
           sortValue: (b) => b.name,
           exportValue: (b) => b.name,
@@ -68,7 +69,7 @@ class BranchesTable extends StatelessWidget {
           width: 240,
         ),
         AdminColumn<BranchRow>(
-          title: 'Name (AR)',
+          title: AdminLocalizations.translate(context, 'name (ar)'),
           sortable: true,
           sortValue: (b) => b.nameAr ?? '',
           exportValue: (b) => b.nameAr ?? '',
@@ -76,7 +77,7 @@ class BranchesTable extends StatelessWidget {
           width: 240,
         ),
         AdminColumn<BranchRow>(
-          title: 'Phone',
+          title: AdminLocalizations.translate(context, 'phone'),
           sortable: true,
           sortValue: (b) => b.phone ?? '',
           exportValue: (b) => b.phone ?? '',
@@ -84,19 +85,19 @@ class BranchesTable extends StatelessWidget {
           width: 160,
         ),
         AdminColumn<BranchRow>(
-          title: 'Active',
+          title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (b) => b.isActive ? 1 : 0,
-          exportValue: (b) => b.isActive ? 'Open' : 'Closed',
+          exportValue: (b) => b.isActive ? AdminLocalizations.translate(context, 'open') : AdminLocalizations.translate(context, 'closed'),
           cell: (_, b) => AdminStatusBadge(
             isActive: b.isActive,
-            activeLabel: 'Open',
-            inactiveLabel: 'Closed',
+            activeLabel: AdminLocalizations.translate(context, 'open'),
+            inactiveLabel: AdminLocalizations.translate(context, 'closed'),
           ),
           width: 100,
         ),
         AdminColumn<BranchRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'actions'),
           cell: (_, b) => AdminTableActionsCell<BranchRow>(
             row: b,
             onView: onView,

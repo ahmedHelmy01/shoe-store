@@ -8,6 +8,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_pag
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_state_widget.dart';
 import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/cities_view_model.dart';
 import '../widgets/cities_table.dart';
 import '../widgets/city_form.dart';
@@ -31,9 +32,9 @@ class CitiesView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AdminPageHeader(
-                title: 'Cities & Regions',
+                title: AdminLocalizations.translate(context, 'cities & regions'),
                 onRefresh: () => notifier.fetch(),
-                primaryActionLabel: 'Add City',
+                primaryActionLabel: AdminLocalizations.translate(context, 'add city'),
                 onPrimaryAction: () => notifier.openAdd(),
               ),
               const SizedBox(height: 12),
@@ -45,7 +46,7 @@ class CitiesView extends ConsumerWidget {
           AdminDialogForm(
             isOpen: true,
             onClose: () => notifier.closePanel(),
-            title: state.isAdding ? 'Create City' : 'Edit City',
+            title: state.isAdding ? AdminLocalizations.translate(context, 'create city') : AdminLocalizations.translate(context, 'edit city'),
             size: AdminDialogSize.small,
             child: CityForm(
               initial: state.editingItem,
@@ -56,12 +57,12 @@ class CitiesView extends ConsumerWidget {
                   AppStatusDialog.showSuccess(
                     context,
                     message: state.isAdding 
-                        ? 'City created successfully'
-                        : 'City updated successfully',
+                        ? AdminLocalizations.translate(context, 'city created successfully')
+                        : AdminLocalizations.translate(context, 'city updated successfully'),
                   );
                   notifier.closePanel();
                 } else if (!success && context.mounted) {
-                  AppStatusDialog.showError(context, message: 'Failed to save city');
+                  AppStatusDialog.showError(context, message: AdminLocalizations.translate(context, 'failed to save city'));
                 }
               },
             ),
@@ -97,9 +98,9 @@ class CitiesView extends ConsumerWidget {
                 final success = await notifier.commitDelete(id);
                 if (context.mounted) {
                   if (success) {
-                    AppStatusDialog.showSuccess(context, message: 'City deleted successfully');
+                    AppStatusDialog.showSuccess(context, message: AdminLocalizations.translate(context, 'city deleted successfully'));
                   } else {
-                    AppStatusDialog.showError(context, message: 'Failed to delete city');
+                    AppStatusDialog.showError(context, message: AdminLocalizations.translate(context, 'failed to delete city'));
                   }
                 }
               },
@@ -115,18 +116,18 @@ class CitiesView extends ConsumerWidget {
                 onDelete: () {
                   AppDialog.show(
                     context,
-                    title: 'Delete City',
-                    message: 'Are you sure you want to delete this city?',
-                    confirmText: 'Delete',
-                    cancelText: 'Cancel',
+                    title: AdminLocalizations.translate(context, 'delete city'),
+                    message: AdminLocalizations.translate(context, 'are you sure you want to delete this city?'),
+                    confirmText: AdminLocalizations.translate(context, 'delete'),
+                    cancelText: AdminLocalizations.translate(context, 'cancel'),
                     onConfirm: () async {
                       Navigator.pop(context);
                       final success = await notifier.commitDelete(c.id);
                       if (context.mounted) {
                         if (success) {
-                          AppStatusDialog.showSuccess(context, message: 'City deleted successfully');
+                          AppStatusDialog.showSuccess(context, message: AdminLocalizations.translate(context, 'city deleted successfully'));
                         } else {
-                          AppStatusDialog.showError(context, message: 'Failed to delete city');
+                          AppStatusDialog.showError(context, message: AdminLocalizations.translate(context, 'failed to delete city'));
                         }
                       }
                     },
@@ -180,7 +181,7 @@ class _CityCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${city.governorateName ?? "Unknown Governorate"}',
+                      city.governorateName ?? AdminLocalizations.translate(context, 'unknown governorate'),
                       style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6)),
                     ),
                   ],
@@ -198,7 +199,7 @@ class _CityCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Delivery Fee:',
+                AdminLocalizations.translate(context, 'delivery fee:'),
                 style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
               ),
               Text(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class OrdersTable extends StatelessWidget {
   final List<OrderRow> items;
@@ -8,7 +9,7 @@ class OrdersTable extends StatelessWidget {
   final Function(int id) onDelete;
   final Widget Function(BuildContext context, OrderRow o)? cardBuilder;
 
-  const OrdersTable({
+  OrdersTable({
     super.key,
     required this.items,
     required this.onEdit,
