@@ -24,7 +24,7 @@ class OrdersTable extends StatelessWidget {
       idOf: (o) => '${o.id}',
       exportBaseName: 'orders',
       searchHint: AdminLocalizations.translate(context, 'search orders…'),
-      searchText: (o) => '${o.id} ${o.customerName} ${o.status}',
+      searchText: (o) => '${o.id} ${o.orderNumber} ${o.status}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<OrderRow>(
@@ -36,12 +36,12 @@ class OrdersTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<OrderRow>(
-          title: AdminLocalizations.translate(context, 'customer'),
+          title: AdminLocalizations.translate(context, 'order number'),
           sortable: true,
-          sortValue: (o) => o.customerName,
-          exportValue: (o) => o.customerName,
-          cell: (_, o) => Text(o.customerName),
-          width: 250,
+          sortValue: (o) => o.orderNumber,
+          exportValue: (o) => o.orderNumber,
+          cell: (_, o) => Text(o.orderNumber, style: const TextStyle(fontWeight: FontWeight.bold)),
+          width: 200,
         ),
         AdminColumn<OrderRow>(
           title: AdminLocalizations.translate(context, 'total'),
@@ -79,7 +79,8 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = switch (status.toLowerCase()) {
+    final translated = AdminLocalizations.translateStatus(context, status);
+    final color = switch (translated.toLowerCase()) {
       'delivered' || 'completed' => Colors.green,
       'pending' || 'processing' => Colors.orange,
       'cancelled' => Colors.red,
@@ -94,7 +95,7 @@ class _StatusBadge extends StatelessWidget {
         border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Text(
-        status,
+        translated,
         style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
       ),
     );

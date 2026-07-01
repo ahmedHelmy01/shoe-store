@@ -1331,6 +1331,26 @@ class AdminLocalizations {
         return 'العميل';
       case 'total':
         return 'الإجمالي';
+      case 'coupon':
+        return 'كوبون';
+      case 'subtotal':
+        return 'المجموع الفرعي';
+      case 'shipping':
+        return 'الشحن';
+      case 'tax':
+        return 'الضريبة';
+      case 'order number':
+        return 'رقم الطلب';
+      case 'order timeline':
+        return 'الجدول الزمني للطلب';
+      case 'pricing':
+        return 'التسعير';
+      case 'qty':
+        return 'الكمية';
+      case 'select status':
+        return 'اختر الحالة';
+      case 'order is being prepared':
+        return 'الطلب قيد التحضير';
       case 'order information':
         return 'معلومات الطلب';
       case 'select customer':
@@ -1506,6 +1526,29 @@ class AdminLocalizations {
       default:
         return text;
     }
+  }
+
+  static String translateStatus(BuildContext context, String statusName) {
+    const statuses = <String, String>{
+      'pending': 'قيد الانتظار',
+      'قيد الانتظار': 'pending',
+      'processing': 'قيد المعالجة',
+      'قيد المعالجة': 'processing',
+      'shipped': 'تم الشحن',
+      'تم الشحن': 'shipped',
+      'delivered': 'تم التوصيل',
+      'تم التوصيل': 'delivered',
+      'completed': 'مكتمل',
+      'مكتمل': 'completed',
+      'cancelled': 'ملغي',
+      'ملغي': 'cancelled',
+      'refunded': 'تم الاسترجاع',
+      'تم الاسترجاع': 'refunded',
+      'on hold': 'معلق',
+      'معلق': 'on hold',
+    };
+    final trimmed = statusName.trim().toLowerCase();
+    return statuses[trimmed] ?? statusName;
   }
 
   static String getGreeting(BuildContext context) {

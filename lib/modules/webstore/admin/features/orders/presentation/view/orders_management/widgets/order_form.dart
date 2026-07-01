@@ -84,7 +84,7 @@ class _OrderFormState extends State<OrderForm> {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Text(s.displayNameEn),
+                  Text(AdminLocalizations.translateStatus(context, s.name)),
                 ],
               ),
             );

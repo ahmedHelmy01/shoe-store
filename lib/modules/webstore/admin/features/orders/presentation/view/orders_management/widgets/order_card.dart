@@ -42,8 +42,8 @@ class OrderCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      order.customerName,
-                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                      order.orderNumber,
+                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: theme.primaryColor),
                     ),
                   ],
                 ),
@@ -83,7 +83,8 @@ class StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = switch (status.toLowerCase()) {
+    final translated = AdminLocalizations.translateStatus(context, status);
+    final color = switch (translated.toLowerCase()) {
       'delivered' || 'completed' => Colors.green,
       'pending' || 'processing' => Colors.orange,
       'cancelled' => Colors.red,
@@ -97,7 +98,7 @@ class StatusBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
-        status,
+        translated,
         style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: color),
       ),
     );

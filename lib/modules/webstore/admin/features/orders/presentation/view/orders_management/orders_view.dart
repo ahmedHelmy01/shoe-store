@@ -30,6 +30,7 @@ class OrdersView extends ConsumerStatefulWidget {
 class _OrdersViewState extends ConsumerState<OrdersView> {
   int? _selectedCustomerId;
   List<OrderStatusRow>? _statuses;
+  Locale? _statusesLocale;
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +39,17 @@ class _OrdersViewState extends ConsumerState<OrdersView> {
     final state = ref.watch(ordersVmProvider);
     final notifier = ref.read(ordersVmProvider.notifier);
     final usersState = ref.watch(usersVmProvider);
+    final locale = Localizations.localeOf(context);
+
+    if (_statuses != null && _statusesLocale != locale) {
+      _statuses = null;
+    }
 
     if ((state.isAdding || state.editingItem != null) && _statuses == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _loadStatuses());
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _loadStatuses();
+      });
     }
 
     return Stack(
@@ -68,7 +77,7 @@ class _OrdersViewState extends ConsumerState<OrdersView> {
             isOpen: state.editingItem != null,
             onClose: () {
               notifier.closePanel();
-              setState(() => _statuses = null);
+              setState(() { _statuses = null; _statusesLocale = null; });
             },
             title: '${AdminLocalizations.translate(context, 'manage order')} #${state.editingItem?.id}',
             size: AdminDialogSize.large,
@@ -102,6 +111,7 @@ class _OrdersViewState extends ConsumerState<OrdersView> {
     if (mounted) {
       setState(() {
         _statuses = res.when(success: (list) => list, failure: (_) => []);
+        _statusesLocale = Localizations.localeOf(context);
       });
     }
   }

@@ -99,7 +99,7 @@ class FakeData {
       final createdAt = DateTime.now().subtract(Duration(days: rnd.nextInt(70), hours: rnd.nextInt(24)));
       return OrderRow(
         id: id,
-        customer: 'Customer ${rnd.nextInt(200) + 1}',
+        orderNumber: 'WS-2026${id.toString().padLeft(4, '0')}',
         status: statuses[rnd.nextInt(statuses.length)],
         payment: payments[rnd.nextInt(payments.length)],
         total: total,

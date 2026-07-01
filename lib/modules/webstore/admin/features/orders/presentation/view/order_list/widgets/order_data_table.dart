@@ -24,7 +24,7 @@ class OrderDataTable extends StatelessWidget {
       idOf: (o) => '${o.id}',
       exportBaseName: 'orders',
       searchHint: AdminLocalizations.translate(context, 'search orders…'),
-      searchText: (o) => '${o.id} ${o.customer} ${o.status} ${o.payment} ${o.total}',
+      searchText: (o) => '${o.id} ${o.orderNumber} ${o.status} ${o.payment} ${o.total}',
       columns: [
         AdminColumn<OrderRow>(
           title: AdminLocalizations.translate(context, 'order #'),
@@ -35,11 +35,11 @@ class OrderDataTable extends StatelessWidget {
           width: 110,
         ),
         AdminColumn<OrderRow>(
-          title: AdminLocalizations.translate(context, 'customer'),
+          title: AdminLocalizations.translate(context, 'order number'),
           sortable: true,
-          sortValue: (o) => o.customer,
-          exportValue: (o) => o.customer,
-          cell: (_, o) => Text(o.customer, maxLines: 1, overflow: TextOverflow.ellipsis),
+          sortValue: (o) => o.orderNumber,
+          exportValue: (o) => o.orderNumber,
+          cell: (_, o) => Text(o.orderNumber, maxLines: 1, overflow: TextOverflow.ellipsis),
           width: 220,
         ),
         AdminColumn<OrderRow>(

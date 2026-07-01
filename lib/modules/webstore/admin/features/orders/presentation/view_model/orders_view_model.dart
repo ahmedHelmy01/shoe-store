@@ -35,7 +35,7 @@ class OrdersVm extends AdminCrudVm<OrderRow> {
           if (_customerId == null || _customerId == 5) {
             dummyItems.add(OrderRow(
               id: 5001,
-              customer: "Branch Customer",
+              orderNumber: 'WS-20260630-0501',
               status: "pending",
               payment: "Cash on Delivery",
               total: 250.0,
@@ -44,7 +44,7 @@ class OrdersVm extends AdminCrudVm<OrderRow> {
             ));
             dummyItems.add(OrderRow(
               id: 5002,
-              customer: "Branch Customer",
+              orderNumber: 'WS-20260630-0502',
               status: "delivered",
               payment: "Credit Card",
               total: 1200.50,
@@ -57,7 +57,7 @@ class OrdersVm extends AdminCrudVm<OrderRow> {
           if (_customerId == null || _customerId == 4) {
             dummyItems.add(OrderRow(
               id: 4001,
-              customer: "Test Customer",
+              orderNumber: 'WS-20260630-0401',
               status: "processing",
               payment: "Wallet",
               total: 45.0,

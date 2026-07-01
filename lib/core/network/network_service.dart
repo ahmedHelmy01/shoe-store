@@ -329,13 +329,14 @@ class NetworkService {
   }
 
   void _logResponse(http.Response response) {
+    final decoded = _decodeBody(response.body);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       _logger.d(
-        '✅ ${response.statusCode} ${response.request?.url}\nBody: ${response.body}',
+        '✅ ${response.statusCode} ${response.request?.url}\nBody: $decoded',
       );
     } else {
       _logger.e(
-        '❌ ${response.statusCode} ${response.request?.url}\nError: ${response.body}',
+        '❌ ${response.statusCode} ${response.request?.url}\nError: $decoded',
       );
     }
   }

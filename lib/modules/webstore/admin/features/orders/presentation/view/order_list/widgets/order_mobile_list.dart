@@ -32,7 +32,7 @@ class OrderMobileList extends StatelessWidget {
             backgroundColor: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.06),
             child: const Icon(Icons.receipt_long_rounded),
           ),
-          title: Text('#${o.id} • ${o.customer}', maxLines: 1, overflow: TextOverflow.ellipsis),
+          title: Text(o.orderNumber, maxLines: 1, overflow: TextOverflow.ellipsis),
           subtitle: Text('${o.payment} • ${o.total.toStringAsFixed(2)} • ${df.format(o.createdAt)}'),
           trailing: SizedBox(
             width: 140,
