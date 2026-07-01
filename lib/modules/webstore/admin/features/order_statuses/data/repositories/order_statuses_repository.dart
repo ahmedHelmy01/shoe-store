@@ -11,6 +11,8 @@ abstract class IOrderStatusesRepository {
     String? search,
   });
 
+  Future<ApiResult<List<OrderStatusRow>>> getAllOrderStatuses();
+
   Future<ApiResult<OrderStatusRow>> saveOrderStatus(Map<String, dynamic> data, {int? id});
 
   Future<ApiResult<void>> deleteOrderStatus(int id);
@@ -29,6 +31,15 @@ class OrderStatusesRepository extends AdminBaseRepository implements IOrderStatu
     return safeApiCall(() async {
       final json = await _ds.getOrderStatuses(page: page, search: search);
       return parsePaged(json, page, (j) => OrderStatusRow.fromJson(j));
+    });
+  }
+
+  @override
+  Future<ApiResult<List<OrderStatusRow>>> getAllOrderStatuses() {
+    return safeApiCall(() async {
+      final json = await _ds.getAllOrderStatusesRaw();
+      final data = json['data'] as List<dynamic>? ?? [];
+      return data.map((e) => OrderStatusRow.fromJson(e as Map<String, dynamic>)).toList();
     });
   }
 

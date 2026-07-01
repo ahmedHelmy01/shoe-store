@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
 import 'package:erp/modules/webstore/admin/features/orders/presentation/view_model/order_create_view_model.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class OrderFormPanel extends StatelessWidget {
   final OrderCreateVm b;
@@ -20,27 +21,27 @@ class OrderFormPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Order Information',
+            AdminLocalizations.translate(context, 'order information'),
             style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 10),
           AppDropdown<int>(
-            label: 'Customer',
-            hint: 'Select Customer',
+            label: AdminLocalizations.translate(context, 'customer'),
+            hint: AdminLocalizations.translate(context, 'select customer'),
             value: b.customerId,
             borderRadius: 12,
             items: b.customers
                 .map((u) => DropdownMenuItem(
                       value: u.id,
-                      child: Text('${u.name} (${u.mobile ?? "No Mobile"})'),
+                      child: Text('${u.name} (${u.mobile ?? AdminLocalizations.translate(context, 'no mobile')})'),
                     ))
                 .toList(),
             onChanged: b.onCustomerChanged,
           ),
           const SizedBox(height: 10),
           AppDropdown<int>(
-            label: 'Delivery Address',
-            hint: b.customerId == null ? 'Select customer first' : 'Select Address',
+            label: AdminLocalizations.translate(context, 'delivery address'),
+            hint: b.customerId == null ? AdminLocalizations.translate(context, 'select customer first') : AdminLocalizations.translate(context, 'select address'),
             enabled: b.customerId != null && b.addressChoices.isNotEmpty,
             value: b.addressId,
             borderRadius: 12,
@@ -54,8 +55,8 @@ class OrderFormPanel extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           AppDropdown<int>(
-            label: 'Payment Method',
-            hint: 'Select Payment Method',
+            label: AdminLocalizations.translate(context, 'payment method'),
+            hint: AdminLocalizations.translate(context, 'select payment method'),
             value: b.paymentMethodId,
             borderRadius: 12,
             items: b.paymentMethods

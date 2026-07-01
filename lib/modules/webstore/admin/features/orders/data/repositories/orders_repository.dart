@@ -4,6 +4,7 @@ import 'package:erp/modules/webstore/admin/features/orders/data/datasource/order
 import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_response.dart';
 import 'package:erp/modules/webstore/admin/shared/data/repositories/admin_base_repository.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_row.dart';
+import 'package:erp/modules/webstore/admin/features/orders/data/models/order_detail.dart';
 
 abstract class IOrdersRepository {
   Future<ApiResult<AdminPagedResponse<OrderRow>>> getOrders({
@@ -15,6 +16,8 @@ abstract class IOrdersRepository {
   Future<ApiResult<OrderRow>> saveOrder(Map<String, dynamic> data, {int? id});
   
   Future<ApiResult<void>> updateOrderStatus(int id, int statusId, {String? notes});
+
+  Future<ApiResult<OrderDetail>> getOrderDetails(int id);
 
   Future<ApiResult<void>> deleteOrder(int id);
 }
@@ -43,9 +46,7 @@ class OrdersRepository extends AdminBaseRepository implements IOrdersRepository 
           ? ApiEndpoints.webstore.admin.orders
           : ApiEndpoints.withId(ApiEndpoints.webstore.admin.orders, id);
 
-      final json = id == null
-          ? await _ds.postData(endpoint, data)
-          : await _ds.putData(endpoint, data);
+      final json = await _ds.postData(endpoint, data);
 
       return parseSingle(json, (j) => OrderRow.fromJson(j));
     });
@@ -61,6 +62,15 @@ class OrdersRepository extends AdminBaseRepository implements IOrdersRepository 
           if (notes != null) 'notes': notes,
         },
       );
+    });
+  }
+
+  @override
+  Future<ApiResult<OrderDetail>> getOrderDetails(int id) {
+    return safeApiCall(() async {
+      final json = await _ds.getOrderDetails(id);
+      final data = json['data'] as Map<String, dynamic>? ?? json;
+      return OrderDetail.fromJson(data);
     });
   }
 

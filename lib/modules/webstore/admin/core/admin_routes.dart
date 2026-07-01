@@ -148,7 +148,7 @@ class AdminRoutes {
         AdminNavNode(
           id: AdminRouteId.prescriptions,
           routeName: AppRouteNames.webstoreAdminPrescriptions,
-          title: 'طلبات الروشتات',
+          title: 'prescriptions',
           icon: Icons.medication_rounded,
         ),
         AdminNavNode(

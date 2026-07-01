@@ -18,4 +18,12 @@ class OrderStatusesRemoteDataSource extends AdminRemoteDataSource {
     );
     return (res as Map).cast<String, dynamic>();
   }
+
+  Future<Map<String, dynamic>> getAllOrderStatusesRaw() async {
+    final res = await network.get(
+      ApiEndpoints.webstore.admin.orderStatuses,
+      query: {'per_page': 200, 'page': 1},
+    );
+    return (res as Map).cast<String, dynamic>();
+  }
 }

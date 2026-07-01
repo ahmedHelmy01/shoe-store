@@ -154,9 +154,9 @@ class CategoryDetailsDialog extends StatelessWidget {
                     height: 180,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => _buildImagePlaceholder(isDark),
+                    errorBuilder: (_, __, ___) => _buildImagePlaceholder(isDark, context),
                   )
-                : _buildImagePlaceholder(isDark),
+                : _buildImagePlaceholder(isDark, context),
           ),
         ),
 
@@ -182,12 +182,12 @@ class CategoryDetailsDialog extends StatelessWidget {
           children: [
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
-                context, AdminLocalizations.translate(context, 'code'), category.code ?? 'N/A', Icons.qr_code_rounded),
+                context, AdminLocalizations.translate(context, 'code'), category.code ?? AdminLocalizations.translate(context, 'n/a'), Icons.qr_code_rounded),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
-                context, AdminLocalizations.translate(context, 'parent id'), category.parentId?.toString() ?? 'None', Icons.account_tree_rounded),
+                context, AdminLocalizations.translate(context, 'parent id'), category.parentId?.toString() ?? AdminLocalizations.translate(context, 'none'), Icons.account_tree_rounded),
             ),
           ],
         ),
@@ -198,12 +198,12 @@ class CategoryDetailsDialog extends StatelessWidget {
           children: [
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
-                context, AdminLocalizations.translate(context, 'description (english)'), category.descriptionEn ?? 'N/A', Icons.description_rounded),
+                context, AdminLocalizations.translate(context, 'description (english)'), category.descriptionEn ?? AdminLocalizations.translate(context, 'n/a'), Icons.description_rounded),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
-                context, AdminLocalizations.translate(context, 'description (arabic)'), category.descriptionAr ?? 'N/A', Icons.description_rounded),
+                context, AdminLocalizations.translate(context, 'description (arabic)'), category.descriptionAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.description_rounded),
             ),
           ],
         ),
@@ -214,7 +214,7 @@ class CategoryDetailsDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildImagePlaceholder(bool isDark) {
+  Widget _buildImagePlaceholder(bool isDark, BuildContext context) {
     return Container(
       height: 180,
       width: double.infinity,
@@ -235,7 +235,7 @@ class CategoryDetailsDialog extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'No Image',
+            AdminLocalizations.translate(context, 'no image'),
             style: TextStyle(
               color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.3),
               fontWeight: FontWeight.w600,

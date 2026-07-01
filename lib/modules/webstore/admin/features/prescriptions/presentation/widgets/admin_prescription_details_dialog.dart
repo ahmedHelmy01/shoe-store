@@ -12,7 +12,7 @@ class AdminPrescriptionDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminDetailsDialog(
-      title: 'Prescription Details',
+      title: AdminLocalizations.translate(context, 'prescription details'),
       id: prescription.id.toString(),
       icon: Icons.medication_rounded,
       children: [
@@ -39,8 +39,8 @@ class AdminPrescriptionDetailsDialog extends StatelessWidget {
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
                 context,
-                'Customer',
-                prescription.customer?.name ?? 'Guest',
+                AdminLocalizations.translate(context, 'customer'),
+                prescription.customer?.name ?? AdminLocalizations.translate(context, 'guest'),
                 Icons.person_rounded,
               ),
             ),
@@ -48,7 +48,7 @@ class AdminPrescriptionDetailsDialog extends StatelessWidget {
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
                 context,
-                'Status',
+                AdminLocalizations.translate(context, 'status'),
                 prescription.status.toUpperCase(),
                 Icons.flag_rounded,
               ),
@@ -57,14 +57,14 @@ class AdminPrescriptionDetailsDialog extends StatelessWidget {
         ),
         AdminDetailsDialog.buildDetailRow(
           context,
-          'Customer Mobile',
-          prescription.customer?.mobile ?? 'N/A',
+          AdminLocalizations.translate(context, 'customer mobile'),
+          prescription.customer?.mobile ?? AdminLocalizations.translate(context, 'n/a'),
           Icons.phone_rounded,
         ),
         AdminDetailsDialog.buildDetailRow(
           context,
-          'Note / Description',
-          prescription.note ?? 'No note provided',
+          AdminLocalizations.translate(context, 'note / description'),
+          prescription.note ?? AdminLocalizations.translate(context, 'no note provided'),
           Icons.description_rounded,
         ),
         const Divider(height: 32),
@@ -73,8 +73,8 @@ class AdminPrescriptionDetailsDialog extends StatelessWidget {
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
                 context,
-                'Reviewer',
-                prescription.reviewer?.name ?? 'Not reviewed',
+                AdminLocalizations.translate(context, 'reviewer'),
+                prescription.reviewer?.name ?? AdminLocalizations.translate(context, 'not reviewed'),
                 Icons.admin_panel_settings_rounded,
               ),
             ),
@@ -82,7 +82,7 @@ class AdminPrescriptionDetailsDialog extends StatelessWidget {
             Expanded(
               child: AdminDetailsDialog.buildDetailRow(
                 context,
-                'Submission Date',
+                AdminLocalizations.translate(context, 'submission date'),
                 DateFormat('yyyy-MM-dd HH:mm').format(prescription.createdAt),
                 Icons.calendar_today_rounded,
               ),

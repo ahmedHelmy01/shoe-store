@@ -53,12 +53,10 @@ class _OrderStatusFormState extends State<OrderStatusForm> {
     if (_formKey.currentState?.validate() ?? false) {
       widget.onSave({
         'name': _nameCtrl.text.trim(),
-        'name_en': _nameCtrl.text.trim(),
         'name_ar': _nameArCtrl.text.trim(),
         'color': _colorCtrl.text.trim(),
         'sort_order': int.tryParse(_sortOrderCtrl.text) ?? 1,
         'is_default': _isDefault,
-        'is_active': _isActive,
       });
     }
   }

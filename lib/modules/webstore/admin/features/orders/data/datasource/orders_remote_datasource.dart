@@ -20,4 +20,11 @@ class OrdersRemoteDataSource extends AdminRemoteDataSource {
     );
     return (res as Map).cast<String, dynamic>();
   }
+
+  Future<Map<String, dynamic>> getOrderDetails(int id) async {
+    final res = await network.get(
+      ApiEndpoints.withId(ApiEndpoints.webstore.admin.orders, id),
+    );
+    return (res as Map).cast<String, dynamic>();
+  }
 }

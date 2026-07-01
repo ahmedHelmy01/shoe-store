@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../../data/models/admin_dashboard_models.dart';
 
 class SalesChart extends StatelessWidget {
@@ -33,7 +34,7 @@ class SalesChart extends StatelessWidget {
         enable: true,
         color: AppColors.primary,
         textStyle: const TextStyle(color: Colors.white),
-        header: 'Sales',
+        header: AdminLocalizations.translate(context, 'sales'),
       ),
       series: <CartesianSeries<AdminSalesPoint, String>>[
         SplineAreaSeries<AdminSalesPoint, String>(

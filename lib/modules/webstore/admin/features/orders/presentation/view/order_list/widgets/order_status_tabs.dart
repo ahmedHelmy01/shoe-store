@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class OrderStatusTabs extends StatelessWidget {
   final TabController tabController;
@@ -31,7 +32,7 @@ class OrderStatusTabs extends StatelessWidget {
         labelStyle: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
         unselectedLabelStyle: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
         tabs: [
-          Tab(text: 'All (${allOrders.length})'),
+          Tab(text: '${AdminLocalizations.translate(context, 'all')} (${allOrders.length})'),
           ...statuses.map((s) => Tab(text: '$s (${allOrders.where((o) => o.status == s).length})')),
         ],
       ),

@@ -5,6 +5,7 @@ import 'package:erp/core/network/api_result.dart';
 import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_response.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_row.dart';
+import 'package:erp/modules/webstore/admin/features/orders/data/models/order_detail.dart';
 
 final ordersVmProvider = NotifierProvider<OrdersVm, AdminCrudState<OrderRow>>(OrdersVm.new);
 
@@ -92,6 +93,11 @@ class OrdersVm extends AdminCrudVm<OrderRow> {
       }, 
       failure: (_) => false,
     );
+  }
+
+  Future<OrderDetail?> getOrderDetails(int id) async {
+    final res = await ref.read(ordersRepositoryProvider).getOrderDetails(id);
+    return res.when(success: (d) => d, failure: (_) => null);
   }
 
   @override

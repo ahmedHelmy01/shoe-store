@@ -6,14 +6,14 @@ import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart
 class OrdersTable extends StatelessWidget {
   final List<OrderRow> items;
   final Function(OrderRow o) onEdit;
-  final Function(int id) onDelete;
+  final Function(OrderRow o)? onView;
   final Widget Function(BuildContext context, OrderRow o)? cardBuilder;
 
   OrdersTable({
     super.key,
     required this.items,
     required this.onEdit,
-    required this.onDelete,
+    this.onView,
     this.cardBuilder,
   });
 
@@ -23,12 +23,12 @@ class OrdersTable extends StatelessWidget {
       rows: items,
       idOf: (o) => '${o.id}',
       exportBaseName: 'orders',
-      searchHint: 'Search orders…',
+      searchHint: AdminLocalizations.translate(context, 'search orders…'),
       searchText: (o) => '${o.id} ${o.customerName} ${o.status}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<OrderRow>(
-          title: 'ID',
+          title: AdminLocalizations.translate(context, 'id'),
           sortable: true,
           sortValue: (o) => o.id,
           exportValue: (o) => '${o.id}',
@@ -36,7 +36,7 @@ class OrdersTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<OrderRow>(
-          title: 'Customer',
+          title: AdminLocalizations.translate(context, 'customer'),
           sortable: true,
           sortValue: (o) => o.customerName,
           exportValue: (o) => o.customerName,
@@ -44,7 +44,7 @@ class OrdersTable extends StatelessWidget {
           width: 250,
         ),
         AdminColumn<OrderRow>(
-          title: 'Total',
+          title: AdminLocalizations.translate(context, 'total'),
           sortable: true,
           sortValue: (o) => o.totalPrice,
           exportValue: (o) => '${o.totalPrice}',
@@ -52,7 +52,7 @@ class OrdersTable extends StatelessWidget {
           width: 100,
         ),
         AdminColumn<OrderRow>(
-          title: 'Status',
+          title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (o) => o.status,
           exportValue: (o) => o.status,
@@ -60,11 +60,11 @@ class OrdersTable extends StatelessWidget {
           width: 120,
         ),
         AdminColumn<OrderRow>(
-          title: 'Actions',
+          title: AdminLocalizations.translate(context, 'actions'),
           cell: (_, o) => AdminTableActionsCell<OrderRow>(
             row: o,
+            onView: onView != null ? (item) => onView!(item) : null,
             onEdit: onEdit,
-            onDelete: (item) => onDelete(item.id),
           ),
           width: 130,
         ),

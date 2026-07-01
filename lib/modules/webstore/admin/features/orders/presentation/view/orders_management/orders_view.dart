@@ -8,8 +8,13 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_sta
 import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_row.dart';
 import 'package:erp/modules/webstore/admin/features/orders/presentation/view_model/orders_view_model.dart';
+import 'package:erp/modules/webstore/admin/features/orders/presentation/widgets/order_details_dialog.dart';
+import 'package:erp/modules/webstore/admin/features/order_statuses/data/models/order_status_row.dart';
+import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
+import 'package:erp/core/network/api_result.dart';
 import 'package:erp/modules/webstore/admin/features/users/presentation/view_model/users_view_model.dart';
 import 'package:erp/modules/webstore/admin/features/users/data/models/user_row.dart';
+import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 
 import 'widgets/orders_table.dart';
 import 'widgets/order_form.dart';
@@ -24,6 +29,7 @@ class OrdersView extends ConsumerStatefulWidget {
 
 class _OrdersViewState extends ConsumerState<OrdersView> {
   int? _selectedCustomerId;
+  List<OrderStatusRow>? _statuses;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +38,10 @@ class _OrdersViewState extends ConsumerState<OrdersView> {
     final state = ref.watch(ordersVmProvider);
     final notifier = ref.read(ordersVmProvider.notifier);
     final usersState = ref.watch(usersVmProvider);
+
+    if ((state.isAdding || state.editingItem != null) && _statuses == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _loadStatuses());
+    }
 
     return Stack(
       children: [
@@ -56,21 +66,44 @@ class _OrdersViewState extends ConsumerState<OrdersView> {
         if (state.isAdding || state.editingItem != null)
           AdminDialogForm(
             isOpen: state.editingItem != null,
-            onClose: () => notifier.closePanel(),
+            onClose: () {
+              notifier.closePanel();
+              setState(() => _statuses = null);
+            },
             title: '${AdminLocalizations.translate(context, 'manage order')} #${state.editingItem?.id}',
             size: AdminDialogSize.large,
-            child: OrderForm(
-              initial: state.editingItem,
-              isSaving: state.isSaving,
-              onSave: (data) async {
-                if (await notifier.commitSave(data, id: state.editingItem?.id)) {
-                  notifier.closePanel();
-                }
-              },
-            ),
+            child: _statuses != null
+                ? OrderForm(
+                    initial: state.editingItem,
+                    isSaving: state.isSaving,
+                    statuses: _statuses!,
+                    onSave: (data) async {
+                      final orderId = state.editingItem?.id;
+                      if (orderId != null) {
+                        final statusId = data['order_status_id'] as int?;
+                        if (statusId != null) {
+                          final ok = await notifier.updateStatus(orderId, statusId, notes: data['notes'] as String?);
+                          if (ok && context.mounted) {
+                            notifier.closePanel();
+                          }
+                        }
+                      }
+                    },
+                  )
+                : const Center(child: CircularProgressIndicator()),
           ),
       ],
     );
+  }
+
+  Future<void> _loadStatuses() async {
+    if (_statuses != null) return;
+    final res = await ref.read(orderStatusesRepositoryProvider).getAllOrderStatuses();
+    if (mounted) {
+      setState(() {
+        _statuses = res.when(success: (list) => list, failure: (_) => []);
+      });
+    }
   }
 
   Widget _buildCustomerSelector(AdminCrudState<UserRow> usersState, OrdersVm notifier) {
@@ -139,16 +172,33 @@ class _OrdersViewState extends ConsumerState<OrdersView> {
                 ))
               : OrdersTable(
                   items: items,
+                  onView: (o) => _showOrderDetails(context, notifier, o.id),
                   onEdit: (o) => notifier.openEdit(o),
-                  onDelete: (id) => notifier.commitDelete(id),
                   cardBuilder: (context, o) => OrderCard(
                     order: o,
+                    onView: () => _showOrderDetails(context, notifier, o.id),
                     onEdit: () => notifier.openEdit(o),
-                    onDelete: () => notifier.commitDelete(o.id),
                   ),
                 ),
           ),
         ),
     };
+  }
+
+  Future<void> _showOrderDetails(BuildContext context, OrdersVm notifier, int orderId) async {
+    final detail = await notifier.getOrderDetails(orderId);
+    if (detail != null && context.mounted) {
+      showDialog(
+        context: context,
+        builder: (_) => OrderDetailsDialog(order: detail),
+      );
+    } else if (context.mounted) {
+      AppStatusDialog.show(
+        context,
+        status: AppDialogStatus.error,
+        title: AdminLocalizations.translate(context, 'error'),
+        message: AdminLocalizations.translate(context, 'could not load order details.'),
+      );
+    }
   }
 }

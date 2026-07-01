@@ -34,6 +34,8 @@ class AdminLocalizations {
         return 'المدن';
       case 'countries':
         return 'الدول';
+      case 'prescriptions':
+        return 'طلبات الروشتات';
       case 'sales & marketing':
         return 'المبيعات والتسويق';
       case 'all orders':

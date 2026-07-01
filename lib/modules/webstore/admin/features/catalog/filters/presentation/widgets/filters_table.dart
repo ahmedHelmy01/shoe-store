@@ -27,12 +27,12 @@ class FiltersTable extends StatelessWidget {
       rows: items,
       idOf: (f) => '${f.id}',
       exportBaseName: 'tags',
-      searchHint: 'Search tags…',
+      searchHint: AdminLocalizations.translate(context, 'search tags…'),
       searchText: (f) => '${f.id} ${f.name}',
       cardBuilder: cardBuilder,
       columns: [
         AdminColumn<FilterRow>(
-          title: 'ID',
+          title: AdminLocalizations.translate(context, 'id'),
           sortable: true,
           sortValue: (f) => f.id,
           exportValue: (f) => '${f.id}',
@@ -40,7 +40,7 @@ class FiltersTable extends StatelessWidget {
           width: 80,
         ),
         AdminColumn<FilterRow>(
-          title: 'Name',
+          title: AdminLocalizations.translate(context, 'name'),
           sortable: true,
           sortValue: (f) => f.nameEn ?? f.name,
           exportValue: (f) => f.nameEn ?? f.name,
@@ -48,7 +48,7 @@ class FiltersTable extends StatelessWidget {
           width: 250,
         ),
         AdminColumn<FilterRow>(
-          title: 'Arabic Name',
+          title: AdminLocalizations.translate(context, 'arabic name'),
           sortable: true,
           sortValue: (f) => f.nameAr ?? '',
           exportValue: (f) => f.nameAr ?? '',
@@ -56,7 +56,7 @@ class FiltersTable extends StatelessWidget {
           width: 200,
         ),
         AdminColumn<FilterRow>(
-          title: 'Color',
+          title: AdminLocalizations.translate(context, 'color'),
           sortable: true,
           sortValue: (f) => f.colorCode ?? '',
           exportValue: (f) => f.colorCode ?? '',
@@ -90,7 +90,7 @@ class FiltersTable extends StatelessWidget {
           title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (f) => f.isActive ? 1 : 0,
-          exportValue: (f) => f.isActive ? 'Active' : 'Inactive',
+          exportValue: (f) => f.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'),
           cell: (_, f) => AdminStatusBadge(isActive: f.isActive),
           width: 100,
         ),
@@ -101,7 +101,7 @@ class FiltersTable extends StatelessWidget {
             onView: (f) {
               final parentTagName = () {
                 final parentId = f.parentId;
-                if (parentId == null || parentId == 0) return 'None (لا يوجد)';
+                if (parentId == null || parentId == 0) return AdminLocalizations.translate(context, 'none');
                 for (final item in items) {
                   if (item.id == parentId) return item.name;
                 }

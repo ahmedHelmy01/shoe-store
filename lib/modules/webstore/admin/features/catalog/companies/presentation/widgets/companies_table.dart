@@ -57,7 +57,7 @@ class CompaniesTable extends StatelessWidget {
           title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (c) => c.isActive ? 1 : 0,
-          exportValue: (c) => c.isActive ? 'Active' : 'Inactive',
+          exportValue: (c) => c.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'),
           cell: (_, c) => AdminStatusBadge(isActive: c.isActive),
           width: 100,
         ),
@@ -91,15 +91,15 @@ class CompaniesTable extends StatelessWidget {
                       children: [
                         Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (en)'), c.name, Icons.language_rounded, bottomPadding: 0)),
                         const SizedBox(width: 16),
-                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (ar)'), c.nameAr ?? 'N/A', Icons.translate_rounded, bottomPadding: 0)),
+                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (ar)'), c.nameAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.translate_rounded, bottomPadding: 0)),
                       ],
                     ),
                     const SizedBox(height: 20),
                     Row(
                       children: [
-                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'description (en)'), c.description?.isNotEmpty == true ? c.description! : 'N/A', Icons.description_rounded, bottomPadding: 0)),
+                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'description (en)'), c.description?.isNotEmpty == true ? c.description! : AdminLocalizations.translate(context, 'n/a'), Icons.description_rounded, bottomPadding: 0)),
                         const SizedBox(width: 16),
-                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'description (ar)'), c.descriptionAr?.isNotEmpty == true ? c.descriptionAr! : 'N/A', Icons.description_outlined, bottomPadding: 0)),
+                        Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'description (ar)'), c.descriptionAr?.isNotEmpty == true ? c.descriptionAr! : AdminLocalizations.translate(context, 'n/a'), Icons.description_outlined, bottomPadding: 0)),
                       ],
                     ),
                     const SizedBox(height: 20),

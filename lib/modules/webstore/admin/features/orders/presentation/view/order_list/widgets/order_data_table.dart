@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_row.dart';
 import 'package:erp/modules/webstore/admin/features/orders/presentation/widgets/order_status_dropdown.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class OrderDataTable extends StatelessWidget {
   final List<OrderRow> items;
@@ -22,11 +23,11 @@ class OrderDataTable extends StatelessWidget {
       rows: items,
       idOf: (o) => '${o.id}',
       exportBaseName: 'orders',
-      searchHint: 'Search orders…',
+      searchHint: AdminLocalizations.translate(context, 'search orders…'),
       searchText: (o) => '${o.id} ${o.customer} ${o.status} ${o.payment} ${o.total}',
       columns: [
         AdminColumn<OrderRow>(
-          title: 'Order #',
+          title: AdminLocalizations.translate(context, 'order #'),
           sortable: true,
           sortValue: (o) => o.id,
           exportValue: (o) => '${o.id}',
@@ -34,7 +35,7 @@ class OrderDataTable extends StatelessWidget {
           width: 110,
         ),
         AdminColumn<OrderRow>(
-          title: 'Customer',
+          title: AdminLocalizations.translate(context, 'customer'),
           sortable: true,
           sortValue: (o) => o.customer,
           exportValue: (o) => o.customer,
@@ -42,7 +43,7 @@ class OrderDataTable extends StatelessWidget {
           width: 220,
         ),
         AdminColumn<OrderRow>(
-          title: 'Status',
+          title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (o) => o.status,
           exportValue: (o) => o.status,
@@ -53,7 +54,7 @@ class OrderDataTable extends StatelessWidget {
           width: 168,
         ),
         AdminColumn<OrderRow>(
-          title: 'Payment',
+          title: AdminLocalizations.translate(context, 'payment'),
           sortable: true,
           sortValue: (o) => o.payment,
           exportValue: (o) => o.payment,
@@ -61,7 +62,7 @@ class OrderDataTable extends StatelessWidget {
           width: 130,
         ),
         AdminColumn<OrderRow>(
-          title: 'Items',
+          title: AdminLocalizations.translate(context, 'items'),
           sortable: true,
           sortValue: (o) => o.itemsCount,
           exportValue: (o) => '${o.itemsCount}',
@@ -69,7 +70,7 @@ class OrderDataTable extends StatelessWidget {
           width: 90,
         ),
         AdminColumn<OrderRow>(
-          title: 'Total',
+          title: AdminLocalizations.translate(context, 'total'),
           sortable: true,
           sortValue: (o) => o.total,
           exportValue: (o) => o.total.toStringAsFixed(2),
@@ -77,7 +78,7 @@ class OrderDataTable extends StatelessWidget {
           width: 110,
         ),
         AdminColumn<OrderRow>(
-          title: 'Created',
+          title: AdminLocalizations.translate(context, 'created'),
           sortable: true,
           sortValue: (o) => o.createdAt.millisecondsSinceEpoch,
           exportValue: (o) => df.format(o.createdAt),

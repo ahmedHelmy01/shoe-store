@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_card_popup_menu.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class OrderCard extends StatelessWidget {
   final OrderRow order;
   final VoidCallback? onView;
   final VoidCallback onEdit;
-  final VoidCallback onDelete;
 
   const OrderCard({
     super.key,
     required this.order,
     this.onView,
     required this.onEdit,
-    required this.onDelete,
   });
 
   @override
@@ -54,8 +53,7 @@ class OrderCard extends StatelessWidget {
               AdminCardPopupMenu(
                 onView: onView,
                 onEdit: onEdit,
-                onDelete: onDelete,
-                editLabel: 'Manage',
+                editLabel: AdminLocalizations.translate(context, 'manage'),
               ),
             ],
           ),
@@ -64,7 +62,7 @@ class OrderCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Total:',
+                '${AdminLocalizations.translate(context, 'total')}:',
                 style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6)),
               ),
               Text(

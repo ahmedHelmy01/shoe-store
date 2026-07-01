@@ -5,6 +5,7 @@ import 'package:erp/modules/webstore/admin/features/orders/data/models/order_car
 import 'package:erp/modules/webstore/admin/features/orders/presentation/view_model/order_create_view_model.dart';
 import 'package:erp/modules/webstore/admin/features/orders/presentation/widgets/order_qty_chip.dart';
 import 'package:erp/modules/webstore/admin/features/orders/presentation/widgets/order_summary_row.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class CartPanel extends StatelessWidget {
   final OrderCreateVm b;
@@ -24,10 +25,10 @@ class CartPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _buildCartHeader(),
+        _buildCartHeader(context),
         const Divider(),
         if (b.cart.isEmpty)
-          const Expanded(child: Center(child: Text('السلة فارغة')))
+          Expanded(child: Center(child: Text(AdminLocalizations.translate(context, 'cart is empty'))))
         else
           Expanded(
             child: ListView.builder(
@@ -36,12 +37,12 @@ class CartPanel extends StatelessWidget {
               itemBuilder: (context, i) => _buildCartLineItem(b.cart.values.elementAt(i)),
             ),
           ),
-        _buildCartFooter(),
+        _buildCartFooter(context),
       ],
     );
   }
 
-  Widget _buildCartHeader() {
+  Widget _buildCartHeader(BuildContext context) {
     final count = b.cart.length;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
@@ -49,7 +50,7 @@ class CartPanel extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              'سلة الطلب',
+              AdminLocalizations.translate(context, 'order cart'),
               style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
             ),
           ),
@@ -116,21 +117,21 @@ class CartPanel extends StatelessWidget {
     );
   }
 
-  Widget _buildCartFooter() {
+  Widget _buildCartFooter(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
       child: Column(
         children: [
           const Divider(),
-          OrderSummaryRow(label: 'المجموع الفرعي', value: b.subtotal.toStringAsFixed(2), theme: theme),
+          OrderSummaryRow(label: AdminLocalizations.translate(context, 'subtotal'), value: b.subtotal.toStringAsFixed(2), theme: theme),
           const SizedBox(height: 4),
-          OrderSummaryRow(label: 'الإجمالي', value: b.total.toStringAsFixed(2), theme: theme, emphasize: true),
+          OrderSummaryRow(label: AdminLocalizations.translate(context, 'total'), value: b.total.toStringAsFixed(2), theme: theme, emphasize: true),
           const SizedBox(height: 12),
           AppButton(
             onPressed: b.onSubmit,
             isLoading: b.isSubmitting,
             height: 54,
-            child: const Text('Confirm Order Creation', style: TextStyle(fontWeight: FontWeight.w800)),
+            child: Text(AdminLocalizations.translate(context, 'confirm order creation'), style: const TextStyle(fontWeight: FontWeight.w800)),
           ),
         ],
       ),

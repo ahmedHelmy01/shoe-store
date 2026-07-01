@@ -94,14 +94,14 @@ class ProductsTable extends StatelessWidget {
           sortable: true,
           sortValue: (p) => double.tryParse(p.salePrice ?? '0') ?? 0,
           exportValue: (p) => p.salePrice ?? '0',
-          cell: (_, p) => Text(p.salePrice != null ? '${p.salePrice} EGP' : '-'),
+          cell: (_, p) => Text(p.salePrice != null ? '${p.salePrice} ${AdminLocalizations.translate(context, 'egp')}' : '-'),
           width: 120,
         ),
         AdminColumn<ProductRow>(
           title: AdminLocalizations.translate(context, 'status'),
           sortable: true,
           sortValue: (p) => p.isActive ? 1 : 0,
-          exportValue: (p) => p.isActive ? 'Active' : 'Inactive',
+          exportValue: (p) => p.isActive ? AdminLocalizations.translate(context, 'active') : AdminLocalizations.translate(context, 'inactive'),
           cell: (_, p) => AdminStatusBadge(isActive: p.isActive),
           width: 100,
         ),
@@ -162,7 +162,7 @@ class ProductDetailsDialog extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Gallery Images',
+                      AdminLocalizations.translate(context, 'gallery images'),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withValues(alpha: 0.5),
@@ -207,7 +207,7 @@ class ProductDetailsDialog extends StatelessWidget {
           children: [
             Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (en)'), product.nameEn ?? product.name, Icons.title_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (ar)'), product.nameAr ?? 'N/A', Icons.title_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'name (ar)'), product.nameAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.title_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
@@ -216,25 +216,25 @@ class ProductDetailsDialog extends StatelessWidget {
           children: [
             Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'sku'), product.sku, Icons.tag_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'code'), product.code ?? 'N/A', Icons.qr_code_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'code'), product.code ?? AdminLocalizations.translate(context, 'n/a'), Icons.qr_code_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
         // Sale Price + Purchase Price
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'sale price'), '${product.salePrice ?? '0'} EGP', Icons.sell_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'sale price'), '${product.salePrice ?? '0'} ${AdminLocalizations.translate(context, 'egp')}', Icons.sell_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'purchase price'), '${product.purchasePrice ?? '0'} EGP', Icons.shopping_cart_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'purchase price'), '${product.purchasePrice ?? '0'} ${AdminLocalizations.translate(context, 'egp')}', Icons.shopping_cart_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
         // Description EN + Description AR
         Row(
           children: [
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'description (en)'), product.description ?? 'N/A', Icons.description_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'description (en)'), product.description ?? AdminLocalizations.translate(context, 'n/a'), Icons.description_rounded, bottomPadding: 0)),
             const SizedBox(width: 16),
-            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'description (ar)'), product.descriptionAr ?? 'N/A', Icons.description_rounded, bottomPadding: 0)),
+            Expanded(child: AdminDetailsDialog.buildDetailRow(context, AdminLocalizations.translate(context, 'description (ar)'), product.descriptionAr ?? AdminLocalizations.translate(context, 'n/a'), Icons.description_rounded, bottomPadding: 0)),
           ],
         ),
         const SizedBox(height: 20),
@@ -246,7 +246,7 @@ class ProductDetailsDialog extends StatelessWidget {
                 Expanded(
                   child: _buildBadgesRow(
                     context,
-                    'Tags',
+                    AdminLocalizations.translate(context, 'tags'),
                     product.tags!.map((t) => t.nameAr ?? t.name).toList(),
                     Icons.label_important_outline_rounded,
                     Theme.of(context).primaryColor,
@@ -260,7 +260,7 @@ class ProductDetailsDialog extends StatelessWidget {
                 Expanded(
                   child: _buildBadgesRow(
                     context,
-                    'Properties',
+                    AdminLocalizations.translate(context, 'properties'),
                     product.properties!.map((p) => p.titleAr ?? p.title).toList(),
                     Icons.settings_input_component_rounded,
                     Colors.blue,
