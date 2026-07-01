@@ -256,12 +256,12 @@ class OrderDetailsDialog extends StatelessWidget {
               _buildAddressLine(
                 context,
                 [
-                  if (addr.building != null && addr.building!.isNotEmpty) '${'building'}: ${addr.building}',
-                  if (addr.floor != null && addr.floor!.isNotEmpty) '${'floor'}: ${addr.floor}',
-                  if (addr.apartment != null && addr.apartment!.isNotEmpty) '${'apartment'}: ${addr.apartment}',
-                  if (addr.street != null && addr.street!.isNotEmpty) addr.street,
-                  if (addr.area != null && addr.area!.isNotEmpty) addr.area,
-                  if (addr.block != null && addr.block!.isNotEmpty) '${'block'}: ${addr.block}',
+                  if (addr.building != null && addr.building!.isNotEmpty) '${AdminLocalizations.translate(context, 'building')}: ${addr.building}',
+                  if (addr.floor != null && addr.floor!.isNotEmpty) '${AdminLocalizations.translate(context, 'floor')}: ${addr.floor}',
+                  if (addr.apartment != null && addr.apartment!.isNotEmpty) '${AdminLocalizations.translate(context, 'apartment')}: ${addr.apartment}',
+                  if (addr.street != null && addr.street!.isNotEmpty) '${AdminLocalizations.translate(context, 'street')}: ${addr.street}',
+                  if (addr.area != null && addr.area!.isNotEmpty) '${AdminLocalizations.translate(context, 'area')}: ${addr.area}',
+                  if (addr.block != null && addr.block!.isNotEmpty) '${AdminLocalizations.translate(context, 'block')}: ${addr.block}',
                 ].where((e) => e != null && e.isNotEmpty).join(', '),
                 Icons.location_on_outlined,
               ),
@@ -270,8 +270,16 @@ class OrderDetailsDialog extends StatelessWidget {
                 _buildAddressLine(
                   context,
                   [
-                    if (city != null) '${city.nameEn ?? city.nameAr ?? city.name}',
-                    if (gov != null) '${gov.nameEn ?? gov.nameAr ?? gov.name}',
+                    if (city != null)
+                      switch (Localizations.localeOf(context).languageCode) {
+                        'ar' => city.nameAr ?? city.nameEn ?? city.name,
+                        _ => city.nameEn ?? city.nameAr ?? city.name,
+                      },
+                    if (gov != null)
+                      switch (Localizations.localeOf(context).languageCode) {
+                        'ar' => gov.nameAr ?? gov.nameEn ?? gov.name,
+                        _ => gov.nameEn ?? gov.nameAr ?? gov.name,
+                      },
                   ].where((e) => e.isNotEmpty).join(' - '),
                   Icons.map_outlined,
                 ),

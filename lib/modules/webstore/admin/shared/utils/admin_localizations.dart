@@ -1371,6 +1371,18 @@ class AdminLocalizations {
         return 'العناصر';
       case 'created':
         return 'تاريخ الإنشاء';
+      case 'block':
+        return 'مجمع';
+      case 'building':
+        return 'مبنى';
+      case 'floor':
+        return 'طابق';
+      case 'apartment':
+        return 'شقة';
+      case 'street':
+        return 'شارع';
+      case 'area':
+        return 'منطقة';
       case 'order status':
         return 'حالة الطلب';
       case 'process order':
