@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 
@@ -24,7 +25,7 @@ class DetailsInfoSection extends StatelessWidget {
         _buildRating(),
         
         // 📋 Technical Details (SKU, Barcode)
-        _buildTechnicalInfo(theme, isDark),
+        _buildTechnicalInfo(context, theme, isDark),
 
         Padding(
           padding: EdgeInsets.symmetric(vertical: 8.h),
@@ -87,7 +88,7 @@ class DetailsInfoSection extends StatelessWidget {
     );
   }
 
-  Widget _buildTechnicalInfo(ThemeData theme, bool isDark) {
+  Widget _buildTechnicalInfo(BuildContext context, ThemeData theme, bool isDark) {
     if (product.sku == null && product.barcode == null) return const SizedBox.shrink();
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
@@ -100,24 +101,68 @@ class DetailsInfoSection extends StatelessWidget {
       child: Column(
         children: [
           if (product.sku != null)
-            _buildInfoRow(Icons.tag_rounded, 'رمز المنتج (SKU)', product.sku!),
+            _buildInfoRow(context, Icons.tag_rounded, 'رمز المنتج (SKU)', product.sku!),
           if (product.sku != null && product.barcode != null) 8.verticalSpace,
           if (product.barcode != null)
-            _buildInfoRow(Icons.qr_code_scanner_rounded, 'الباركود', product.barcode!),
+            _buildInfoRow(context, Icons.qr_code_scanner_rounded, 'الباركود', product.barcode!, isBarcode: true),
         ],
       ),
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
-    return Row(
+  Widget _buildInfoRow(BuildContext context, IconData icon, String label, String value, {bool isBarcode = false}) {
+    final content = Row(
       children: [
         Icon(icon, size: 16.sp, color: Colors.grey),
         8.horizontalSpace,
         Text(label, style: TextStyle(fontSize: 12.sp, color: Colors.grey)),
         const Spacer(),
         Text(value, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, fontFamily: 'monospace')),
+        if (isBarcode) ...[
+          6.horizontalSpace,
+          Icon(Icons.fullscreen, size: 14.sp, color: Colors.grey.shade400),
+        ],
       ],
+    );
+
+    if (!isBarcode) return content;
+
+    return GestureDetector(
+      onTap: () => _showBarcodeQr(context, value),
+      child: content,
+    );
+  }
+
+  void _showBarcodeQr(BuildContext context, String barcode) {
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+        child: Padding(
+          padding: EdgeInsets.all(24.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(barcode, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'monospace')),
+              20.verticalSpace,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16.r),
+                child: QrImageView(
+                  data: barcode,
+                  version: QrVersions.auto,
+                  size: 250.w,
+                  backgroundColor: Colors.white,
+                  eyeStyle: const QrEyeStyle(eyeShape: QrEyeShape.square, color: Colors.black),
+                  dataModuleStyle: const QrDataModuleStyle(dataModuleShape: QrDataModuleShape.square, color: Colors.black),
+                ),
+              ),
+              16.verticalSpace,
+              Text('امسح الرمز ضوئيًا في المتجر', style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600)),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

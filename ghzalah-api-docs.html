@@ -1,0 +1,2692 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توثيق API - متجر غزالة</title>
+    <meta name="description" content="التوثيق الكامل لواجهة برمجة التطبيقات (API) لمتجر غزالة - كل ما يخص الجمال والأناقة">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ============================
+           CSS Custom Properties
+           ============================ */
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-tertiary: #1a2236;
+            --bg-card: #151c2e;
+            --bg-code: #0d1117;
+            --bg-hover: rgba(139, 92, 246, 0.08);
+
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --text-heading: #f1f5f9;
+
+            --accent-purple: #8b5cf6;
+            --accent-purple-light: #a78bfa;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-pink: #ec4899;
+            --accent-rose: #f43f5e;
+
+            --gradient-primary: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+            --gradient-header: linear-gradient(135deg, #1a1040 0%, #0a0e1a 50%, #0a1628 100%);
+            --gradient-card: linear-gradient(145deg, rgba(139, 92, 246, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
+
+            --border-color: rgba(139, 92, 246, 0.15);
+            --border-subtle: rgba(255, 255, 255, 0.06);
+
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.15);
+
+            --sidebar-width: 320px;
+            --header-height: 70px;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+
+            --method-get: #10b981;
+            --method-post: #3b82f6;
+            --method-put: #f59e0b;
+            --method-patch: #f59e0b;
+            --method-delete: #ef4444;
+
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
+            --transition-slow: 0.4s ease;
+        }
+
+        /* ============================
+           Reset & Base
+           ============================ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-purple) var(--bg-secondary);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-purple);
+            border-radius: 3px;
+        }
+
+        a {
+            color: var(--accent-purple-light);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+        a:hover { color: var(--accent-cyan); }
+
+        /* ============================
+           Background Animation
+           ============================ */
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .bg-pattern::before {
+            content: '';
+            position: absolute;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
+            top: -200px; right: -200px;
+            animation: floatBlob 20s ease-in-out infinite;
+        }
+        .bg-pattern::after {
+            content: '';
+            position: absolute;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.06) 0%, transparent 70%);
+            bottom: -150px; left: -150px;
+            animation: floatBlob 25s ease-in-out infinite reverse;
+        }
+        @keyframes floatBlob {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -30px) scale(1.1); }
+            50% { transform: translate(-20px, 40px) scale(0.95); }
+            75% { transform: translate(30px, 20px) scale(1.05); }
+        }
+
+        /* ============================
+           Header
+           ============================ */
+        .header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--header-height);
+            background: var(--gradient-header);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-shadow: var(--shadow-md);
+        }
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .header-logo {
+            width: 42px; height: 42px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: white;
+            box-shadow: var(--shadow-glow);
+            animation: logoPulse 3s ease-in-out infinite;
+        }
+        @keyframes logoPulse {
+            0%, 100% { box-shadow: 0 0 15px rgba(139, 92, 246, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.4); }
+        }
+        .header-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .header-badge {
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid;
+        }
+        .badge-version {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        .badge-base {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-blue);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        .header-url {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            direction: ltr;
+        }
+
+        /* ============================
+           Layout
+           ============================ */
+        .layout {
+            display: flex;
+            margin-top: var(--header-height);
+            min-height: calc(100vh - var(--header-height));
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ============================
+           Sidebar
+           ============================ */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border-color);
+            position: fixed;
+            top: var(--header-height);
+            right: 0;
+            bottom: 0;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform var(--transition-normal);
+        }
+
+        .sidebar-search {
+            padding: 16px;
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            z-index: 10;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .sidebar-search input {
+            width: 100%;
+            padding: 10px 16px;
+            padding-right: 40px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+        .sidebar-search input:focus {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+        }
+        .sidebar-search input::placeholder {
+            color: var(--text-muted);
+        }
+        .search-icon {
+            position: absolute;
+            right: 28px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .sidebar-nav {
+            padding: 8px 0;
+        }
+
+        .nav-group {
+            margin-bottom: 4px;
+        }
+        .nav-group-title {
+            padding: 10px 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+            transition: color var(--transition-fast);
+        }
+        .nav-group-title:hover { color: var(--text-secondary); }
+        .nav-group-title .arrow {
+            transition: transform var(--transition-fast);
+            font-size: 0.6rem;
+        }
+        .nav-group.collapsed .arrow { transform: rotate(-90deg); }
+        .nav-group.collapsed .nav-items { display: none; }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 7px 20px 7px 16px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border-right: 3px solid transparent;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+        .nav-item:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+        .nav-item.active {
+            background: var(--bg-hover);
+            border-right-color: var(--accent-purple);
+            color: var(--accent-purple-light);
+        }
+        .nav-method {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.6rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 3px;
+            min-width: 36px;
+            text-align: center;
+            direction: ltr;
+            flex-shrink: 0;
+        }
+        .nav-method.get { background: rgba(16, 185, 129, 0.15); color: var(--method-get); }
+        .nav-method.post { background: rgba(59, 130, 246, 0.15); color: var(--method-post); }
+        .nav-method.put, .nav-method.patch { background: rgba(245, 158, 11, 0.15); color: var(--method-put); }
+        .nav-method.delete { background: rgba(239, 68, 68, 0.15); color: var(--method-delete); }
+        .nav-method.multi { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple-light); }
+
+        .nav-endpoint-path {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.72rem;
+            direction: ltr;
+            text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ============================
+           Main Content
+           ============================ */
+        .main {
+            flex: 1;
+            margin-right: var(--sidebar-width);
+            padding: 30px 40px;
+            max-width: calc(100% - var(--sidebar-width));
+        }
+
+        /* ============================
+           Hero Section
+           ============================ */
+        .hero {
+            padding: 50px 0 40px;
+            text-align: center;
+        }
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 900;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+        .hero-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 16px 28px;
+            min-width: 140px;
+            transition: all var(--transition-normal);
+        }
+        .stat-card:hover {
+            border-color: var(--border-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* ============================
+           Quick Start Section
+           ============================ */
+        .quick-start {
+            background: var(--gradient-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        .quick-start h2 {
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+            color: var(--text-heading);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .quick-start p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+        }
+        .quick-start .code-block {
+            margin-bottom: 12px;
+        }
+
+        /* ============================
+           Auth Section
+           ============================ */
+        .auth-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        .auth-section h2 {
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+            color: var(--text-heading);
+        }
+        .auth-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .auth-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all var(--transition-normal);
+        }
+        .auth-card:hover {
+            border-color: var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+        .auth-card h3 {
+            font-size: 1rem;
+            color: var(--accent-purple-light);
+            margin-bottom: 8px;
+        }
+        .auth-card p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* ============================
+           Section
+           ============================ */
+        .section {
+            margin-bottom: 50px;
+            scroll-margin-top: calc(var(--header-height) + 20px);
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid var(--border-subtle);
+        }
+        .section-icon {
+            width: 44px; height: 44px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-heading);
+        }
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* ============================
+           Endpoint Card
+           ============================ */
+        .endpoint {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all var(--transition-normal);
+            scroll-margin-top: calc(var(--header-height) + 20px);
+        }
+        .endpoint:hover {
+            border-color: var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 24px;
+            cursor: pointer;
+            user-select: none;
+            transition: background var(--transition-fast);
+        }
+        .endpoint-header:hover { background: var(--bg-hover); }
+
+        .method-badge {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: var(--radius-sm);
+            text-transform: uppercase;
+            direction: ltr;
+            min-width: 56px;
+            text-align: center;
+            flex-shrink: 0;
+            letter-spacing: 0.5px;
+        }
+        .method-badge.get { background: rgba(16, 185, 129, 0.15); color: var(--method-get); border: 1px solid rgba(16, 185, 129, 0.25); }
+        .method-badge.post { background: rgba(59, 130, 246, 0.15); color: var(--method-post); border: 1px solid rgba(59, 130, 246, 0.25); }
+        .method-badge.put, .method-badge.patch { background: rgba(245, 158, 11, 0.15); color: var(--method-put); border: 1px solid rgba(245, 158, 11, 0.25); }
+        .method-badge.delete { background: rgba(239, 68, 68, 0.15); color: var(--method-delete); border: 1px solid rgba(239, 68, 68, 0.25); }
+        .method-badge.multi { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple-light); border: 1px solid rgba(168, 85, 247, 0.25); }
+
+        .endpoint-path {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            direction: ltr;
+            text-align: left;
+            flex: 1;
+            word-break: break-all;
+        }
+        .endpoint-path .param {
+            color: var(--accent-cyan);
+        }
+
+        .endpoint-summary {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-right: auto;
+        }
+
+        .endpoint-toggle {
+            color: var(--text-muted);
+            transition: transform var(--transition-fast);
+            font-size: 0.8rem;
+        }
+        .endpoint.open .endpoint-toggle { transform: rotate(180deg); }
+
+        .endpoint-body {
+            display: none;
+            border-top: 1px solid var(--border-subtle);
+            padding: 24px;
+            animation: slideDown 0.3s ease;
+        }
+        .endpoint.open .endpoint-body { display: block; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .endpoint-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            border-right: 3px solid var(--accent-purple);
+        }
+
+        /* ============================
+           Parameters Table
+           ============================ */
+        .params-section {
+            margin-bottom: 24px;
+        }
+        .params-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .params-title .icon { font-size: 0.85rem; }
+
+        .params-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        .params-table th {
+            background: var(--bg-tertiary);
+            padding: 10px 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            text-align: right;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .params-table td {
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border-subtle);
+            vertical-align: top;
+        }
+        .params-table tr:last-child td { border-bottom: none; }
+        .params-table tr:hover td { background: var(--bg-hover); }
+
+        .param-name {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-cyan);
+            direction: ltr;
+            display: inline;
+        }
+        .param-required {
+            display: inline-block;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 3px;
+            margin-right: 6px;
+        }
+        .param-required.required {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+        }
+        .param-required.optional {
+            background: rgba(100, 116, 139, 0.15);
+            color: var(--text-muted);
+        }
+        .param-type {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-orange);
+            direction: ltr;
+        }
+        .param-default {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            direction: ltr;
+        }
+        .param-enum {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 4px;
+        }
+        .param-enum-value {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent-purple-light);
+            border-radius: 3px;
+            direction: ltr;
+        }
+
+        /* ============================
+           Code Block
+           ============================ */
+        .code-block {
+            position: relative;
+            background: var(--bg-code);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .code-lang {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        .code-copy {
+            background: none;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            padding: 4px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.7rem;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            transition: all var(--transition-fast);
+        }
+        .code-copy:hover {
+            border-color: var(--accent-purple);
+            color: var(--accent-purple-light);
+        }
+        .code-copy.copied {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+        .code-content {
+            padding: 16px;
+            overflow-x: auto;
+            direction: ltr;
+            text-align: left;
+        }
+        .code-content pre {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            white-space: pre;
+            margin: 0;
+        }
+        .code-content .string { color: #a5d6a7; }
+        .code-content .keyword { color: #c792ea; }
+        .code-content .number { color: #f78c6c; }
+        .code-content .comment { color: #546e7a; }
+        .code-content .url { color: #82aaff; }
+        .code-content .key { color: #89ddff; }
+
+        /* ============================
+           Tabs
+           ============================ */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 0;
+        }
+        .tab-btn {
+            padding: 8px 18px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all var(--transition-fast);
+            margin-bottom: -1px;
+        }
+        .tab-btn:hover { color: var(--text-primary); }
+        .tab-btn.active {
+            color: var(--accent-purple-light);
+            border-bottom-color: var(--accent-purple);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ============================
+           Response Codes
+           ============================ */
+        .response-codes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .response-code {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.78rem;
+            font-weight: 500;
+        }
+        .response-code .code {
+            font-family: 'Fira Code', monospace;
+            font-weight: 700;
+        }
+        .response-code.success { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .response-code.error { background: rgba(239, 68, 68, 0.1); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .response-code.warning { background: rgba(245, 158, 11, 0.1); color: var(--accent-orange); border: 1px solid rgba(245, 158, 11, 0.2); }
+
+        /* ============================
+           Mobile Toggle
+           ============================ */
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            width: 50px; height: 50px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: var(--shadow-lg);
+            transition: transform var(--transition-fast);
+        }
+        .sidebar-toggle:hover { transform: scale(1.1); }
+
+        /* ============================
+           Back to Top
+           ============================ */
+        .back-to-top {
+            position: fixed;
+            bottom: 24px;
+            right: calc(var(--sidebar-width) + 24px);
+            width: 44px; height: 44px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            color: var(--accent-purple-light);
+            font-size: 1rem;
+            cursor: pointer;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .back-to-top.visible { opacity: 1; visibility: visible; }
+        .back-to-top:hover {
+            background: var(--accent-purple);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* ============================
+           Namespace Filter Chips
+           ============================ */
+        .namespace-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+        .namespace-chip {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+        }
+        .namespace-chip:hover, .namespace-chip.active {
+            background: rgba(139, 92, 246, 0.15);
+            border-color: var(--accent-purple);
+            color: var(--accent-purple-light);
+        }
+
+        /* ============================
+           Footer
+           ============================ */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 60px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        .footer a { color: var(--accent-purple-light); }
+
+        /* ============================
+           Responsive
+           ============================ */
+        @media (max-width: 900px) {
+            .sidebar {
+                transform: translateX(100%);
+            }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
+            .main {
+                margin-right: 0;
+                max-width: 100%;
+                padding: 20px;
+            }
+            .hero-title { font-size: 2rem; }
+            .back-to-top { right: 24px; bottom: 84px; }
+        }
+
+        @media (max-width: 600px) {
+            .header { padding: 0 16px; }
+            .header-info { display: none; }
+            .hero-title { font-size: 1.6rem; }
+            .hero-stats { gap: 12px; }
+            .stat-card { min-width: 100px; padding: 12px 18px; }
+            .endpoint-header { flex-wrap: wrap; gap: 8px; padding: 14px 16px; }
+            .endpoint-body { padding: 16px; }
+            .params-table { font-size: 0.8rem; }
+        }
+
+        /* ============================
+           Utility Classes
+           ============================ */
+        .ltr { direction: ltr; text-align: left; }
+        .hidden { display: none !important; }
+        .mt-1 { margin-top: 8px; }
+        .mt-2 { margin-top: 16px; }
+        .mb-1 { margin-bottom: 8px; }
+        .mb-2 { margin-bottom: 16px; }
+    </style>
+</head>
+<body>
+
+    <!-- Background Pattern -->
+    <div class="bg-pattern"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-brand">
+            <div class="header-logo">غ</div>
+            <div>
+                <div class="header-title">متجر غزالة - API Docs</div>
+                <div class="header-subtitle">التوثيق الكامل لواجهة برمجة التطبيقات</div>
+            </div>
+        </div>
+        <div class="header-info">
+            <span class="header-badge badge-version">REST API v2</span>
+            <span class="header-badge badge-base">WooCommerce v3</span>
+            <span class="header-url">https://ghzalah.com/wp-json/</span>
+        </div>
+    </header>
+
+    <!-- Layout -->
+    <div class="layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-search">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="بحث في الـ APIs...">
+            </div>
+            <nav class="sidebar-nav" id="sidebarNav">
+                <!-- Populated by JS -->
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main" id="mainContent">
+
+            <!-- Hero -->
+            <section class="hero">
+                <h1 class="hero-title">🦌 توثيق API متجر غزالة</h1>
+                <p class="hero-desc">الدليل الشامل لجميع نقاط الوصول (Endpoints) الخاصة بمتجر غزالة - كل ما يخص الجمال والأناقة</p>
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalEndpoints">0</div>
+                        <div class="stat-label">نقطة وصول</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalNamespaces">0</div>
+                        <div class="stat-label">مجموعة API</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">HTTPS</div>
+                        <div class="stat-label">بروتوكول آمن</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">JSON</div>
+                        <div class="stat-label">صيغة البيانات</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Start -->
+            <section class="quick-start" id="quickstart">
+                <h2>🚀 البداية السريعة</h2>
+                <p>للبدء في استخدام API متجر غزالة، تحتاج إلى إرسال طلبات HTTP إلى الرابط الأساسي. جميع الردود تكون بصيغة JSON.</p>
+
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab(event, 'tab-curl')">cURL</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'tab-js')">JavaScript</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'tab-python')">Python</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'tab-php')">PHP</button>
+                </div>
+
+                <div class="tab-content active" id="tab-curl">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="code-copy" onclick="copyCode(this)">نسخ</button>
+                        </div>
+                        <div class="code-content">
+<pre><span class="comment"># جلب معلومات المتجر الأساسية</span>
+curl -X GET <span class="url">https://ghzalah.com/wp-json/</span>
+
+<span class="comment"># جلب المنتجات (يتطلب مصادقة)</span>
+curl -X GET <span class="url">https://ghzalah.com/wp-json/wc/v3/products</span> \
+  -u <span class="string">consumer_key:consumer_secret</span>
+
+<span class="comment"># جلب المقالات</span>
+curl -X GET <span class="url">https://ghzalah.com/wp-json/wp/v2/posts</span></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-js">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">javascript</span>
+                            <button class="code-copy" onclick="copyCode(this)">نسخ</button>
+                        </div>
+                        <div class="code-content">
+<pre><span class="comment">// جلب المنتجات من WooCommerce API</span>
+<span class="keyword">const</span> baseUrl = <span class="string">'https://ghzalah.com/wp-json'</span>;
+
+<span class="comment">// بدون مصادقة - البيانات العامة</span>
+<span class="keyword">const</span> response = <span class="keyword">await</span> fetch(<span class="string">`${baseUrl}/wp/v2/posts`</span>);
+<span class="keyword">const</span> posts = <span class="keyword">await</span> response.json();
+
+<span class="comment">// مع مصادقة - WooCommerce</span>
+<span class="keyword">const</span> wcResponse = <span class="keyword">await</span> fetch(
+  <span class="string">`${baseUrl}/wc/v3/products`</span>, {
+    headers: {
+      <span class="string">'Authorization'</span>: <span class="string">'Basic '</span> + btoa(<span class="string">'ck_xxx:cs_xxx'</span>)
+    }
+});
+<span class="keyword">const</span> products = <span class="keyword">await</span> wcResponse.json();</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-python">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">python</span>
+                            <button class="code-copy" onclick="copyCode(this)">نسخ</button>
+                        </div>
+                        <div class="code-content">
+<pre><span class="keyword">import</span> requests
+
+base_url = <span class="string">"https://ghzalah.com/wp-json"</span>
+
+<span class="comment"># جلب المقالات العامة</span>
+response = requests.get(f<span class="string">"{base_url}/wp/v2/posts"</span>)
+posts = response.json()
+
+<span class="comment"># WooCommerce مع مصادقة</span>
+wc_response = requests.get(
+    f<span class="string">"{base_url}/wc/v3/products"</span>,
+    auth=(<span class="string">"ck_your_key"</span>, <span class="string">"cs_your_secret"</span>)
+)
+products = wc_response.json()</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-php">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">php</span>
+                            <button class="code-copy" onclick="copyCode(this)">نسخ</button>
+                        </div>
+                        <div class="code-content">
+<pre><span class="keyword">&lt;?php</span>
+<span class="comment">// جلب بيانات من API متجر غزالة</span>
+$base_url = <span class="string">'https://ghzalah.com/wp-json'</span>;
+
+<span class="comment">// جلب المقالات</span>
+$response = file_get_contents(<span class="string">"$base_url/wp/v2/posts"</span>);
+$posts = json_decode($response, <span class="keyword">true</span>);
+
+<span class="comment">// WooCommerce مع مصادقة</span>
+$context = stream_context_create([
+    <span class="string">'http'</span> => [
+        <span class="string">'header'</span> => <span class="string">'Authorization: Basic '</span> . base64_encode(<span class="string">'ck_xxx:cs_xxx'</span>)
+    ]
+]);
+$wc = file_get_contents(<span class="string">"$base_url/wc/v3/products"</span>, <span class="keyword">false</span>, $context);
+$products = json_decode($wc, <span class="keyword">true</span>);
+<span class="keyword">?&gt;</span></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Authentication -->
+            <section class="auth-section" id="authentication">
+                <h2>🔐 المصادقة (Authentication)</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem;">
+                    يدعم متجر غزالة عدة طرق للمصادقة. اختر الطريقة المناسبة حسب نوع التطبيق.
+                </p>
+                <div class="auth-methods">
+                    <div class="auth-card">
+                        <h3>🔑 Application Passwords</h3>
+                        <p>كلمات مرور التطبيقات - الطريقة الموصى بها لتطبيقات الطرف الثالث.</p>
+                        <div class="code-block mt-1">
+                            <div class="code-content">
+<pre style="font-size: 0.75rem;">Authorization: Basic base64(username:app_password)</pre>
+                            </div>
+                        </div>
+                        <p class="mt-1" style="font-size: 0.78rem;">
+                            رابط التفويض:<br>
+                            <code class="ltr" style="font-size: 0.72rem; color: var(--accent-cyan);">https://ghzalah.com/wp-admin/authorize-application.php</code>
+                        </p>
+                    </div>
+                    <div class="auth-card">
+                        <h3>🛒 WooCommerce Keys</h3>
+                        <p>مفاتيح API الخاصة بـ WooCommerce - للعمليات التجارية.</p>
+                        <div class="code-block mt-1">
+                            <div class="code-content">
+<pre style="font-size: 0.75rem;"><span class="comment"># عبر Query Parameters</span>
+?consumer_key=ck_xxx&consumer_secret=cs_xxx
+
+<span class="comment"># أو عبر Basic Auth</span>
+Authorization: Basic base64(ck_xxx:cs_xxx)</pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="auth-card">
+                        <h3>🍪 Cookie Auth</h3>
+                        <p>مصادقة الكوكيز - للاستخدام الداخلي مع لوحة التحكم فقط.</p>
+                        <div class="code-block mt-1">
+                            <div class="code-content">
+<pre style="font-size: 0.75rem;">X-WP-Nonce: {nonce_value}
+Cookie: wordpress_logged_in_xxx=...</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Namespace Filter -->
+            <section id="namespaces-filter" class="mb-2">
+                <h2 style="font-size: 1.3rem; color: var(--text-heading); margin-bottom: 16px;">📂 تصفية حسب المجموعة</h2>
+                <div class="namespace-chips" id="namespaceChips">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- API Sections Container -->
+            <div id="apiSections">
+                <!-- Populated by JS -->
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>📄 توثيق API لـ <a href="https://ghzalah.com" target="_blank">متجر غزالة</a> | Base URL: <code class="ltr" style="color: var(--accent-cyan);">https://ghzalah.com/wp-json/</code></p>
+                <p class="mt-1" style="font-size: 0.8rem;">تم إنشاء هذا التوثيق تلقائيًا من بيانات REST API Discovery</p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Mobile Sidebar Toggle -->
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">☰</button>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ============================================================
+// API DATA - Parsed from the WordPress REST API discovery
+// ============================================================
+
+const API_DATA = {
+    name: "متجر غزالة",
+    description: "متجر غزالة كل ما يخص الجمال والأناقة",
+    url: "https://ghzalah.com",
+    baseUrl: "https://ghzalah.com/wp-json",
+    namespaces: [
+        "wp/v2", "wc/v3", "wc/store/v1", "wc-analytics",
+        "rankmath/v1", "simple-history/v1", "code-snippets/v1",
+        "oembed/1.0", "elementor/v1", "jetpack/v4"
+    ]
+};
+
+// Organized endpoints by category
+const API_SECTIONS = [
+    {
+        id: "woocommerce",
+        title: "WooCommerce - المتجر",
+        icon: "🛒",
+        color: "#8b5cf6",
+        desc: "إدارة المنتجات، الطلبات، العملاء، الكوبونات وجميع عمليات المتجر",
+        endpoints: [
+            {
+                path: "/wc/v3/products",
+                methods: ["GET", "POST"],
+                summary: "إدارة المنتجات",
+                desc: "جلب قائمة المنتجات أو إنشاء منتج جديد في المتجر.",
+                params: {
+                    GET: [
+                        { name: "context", type: "string", required: false, default: "view", desc: "نطاق الطلب", enum: ["view", "edit"] },
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة الحالية" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر في كل صفحة (حد أقصى 100)" },
+                        { name: "search", type: "string", required: false, desc: "بحث نصي في المنتجات" },
+                        { name: "after", type: "string", required: false, desc: "جلب المنتجات بعد تاريخ معين (ISO8601)" },
+                        { name: "before", type: "string", required: false, desc: "جلب المنتجات قبل تاريخ معين (ISO8601)" },
+                        { name: "order", type: "string", required: false, default: "desc", desc: "ترتيب النتائج", enum: ["asc", "desc"] },
+                        { name: "orderby", type: "string", required: false, default: "date", desc: "ترتيب حسب", enum: ["date", "id", "include", "title", "slug", "price", "popularity", "rating"] },
+                        { name: "slug", type: "string", required: false, desc: "جلب منتج بالاسم اللطيف (slug)" },
+                        { name: "status", type: "string", required: false, desc: "حالة المنتج", enum: ["draft", "pending", "private", "publish", "any"] },
+                        { name: "type", type: "string", required: false, desc: "نوع المنتج", enum: ["simple", "grouped", "external", "variable"] },
+                        { name: "sku", type: "string", required: false, desc: "رمز SKU للمنتج" },
+                        { name: "featured", type: "boolean", required: false, desc: "المنتجات المميزة فقط" },
+                        { name: "category", type: "string", required: false, desc: "تصفية حسب معرف التصنيف" },
+                        { name: "tag", type: "string", required: false, desc: "تصفية حسب معرف الوسم" },
+                        { name: "on_sale", type: "boolean", required: false, desc: "المنتجات المعروضة فقط" },
+                        { name: "min_price", type: "string", required: false, desc: "الحد الأدنى للسعر" },
+                        { name: "max_price", type: "string", required: false, desc: "الحد الأقصى للسعر" },
+                        { name: "stock_status", type: "string", required: false, desc: "حالة المخزون", enum: ["instock", "outofstock", "onbackorder"] }
+                    ],
+                    POST: [
+                        { name: "name", type: "string", required: true, desc: "اسم المنتج" },
+                        { name: "slug", type: "string", required: false, desc: "الاسم اللطيف (slug)" },
+                        { name: "type", type: "string", required: false, default: "simple", desc: "نوع المنتج", enum: ["simple", "grouped", "external", "variable"] },
+                        { name: "status", type: "string", required: false, default: "publish", desc: "حالة المنتج", enum: ["draft", "pending", "private", "publish"] },
+                        { name: "description", type: "string", required: false, desc: "وصف المنتج (HTML)" },
+                        { name: "short_description", type: "string", required: false, desc: "وصف مختصر" },
+                        { name: "sku", type: "string", required: false, desc: "رمز SKU" },
+                        { name: "regular_price", type: "string", required: false, desc: "السعر العادي" },
+                        { name: "sale_price", type: "string", required: false, desc: "سعر التخفيض" },
+                        { name: "categories", type: "array", required: false, desc: "تصنيفات المنتج [{id}]" },
+                        { name: "tags", type: "array", required: false, desc: "وسوم المنتج [{id}]" },
+                        { name: "images", type: "array", required: false, desc: "صور المنتج [{src, name, alt}]" },
+                        { name: "manage_stock", type: "boolean", required: false, desc: "إدارة المخزون" },
+                        { name: "stock_quantity", type: "integer", required: false, desc: "كمية المخزون" },
+                        { name: "weight", type: "string", required: false, desc: "الوزن" },
+                        { name: "featured", type: "boolean", required: false, desc: "منتج مميز" }
+                    ]
+                },
+                example: {
+                    GET: 'GET /wc/v3/products?per_page=5&category=15&on_sale=true',
+                    POST: `POST /wc/v3/products
+{
+  "name": "كريم عناية بالبشرة",
+  "type": "simple",
+  "regular_price": "120.00",
+  "sale_price": "99.00",
+  "description": "كريم طبيعي للعناية بالبشرة",
+  "categories": [{"id": 15}],
+  "images": [{"src": "https://example.com/image.jpg"}]
+}`
+                }
+            },
+            {
+                path: "/wc/v3/products/{id}",
+                methods: ["GET", "PUT", "DELETE"],
+                summary: "منتج محدد",
+                desc: "جلب، تعديل أو حذف منتج معين باستخدام معرّفه.",
+                params: {
+                    GET: [
+                        { name: "id", type: "integer", required: true, desc: "معرّف المنتج الفريد" },
+                        { name: "context", type: "string", required: false, default: "view", desc: "نطاق الطلب" }
+                    ],
+                    PUT: [
+                        { name: "id", type: "integer", required: true, desc: "معرّف المنتج" },
+                        { name: "name", type: "string", required: false, desc: "اسم المنتج" },
+                        { name: "regular_price", type: "string", required: false, desc: "السعر العادي" },
+                        { name: "sale_price", type: "string", required: false, desc: "سعر التخفيض" },
+                        { name: "status", type: "string", required: false, desc: "حالة المنتج" },
+                        { name: "stock_quantity", type: "integer", required: false, desc: "كمية المخزون" }
+                    ],
+                    DELETE: [
+                        { name: "id", type: "integer", required: true, desc: "معرّف المنتج" },
+                        { name: "force", type: "boolean", required: false, default: "false", desc: "حذف نهائي بدلاً من نقل للمهملات" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/v3/products/categories",
+                methods: ["GET", "POST"],
+                summary: "تصنيفات المنتجات",
+                desc: "إدارة تصنيفات المنتجات في المتجر.",
+                params: {
+                    GET: [
+                        { name: "context", type: "string", required: false, default: "view", desc: "نطاق الطلب" },
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر في كل صفحة" },
+                        { name: "search", type: "string", required: false, desc: "بحث نصي" },
+                        { name: "parent", type: "integer", required: false, desc: "معرّف التصنيف الأب" },
+                        { name: "hide_empty", type: "boolean", required: false, desc: "إخفاء التصنيفات الفارغة" }
+                    ],
+                    POST: [
+                        { name: "name", type: "string", required: true, desc: "اسم التصنيف" },
+                        { name: "slug", type: "string", required: false, desc: "الاسم اللطيف" },
+                        { name: "parent", type: "integer", required: false, desc: "معرّف التصنيف الأب" },
+                        { name: "description", type: "string", required: false, desc: "وصف التصنيف" },
+                        { name: "image", type: "object", required: false, desc: "صورة التصنيف {src, name, alt}" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/v3/products/tags",
+                methods: ["GET", "POST"],
+                summary: "وسوم المنتجات",
+                desc: "إدارة وسوم (Tags) المنتجات.",
+                params: {
+                    GET: [
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" },
+                        { name: "search", type: "string", required: false, desc: "بحث نصي" }
+                    ],
+                    POST: [
+                        { name: "name", type: "string", required: true, desc: "اسم الوسم" },
+                        { name: "slug", type: "string", required: false, desc: "الاسم اللطيف" },
+                        { name: "description", type: "string", required: false, desc: "وصف الوسم" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/v3/products/attributes",
+                methods: ["GET", "POST"],
+                summary: "خصائص المنتجات",
+                desc: "إدارة خصائص (Attributes) المنتجات مثل اللون والحجم.",
+                params: {
+                    GET: [
+                        { name: "context", type: "string", required: false, default: "view", desc: "نطاق الطلب" }
+                    ],
+                    POST: [
+                        { name: "name", type: "string", required: true, desc: "اسم الخاصية" },
+                        { name: "slug", type: "string", required: false, desc: "الاسم اللطيف" },
+                        { name: "type", type: "string", required: false, default: "select", desc: "نوع الخاصية" },
+                        { name: "order_by", type: "string", required: false, default: "menu_order", desc: "ترتيب حسب", enum: ["menu_order", "name", "name_num", "id"] },
+                        { name: "has_archives", type: "boolean", required: false, default: "false", desc: "تفعيل الأرشيف" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/v3/orders",
+                methods: ["GET", "POST"],
+                summary: "إدارة الطلبات",
+                desc: "جلب قائمة الطلبات أو إنشاء طلب جديد.",
+                params: {
+                    GET: [
+                        { name: "context", type: "string", required: false, default: "view", desc: "نطاق الطلب" },
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" },
+                        { name: "search", type: "string", required: false, desc: "بحث نصي" },
+                        { name: "after", type: "string", required: false, desc: "بعد تاريخ (ISO8601)" },
+                        { name: "before", type: "string", required: false, desc: "قبل تاريخ (ISO8601)" },
+                        { name: "status", type: "string", required: false, default: "any", desc: "حالة الطلب", enum: ["pending", "processing", "on-hold", "completed", "cancelled", "refunded", "failed", "trash", "any"] },
+                        { name: "customer", type: "integer", required: false, desc: "معرّف العميل" },
+                        { name: "product", type: "integer", required: false, desc: "معرّف المنتج" },
+                        { name: "order", type: "string", required: false, default: "desc", desc: "ترتيب", enum: ["asc", "desc"] },
+                        { name: "orderby", type: "string", required: false, default: "date", desc: "ترتيب حسب", enum: ["date", "id", "include", "title", "slug"] }
+                    ],
+                    POST: [
+                        { name: "status", type: "string", required: false, default: "pending", desc: "حالة الطلب" },
+                        { name: "currency", type: "string", required: false, desc: "العملة (مثل SAR)" },
+                        { name: "customer_id", type: "integer", required: false, desc: "معرّف العميل (0 = زائر)" },
+                        { name: "billing", type: "object", required: false, desc: "بيانات الفوترة" },
+                        { name: "shipping", type: "object", required: false, desc: "بيانات الشحن" },
+                        { name: "line_items", type: "array", required: false, desc: "عناصر الطلب [{product_id, quantity}]" },
+                        { name: "shipping_lines", type: "array", required: false, desc: "خطوط الشحن" },
+                        { name: "coupon_lines", type: "array", required: false, desc: "كوبونات الخصم [{code}]" },
+                        { name: "payment_method", type: "string", required: false, desc: "طريقة الدفع" },
+                        { name: "customer_note", type: "string", required: false, desc: "ملاحظات العميل" }
+                    ]
+                },
+                example: {
+                    POST: `POST /wc/v3/orders
+{
+  "payment_method": "cod",
+  "billing": {
+    "first_name": "أحمد",
+    "last_name": "محمد",
+    "email": "ahmed@example.com",
+    "phone": "0501234567",
+    "city": "الرياض",
+    "country": "SA"
+  },
+  "line_items": [
+    { "product_id": 123, "quantity": 2 }
+  ]
+}`
+                }
+            },
+            {
+                path: "/wc/v3/orders/{id}",
+                methods: ["GET", "PUT", "DELETE"],
+                summary: "طلب محدد",
+                desc: "جلب، تعديل أو حذف طلب معين.",
+                params: {
+                    GET: [{ name: "id", type: "integer", required: true, desc: "معرّف الطلب" }],
+                    PUT: [
+                        { name: "id", type: "integer", required: true, desc: "معرّف الطلب" },
+                        { name: "status", type: "string", required: false, desc: "حالة الطلب الجديدة" }
+                    ],
+                    DELETE: [
+                        { name: "id", type: "integer", required: true, desc: "معرّف الطلب" },
+                        { name: "force", type: "boolean", required: false, desc: "حذف نهائي" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/v3/orders/{id}/notes",
+                methods: ["GET", "POST"],
+                summary: "ملاحظات الطلب",
+                desc: "جلب أو إضافة ملاحظات على طلب معين.",
+                params: {
+                    GET: [
+                        { name: "id", type: "integer", required: true, desc: "معرّف الطلب" },
+                        { name: "type", type: "string", required: false, default: "any", desc: "نوع الملاحظة", enum: ["any", "customer", "internal"] }
+                    ],
+                    POST: [
+                        { name: "note", type: "string", required: true, desc: "نص الملاحظة" },
+                        { name: "customer_note", type: "boolean", required: false, default: "false", desc: "ملاحظة مرئية للعميل" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/v3/customers",
+                methods: ["GET", "POST"],
+                summary: "إدارة العملاء",
+                desc: "جلب قائمة العملاء أو إنشاء عميل جديد.",
+                params: {
+                    GET: [
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" },
+                        { name: "search", type: "string", required: false, desc: "بحث نصي" },
+                        { name: "email", type: "string", required: false, desc: "بحث بالبريد الإلكتروني" },
+                        { name: "role", type: "string", required: false, default: "customer", desc: "دور المستخدم", enum: ["all", "administrator", "editor", "author", "customer"] },
+                        { name: "orderby", type: "string", required: false, default: "name", desc: "ترتيب حسب", enum: ["id", "include", "name", "registered_date"] }
+                    ],
+                    POST: [
+                        { name: "email", type: "string", required: true, desc: "البريد الإلكتروني" },
+                        { name: "first_name", type: "string", required: false, desc: "الاسم الأول" },
+                        { name: "last_name", type: "string", required: false, desc: "اسم العائلة" },
+                        { name: "username", type: "string", required: false, desc: "اسم المستخدم" },
+                        { name: "password", type: "string", required: true, desc: "كلمة المرور" },
+                        { name: "billing", type: "object", required: false, desc: "بيانات الفوترة" },
+                        { name: "shipping", type: "object", required: false, desc: "بيانات الشحن" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/v3/customers/{id}",
+                methods: ["GET", "PUT", "DELETE"],
+                summary: "عميل محدد",
+                desc: "جلب، تعديل أو حذف عميل معين.",
+                params: {
+                    GET: [{ name: "id", type: "integer", required: true, desc: "معرّف العميل" }],
+                    PUT: [
+                        { name: "id", type: "integer", required: true, desc: "معرّف العميل" },
+                        { name: "email", type: "string", required: false, desc: "البريد الإلكتروني" },
+                        { name: "first_name", type: "string", required: false, desc: "الاسم الأول" },
+                        { name: "last_name", type: "string", required: false, desc: "اسم العائلة" }
+                    ],
+                    DELETE: [
+                        { name: "id", type: "integer", required: true, desc: "معرّف العميل" },
+                        { name: "force", type: "boolean", required: false, desc: "مطلوب ويجب أن يكون true" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/v3/coupons",
+                methods: ["GET", "POST"],
+                summary: "إدارة الكوبونات",
+                desc: "جلب قائمة كوبونات الخصم أو إنشاء كوبون جديد.",
+                params: {
+                    GET: [
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" },
+                        { name: "search", type: "string", required: false, desc: "بحث نصي" },
+                        { name: "code", type: "string", required: false, desc: "بحث برمز الكوبون" }
+                    ],
+                    POST: [
+                        { name: "code", type: "string", required: true, desc: "رمز الكوبون" },
+                        { name: "discount_type", type: "string", required: false, default: "fixed_cart", desc: "نوع الخصم", enum: ["percent", "fixed_cart", "fixed_product"] },
+                        { name: "amount", type: "string", required: false, desc: "قيمة الخصم" },
+                        { name: "individual_use", type: "boolean", required: false, desc: "استخدام فردي فقط" },
+                        { name: "usage_limit", type: "integer", required: false, desc: "حد الاستخدام" },
+                        { name: "date_expires", type: "string", required: false, desc: "تاريخ الانتهاء" },
+                        { name: "minimum_amount", type: "string", required: false, desc: "الحد الأدنى للطلب" },
+                        { name: "free_shipping", type: "boolean", required: false, desc: "شحن مجاني" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/v3/products/reviews",
+                methods: ["GET", "POST"],
+                summary: "مراجعات المنتجات",
+                desc: "إدارة تقييمات ومراجعات المنتجات.",
+                params: {
+                    GET: [
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" },
+                        { name: "product", type: "array", required: false, desc: "تصفية حسب معرفات المنتجات" },
+                        { name: "status", type: "string", required: false, default: "approved", desc: "حالة المراجعة", enum: ["all", "hold", "approved", "spam", "trash"] }
+                    ],
+                    POST: [
+                        { name: "product_id", type: "integer", required: true, desc: "معرّف المنتج" },
+                        { name: "review", type: "string", required: true, desc: "نص المراجعة" },
+                        { name: "reviewer", type: "string", required: true, desc: "اسم المراجع" },
+                        { name: "reviewer_email", type: "string", required: true, desc: "بريد المراجع" },
+                        { name: "rating", type: "integer", required: false, desc: "التقييم (1-5)" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/v3/shipping/zones",
+                methods: ["GET", "POST"],
+                summary: "مناطق الشحن",
+                desc: "إدارة مناطق وطرق الشحن.",
+                params: {
+                    GET: [],
+                    POST: [
+                        { name: "name", type: "string", required: true, desc: "اسم منطقة الشحن" },
+                        { name: "order", type: "integer", required: false, desc: "ترتيب المنطقة" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/v3/payment_gateways",
+                methods: ["GET"],
+                summary: "بوابات الدفع",
+                desc: "جلب قائمة بوابات الدفع المتاحة.",
+                params: { GET: [{ name: "context", type: "string", required: false, default: "view", desc: "نطاق الطلب" }] }
+            },
+            {
+                path: "/wc/v3/taxes",
+                methods: ["GET", "POST"],
+                summary: "الضرائب",
+                desc: "إدارة معدلات الضرائب.",
+                params: {
+                    GET: [
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" },
+                        { name: "class", type: "string", required: false, desc: "فئة الضريبة" }
+                    ],
+                    POST: [
+                        { name: "country", type: "string", required: false, desc: "رمز الدولة" },
+                        { name: "state", type: "string", required: false, desc: "المنطقة/الولاية" },
+                        { name: "rate", type: "string", required: false, desc: "نسبة الضريبة" },
+                        { name: "name", type: "string", required: false, desc: "اسم الضريبة" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/v3/reports",
+                methods: ["GET"],
+                summary: "التقارير",
+                desc: "جلب قائمة التقارير المتاحة.",
+                params: { GET: [{ name: "context", type: "string", required: false, default: "view", desc: "نطاق الطلب" }] }
+            },
+            {
+                path: "/wc/v3/reports/sales",
+                methods: ["GET"],
+                summary: "تقارير المبيعات",
+                desc: "جلب تقارير المبيعات خلال فترة معينة.",
+                params: {
+                    GET: [
+                        { name: "context", type: "string", required: false, default: "view", desc: "نطاق الطلب" },
+                        { name: "period", type: "string", required: false, desc: "الفترة الزمنية", enum: ["week", "month", "last_month", "year"] },
+                        { name: "date_min", type: "string", required: false, desc: "تاريخ البداية (YYYY-MM-DD)" },
+                        { name: "date_max", type: "string", required: false, desc: "تاريخ النهاية (YYYY-MM-DD)" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/v3/settings",
+                methods: ["GET"],
+                summary: "إعدادات المتجر",
+                desc: "جلب مجموعات إعدادات المتجر.",
+                params: { GET: [] }
+            },
+            {
+                path: "/wc/v3/system_status",
+                methods: ["GET"],
+                summary: "حالة النظام",
+                desc: "معلومات حالة النظام وبيئة السيرفر.",
+                params: { GET: [] }
+            }
+        ]
+    },
+    {
+        id: "wc-store",
+        title: "WooCommerce Store API",
+        icon: "🏪",
+        color: "#06b6d4",
+        desc: "API الواجهة الأمامية للمتجر - السلة، الخروج، المنتجات العامة",
+        endpoints: [
+            {
+                path: "/wc/store/v1/cart",
+                methods: ["GET"],
+                summary: "سلة التسوق",
+                desc: "جلب بيانات سلة التسوق الحالية للمستخدم.",
+                params: { GET: [] }
+            },
+            {
+                path: "/wc/store/v1/cart/add-item",
+                methods: ["POST"],
+                summary: "إضافة للسلة",
+                desc: "إضافة منتج إلى سلة التسوق.",
+                params: {
+                    POST: [
+                        { name: "id", type: "integer", required: true, desc: "معرّف المنتج" },
+                        { name: "quantity", type: "integer", required: true, desc: "الكمية" },
+                        { name: "variation", type: "array", required: false, desc: "تنوعات المنتج" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/store/v1/cart/remove-item",
+                methods: ["POST"],
+                summary: "حذف من السلة",
+                desc: "حذف عنصر من سلة التسوق.",
+                params: {
+                    POST: [
+                        { name: "key", type: "string", required: true, desc: "مفتاح العنصر في السلة" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/store/v1/cart/update-item",
+                methods: ["POST"],
+                summary: "تحديث عنصر",
+                desc: "تحديث كمية عنصر في السلة.",
+                params: {
+                    POST: [
+                        { name: "key", type: "string", required: true, desc: "مفتاح العنصر" },
+                        { name: "quantity", type: "integer", required: true, desc: "الكمية الجديدة" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/store/v1/cart/apply-coupon",
+                methods: ["POST"],
+                summary: "تطبيق كوبون",
+                desc: "تطبيق كوبون خصم على السلة.",
+                params: {
+                    POST: [
+                        { name: "code", type: "string", required: true, desc: "رمز الكوبون" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/store/v1/checkout",
+                methods: ["GET", "POST"],
+                summary: "إتمام الشراء",
+                desc: "جلب بيانات الخروج أو إتمام عملية الشراء.",
+                params: {
+                    POST: [
+                        { name: "billing_address", type: "object", required: true, desc: "عنوان الفوترة" },
+                        { name: "shipping_address", type: "object", required: false, desc: "عنوان الشحن" },
+                        { name: "payment_method", type: "string", required: true, desc: "طريقة الدفع" },
+                        { name: "customer_note", type: "string", required: false, desc: "ملاحظات" }
+                    ]
+                }
+            },
+            {
+                path: "/wc/store/v1/products",
+                methods: ["GET"],
+                summary: "منتجات المتجر (عام)",
+                desc: "جلب المنتجات للعرض في الواجهة الأمامية بدون مصادقة.",
+                params: {
+                    GET: [
+                        { name: "search", type: "string", required: false, desc: "بحث نصي" },
+                        { name: "slug", type: "string", required: false, desc: "الاسم اللطيف" },
+                        { name: "category", type: "string", required: false, desc: "التصنيف" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" },
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "orderby", type: "string", required: false, desc: "ترتيب حسب", enum: ["date", "popularity", "rating", "price"] }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        id: "wordpress",
+        title: "WordPress Core",
+        icon: "📝",
+        color: "#3b82f6",
+        desc: "المقالات، الصفحات، الوسائط، المستخدمين، التصنيفات وووردبريس الأساسي",
+        endpoints: [
+            {
+                path: "/wp/v2/posts",
+                methods: ["GET", "POST"],
+                summary: "المقالات",
+                desc: "جلب قائمة المقالات أو إنشاء مقالة جديدة.",
+                params: {
+                    GET: [
+                        { name: "context", type: "string", required: false, default: "view", desc: "نطاق الطلب", enum: ["view", "embed", "edit"] },
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر (حد أقصى 100)" },
+                        { name: "search", type: "string", required: false, desc: "بحث نصي" },
+                        { name: "after", type: "string", required: false, desc: "بعد تاريخ (ISO8601)" },
+                        { name: "before", type: "string", required: false, desc: "قبل تاريخ (ISO8601)" },
+                        { name: "author", type: "array", required: false, desc: "معرفات الكتّاب" },
+                        { name: "categories", type: "array", required: false, desc: "معرفات التصنيفات" },
+                        { name: "tags", type: "array", required: false, desc: "معرفات الوسوم" },
+                        { name: "status", type: "string", required: false, default: "publish", desc: "حالة المقالة" },
+                        { name: "slug", type: "array", required: false, desc: "أسماء لطيفة محددة" },
+                        { name: "sticky", type: "boolean", required: false, desc: "المقالات المثبتة فقط" },
+                        { name: "order", type: "string", required: false, default: "desc", desc: "ترتيب", enum: ["asc", "desc"] },
+                        { name: "orderby", type: "string", required: false, default: "date", desc: "ترتيب حسب", enum: ["author", "date", "id", "include", "modified", "parent", "relevance", "slug", "include_slugs", "title"] },
+                        { name: "_embed", type: "string", required: false, desc: "تضمين البيانات المرتبطة (الكاتب، الصور...)" }
+                    ],
+                    POST: [
+                        { name: "title", type: "object", required: false, desc: "عنوان المقالة {rendered, raw}" },
+                        { name: "content", type: "object", required: false, desc: "محتوى المقالة {rendered, raw}" },
+                        { name: "excerpt", type: "object", required: false, desc: "المقتطف" },
+                        { name: "status", type: "string", required: false, default: "draft", desc: "الحالة", enum: ["publish", "future", "draft", "pending", "private"] },
+                        { name: "slug", type: "string", required: false, desc: "الاسم اللطيف" },
+                        { name: "author", type: "integer", required: false, desc: "معرّف الكاتب" },
+                        { name: "featured_media", type: "integer", required: false, desc: "معرّف الصورة البارزة" },
+                        { name: "categories", type: "array", required: false, desc: "معرفات التصنيفات" },
+                        { name: "tags", type: "array", required: false, desc: "معرفات الوسوم" },
+                        { name: "sticky", type: "boolean", required: false, desc: "تثبيت المقالة" },
+                        { name: "comment_status", type: "string", required: false, desc: "حالة التعليقات", enum: ["open", "closed"] }
+                    ]
+                }
+            },
+            {
+                path: "/wp/v2/posts/{id}",
+                methods: ["GET", "PUT", "DELETE"],
+                summary: "مقالة محددة",
+                desc: "جلب، تعديل أو حذف مقالة معينة.",
+                params: {
+                    GET: [
+                        { name: "id", type: "integer", required: true, desc: "معرّف المقالة" },
+                        { name: "context", type: "string", required: false, default: "view", desc: "نطاق الطلب" },
+                        { name: "password", type: "string", required: false, desc: "كلمة المرور (للمحتوى المحمي)" }
+                    ],
+                    PUT: [
+                        { name: "id", type: "integer", required: true, desc: "معرّف المقالة" },
+                        { name: "title", type: "object", required: false, desc: "العنوان الجديد" },
+                        { name: "content", type: "object", required: false, desc: "المحتوى الجديد" },
+                        { name: "status", type: "string", required: false, desc: "الحالة الجديدة" }
+                    ],
+                    DELETE: [
+                        { name: "id", type: "integer", required: true, desc: "معرّف المقالة" },
+                        { name: "force", type: "boolean", required: false, desc: "حذف نهائي" }
+                    ]
+                }
+            },
+            {
+                path: "/wp/v2/pages",
+                methods: ["GET", "POST"],
+                summary: "الصفحات",
+                desc: "جلب قائمة الصفحات أو إنشاء صفحة جديدة.",
+                params: {
+                    GET: [
+                        { name: "context", type: "string", required: false, default: "view", desc: "نطاق الطلب" },
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" },
+                        { name: "search", type: "string", required: false, desc: "بحث نصي" },
+                        { name: "parent", type: "array", required: false, desc: "معرفات الصفحات الأب" },
+                        { name: "status", type: "string", required: false, default: "publish", desc: "الحالة" },
+                        { name: "order", type: "string", required: false, default: "desc", desc: "ترتيب", enum: ["asc", "desc"] },
+                        { name: "orderby", type: "string", required: false, default: "date", desc: "ترتيب حسب" },
+                        { name: "menu_order", type: "integer", required: false, desc: "ترتيب القائمة" }
+                    ],
+                    POST: [
+                        { name: "title", type: "object", required: false, desc: "عنوان الصفحة" },
+                        { name: "content", type: "object", required: false, desc: "محتوى الصفحة" },
+                        { name: "status", type: "string", required: false, default: "draft", desc: "الحالة" },
+                        { name: "parent", type: "integer", required: false, desc: "الصفحة الأب" },
+                        { name: "template", type: "string", required: false, desc: "قالب الصفحة" }
+                    ]
+                }
+            },
+            {
+                path: "/wp/v2/media",
+                methods: ["GET", "POST"],
+                summary: "الوسائط",
+                desc: "جلب ملفات الوسائط أو رفع ملف جديد.",
+                params: {
+                    GET: [
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" },
+                        { name: "search", type: "string", required: false, desc: "بحث نصي" },
+                        { name: "media_type", type: "string", required: false, desc: "نوع الوسائط", enum: ["image", "video", "text", "application", "audio"] },
+                        { name: "mime_type", type: "string", required: false, desc: "نوع MIME" }
+                    ],
+                    POST: [
+                        { name: "title", type: "object", required: false, desc: "عنوان الملف" },
+                        { name: "alt_text", type: "string", required: false, desc: "النص البديل" },
+                        { name: "caption", type: "object", required: false, desc: "التسمية التوضيحية" },
+                        { name: "description", type: "object", required: false, desc: "الوصف" },
+                        { name: "post", type: "integer", required: false, desc: "المقالة المرتبطة" }
+                    ]
+                }
+            },
+            {
+                path: "/wp/v2/categories",
+                methods: ["GET", "POST"],
+                summary: "التصنيفات",
+                desc: "إدارة تصنيفات المقالات.",
+                params: {
+                    GET: [
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" },
+                        { name: "search", type: "string", required: false, desc: "بحث نصي" },
+                        { name: "parent", type: "integer", required: false, desc: "التصنيف الأب" },
+                        { name: "hide_empty", type: "boolean", required: false, desc: "إخفاء الفارغة" }
+                    ],
+                    POST: [
+                        { name: "name", type: "string", required: true, desc: "اسم التصنيف" },
+                        { name: "slug", type: "string", required: false, desc: "الاسم اللطيف" },
+                        { name: "parent", type: "integer", required: false, desc: "التصنيف الأب" },
+                        { name: "description", type: "string", required: false, desc: "الوصف" }
+                    ]
+                }
+            },
+            {
+                path: "/wp/v2/tags",
+                methods: ["GET", "POST"],
+                summary: "الوسوم",
+                desc: "إدارة وسوم المقالات.",
+                params: {
+                    GET: [
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" },
+                        { name: "search", type: "string", required: false, desc: "بحث نصي" }
+                    ],
+                    POST: [
+                        { name: "name", type: "string", required: true, desc: "اسم الوسم" },
+                        { name: "slug", type: "string", required: false, desc: "الاسم اللطيف" },
+                        { name: "description", type: "string", required: false, desc: "الوصف" }
+                    ]
+                }
+            },
+            {
+                path: "/wp/v2/comments",
+                methods: ["GET", "POST"],
+                summary: "التعليقات",
+                desc: "إدارة التعليقات على المقالات والصفحات.",
+                params: {
+                    GET: [
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" },
+                        { name: "search", type: "string", required: false, desc: "بحث نصي" },
+                        { name: "post", type: "integer", required: false, desc: "معرّف المقالة" },
+                        { name: "status", type: "string", required: false, default: "approve", desc: "الحالة" },
+                        { name: "order", type: "string", required: false, default: "desc", desc: "ترتيب", enum: ["asc", "desc"] }
+                    ],
+                    POST: [
+                        { name: "post", type: "integer", required: true, desc: "معرّف المقالة" },
+                        { name: "content", type: "string", required: true, desc: "محتوى التعليق" },
+                        { name: "author_name", type: "string", required: false, desc: "اسم الكاتب" },
+                        { name: "author_email", type: "string", required: false, desc: "بريد الكاتب" },
+                        { name: "parent", type: "integer", required: false, desc: "التعليق الأب (رد)" }
+                    ]
+                }
+            },
+            {
+                path: "/wp/v2/users",
+                methods: ["GET", "POST"],
+                summary: "المستخدمين",
+                desc: "إدارة مستخدمي الموقع.",
+                params: {
+                    GET: [
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" },
+                        { name: "search", type: "string", required: false, desc: "بحث نصي" },
+                        { name: "roles", type: "array", required: false, desc: "تصفية حسب الأدوار" },
+                        { name: "who", type: "string", required: false, desc: "نوع المستخدمين", enum: ["authors"] }
+                    ],
+                    POST: [
+                        { name: "username", type: "string", required: true, desc: "اسم المستخدم" },
+                        { name: "email", type: "string", required: true, desc: "البريد الإلكتروني" },
+                        { name: "password", type: "string", required: true, desc: "كلمة المرور" },
+                        { name: "first_name", type: "string", required: false, desc: "الاسم الأول" },
+                        { name: "last_name", type: "string", required: false, desc: "اسم العائلة" },
+                        { name: "roles", type: "array", required: false, desc: "أدوار المستخدم" }
+                    ]
+                }
+            },
+            {
+                path: "/wp/v2/users/me",
+                methods: ["GET", "PUT", "DELETE"],
+                summary: "المستخدم الحالي",
+                desc: "جلب أو تعديل بيانات المستخدم المسجل حالياً.",
+                params: {
+                    GET: [{ name: "context", type: "string", required: false, default: "view", desc: "نطاق الطلب" }],
+                    PUT: [
+                        { name: "first_name", type: "string", required: false, desc: "الاسم الأول" },
+                        { name: "last_name", type: "string", required: false, desc: "اسم العائلة" },
+                        { name: "email", type: "string", required: false, desc: "البريد الإلكتروني" },
+                        { name: "password", type: "string", required: false, desc: "كلمة المرور الجديدة" }
+                    ],
+                    DELETE: [{ name: "force", type: "boolean", required: true, desc: "يجب أن يكون true" }, { name: "reassign", type: "integer", required: true, desc: "نقل المحتوى لمستخدم آخر" }]
+                }
+            },
+            {
+                path: "/wp/v2/search",
+                methods: ["GET"],
+                summary: "البحث العام",
+                desc: "بحث شامل في جميع محتويات الموقع.",
+                params: {
+                    GET: [
+                        { name: "search", type: "string", required: true, desc: "كلمة البحث" },
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" },
+                        { name: "type", type: "string", required: false, default: "post", desc: "نوع المحتوى", enum: ["post", "term", "post-format"] },
+                        { name: "subtype", type: "string", required: false, default: "any", desc: "النوع الفرعي" }
+                    ]
+                }
+            },
+            {
+                path: "/wp/v2/settings",
+                methods: ["GET", "PUT"],
+                summary: "إعدادات الموقع",
+                desc: "جلب وتعديل إعدادات الموقع (يتطلب صلاحيات المدير).",
+                params: {
+                    GET: [],
+                    PUT: [
+                        { name: "title", type: "string", required: false, desc: "عنوان الموقع" },
+                        { name: "description", type: "string", required: false, desc: "وصف الموقع" },
+                        { name: "timezone", type: "string", required: false, desc: "المنطقة الزمنية" }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        id: "wc-analytics",
+        title: "WooCommerce Analytics",
+        icon: "📊",
+        color: "#f59e0b",
+        desc: "تحليلات المبيعات والإيرادات والأداء",
+        endpoints: [
+            {
+                path: "/wc-analytics/reports/revenue/stats",
+                methods: ["GET"],
+                summary: "إحصائيات الإيرادات",
+                desc: "جلب إحصائيات الإيرادات والمبيعات.",
+                params: {
+                    GET: [
+                        { name: "before", type: "string", required: false, desc: "قبل تاريخ (ISO8601)" },
+                        { name: "after", type: "string", required: false, desc: "بعد تاريخ (ISO8601)" },
+                        { name: "interval", type: "string", required: false, default: "week", desc: "الفاصل الزمني", enum: ["hour", "day", "week", "month", "quarter", "year"] }
+                    ]
+                }
+            },
+            {
+                path: "/wc-analytics/reports/orders/stats",
+                methods: ["GET"],
+                summary: "إحصائيات الطلبات",
+                desc: "جلب إحصائيات الطلبات.",
+                params: {
+                    GET: [
+                        { name: "before", type: "string", required: false, desc: "قبل تاريخ" },
+                        { name: "after", type: "string", required: false, desc: "بعد تاريخ" },
+                        { name: "status_is", type: "array", required: false, desc: "حالات الطلبات" }
+                    ]
+                }
+            },
+            {
+                path: "/wc-analytics/reports/products",
+                methods: ["GET"],
+                summary: "تقرير المنتجات",
+                desc: "جلب تقارير أداء المنتجات.",
+                params: {
+                    GET: [
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" },
+                        { name: "orderby", type: "string", required: false, desc: "ترتيب حسب", enum: ["product_name", "items_sold", "net_revenue", "orders_count"] }
+                    ]
+                }
+            },
+            {
+                path: "/wc-analytics/reports/customers",
+                methods: ["GET"],
+                summary: "تقرير العملاء",
+                desc: "جلب تقارير أداء العملاء.",
+                params: {
+                    GET: [
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        id: "rankmath",
+        title: "RankMath SEO",
+        icon: "🔍",
+        color: "#10b981",
+        desc: "إدارة تحسين محركات البحث (SEO) والتوجيهات والسكيما",
+        endpoints: [
+            {
+                path: "/rankmath/v1/saveModule",
+                methods: ["POST"],
+                summary: "حفظ وحدة",
+                desc: "تشغيل أو إيقاف وحدة من وحدات RankMath.",
+                params: {
+                    POST: [
+                        { name: "module", type: "string", required: true, desc: "اسم الوحدة" },
+                        { name: "state", type: "string", required: true, desc: "حالة الوحدة", enum: ["on", "off"] }
+                    ]
+                }
+            },
+            {
+                path: "/rankmath/v1/updateMode",
+                methods: ["POST"],
+                summary: "تحديث الوضع",
+                desc: "تغيير وضع RankMath بين سهل ومتقدم.",
+                params: {
+                    POST: [
+                        { name: "mode", type: "string", required: true, desc: "الوضع", enum: ["easy", "advanced", "custom"] }
+                    ]
+                }
+            },
+            {
+                path: "/rankmath/v1/updateSeoScore",
+                methods: ["POST"],
+                summary: "تحديث نقاط SEO",
+                desc: "تحديث نقاط تقييم SEO للمقالات.",
+                params: {
+                    POST: [
+                        { name: "postScores", type: "object", required: true, desc: "نقاط المقالات" }
+                    ]
+                }
+            },
+            {
+                path: "/rankmath/v1/updateRedirection",
+                methods: ["POST"],
+                summary: "إعادة التوجيه",
+                desc: "إنشاء أو تعديل إعادة توجيه URL.",
+                params: {
+                    POST: [
+                        { name: "objectID", type: "integer", required: true, desc: "معرّف الموضوع" },
+                        { name: "objectType", type: "string", required: true, default: "post", desc: "نوع الموضوع" },
+                        { name: "hasRedirect", type: "boolean", required: true, desc: "تفعيل إعادة التوجيه" },
+                        { name: "redirectionUrl", type: "string", required: false, desc: "رابط إعادة التوجيه" },
+                        { name: "redirectionType", type: "string", required: true, default: "301", desc: "نوع إعادة التوجيه", enum: ["301", "302", "307", "410", "451"] }
+                    ]
+                }
+            },
+            {
+                path: "/rankmath/v1/updateMeta",
+                methods: ["POST"],
+                summary: "تحديث الميتا",
+                desc: "تحديث بيانات الميتا الخاصة بـ SEO لعنصر معين.",
+                params: {
+                    POST: [
+                        { name: "objectType", type: "string", required: true, desc: "نوع الموضوع (post, term, user)" },
+                        { name: "objectID", type: "integer", required: true, desc: "معرّف الموضوع" },
+                        { name: "meta", type: "object", required: true, desc: "بيانات الميتا" }
+                    ]
+                }
+            },
+            {
+                path: "/rankmath/v1/updateSchemas",
+                methods: ["POST"],
+                summary: "تحديث السكيما",
+                desc: "تحديث بيانات Schema.org المنظمة.",
+                params: {
+                    POST: [
+                        { name: "objectType", type: "string", required: true, desc: "نوع الموضوع" },
+                        { name: "objectID", type: "integer", required: true, desc: "معرّف الموضوع" },
+                        { name: "schemas", type: "object", required: true, desc: "بيانات السكيما" }
+                    ]
+                }
+            },
+            {
+                path: "/rankmath/v1/updateSettings",
+                methods: ["POST"],
+                summary: "تحديث الإعدادات",
+                desc: "تحديث إعدادات RankMath العامة.",
+                params: { POST: [] }
+            },
+            {
+                path: "/rankmath/v1/getFeaturedImageId",
+                methods: ["POST"],
+                summary: "معرّف الصورة البارزة",
+                desc: "جلب معرّف الصورة البارزة لمقالة.",
+                params: {
+                    POST: [
+                        { name: "postId", type: "integer", required: true, desc: "معرّف المقالة" }
+                    ]
+                }
+            },
+            {
+                path: "/rankmath/v1/dashboardWidget",
+                methods: ["GET"],
+                summary: "ويدجت لوحة التحكم",
+                desc: "جلب بيانات ويدجت لوحة التحكم.",
+                params: { GET: [] }
+            }
+        ]
+    },
+    {
+        id: "simple-history",
+        title: "Simple History - السجل",
+        icon: "📋",
+        color: "#ec4899",
+        desc: "سجل الأحداث والتغييرات والإحصائيات",
+        endpoints: [
+            {
+                path: "/simple-history/v1/events",
+                methods: ["GET", "POST"],
+                summary: "الأحداث",
+                desc: "جلب سجل الأحداث أو إنشاء حدث جديد.",
+                params: {
+                    GET: [
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر (حد أقصى 100)" },
+                        { name: "search", type: "string", required: false, desc: "بحث نصي" },
+                        { name: "type", type: "string", required: false, default: "overview", desc: "نوع النتائج", enum: ["overview", "occasions"] },
+                        { name: "date_from", type: "string", required: false, desc: "من تاريخ (Unix timestamp)" },
+                        { name: "date_to", type: "string", required: false, desc: "إلى تاريخ (Unix timestamp)" },
+                        { name: "loglevels", type: "array", required: false, desc: "مستويات السجل" },
+                        { name: "users", type: "array", required: false, desc: "معرفات المستخدمين" },
+                        { name: "ip_address", type: "string", required: false, desc: "عنوان IP" },
+                        { name: "lastdays", type: "integer", required: false, desc: "آخر X أيام" }
+                    ],
+                    POST: [
+                        { name: "message", type: "string", required: true, desc: "رسالة الحدث" },
+                        { name: "note", type: "string", required: false, desc: "ملاحظة إضافية" },
+                        { name: "level", type: "string", required: false, default: "info", desc: "مستوى السجل", enum: ["emergency", "alert", "critical", "error", "warning", "notice", "info", "debug"] },
+                        { name: "date", type: "string", required: false, desc: "التاريخ (Y-m-d H:i:s)" }
+                    ]
+                }
+            },
+            {
+                path: "/simple-history/v1/events/{id}",
+                methods: ["GET"],
+                summary: "حدث محدد",
+                desc: "جلب تفاصيل حدث معين.",
+                params: {
+                    GET: [{ name: "id", type: "integer", required: true, desc: "معرّف الحدث" }]
+                }
+            },
+            {
+                path: "/simple-history/v1/stats/summary",
+                methods: ["GET"],
+                summary: "ملخص الإحصائيات",
+                desc: "جلب ملخص إحصائيات الأحداث.",
+                params: {
+                    GET: [
+                        { name: "date_from", type: "integer", required: false, desc: "من تاريخ (Unix timestamp)" },
+                        { name: "date_to", type: "integer", required: false, desc: "إلى تاريخ" },
+                        { name: "limit", type: "integer", required: false, default: "50", desc: "الحد الأقصى" },
+                        { name: "include_details", type: "boolean", required: false, default: "false", desc: "تضمين التفاصيل" }
+                    ]
+                }
+            },
+            {
+                path: "/simple-history/v1/stats/users",
+                methods: ["GET"],
+                summary: "إحصائيات المستخدمين",
+                desc: "جلب إحصائيات نشاط المستخدمين.",
+                params: {
+                    GET: [
+                        { name: "date_from", type: "integer", required: false, desc: "من تاريخ" },
+                        { name: "date_to", type: "integer", required: false, desc: "إلى تاريخ" },
+                        { name: "limit", type: "integer", required: false, default: "50", desc: "الحد الأقصى" }
+                    ]
+                }
+            },
+            {
+                path: "/simple-history/v1/search-options",
+                methods: ["GET"],
+                summary: "خيارات البحث",
+                desc: "جلب خيارات البحث المتاحة لتصفية الأحداث.",
+                params: { GET: [] }
+            }
+        ]
+    },
+    {
+        id: "code-snippets",
+        title: "Code Snippets",
+        icon: "💻",
+        color: "#f43f5e",
+        desc: "إدارة مقاطع الكود البرمجي",
+        endpoints: [
+            {
+                path: "/code-snippets/v1/snippets",
+                methods: ["GET", "POST"],
+                summary: "مقاطع الكود",
+                desc: "جلب قائمة مقاطع الكود أو إنشاء مقطع جديد.",
+                params: {
+                    GET: [
+                        { name: "page", type: "integer", required: false, default: "1", desc: "رقم الصفحة" },
+                        { name: "per_page", type: "integer", required: false, default: "10", desc: "عدد العناصر" },
+                        { name: "search", type: "string", required: false, desc: "بحث نصي" }
+                    ],
+                    POST: [
+                        { name: "name", type: "string", required: false, desc: "عنوان المقطع" },
+                        { name: "desc", type: "string", required: false, desc: "وصف المقطع" },
+                        { name: "code", type: "string", required: false, desc: "الكود البرمجي" },
+                        { name: "tags", type: "array", required: false, desc: "الوسوم" },
+                        { name: "scope", type: "string", required: false, desc: "نطاق التنفيذ" },
+                        { name: "active", type: "boolean", required: false, desc: "حالة التفعيل" },
+                        { name: "priority", type: "integer", required: false, desc: "الأولوية" }
+                    ]
+                }
+            },
+            {
+                path: "/code-snippets/v1/snippets/{id}",
+                methods: ["GET", "PUT", "DELETE"],
+                summary: "مقطع محدد",
+                desc: "جلب، تعديل أو حذف مقطع كود معين.",
+                params: {
+                    GET: [{ name: "id", type: "integer", required: true, desc: "معرّف المقطع" }],
+                    PUT: [
+                        { name: "name", type: "string", required: false, desc: "عنوان المقطع" },
+                        { name: "code", type: "string", required: false, desc: "الكود البرمجي" },
+                        { name: "active", type: "boolean", required: false, desc: "حالة التفعيل" }
+                    ],
+                    DELETE: [{ name: "id", type: "integer", required: true, desc: "معرّف المقطع" }]
+                }
+            },
+            {
+                path: "/code-snippets/v1/snippets/{id}/activate",
+                methods: ["POST"],
+                summary: "تفعيل مقطع",
+                desc: "تفعيل مقطع كود معين.",
+                params: { POST: [{ name: "id", type: "integer", required: true, desc: "معرّف المقطع" }] }
+            },
+            {
+                path: "/code-snippets/v1/snippets/{id}/deactivate",
+                methods: ["POST"],
+                summary: "إيقاف مقطع",
+                desc: "إيقاف تفعيل مقطع كود معين.",
+                params: { POST: [{ name: "id", type: "integer", required: true, desc: "معرّف المقطع" }] }
+            },
+            {
+                path: "/code-snippets/v1/snippets/{id}/export",
+                methods: ["GET"],
+                summary: "تصدير مقطع",
+                desc: "تصدير مقطع كود بصيغة JSON.",
+                params: { GET: [{ name: "id", type: "integer", required: true, desc: "معرّف المقطع" }] }
+            }
+        ]
+    },
+    {
+        id: "oembed",
+        title: "oEmbed",
+        icon: "🔗",
+        color: "#64748b",
+        desc: "تضمين المحتوى من مصادر خارجية",
+        endpoints: [
+            {
+                path: "/oembed/1.0/embed",
+                methods: ["GET"],
+                summary: "تضمين محتوى",
+                desc: "جلب بيانات oEmbed لرابط معين.",
+                params: {
+                    GET: [
+                        { name: "url", type: "string", required: true, desc: "رابط المصدر (URI)" },
+                        { name: "format", type: "string", required: false, default: "json", desc: "صيغة الرد" },
+                        { name: "maxwidth", type: "integer", required: false, default: "600", desc: "الحد الأقصى للعرض (بيكسل)" }
+                    ]
+                }
+            },
+            {
+                path: "/oembed/1.0/proxy",
+                methods: ["GET"],
+                summary: "وكيل oEmbed",
+                desc: "جلب بيانات oEmbed عبر الوكيل للمزودين غير المصرح لهم.",
+                params: {
+                    GET: [
+                        { name: "url", type: "string", required: true, desc: "رابط المصدر" },
+                        { name: "format", type: "string", required: false, default: "json", desc: "الصيغة", enum: ["json", "xml"] },
+                        { name: "maxwidth", type: "integer", required: false, default: "600", desc: "الحد الأقصى للعرض" },
+                        { name: "maxheight", type: "integer", required: false, desc: "الحد الأقصى للارتفاع" },
+                        { name: "discover", type: "boolean", required: false, default: "true", desc: "استكشاف المزودين" }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        id: "batch",
+        title: "Batch / أدوات عامة",
+        icon: "⚡",
+        color: "#a78bfa",
+        desc: "عمليات مجمّعة والطلبات الأساسية",
+        endpoints: [
+            {
+                path: "/",
+                methods: ["GET"],
+                summary: "اكتشاف API",
+                desc: "جلب معلومات الموقع الأساسية وقائمة جميع المسارات المتاحة.",
+                params: {
+                    GET: [
+                        { name: "context", type: "string", required: false, default: "view", desc: "نطاق الطلب" }
+                    ]
+                }
+            },
+            {
+                path: "/batch/v1",
+                methods: ["POST"],
+                summary: "عمليات مجمّعة",
+                desc: "تنفيذ عدة طلبات API في طلب واحد (حد أقصى 25 طلب).",
+                params: {
+                    POST: [
+                        { name: "validation", type: "string", required: false, default: "normal", desc: "وضع التحقق", enum: ["require-all-validate", "normal"] },
+                        { name: "requests", type: "array", required: true, desc: "مصفوفة الطلبات [{method, path, body, headers}]" }
+                    ]
+                },
+                example: {
+                    POST: `POST /batch/v1
+{
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/wc/v3/products/123",
+      "body": { "regular_price": "150.00" }
+    },
+    {
+      "method": "PUT",
+      "path": "/wc/v3/products/456",
+      "body": { "status": "draft" }
+    }
+  ]
+}`
+                }
+            }
+        ]
+    }
+];
+
+// ============================================================
+// RENDERING ENGINE
+// ============================================================
+
+function getMainMethod(methods) {
+    if (methods.length === 1) return methods[0].toLowerCase();
+    if (methods.includes('GET') && methods.includes('POST')) return 'multi';
+    if (methods.includes('GET')) return 'get';
+    if (methods.includes('POST')) return 'post';
+    if (methods.includes('PUT') || methods.includes('PATCH')) return 'put';
+    if (methods.includes('DELETE')) return 'delete';
+    return 'multi';
+}
+
+function formatPath(path) {
+    return path.replace(/\{(\w+)\}/g, '<span class="param">{$1}</span>');
+}
+
+function renderParamsTable(params, method) {
+    if (!params || params.length === 0) {
+        return '<p style="color: var(--text-muted); font-size: 0.85rem; padding: 10px 0;">لا توجد معاملات مطلوبة لهذا الطلب.</p>';
+    }
+
+    let html = '<table class="params-table"><thead><tr>';
+    html += '<th>المعامل</th><th>النوع</th><th>مطلوب</th><th>الافتراضي</th><th>الوصف</th>';
+    html += '</tr></thead><tbody>';
+
+    params.forEach(p => {
+        html += '<tr>';
+        html += `<td><span class="param-name">${p.name}</span></td>`;
+        html += `<td><span class="param-type">${p.type}</span></td>`;
+        html += `<td><span class="param-required ${p.required ? 'required' : 'optional'}">${p.required ? 'مطلوب' : 'اختياري'}</span></td>`;
+        html += `<td><span class="param-default">${p.default || '—'}</span></td>`;
+        html += `<td>${p.desc || '—'}`;
+        if (p.enum) {
+            html += '<div class="param-enum">';
+            p.enum.forEach(v => { html += `<span class="param-enum-value">${v}</span>`; });
+            html += '</div>';
+        }
+        html += '</td></tr>';
+    });
+
+    html += '</tbody></table>';
+    return html;
+}
+
+function renderEndpoint(endpoint, sectionId, idx) {
+    const mainMethod = getMainMethod(endpoint.methods);
+    const methodLabel = endpoint.methods.length > 1 ? endpoint.methods.join(' | ') : endpoint.methods[0];
+    const endpointId = `${sectionId}-endpoint-${idx}`;
+
+    let bodyHtml = '';
+
+    if (endpoint.desc) {
+        bodyHtml += `<div class="endpoint-desc">${endpoint.desc}</div>`;
+    }
+
+    // Parameters per method
+    const methodKeys = Object.keys(endpoint.params);
+    if (methodKeys.length > 1) {
+        bodyHtml += '<div class="params-section">';
+        bodyHtml += '<div class="params-title"><span class="icon">📋</span> المعاملات (Parameters)</div>';
+        bodyHtml += '<div class="tabs">';
+        methodKeys.forEach((m, i) => {
+            bodyHtml += `<button class="tab-btn ${i === 0 ? 'active' : ''}" onclick="switchTab(event, '${endpointId}-${m}')">${m}</button>`;
+        });
+        bodyHtml += '</div>';
+        methodKeys.forEach((m, i) => {
+            bodyHtml += `<div class="tab-content ${i === 0 ? 'active' : ''}" id="${endpointId}-${m}">`;
+            bodyHtml += renderParamsTable(endpoint.params[m], m);
+            bodyHtml += '</div>';
+        });
+        bodyHtml += '</div>';
+    } else if (methodKeys.length === 1) {
+        bodyHtml += '<div class="params-section">';
+        bodyHtml += '<div class="params-title"><span class="icon">📋</span> المعاملات (Parameters)</div>';
+        bodyHtml += renderParamsTable(endpoint.params[methodKeys[0]], methodKeys[0]);
+        bodyHtml += '</div>';
+    }
+
+    // Example
+    if (endpoint.example) {
+        bodyHtml += '<div class="params-section">';
+        bodyHtml += '<div class="params-title"><span class="icon">💡</span> مثال على الاستخدام</div>';
+        const exKeys = Object.keys(endpoint.example);
+        if (exKeys.length > 1) {
+            bodyHtml += '<div class="tabs">';
+            exKeys.forEach((k, i) => {
+                bodyHtml += `<button class="tab-btn ${i === 0 ? 'active' : ''}" onclick="switchTab(event, '${endpointId}-ex-${k}')">${k}</button>`;
+            });
+            bodyHtml += '</div>';
+            exKeys.forEach((k, i) => {
+                bodyHtml += `<div class="tab-content ${i === 0 ? 'active' : ''}" id="${endpointId}-ex-${k}">`;
+                bodyHtml += `<div class="code-block"><div class="code-header"><span class="code-lang">HTTP</span><button class="code-copy" onclick="copyCode(this)">نسخ</button></div><div class="code-content"><pre>${endpoint.example[k]}</pre></div></div>`;
+                bodyHtml += '</div>';
+            });
+        } else {
+            bodyHtml += `<div class="code-block"><div class="code-header"><span class="code-lang">HTTP</span><button class="code-copy" onclick="copyCode(this)">نسخ</button></div><div class="code-content"><pre>${endpoint.example[exKeys[0]]}</pre></div></div>`;
+        }
+        bodyHtml += '</div>';
+    }
+
+    // Response codes
+    bodyHtml += '<div class="params-section">';
+    bodyHtml += '<div class="params-title"><span class="icon">📨</span> أكواد الاستجابة</div>';
+    bodyHtml += '<div class="response-codes">';
+    bodyHtml += '<div class="response-code success"><span class="code">200</span> نجاح</div>';
+    if (endpoint.methods.includes('POST')) {
+        bodyHtml += '<div class="response-code success"><span class="code">201</span> تم الإنشاء</div>';
+    }
+    bodyHtml += '<div class="response-code error"><span class="code">400</span> طلب غير صالح</div>';
+    bodyHtml += '<div class="response-code error"><span class="code">401</span> غير مصرح</div>';
+    bodyHtml += '<div class="response-code error"><span class="code">404</span> غير موجود</div>';
+    bodyHtml += '</div>';
+    bodyHtml += '</div>';
+
+    return `
+        <div class="endpoint" id="${endpointId}" data-path="${endpoint.path}" data-summary="${endpoint.summary}">
+            <div class="endpoint-header" onclick="toggleEndpoint('${endpointId}')">
+                <span class="method-badge ${mainMethod}">${methodLabel}</span>
+                <span class="endpoint-path">${formatPath(endpoint.path)}</span>
+                <span class="endpoint-summary">${endpoint.summary}</span>
+                <span class="endpoint-toggle">▼</span>
+            </div>
+            <div class="endpoint-body">${bodyHtml}</div>
+        </div>
+    `;
+}
+
+function renderSections() {
+    const container = document.getElementById('apiSections');
+    let totalEndpoints = 0;
+
+    let html = '';
+    API_SECTIONS.forEach(section => {
+        totalEndpoints += section.endpoints.length;
+        html += `<section class="section" id="${section.id}">`;
+        html += `<div class="section-header">`;
+        html += `<div class="section-icon" style="background: ${section.color}22; color: ${section.color};">${section.icon}</div>`;
+        html += `<div><h2 class="section-title">${section.title}</h2><p class="section-desc">${section.desc}</p></div>`;
+        html += `</div>`;
+
+        section.endpoints.forEach((ep, idx) => {
+            html += renderEndpoint(ep, section.id, idx);
+        });
+
+        html += '</section>';
+    });
+
+    container.innerHTML = html;
+    document.getElementById('totalEndpoints').textContent = totalEndpoints;
+    document.getElementById('totalNamespaces').textContent = API_SECTIONS.length;
+}
+
+function renderSidebar() {
+    const nav = document.getElementById('sidebarNav');
+    let html = '';
+
+    // Quick links
+    html += '<div class="nav-group">';
+    html += '<div class="nav-group-title">📌 روابط سريعة</div>';
+    html += '<div class="nav-items">';
+    html += '<div class="nav-item" onclick="scrollToSection(\'quickstart\')">🚀 البداية السريعة</div>';
+    html += '<div class="nav-item" onclick="scrollToSection(\'authentication\')">🔐 المصادقة</div>';
+    html += '</div></div>';
+
+    API_SECTIONS.forEach(section => {
+        html += `<div class="nav-group">`;
+        html += `<div class="nav-group-title" onclick="toggleNavGroup(this)"><span class="arrow">▼</span> ${section.icon} ${section.title} <span style="margin-right:auto;font-size:0.65rem;opacity:0.5;">(${section.endpoints.length})</span></div>`;
+        html += '<div class="nav-items">';
+        section.endpoints.forEach((ep, idx) => {
+            const mainMethod = getMainMethod(ep.methods);
+            const methodLabel = ep.methods.length > 2 ? 'MULTI' : ep.methods[0];
+            html += `<div class="nav-item" onclick="scrollToEndpoint('${section.id}-endpoint-${idx}')" title="${ep.path}">`;
+            html += `<span class="nav-method ${mainMethod}">${methodLabel}</span>`;
+            html += `<span class="nav-endpoint-path">${ep.path}</span>`;
+            html += '</div>';
+        });
+        html += '</div></div>';
+    });
+
+    nav.innerHTML = html;
+}
+
+function renderNamespaceChips() {
+    const container = document.getElementById('namespaceChips');
+    let html = '<span class="namespace-chip active" onclick="filterNamespace(this, \'all\')">الكل</span>';
+    API_SECTIONS.forEach(section => {
+        html += `<span class="namespace-chip" onclick="filterNamespace(this, '${section.id}')">${section.icon} ${section.title}</span>`;
+    });
+    container.innerHTML = html;
+}
+
+// ============================================================
+// INTERACTIONS
+// ============================================================
+
+function toggleEndpoint(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('open');
+}
+
+function scrollToSection(id) {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    closeSidebarMobile();
+}
+
+function scrollToEndpoint(id) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+        if (!el.classList.contains('open')) {
+            el.classList.add('open');
+        }
+    }
+    closeSidebarMobile();
+}
+
+function toggleNavGroup(el) {
+    el.parentElement.classList.toggle('collapsed');
+}
+
+function switchTab(event, tabId) {
+    const container = event.target.closest('.quick-start, .endpoint-body, .params-section') || event.target.closest('section');
+    if (!container) return;
+
+    container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    container.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+
+    event.target.classList.add('active');
+    const tab = document.getElementById(tabId);
+    if (tab) tab.classList.add('active');
+}
+
+function copyCode(btn) {
+    const codeBlock = btn.closest('.code-block');
+    const code = codeBlock.querySelector('pre').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = '✓ تم النسخ';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.textContent = 'نسخ';
+            btn.classList.remove('copied');
+        }, 2000);
+    });
+}
+
+function filterNamespace(chip, id) {
+    document.querySelectorAll('.namespace-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+
+    document.querySelectorAll('.section').forEach(section => {
+        if (id === 'all' || section.id === id) {
+            section.style.display = '';
+        } else {
+            section.style.display = 'none';
+        }
+    });
+}
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+}
+
+function closeSidebarMobile() {
+    if (window.innerWidth <= 900) {
+        document.getElementById('sidebar').classList.remove('open');
+    }
+}
+
+// Search
+document.getElementById('searchInput').addEventListener('input', function() {
+    const query = this.value.toLowerCase().trim();
+
+    document.querySelectorAll('.endpoint').forEach(ep => {
+        const path = (ep.dataset.path || '').toLowerCase();
+        const summary = (ep.dataset.summary || '').toLowerCase();
+        if (!query || path.includes(query) || summary.includes(query)) {
+            ep.style.display = '';
+        } else {
+            ep.style.display = 'none';
+        }
+    });
+
+    // Also filter nav
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const text = item.textContent.toLowerCase();
+        const title = (item.getAttribute('title') || '').toLowerCase();
+        if (!query || text.includes(query) || title.includes(query)) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+});
+
+// Back to top
+window.addEventListener('scroll', () => {
+    const btn = document.getElementById('backToTop');
+    if (window.scrollY > 400) {
+        btn.classList.add('visible');
+    } else {
+        btn.classList.remove('visible');
+    }
+});
+
+// ============================================================
+// INITIALIZATION
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    renderSections();
+    renderSidebar();
+    renderNamespaceChips();
+});
+</script>
+
+</body>
+</html>

@@ -68,6 +68,48 @@ class AdminLocalizations {
         return 'المستخدمين';
       case 'customer groups':
         return 'مجموعات العملاء';
+      case 'add group':
+        return 'إضافة مجموعة';
+      case 'create group':
+        return 'إنشاء مجموعة';
+      case 'edit group':
+        return 'تعديل المجموعة';
+      case 'group created':
+        return 'تم إنشاء المجموعة';
+      case 'group updated':
+        return 'تم تحديث المجموعة';
+      case 'the customer group has been saved successfully.':
+        return 'تم حفظ مجموعة العملاء بنجاح.';
+      case 'save failed':
+        return 'فشل الحفظ';
+      case 'could not save the group. please try again.':
+        return 'تعذر حفظ المجموعة. حاول مرة أخرى.';
+      case 'delete group':
+        return 'حذف المجموعة';
+      case 'are you sure you want to delete':
+        return 'هل أنت متأكد من حذف';
+      case 'deleted':
+        return 'تم الحذف';
+      case 'group deleted successfully.':
+        return 'تم حذف المجموعة بنجاح.';
+      case 'delete failed':
+        return 'فشل الحذف';
+      case 'could not delete group.':
+        return 'تعذر حذف المجموعة.';
+      case 'group details':
+        return 'تفاصيل المجموعة';
+      case 'title (en)':
+        return 'العنوان (إنجليزي)';
+      case 'title (ar)':
+        return 'العنوان (عربي)';
+      case 'parent id':
+        return 'رقم المجموعة الأم';
+      case 'company id':
+        return 'رقم الشركة';
+      case 'search groups…':
+        return 'البحث عن مجموعات…';
+      case 'new customers will be assigned to this group by default':
+        return 'سيتم تعيين العملاء الجدد لهذه المجموعة افتراضيًا';
       case 'clients reports':
         return 'تقارير العملاء';
       case 'addresses':

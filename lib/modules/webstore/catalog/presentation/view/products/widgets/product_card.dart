@@ -32,6 +32,8 @@ class ProductCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final wishlist = ref.watch(wishlistProvider).value ?? [];
+    final auth = ref.watch(authStateProvider);
+    final isLoggedIn = auth.status == AuthStatus.authenticated;
     final product = this.product;
     final effectiveIsWishlisted = isWishlisted ??
         (product.id != null && wishlist.any((p) => p.id == product.id));
@@ -77,129 +79,120 @@ class ProductCard extends ConsumerWidget {
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ─── Image ───────────────────────────────────────
-            Expanded(
-              flex: 7,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(16),
-                    ),
-                    child: Container(
-                      color: Theme.of(context).hintColor.withValues(alpha: 0.05),
-                      padding: const EdgeInsets.all(12),
-                      child: Image.network(
-                        product.image ?? '',
-                        width: double.infinity,
-                        height: double.infinity,
-                        fit: BoxFit.contain,
-                        loadingBuilder: (context, child, progress) {
-                          if (progress == null) return child;
-                          return Shimmer.fromColors(
-                            baseColor: Colors.grey.shade200,
-                            highlightColor: Colors.grey.shade100,
-                            child: Container(color: Colors.white),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          color: Theme.of(context).hintColor.withValues(alpha: 0.1),
-                          child: Icon(
-                            Icons.image_not_supported_outlined,
-                            color: Theme.of(context).hintColor,
-                          ),
-                        ),
+        child: SizedBox(
+          height: 230,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ─── Image ───────────────────────────────────────
+              Expanded(
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(16),
                       ),
-                    ),
-                  ),
-                  // Discount Badge
-                  if (product.hasDiscount)
-                    Positioned(
-                      top: 8,
-                      right: 8,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.redAccent,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          '${product.discountPercent.toStringAsFixed(0)}%',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
+                        color: Theme.of(context).hintColor.withValues(alpha: 0.05),
+                        padding: const EdgeInsets.all(6),
+                        child: Image.network(
+                          product.image ?? '',
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.contain,
+                          loadingBuilder: (context, child, progress) {
+                            if (progress == null) return child;
+                            return Shimmer.fromColors(
+                              baseColor: Colors.grey.shade200,
+                              highlightColor: Colors.grey.shade100,
+                              child: Container(color: Colors.white),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            color: Theme.of(context).hintColor.withValues(alpha: 0.1),
+                            child: Icon(
+                              Icons.image_not_supported_outlined,
+                              color: Theme.of(context).hintColor,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  // Wishlist Button
-                  Positioned(
-                    top: 4,
-                    left: 4,
-                    child: IconButton(
-                      onPressed: effectiveOnToggleWishlist,
-                      icon: Icon(
-                        effectiveIsWishlisted
-                            ? Icons.favorite_rounded
-                            : Icons.favorite_outline_rounded,
-                        color: effectiveIsWishlisted ? Colors.red : Colors.grey.shade400,
+                    if (product.hasDiscount)
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.redAccent,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            '${product.discountPercent.toStringAsFixed(0)}%',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ],
+                    if (isLoggedIn)
+                      Positioned(
+                        top: 4,
+                        left: 4,
+                        child: IconButton(
+                          onPressed: effectiveOnToggleWishlist,
+                          icon: Icon(
+                            effectiveIsWishlisted
+                                ? Icons.favorite_rounded
+                                : Icons.favorite_outline_rounded,
+                            color: effectiveIsWishlisted ? Colors.red : Colors.grey.shade400,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
 
-            // ─── Product Info ────────────────────────────────
-            Expanded(
-              flex: 5,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              // ─── Product Info ────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 4, 10, 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Brand / Category
                     Text(
                       product.brand ?? product.category?.name ?? '',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: Theme.of(context).hintColor,
-                        fontSize: 11,
+                        fontSize: 10,
                       ),
                     ),
-                    const SizedBox(height: 2),
-                    // Name
                     Text(
                       product.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: Theme.of(context).textTheme.bodyLarge?.color,
-                        fontSize: 12,
+                        fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        height: 1.15,
+                        height: 1.2,
                       ),
                     ),
-                    // Price
                     if (product.hasDiscount)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: Text(
-                          '$currency ${product.oldPrice}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            decoration: TextDecoration.lineThrough,
-                            color: Theme.of(context).hintColor,
-                            fontSize: 10,
-                          ),
+                      Text(
+                        '$currency ${product.oldPrice}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          decoration: TextDecoration.lineThrough,
+                          color: Theme.of(context).hintColor,
+                          fontSize: 11,
                         ),
                       ),
                     const SizedBox(height: 2),
@@ -212,21 +205,21 @@ class ProductCard extends ConsumerWidget {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: AppColors.primaryOrange,
-                              fontSize: 14,
+                              fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                         SizedBox(
-                          width: 30,
-                          height: 30,
+                          width: 28,
+                          height: 28,
                           child: IconButton.filled(
                             onPressed: effectiveOnAddToCart,
                             iconSize: 14,
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints.tightFor(
-                              width: 30,
-                              height: 30,
+                              width: 28,
+                              height: 28,
                             ),
                             style: IconButton.styleFrom(
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -243,8 +236,8 @@ class ProductCard extends ConsumerWidget {
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

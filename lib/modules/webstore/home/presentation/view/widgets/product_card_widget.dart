@@ -30,6 +30,7 @@ class ProductGridCard extends ConsumerWidget {
     final wishlist = ref.watch(wishlistProvider).value ?? [];
     final isWishlisted =
         product.id != null && wishlist.any((p) => p.id == product.id);
+    final isLoggedIn = ref.watch(authStateProvider).status == AuthStatus.authenticated;
 
     final bool hasDiscount =
         product.oldPrice != null && product.oldPrice! > product.price;
@@ -208,23 +209,24 @@ class ProductGridCard extends ConsumerWidget {
               ),
             ),
           // Wishlist Button
-          Positioned(
-            top: 4.h,
-            right: ranking != null && ranking! <= 3 ? 40.w : 4.w,
-            child: IconButton(
-              onPressed: () {
-                if (product.id != null) {
-                  ref.read(wishlistProvider.notifier).toggleWishlist(product);
-                }
-              },
-              icon: Icon(
-                isWishlisted
-                    ? Icons.favorite_rounded
-                    : Icons.favorite_outline_rounded,
-                color: isWishlisted ? Colors.red : Colors.grey.shade400,
+          if (isLoggedIn)
+            Positioned(
+              top: 4.h,
+              right: ranking != null && ranking! <= 3 ? 40.w : 4.w,
+              child: IconButton(
+                onPressed: () {
+                  if (product.id != null) {
+                    ref.read(wishlistProvider.notifier).toggleWishlist(product);
+                  }
+                },
+                icon: Icon(
+                  isWishlisted
+                      ? Icons.favorite_rounded
+                      : Icons.favorite_outline_rounded,
+                  color: isWishlisted ? Colors.red : Colors.grey.shade400,
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:erp/modules/webstore/catalog/presentation/view/product_details/product_details_view.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view/products/widgets/product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -77,6 +78,12 @@ class _WebStoreWishlistViewState extends ConsumerState<WebStoreWishlistView> {
                   delay: Duration(milliseconds: index * 50),
                   child: ProductCard(
                     product: product,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ProductDetailsView(product: product),
+                      ),
+                    ),
                   ),
                 );
               },

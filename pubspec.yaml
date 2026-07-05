@@ -53,6 +53,7 @@ dependencies:
   arabic_reshaper: ^0.0.1
   bidi: ^2.0.13
   image_picker: ^1.2.2
+  qr_flutter: ^4.1.0
 
   # Map
   flutter_map: ^8.1.1

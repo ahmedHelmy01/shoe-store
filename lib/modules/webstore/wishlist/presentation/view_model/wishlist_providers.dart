@@ -31,12 +31,10 @@ class WishlistNotifier extends AsyncNotifier<List<WebStoreProduct>> {
         final list = (data['data'] as List?) ?? [];
         return list
             .whereType<Map<String, dynamic>>()
+            .where((item) => item['product'] != null)
             .map((item) {
-              final productData = item['product'] as Map<String, dynamic>?;
-              if (productData != null) {
-                return WebStoreProduct.fromJson(productData);
-              }
-              return WebStoreProduct.fromJson(item);
+              final productData = item['product'] as Map<String, dynamic>;
+              return WebStoreProduct.fromJson(productData);
             })
             .toList();
       },
