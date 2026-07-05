@@ -8,6 +8,7 @@ abstract class IUsersRepository {
   Future<ApiResult<AdminPagedResponse<UserRow>>> getUsers({
     int page = 1,
     String? search,
+    int? perPage,
   });
 }
 
@@ -20,9 +21,10 @@ class UsersRepository extends AdminBaseRepository implements IUsersRepository {
   Future<ApiResult<AdminPagedResponse<UserRow>>> getUsers({
     int page = 1,
     String? search,
+    int? perPage,
   }) {
     return safeApiCall(() async {
-      final json = await _ds.getUsers(page: page, search: search);
+      final json = await _ds.getUsers(page: page, search: search, perPage: perPage);
       return parsePaged(json, page, (j) => UserRow.fromJson(j));
     });
   }

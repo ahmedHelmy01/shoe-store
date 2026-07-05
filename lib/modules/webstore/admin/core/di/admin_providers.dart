@@ -27,6 +27,8 @@ import 'package:erp/modules/webstore/admin/features/order_statuses/data/datasour
 import 'package:erp/modules/webstore/admin/features/customers/customer_groups/data/datasource/customer_groups_remote_datasource.dart';
 import 'package:erp/modules/webstore/admin/features/warehouses/data/datasource/warehouses_remote_datasource.dart';
 import 'package:erp/modules/webstore/admin/features/countries/data/datasource/countries_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/customers/reports/data/datasource/client_reports_remote_datasource.dart';
+import 'package:erp/modules/webstore/admin/features/customers/reports/data/repositories/client_reports_repository.dart';
 
 // Feature Repositories
 import 'package:erp/modules/webstore/admin/features/auth/data/repositories/auth_repository.dart';
@@ -80,6 +82,7 @@ final orderStatusesDataSourceProvider = Provider((ref) => OrderStatusesRemoteDat
 final adminPrescriptionsDataSourceProvider = Provider((ref) => AdminPrescriptionsRemoteDataSource(ref.read(networkServiceProvider)));
 final customerGroupsDataSourceProvider = Provider((ref) => CustomerGroupsRemoteDataSource(ref.read(networkServiceProvider)));
 final countriesDataSourceProvider = Provider((ref) => CountriesRemoteDataSource(ref.read(networkServiceProvider)));
+final clientReportsDataSourceProvider = Provider((ref) => ClientReportsRemoteDataSource(ref.read(networkServiceProvider)));
 
 // --- Repositories ---
 
@@ -185,6 +188,10 @@ final countriesRepositoryProvider = Provider<ICountriesRepository>((ref) {
   return CountriesRepository(ref.read(countriesDataSourceProvider));
 });
 
+final clientReportsRepositoryProvider = Provider<IClientReportsRepository>((ref) {
+  return ClientReportsRepository(ref.read(clientReportsDataSourceProvider));
+});
+
 
 // --- Dropdown Data Providers ---
 
@@ -264,6 +271,15 @@ final paymentMethodTypesProvider = FutureProvider((ref) async {
   final res = await repo.getPaymentMethodTypes();
   return res.when(
     success: (list) => list,
+    failure: (e) => throw e,
+  );
+});
+
+final allClientsProvider = FutureProvider((ref) async {
+  final repo = ref.read(usersRepositoryProvider);
+  final res = await repo.getUsers(page: 1, perPage: 1000);
+  return res.when(
+    success: (paged) => paged.items,
     failure: (e) => throw e,
   );
 });

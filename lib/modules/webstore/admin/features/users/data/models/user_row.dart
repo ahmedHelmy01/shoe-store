@@ -25,7 +25,7 @@ class UserRow {
       name: json['name'] as String? ?? 'Unknown',
       email: json['email'] as String?,
       mobile: json['mobile'] as String?,
-      ordersCount: json['orders_count'] as int? ?? 0,
+      ordersCount: (json['orders_count'] ?? json['total_orders'] ?? 0) as int,
       totalSpent: (json['total_spent'] ?? 0.0).toDouble(),
       createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
       isActive: (json['is_active'] ?? true) == true || (json['is_active'] == 1),

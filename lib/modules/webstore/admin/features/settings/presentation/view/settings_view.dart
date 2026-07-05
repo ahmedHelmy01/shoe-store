@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
+import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_image_picker.dart';
 import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../view_model/settings_view_model.dart';
 import '../../data/models/store_settings_model.dart';
@@ -24,8 +25,8 @@ class SettingsView extends ConsumerStatefulWidget {
 
 class _SettingsViewState extends ConsumerState<SettingsView> {
   final _formKey = GlobalKey<FormState>();
-  final _logoCtrl = TextEditingController();
-  final _logoDarkCtrl = TextEditingController();
+  String? _logoPath;
+  String? _logoDarkPath;
   final _shippingCtrl = TextEditingController();
   final _addressArCtrl = TextEditingController();
   final _addressEnCtrl = TextEditingController();
@@ -39,8 +40,6 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
 
   @override
   void dispose() {
-    _logoCtrl.dispose();
-    _logoDarkCtrl.dispose();
     _shippingCtrl.dispose();
     _addressArCtrl.dispose();
     _addressEnCtrl.dispose();
@@ -56,8 +55,8 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
 
   StoreSettingsModel _collectForm() {
     return StoreSettingsModel(
-      logo: _logoCtrl.text.trim(),
-      logoDark: _logoDarkCtrl.text.trim(),
+      logo: _logoPath,
+      logoDark: _logoDarkPath,
       shippingValue: _shippingCtrl.text.trim(),
       addressAr: _addressArCtrl.text.trim(),
       addressEn: _addressEnCtrl.text.trim(),
@@ -191,9 +190,19 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
         children: [
           _buildSectionTitle(Icons.store_rounded, AdminLocalizations.translate(context, 'brand identity')),
           const SizedBox(height: 24),
-          AppTextField(controller: _logoCtrl, label: AdminLocalizations.translate(context, 'logo'), hint: AdminLocalizations.translate(context, 'url or path')),
+          AdminImagePicker(
+            label: AdminLocalizations.translate(context, 'logo'),
+            uploadFolder: 'logos',
+            onPathSelected: (path) => setState(() => _logoPath = path),
+            onImageSelected: (_) {},
+          ),
           const SizedBox(height: 16),
-          AppTextField(controller: _logoDarkCtrl, label: AdminLocalizations.translate(context, 'logo (dark)'), hint: AdminLocalizations.translate(context, 'url or path')),
+          AdminImagePicker(
+            label: AdminLocalizations.translate(context, 'logo (dark)'),
+            uploadFolder: 'logos',
+            onPathSelected: (path) => setState(() => _logoDarkPath = path),
+            onImageSelected: (_) {},
+          ),
           const SizedBox(height: 16),
           AppTextField(controller: _addressArCtrl, label: AdminLocalizations.translate(context, 'address (arabic)'), hint: AdminLocalizations.translate(context, 'store address in arabic'), maxLines: 2),
           const SizedBox(height: 16),

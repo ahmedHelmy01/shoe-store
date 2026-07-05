@@ -8,12 +8,14 @@ class UsersRemoteDataSource extends AdminRemoteDataSource {
   Future<Map<String, dynamic>> getUsers({
     int page = 1,
     String? search,
+    int? perPage,
   }) async {
     final res = await network.get(
       ApiEndpoints.webstore.admin.clients,
       query: {
         'page': page,
         if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
+        if (perPage != null) 'perPage': perPage,
       },
     );
     return (res as Map).cast<String, dynamic>();

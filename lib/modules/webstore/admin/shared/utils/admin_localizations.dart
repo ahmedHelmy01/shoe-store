@@ -112,6 +112,30 @@ class AdminLocalizations {
         return 'سيتم تعيين العملاء الجدد لهذه المجموعة افتراضيًا';
       case 'clients reports':
         return 'تقارير العملاء';
+      case 'client report':
+        return 'تقرير العميل';
+      case 'save':
+        return 'حفظ';
+      case 'date from':
+        return 'من تاريخ';
+      case 'date to':
+        return 'إلى تاريخ';
+      case 'select a client...':
+        return 'اختر عميلاً...';
+      case 'loading clients...':
+        return 'جاري تحميل العملاء...';
+      case 'client':
+        return 'العميل';
+      case 'report for':
+        return 'تقرير عن';
+      case 'total orders':
+        return 'إجمالي الطلبات';
+      case 'total spent':
+        return 'إجمالي الإنفاق';
+      case 'period orders':
+        return 'طلبات الفترة';
+      case 'period spent':
+        return 'إنفاق الفترة';
       case 'addresses':
         return 'العناوين';
       case 'support':
@@ -356,6 +380,16 @@ class AdminLocalizations {
         return 'شرائح العملاء';
       case 'clients':
         return 'العملاء';
+      case 'report':
+        return 'تقرير';
+      case 'no data':
+        return 'لا توجد بيانات';
+      case 'search clients...':
+        return 'البحث عن العملاء...';
+      case 'top clients by orders':
+        return 'أفضل العملاء حسب الطلبات';
+      case 'top clients by spending':
+        return 'أفضل العملاء حسب الإنفاق';
       case 'vip':
         return 'VIP';
       case 'loyal':

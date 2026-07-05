@@ -9,6 +9,7 @@ import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/modules/webstore/pages/presentation/view_model/pages_view_model.dart';
 import 'package:erp/modules/webstore/support/presentation/view/contact_us_view.dart';
+import 'package:erp/modules/webstore/support/presentation/view/contact_info_view.dart';
 
 class MoreSettingsSection extends ConsumerWidget {
   const MoreSettingsSection({super.key});
@@ -117,7 +118,21 @@ class MoreSettingsSection extends ConsumerWidget {
           ),
           Divider(height: 1, indent: 50.w, endIndent: 20.w),
 
-          // Contact Us
+          // Contact Info (Phone, Email, Social)
+          _buildListTile(
+            context,
+            icon: Icons.headphones_rounded,
+            title: context.locale.languageCode == 'ar' ? 'معلومات الاتصال' : 'Contact Info',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ContactInfoView()),
+              );
+            },
+          ),
+          Divider(height: 1, indent: 50.w, endIndent: 20.w),
+
+          // Contact Us Form
           _buildListTile(
             context,
             icon: Icons.contact_support_outlined,

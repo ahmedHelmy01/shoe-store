@@ -159,6 +159,7 @@ class _WebStoreAdmin {
   // Customers
   final String clients = '/api/store/admin/clients';
   String clientAddresses(dynamic customerId) => '/api/store/admin/clients/$customerId/addresses';
+  String clientReport(int customerId) => '/api/store/admin/clients/$customerId/report';
   final String addresses = '/api/store/admin/addresses';
   final String customerGroups = '/api/store/admin/customer-groups';
 

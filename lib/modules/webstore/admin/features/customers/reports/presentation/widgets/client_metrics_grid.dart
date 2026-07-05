@@ -4,25 +4,41 @@ import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/admin/features/dashboard/presentation/widgets/stat_card.dart';
 
 class ClientMetricsGrid extends StatelessWidget {
-  const ClientMetricsGrid({super.key});
+  final int totalClients;
+  final int totalOrders;
+  final double totalSpent;
+  final int activeClients;
+  final bool showReportData;
+  final String? periodOrders;
+  final String? periodSpent;
+
+  const ClientMetricsGrid({
+    super.key,
+    this.totalClients = 0,
+    this.totalOrders = 0,
+    this.totalSpent = 0.0,
+    this.activeClients = 0,
+    this.showReportData = false,
+    this.periodOrders,
+    this.periodSpent,
+  });
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Use 4 columns on wide screens, 2 on medium, and 1 on mobile
         int crossAxisCount;
         double ratio;
 
         if (constraints.maxWidth > 1100) {
           crossAxisCount = 4;
-          ratio = 3.6; // Slim 4-column for desktop
+          ratio = 3.6;
         } else if (constraints.maxWidth > 700) {
           crossAxisCount = 2;
-          ratio = 2.0; // Compact 2-column for tablet
+          ratio = 2.0;
         } else {
           crossAxisCount = 2;
-          ratio = 1.2; // 2-column grid for mobile (fixed overflow)
+          ratio = 1.2;
         }
         
         return GridView.count(
@@ -34,35 +50,41 @@ class ClientMetricsGrid extends StatelessWidget {
           childAspectRatio: ratio,
           children: [
             StatCard(
-              title: AdminLocalizations.translate(context, 'Total Clients'),
-              value: '12,458',
-              deltaPercent: 12,
+              title: AdminLocalizations.translate(context, showReportData ? 'period orders' : 'total clients'),
+              value: showReportData ? (periodOrders ?? '0') : totalClients.toString(),
+              deltaPercent: 0,
               positive: true,
               icon: Icons.people_alt_rounded,
               color: AppColors.primary,
             ),
             StatCard(
-              title: AdminLocalizations.translate(context, 'Active Clients'),
-              value: '8,234',
-              deltaPercent: 5,
+              title: AdminLocalizations.translate(context, showReportData ? 'period spent' : 'total orders'),
+              value: showReportData
+                  ? '${periodSpent ?? "0"} ${AppConstants.currency}'
+                  : totalOrders.toString(),
+              deltaPercent: 0,
               positive: true,
-              icon: Icons.how_to_reg_rounded,
+              icon: Icons.shopping_bag_rounded,
               color: AppColors.secondary,
             ),
             StatCard(
-              title: AdminLocalizations.translate(context, 'New This Month'),
-              value: '452',
-              deltaPercent: 2,
-              positive: false,
-              icon: Icons.person_add_alt_1_rounded,
+              title: AdminLocalizations.translate(context, showReportData ? 'total orders' : 'total spent'),
+              value: showReportData
+                  ? totalOrders.toString()
+                  : '${totalSpent.toStringAsFixed(2)} ${AppConstants.currency}',
+              deltaPercent: 0,
+              positive: true,
+              icon: Icons.account_balance_wallet_rounded,
               color: AppColors.info,
             ),
             StatCard(
-              title: AdminLocalizations.translate(context, 'Avg. Revenue/Client'),
-              value: '850 ${AppConstants.currency}',
-              deltaPercent: 8,
+              title: AdminLocalizations.translate(context, showReportData ? 'total spent' : 'active clients'),
+              value: showReportData
+                  ? '${totalSpent.toStringAsFixed(2)} ${AppConstants.currency}'
+                  : activeClients.toString(),
+              deltaPercent: 0,
               positive: true,
-              icon: Icons.monetization_on_rounded,
+              icon: Icons.how_to_reg_rounded,
               color: AppColors.warning,
             ),
           ],
