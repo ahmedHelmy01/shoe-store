@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_row.dart';
-import 'package:erp/modules/webstore/admin/features/orders/presentation/widgets/order_status_dropdown.dart';
+import 'package:erp/modules/webstore/admin/features/orders/presentation/widgets/order_status_badge.dart';
 import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class OrderDataTable extends StatelessWidget {
@@ -47,9 +47,9 @@ class OrderDataTable extends StatelessWidget {
           sortable: true,
           sortValue: (o) => o.status,
           exportValue: (o) => o.status,
-          cell: (_, o) => OrderStatusDropdown(
+          cell: (_, o) => OrderStatusBadge(
             status: o.status,
-            onChanged: (s) => onStatusChanged(o, s),
+            hexColor: o.statusColor,
           ),
           width: 168,
         ),

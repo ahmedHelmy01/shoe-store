@@ -33,7 +33,7 @@ class OrderStatusTabs extends StatelessWidget {
         unselectedLabelStyle: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
         tabs: [
           Tab(text: '${AdminLocalizations.translate(context, 'all')} (${allOrders.length})'),
-          ...statuses.map((s) => Tab(text: '${AdminLocalizations.translateStatus(context, s)} (${allOrders.where((o) => o.status == s).length})')),
+          ...statuses.map((s) => Tab(text: '$s (${allOrders.where((o) => o.status == s).length})')),
         ],
       ),
     );

@@ -144,6 +144,9 @@ class AdminLocalizations {
         return 'الرسائل';
       case 'settings':
         return 'الإعدادات';
+      case 'configure storefront behavior, delivery, payments, and branding.':
+      case 'configure storefront behavior, delivery, payments, and branding':
+        return 'تهيئة سلوك المتجر والتوصيل والمدفوعات والهوية التجارية.';
       
       // Common table headers & labels
       case 'id':

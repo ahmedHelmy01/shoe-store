@@ -124,9 +124,18 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.title, style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w900, color: AppColors.textColor)),
+                  Text(
+                    AdminLocalizations.translate(context, widget.title),
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.textColor,
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text(widget.subtitle, style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor)),
+                  Text(
+                    AdminLocalizations.translate(context, widget.subtitle),
+                    style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
+                  ),
                 ],
               ),
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_row.dart';
+import 'package:erp/modules/webstore/admin/features/orders/presentation/widgets/order_status_badge.dart';
 import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class OrdersTable extends StatelessWidget {
@@ -56,8 +57,11 @@ class OrdersTable extends StatelessWidget {
           sortable: true,
           sortValue: (o) => o.status,
           exportValue: (o) => o.status,
-          cell: (_, o) => _StatusBadge(status: o.status),
-          width: 120,
+          cell: (_, o) => OrderStatusBadge(
+            status: o.status,
+            hexColor: o.statusColor,
+          ),
+          width: 160,
         ),
         AdminColumn<OrderRow>(
           title: AdminLocalizations.translate(context, 'actions'),
@@ -69,35 +73,6 @@ class OrdersTable extends StatelessWidget {
           width: 130,
         ),
       ],
-    );
-  }
-}
-
-class _StatusBadge extends StatelessWidget {
-  final String status;
-  const _StatusBadge({required this.status});
-
-  @override
-  Widget build(BuildContext context) {
-    final translated = AdminLocalizations.translateStatus(context, status);
-    final color = switch (translated.toLowerCase()) {
-      'delivered' || 'completed' => Colors.green,
-      'pending' || 'processing' => Colors.orange,
-      'cancelled' => Colors.red,
-      _ => Colors.blue,
-    };
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
-      ),
-      child: Text(
-        translated,
-        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
-      ),
     );
   }
 }

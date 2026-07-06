@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_card_popup_menu.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_row.dart';
+import 'package:erp/modules/webstore/admin/features/orders/presentation/widgets/order_status_badge.dart';
 import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class OrderCard extends StatelessWidget {
@@ -48,7 +49,11 @@ class OrderCard extends StatelessWidget {
                   ],
                 ),
               ),
-              StatusBadge(status: order.status),
+              OrderStatusBadge(
+                status: order.status,
+                hexColor: order.statusColor,
+                dense: true,
+              ),
               const SizedBox(width: 8),
               AdminCardPopupMenu(
                 onView: onView,
@@ -72,34 +77,6 @@ class OrderCard extends StatelessWidget {
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-class StatusBadge extends StatelessWidget {
-  final String status;
-  const StatusBadge({super.key, required this.status});
-
-  @override
-  Widget build(BuildContext context) {
-    final translated = AdminLocalizations.translateStatus(context, status);
-    final color = switch (translated.toLowerCase()) {
-      'delivered' || 'completed' => Colors.green,
-      'pending' || 'processing' => Colors.orange,
-      'cancelled' => Colors.red,
-      _ => Colors.blue,
-    };
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        translated,
-        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: color),
       ),
     );
   }

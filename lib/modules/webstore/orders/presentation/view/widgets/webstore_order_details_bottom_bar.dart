@@ -58,10 +58,8 @@ class WebStoreOrderDetailsBottomBar extends ConsumerWidget {
                       },
                 child: Text(
                   LocaleKeys.webstore.orders.rate_order.tr(context: context),
-                  style: TextStyle(
-                    color: !isCancelled
-                        ? Colors.white
-                        : theme.textTheme.bodyMedium?.color,
+                  style: const TextStyle(
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -81,7 +79,7 @@ class WebStoreOrderDetailsBottomBar extends ConsumerWidget {
                 child: Text(
                   LocaleKeys.webstore.orders.reorder.tr(context: context),
                   style: TextStyle(
-                    color: isCancelled ? Colors.white : AppColors.primaryOrange,
+                    color: isCancelled ? Colors.white : Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

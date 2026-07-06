@@ -71,10 +71,18 @@ class WebStoreOrderDetailsView extends ConsumerWidget {
     final shippingCost = order['shipping_cost']?.toString() ?? '0.00';
     final taxAmount = order['tax_amount']?.toString() ?? '0.00';
     final total = order['total']?.toString() ?? '0.00';
+    final rawPayment = order['payment_method'];
+    final Map<String, dynamic>? paymentMethod = rawPayment is Map<String, dynamic>
+        ? rawPayment
+        : (rawPayment is String
+            ? {
+                'name': rawPayment,
+                'type': rawPayment.toLowerCase().contains('card') ? 'card' : 'cash',
+              }
+            : null);
     final couponCode = order['coupon_code']?.toString();
-    final paymentMethod = order['payment_method'] as Map<String, dynamic>?;
     final address = order['address'] as Map<String, dynamic>?;
-    final isCancelled = order['cancelled_at'] != null;
+    final isCancelled = order['cancelled_at'] != null && order['cancelled_at'].toString().trim().isNotEmpty;
     final cancelledReason = order['cancelled_reason']?.toString();
     final notes = order['notes']?.toString();
 
@@ -145,16 +153,8 @@ class WebStoreOrderDetailsView extends ConsumerWidget {
   }
 
   String _getStatusName(BuildContext context, Map<String, dynamic> order) {
-    if (order['cancelled_at'] != null) return LocaleKeys.webstore.orders.status_cancelled.tr(context: context);
-    if (order['delivered_at'] != null) return LocaleKeys.webstore.orders.status_delivered.tr(context: context);
-    if (order['shipped_at'] != null) return LocaleKeys.webstore.orders.status_shipped.tr(context: context);
     final status = order['status'];
     if (status is Map) {
-      final name = status['name']?.toString().toLowerCase() ?? 'pending';
-      if (name == 'processing') return LocaleKeys.webstore.orders.status_processing.tr(context: context);
-      if (name == 'shipped') return LocaleKeys.webstore.orders.status_shipped.tr(context: context);
-      if (name == 'delivered') return LocaleKeys.webstore.orders.status_delivered.tr(context: context);
-      if (name == 'cancelled') return LocaleKeys.webstore.orders.status_cancelled.tr(context: context);
       return status['name']?.toString() ?? LocaleKeys.webstore.orders.status_pending.tr(context: context);
     }
     if (status is String) {
@@ -165,13 +165,44 @@ class WebStoreOrderDetailsView extends ConsumerWidget {
       if (s == 'cancelled') return LocaleKeys.webstore.orders.status_cancelled.tr(context: context);
       return status;
     }
+    
+    // Fallback to checking dates (with empty check)
+    if (order['cancelled_at'] != null && order['cancelled_at'].toString().trim().isNotEmpty) {
+      return LocaleKeys.webstore.orders.status_cancelled.tr(context: context);
+    }
+    if (order['delivered_at'] != null && order['delivered_at'].toString().trim().isNotEmpty) {
+      return LocaleKeys.webstore.orders.status_delivered.tr(context: context);
+    }
+    if (order['shipped_at'] != null && order['shipped_at'].toString().trim().isNotEmpty) {
+      return LocaleKeys.webstore.orders.status_shipped.tr(context: context);
+    }
     return LocaleKeys.webstore.orders.status_pending.tr(context: context);
   }
 
   Color _getStatusColor(Map<String, dynamic> order) {
-    if (order['cancelled_at'] != null) return Colors.red;
-    if (order['delivered_at'] != null) return AppColors.success;
-    if (order['shipped_at'] != null) return AppColors.info;
+    final status = order['status'];
+    if (status is Map && status['color'] != null) {
+      final colorStr = status['color'].toString();
+      try {
+        final hex = colorStr.replaceAll('#', '');
+        if (hex.length == 6) {
+          return Color(int.parse('FF$hex', radix: 16));
+        } else if (hex.length == 8) {
+          return Color(int.parse(hex, radix: 16));
+        }
+      } catch (_) {}
+    }
+    
+    // Fallback to dates (with empty check)
+    if (order['cancelled_at'] != null && order['cancelled_at'].toString().trim().isNotEmpty) {
+      return Colors.red;
+    }
+    if (order['delivered_at'] != null && order['delivered_at'].toString().trim().isNotEmpty) {
+      return AppColors.success;
+    }
+    if (order['shipped_at'] != null && order['shipped_at'].toString().trim().isNotEmpty) {
+      return AppColors.info;
+    }
     return AppColors.warning;
   }
 }

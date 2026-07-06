@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_row.dart';
-import 'package:erp/modules/webstore/admin/features/orders/presentation/widgets/order_status_dropdown.dart';
+import 'package:erp/modules/webstore/admin/features/orders/presentation/widgets/order_status_badge.dart';
 
 class OrderMobileList extends StatelessWidget {
   final List<OrderRow> items;
@@ -24,7 +24,7 @@ class OrderMobileList extends StatelessWidget {
     return ListView.separated(
       padding: const EdgeInsets.all(10),
       itemCount: items.length,
-      separatorBuilder: (_, _) => Divider(height: 1, color: borderColor),
+      separatorBuilder: (_, __) => Divider(height: 1, color: borderColor),
       itemBuilder: (context, i) {
         final o = items[i];
         return ListTile(
@@ -34,13 +34,10 @@ class OrderMobileList extends StatelessWidget {
           ),
           title: Text(o.orderNumber, maxLines: 1, overflow: TextOverflow.ellipsis),
           subtitle: Text('${o.payment} • ${o.total.toStringAsFixed(2)} • ${df.format(o.createdAt)}'),
-          trailing: SizedBox(
-            width: 140,
-            child: OrderStatusDropdown(
-              status: o.status,
-              dense: true,
-              onChanged: (s) => onStatusChanged(o, s),
-            ),
+          trailing: OrderStatusBadge(
+            status: o.status,
+            hexColor: o.statusColor,
+            dense: true,
           ),
         );
       },

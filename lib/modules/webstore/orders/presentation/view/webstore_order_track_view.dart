@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/common_widget/app_bar/common_app_bar.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
@@ -24,10 +23,40 @@ class WebStoreOrderTrackView extends ConsumerWidget {
     required this.orderNumber,
   });
 
+  Color _parseColor(String? hexString, {Color defaultColor = Colors.grey}) {
+    if (hexString == null || hexString.isEmpty) return defaultColor;
+    try {
+      final hex = hexString.replaceAll('#', '');
+      if (hex.length == 6) {
+        return Color(int.parse('FF$hex', radix: 16));
+      } else if (hex.length == 8) {
+        return Color(int.parse(hex, radix: 16));
+      }
+    } catch (_) {}
+    return defaultColor;
+  }
+
+  String _formatStepDate(DateTime? dateTime) {
+    if (dateTime == null) return '';
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final stepDay = DateTime(dateTime.year, dateTime.month, dateTime.day);
+    
+    if (today == stepDay) {
+      return DateFormat('h:mm a').format(dateTime);
+    } else {
+      return DateFormat('MMM d, h:mm a').format(dateTime);
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final trackingAsync = ref.watch(orderTrackingProvider(orderId));
+    final isAr = context.locale.languageCode == 'ar';
+    final emptyMessage = isAr
+        ? 'لا توجد تحديثات لتتبع الطلب حالياً'
+        : 'No tracking updates available yet.';
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -47,306 +76,304 @@ class WebStoreOrderTrackView extends ConsumerWidget {
         ),
         data: (trackingData) {
           // Handle both Map (with 'data' wrapper) and List responses
-          Map<String, dynamic> data = {};
           List<dynamic> timeline = [];
 
           if (trackingData is Map) {
             final rawData = trackingData['data'] ?? trackingData;
-            if (rawData is Map<String, dynamic>) {
-              data = rawData;
-              // If the map contains a list of tracking events
-              if (data['tracking'] is List) {
-                timeline = data['tracking'];
-              } else if (data['history'] is List) {
-                timeline = data['history'];
-              }
-            } else if (rawData is List) {
+            if (rawData is List) {
               timeline = rawData;
-              if (timeline.isNotEmpty && timeline.first is Map) {
-                data = Map<String, dynamic>.from(timeline.first);
+            } else if (rawData is Map<String, dynamic>) {
+              if (rawData['tracking'] is List) {
+                timeline = rawData['tracking'];
+              } else if (rawData['history'] is List) {
+                timeline = rawData['history'];
               }
             }
           } else if (trackingData is List) {
             timeline = trackingData;
-            if (timeline.isNotEmpty && timeline.first is Map) {
-              data = Map<String, dynamic>.from(timeline.first);
-            }
           }
 
-          final status = (data['status'] ?? data['order_status'] ?? '')
-              .toString()
-              .toLowerCase();
-          final total = (data['total'] ?? data['total_amount'] ?? '0.00')
-              .toString();
-          final createdAt = data['created_at'] != null
-              ? DateTime.tryParse(data['created_at'].toString())
-              : DateTime.now();
-
-          return SingleChildScrollView(
-            padding: EdgeInsets.all(20.w),
+          return SafeArea(
             child: Column(
               children: [
-                // ─── Order Summary Card ────────────────────
-                AppAnimation.fadeInDown(
-                  child: AppCard(
-                    padding: EdgeInsets.all(16.w),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.all(20.w),
+                    child: Column(
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              LocaleKeys.webstore.orders.order_id.tr(
-                                context: context,
-                                args: [orderNumber],
-                              ),
-                              style: TextStyle(
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            4.verticalSpace,
-                            Text(
-                              DateFormat(
-                                'MMM d, yyyy \'at\' h:mm a',
-                              ).format(createdAt ?? DateTime.now()),
-                              style: TextStyle(
-                                fontSize: 12.sp,
-                                color: theme.hintColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          '$total ${AppConstants.currency}',
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w900,
-                            color: AppColors.primaryOrange,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                24.verticalSpace,
-
-                // ─── Map Placeholder ───────────────────────
-                AppAnimation.fadeInUp(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16.r),
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: AppImage(
-                            imagePath:
-                                'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=800&auto=format&fit=crop',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Center(
+                        // ─── Header Info Card ───────────────────
+                        AppAnimation.fadeInDown(
                           child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 8.h,
-                            ),
+                            width: double.infinity,
+                            padding: EdgeInsets.all(20.w),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              gradient: const LinearGradient(
+                                colors: [
+                                  AppColors.primaryOrange,
+                                  AppColors.orange,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
                               borderRadius: BorderRadius.circular(20.r),
-                              boxShadow: const [
+                              boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 10,
+                                  color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                                  blurRadius: 15,
+                                  offset: const Offset(0, 8),
                                 ),
                               ],
                             ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(
-                                  Icons.directions_bike_rounded,
-                                  color: AppColors.primaryOrange,
-                                  size: 20.sp,
-                                ),
-                                8.horizontalSpace,
-                                Text(
-                                  LocaleKeys.webstore.orders.arriving_in.tr(
-                                    context: context,
-                                  ),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          LocaleKeys.webstore.orders.order_id.tr(
+                                            context: context,
+                                            args: [orderNumber],
+                                          ),
+                                          style: TextStyle(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w800,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        if (timeline.isNotEmpty) ...[
+                                          6.verticalSpace,
+                                          Text(
+                                            _formatStepDate(
+                                              DateTime.tryParse(
+                                                timeline.first['date']?.toString() ?? ''
+                                              ),
+                                            ),
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color: Colors.white.withValues(alpha: 0.85),
+                                            ),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                    if (timeline.isNotEmpty)
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 14.w,
+                                          vertical: 6.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withValues(alpha: 0.2),
+                                          borderRadius: BorderRadius.circular(30.r),
+                                          border: Border.all(
+                                            color: Colors.white.withValues(alpha: 0.4),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              width: 8.r,
+                                              height: 8.r,
+                                              decoration: BoxDecoration(
+                                                color: _parseColor(
+                                                  timeline.first['color']?.toString()
+                                                ),
+                                                shape: BoxShape.circle,
+                                              ),
+                                            ),
+                                            8.horizontalSpace,
+                                            Text(
+                                              timeline.first['status']?.toString() ?? '',
+                                              style: TextStyle(
+                                                fontSize: 12.sp,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                  ],
                                 ),
                               ],
                             ),
                           ),
                         ),
+
+                        24.verticalSpace,
+
+                        // ─── Dynamic Delivery Timeline Card ────
+                        if (timeline.isEmpty)
+                          AppAnimation.fadeInUp(
+                            child: AppCard(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 40.h,
+                                horizontal: 20.w,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.local_shipping_outlined,
+                                    size: 70.sp,
+                                    color: theme.hintColor.withValues(alpha: 0.5),
+                                  ),
+                                  16.verticalSpace,
+                                  Text(
+                                    emptyMessage,
+                                    style: TextStyle(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: theme.hintColor,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        else
+                          AppAnimation.fadeInUp(
+                            child: AppCard(
+                              padding: EdgeInsets.all(20.w),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    isAr ? "حالة الشحن والتحديثات" : "Shipping Updates & Status",
+                                    style: TextStyle(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w800,
+                                      color: theme.colorScheme.onSurface,
+                                    ),
+                                  ),
+                                  20.verticalSpace,
+                                  Column(
+                                    children: List.generate(
+                                      timeline.length,
+                                      (index) {
+                                        final step = timeline[index];
+                                        final stepStatus =
+                                            step['status']?.toString() ?? '';
+                                        final stepNotes =
+                                            step['notes']?.toString() ?? '';
+                                        final stepColor = _parseColor(
+                                          step['color']?.toString()
+                                        );
+                                        final stepDate = step['date'] != null
+                                            ? DateTime.tryParse(
+                                                step['date'].toString()
+                                              )
+                                            : null;
+                                        final timeStr = _formatStepDate(stepDate);
+
+                                        final isFirst = index == 0;
+                                        final isLast = index == timeline.length - 1;
+
+                                        return WebStoreOrderTrackTimelineStepWidget(
+                                          title: stepStatus,
+                                          subtitle: stepNotes,
+                                          time: timeStr,
+                                          isActive: isFirst,
+                                          isCompleted: true,
+                                          isLast: isLast,
+                                          indicatorColor: stepColor,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        20.verticalSpace,
                       ],
                     ),
                   ),
                 ),
 
-                24.verticalSpace,
-
-                // ─── Delivery Timeline ────────────────────
-                AppCard(
-                  padding: EdgeInsets.all(20.w),
-                  child: Column(
-                    children: [
-                      WebStoreOrderTrackTimelineStepWidget(
-                        title: LocaleKeys.webstore.orders.order_placed.tr(
-                          context: context,
-                        ),
-                        subtitle: LocaleKeys
-                            .webstore
-                            .orders
-                            .order_placed_subtitle
-                            .tr(context: context),
-                        time: DateFormat(
-                          'h:mm a',
-                        ).format(createdAt ?? DateTime.now()),
-                        isActive: true,
-                        isCompleted: true,
-                      ),
-                      WebStoreOrderTrackTimelineStepWidget(
-                        title: LocaleKeys.webstore.orders.status_processing.tr(
-                          context: context,
-                        ),
-                        subtitle: LocaleKeys.webstore.orders.processing_subtitle
-                            .tr(context: context),
-                        time: '--:--',
-                        isActive:
-                            status == 'processing' ||
-                            status == 'shipped' ||
-                            status == 'delivered',
-                        isCompleted:
-                            status == 'shipped' || status == 'delivered',
-                      ),
-                      WebStoreOrderTrackTimelineStepWidget(
-                        title: LocaleKeys.webstore.orders.out_for_delivery.tr(
-                          context: context,
-                        ),
-                        subtitle: LocaleKeys
-                            .webstore
-                            .orders
-                            .out_for_delivery_subtitle
-                            .tr(context: context),
-                        time: '--:--',
-                        isActive: status == 'shipped' || status == 'delivered',
-                        isCompleted: status == 'delivered',
-                      ),
-                      WebStoreOrderTrackTimelineStepWidget(
-                        title: LocaleKeys.webstore.orders.status_delivered.tr(
-                          context: context,
-                        ),
-                        subtitle: LocaleKeys.webstore.orders.delivered_subtitle
-                            .tr(context: context),
-                        time: '--:--',
-                        isActive: status == 'delivered',
-                        isCompleted: status == 'delivered',
-                        isLast: true,
+                // ─── Pinned Bottom Buttons ────────────────
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 16.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: theme.cardColor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, -5),
                       ),
                     ],
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20.r),
+                    ),
                   ),
-                ),
-
-                24.verticalSpace,
-
-                // ─── Courier Details ───────────────────────
-                AppCard(
-                  padding: EdgeInsets.all(16.w),
-                  child: Row(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      ClipOval(
-                        child: SizedBox(
-                          width: 48.r,
-                          height: 48.r,
-                          child: AppImage(
-                            imagePath:
-                                'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200&auto=format&fit=crop',
-                            fit: BoxFit.cover,
+                      AppButton(
+                        onPressed: () => AppNavigator.push(
+                          context,
+                          AppRouteNames.webstoreRateOrder,
+                          arguments: {'order_id': orderId},
+                        ),
+                        isGradient: true,
+                        child: Text(
+                          LocaleKeys.webstore.orders.rate_order.tr(
+                            context: context,
+                          ),
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                       ),
-                      16.horizontalSpace,
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      12.verticalSpace,
+                      AppButton(
+                        type: ButtonType.outline,
+                        onPressed: () => AppNavigator.pushAndRemoveUntil(
+                          context,
+                          AppRouteNames.webstoreMain,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              'Ahmed Mohamed',
-                              style: TextStyle(
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            Icon(
+                              Icons.home_outlined,
+                              size: 20.sp,
+                              color: AppColors.primaryOrange,
                             ),
+                            8.horizontalSpace,
                             Text(
-                              LocaleKeys.webstore.orders.delivery_partner.tr(
+                              LocaleKeys.webstore.checkout.back_to_home.tr(
                                 context: context,
                               ),
                               style: TextStyle(
-                                fontSize: 12.sp,
-                                color: theme.hintColor,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primaryOrange,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      Row(
-                        children: [
-                          _iconBtn(Icons.call_rounded, isGreen: true),
-                          8.horizontalSpace,
-                          _iconBtn(Icons.chat_bubble_outline_rounded),
-                        ],
-                      ),
                     ],
                   ),
                 ),
-
-                32.verticalSpace,
-
-                // Rate Order Button
-                AppButton(
-                  onPressed: () => AppNavigator.push(
-                    context,
-                    AppRouteNames.webstoreRateOrder,
-                    arguments: {'order_id': orderId},
-                  ),
-                  isGradient: true,
-                  child: Text(
-                    LocaleKeys.webstore.orders.rate_order.tr(context: context),
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                20.verticalSpace,
               ],
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _iconBtn(IconData icon, {bool isGreen = false}) {
-    return Container(
-      padding: EdgeInsets.all(8.w),
-      decoration: BoxDecoration(
-        color: (isGreen ? Colors.green : AppColors.primaryOrange).withValues(
-          alpha: 0.1,
-        ),
-        shape: BoxShape.circle,
-      ),
-      child: Icon(
-        icon,
-        color: isGreen ? Colors.green : AppColors.primaryOrange,
-        size: 20.sp,
       ),
     );
   }

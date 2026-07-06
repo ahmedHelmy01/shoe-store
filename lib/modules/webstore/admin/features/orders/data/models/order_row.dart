@@ -2,6 +2,7 @@ class OrderRow {
   final int id;
   final String orderNumber;
   final String status;
+  final String? statusColor;
   final String payment;
   final double total;
   final int itemsCount;
@@ -11,6 +12,7 @@ class OrderRow {
     required this.id,
     required this.orderNumber,
     required this.status,
+    this.statusColor,
     required this.payment,
     required this.total,
     required this.itemsCount,
@@ -51,13 +53,21 @@ class OrderRow {
   }
 
   factory OrderRow.fromJson(Map<String, dynamic> json) {
+    // Extract status color from the status map if available
+    String? statusColor;
+    final rawStatus = json['status'];
+    if (rawStatus is Map) {
+      statusColor = rawStatus['color']?.toString();
+    }
+
     return OrderRow(
       id: json['id'] as int? ?? 0,
       orderNumber: json['order_number'] as String? ?? '#${json['id'] ?? 0}',
       status: _parseStringValue(json['status'], 'pending'),
-      payment: _parseStringValue(json['payment'], 'cod'),
+      statusColor: statusColor,
+      payment: _parseStringValue(json['payment_method'] ?? json['payment'], 'cod'),
       total: _parseDoubleValue(json['total'] ?? json['total_price']),
-      itemsCount: _parseIntValue(json['items_count']),
+      itemsCount: _parseIntValue(json['items_count'] ?? (json['items'] is List ? (json['items'] as List).length : 0)),
       createdAt: json['created_at'] != null ? DateTime.parse(json['created_at'].toString()) : DateTime.now(),
     );
   }
@@ -66,6 +76,7 @@ class OrderRow {
     int? id,
     String? orderNumber,
     String? status,
+    String? statusColor,
     String? payment,
     double? total,
     int? itemsCount,
@@ -75,6 +86,7 @@ class OrderRow {
       id: id ?? this.id,
       orderNumber: orderNumber ?? this.orderNumber,
       status: status ?? this.status,
+      statusColor: statusColor ?? this.statusColor,
       payment: payment ?? this.payment,
       total: total ?? this.total,
       itemsCount: itemsCount ?? this.itemsCount,

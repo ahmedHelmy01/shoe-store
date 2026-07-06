@@ -192,7 +192,7 @@ class _WebStoreRateOrderViewState extends ConsumerState<WebStoreRateOrderView> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(LocaleKeys.webstore.orders.rating_success.tr(context: context))),
         );
-        AppNavigator.pop(context);
+        AppNavigator.pushAndRemoveUntil(context, AppRouteNames.webstoreMain);
       }
     } catch (e) {
       if (mounted) {

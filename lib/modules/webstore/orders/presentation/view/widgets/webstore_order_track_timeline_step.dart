@@ -9,6 +9,7 @@ class WebStoreOrderTrackTimelineStepWidget extends StatelessWidget {
   final bool isActive;
   final bool isCompleted;
   final bool isLast;
+  final Color? indicatorColor;
 
   const WebStoreOrderTrackTimelineStepWidget({
     super.key,
@@ -18,11 +19,13 @@ class WebStoreOrderTrackTimelineStepWidget extends StatelessWidget {
     required this.isActive,
     required this.isCompleted,
     this.isLast = false,
+    this.indicatorColor,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final color = indicatorColor ?? AppColors.primaryOrange;
 
     return IntrinsicHeight(
       child: Row(
@@ -35,9 +38,9 @@ class WebStoreOrderTrackTimelineStepWidget extends StatelessWidget {
                 height: 24.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isCompleted ? AppColors.primaryOrange : (isActive ? Colors.white : Colors.grey[300]),
+                  color: isCompleted ? color : (isActive ? Colors.white : Colors.grey[300]),
                   border: Border.all(
-                    color: isCompleted ? AppColors.primaryOrange : (isActive ? AppColors.primaryOrange : Colors.grey[400]!),
+                    color: isCompleted ? color : (isActive ? color : Colors.grey[400]!),
                     width: 2,
                   ),
                 ),
@@ -48,10 +51,10 @@ class WebStoreOrderTrackTimelineStepWidget extends StatelessWidget {
                             child: Container(
                               width: 8.w,
                               height: 8.w,
-                              decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.primaryOrange,
-                      ),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: color,
+                              ),
                             ),
                           )
                         : null),
@@ -60,7 +63,7 @@ class WebStoreOrderTrackTimelineStepWidget extends StatelessWidget {
                 Expanded(
                   child: Container(
                     width: 2,
-                    color: isCompleted ? AppColors.primaryOrange : Colors.grey[300],
+                    color: isCompleted ? color : Colors.grey[300],
                   ),
                 ),
             ],
