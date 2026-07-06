@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -109,7 +108,7 @@ class _PrescriptionEditDialogState extends State<PrescriptionEditDialog> {
               child: SizedBox(
                 width: 100.w, height: 100.w,
                 child: _pickedFile != null
-                    ? Image.file(File(_pickedFile!.path), fit: BoxFit.cover)
+                    ? AppImage(imagePath: 'file://${_pickedFile!.path}', fit: BoxFit.cover)
                     : AppImage(imagePath: NetworkUrl.fullUrl(widget.currentImagePath), fit: BoxFit.cover),
               ),
             ),

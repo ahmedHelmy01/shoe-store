@@ -1,3 +1,5 @@
+import 'package:erp/core/network/network_url.dart';
+
 class PaymentMethodModel {
   final int id;
   final String name;
@@ -14,11 +16,12 @@ class PaymentMethodModel {
   });
 
   factory PaymentMethodModel.fromJson(Map<String, dynamic> json) {
+    final imagePath = json['image']?.toString();
     return PaymentMethodModel(
       id: json['id'] as int,
       name: json['name_ar'] ?? json['name'] ?? json['title'] ?? '',
       code: json['code']?.toString(),
-      image: json['image']?.toString(),
+      image: imagePath != null ? NetworkUrl.imageUrl(imagePath) : null,
       isActive: json['is_active'] == 1 || json['is_active'] == true || json['is_active'] == null,
     );
   }

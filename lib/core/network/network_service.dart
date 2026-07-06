@@ -140,6 +140,9 @@ class NetworkService {
 
       // 4. Logging & Processing Response
       _logResponse(response);
+      if (uri.toString().contains('/categories')) {
+        print('📦 CATEGORIES RESPONSE: ${_decodeBody(response.body)}');
+      }
       return _processResponse(response);
     } on SocketException {
       throw NoInternetException();

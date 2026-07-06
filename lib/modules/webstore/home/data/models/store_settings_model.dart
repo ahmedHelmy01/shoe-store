@@ -1,3 +1,5 @@
+import 'package:erp/core/network/network_url.dart';
+
 /// Store Settings Model
 ///
 /// Contains global store configuration such as logos, social media links, 
@@ -30,9 +32,11 @@ class StoreSettingsModel {
   });
 
   factory StoreSettingsModel.fromJson(Map<String, dynamic> json) {
+    final rawLogo = json['logo'] as String?;
+    final rawLogoDark = json['logo_dark'] as String?;
     return StoreSettingsModel(
-      logo: json['logo'] as String?,
-      logoDark: json['logo_dark'] as String?,
+      logo: rawLogo != null ? NetworkUrl.imageUrl(rawLogo) : null,
+      logoDark: rawLogoDark != null ? NetworkUrl.imageUrl(rawLogoDark) : null,
       shippingValue: json['shipping_value'] as String?,
       address: json['address'] as String?,
       addressAr: json['address_ar'] as String?,

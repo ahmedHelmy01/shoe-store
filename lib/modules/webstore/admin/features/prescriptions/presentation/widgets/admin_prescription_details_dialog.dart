@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import '../../data/models/admin_prescription_row.dart';
@@ -19,17 +20,11 @@ class AdminPrescriptionDetailsDialog extends StatelessWidget {
         if (prescription.imageUrl.isNotEmpty) ...[
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
-            child: Image.network(
-              prescription.imageUrl,
+            child: AppImage(
+              imagePath: prescription.imageUrl,
               width: double.infinity,
               height: 300,
               fit: BoxFit.contain,
-              errorBuilder: (_, __, ___) => Container(
-                width: double.infinity,
-                height: 200,
-                color: Colors.grey[200],
-                child: const Icon(Icons.image_not_supported, size: 48),
-              ),
             ),
           ),
           const SizedBox(height: 24),

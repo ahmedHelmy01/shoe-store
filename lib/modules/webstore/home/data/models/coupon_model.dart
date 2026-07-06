@@ -1,3 +1,5 @@
+import 'package:erp/core/network/network_url.dart';
+
 class StoreCouponModel {
   final int? id;
   final String code;
@@ -43,6 +45,9 @@ class StoreCouponModel {
       typeStr = 'fixed';
     }
 
+    final rawImage = json['image']?.toString();
+    final rawImageUrl = json['image_url']?.toString();
+
     return StoreCouponModel(
       id: json['id'] != null ? _parseInt(json['id']) : null,
       code: json['code']?.toString() ?? '',
@@ -52,8 +57,8 @@ class StoreCouponModel {
       minimumOrderValue: json['minimum_order_value'] != null
           ? _parseDouble(json['minimum_order_value'])
           : null,
-      image: json['image']?.toString(),
-      imageUrl: json['image_url']?.toString(),
+      image: rawImage != null ? NetworkUrl.imageUrl(rawImage) : null,
+      imageUrl: rawImageUrl != null ? NetworkUrl.imageUrl(rawImageUrl) : null,
       startDate: json['start_date'] != null
           ? DateTime.tryParse(json['start_date'].toString())
           : null,

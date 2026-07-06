@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/companies/data/models/company_row.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
@@ -78,12 +79,11 @@ class CompaniesTable extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 20),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            c.logoUrl!,
+                          child: AppImage(
+                            imagePath: c.logoUrl!,
                             height: 120,
                             width: double.infinity,
                             fit: BoxFit.contain,
-                            errorBuilder: (_, __, ___) => const SizedBox.shrink(),
                           ),
                         ),
                       ),

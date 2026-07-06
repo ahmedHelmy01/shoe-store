@@ -1,3 +1,5 @@
+import 'package:erp/core/network/network_url.dart';
+
 class SliderModel {
   final int id;
   final String? title;
@@ -14,19 +16,12 @@ class SliderModel {
   });
 
   factory SliderModel.fromJson(Map<String, dynamic> json) {
-    String imagePath = json['image'] as String? ?? '';
-    
-    // Ensure full URL for slider images with the correct /storage/ prefix
-    if (imagePath.isNotEmpty && !imagePath.startsWith('http')) {
-      final cleanPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
-      imagePath = 'https://moon-erp.elbaset.com/storage/$cleanPath';
-    }
-
+    final imagePath = json['image'] as String? ?? '';
     return SliderModel(
       id: json['id'] as int,
       title: json['title'] as String?,
       titleAr: json['title_ar'] as String?,
-      image: imagePath,
+      image: NetworkUrl.imageUrl(imagePath),
       linkUrl: json['title_url'] as String?,
     );
   }

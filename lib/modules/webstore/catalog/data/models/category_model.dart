@@ -3,7 +3,9 @@
 /// Representative of a product category in the WebStore.
 library;
 
+import 'dart:developer' as developer;
 import 'package:erp/core/common_model/base_model.dart';
+import 'package:erp/core/network/network_url.dart';
 
 class WebStoreCategory extends BaseEntity with JsonSerializable {
   final String name;
@@ -32,13 +34,19 @@ class WebStoreCategory extends BaseEntity with JsonSerializable {
   });
 
   factory WebStoreCategory.fromJson(Map<String, dynamic> json) {
+    final rawImageUrl = json['image_url'] as String?;
+    final rawImage = json['image'] as String?;
+    final finalImage = (rawImageUrl?.isNotEmpty == true)
+        ? rawImageUrl!
+        : NetworkUrl.imageUrl(rawImage ?? '');
+    developer.log('📸 WebStoreCategory.fromJson id=${json['id']} name=${json['name']} raw_image_url=$rawImageUrl raw_image=$rawImage final_image=$finalImage');
     return WebStoreCategory(
       id: json['id'],
       name: json['name'] ?? json['name_ar'] ?? json['name_en'] ?? 'بدون اسم',
       nameEn: json['name_en'],
       nameAr: json['name_ar'],
       description: json['description'],
-      image: json['image_url'] ?? json['thumb'],
+      image: finalImage,
       parentId: json['parent_id'],
       productsCount: json['products_count'],
       isActive: json['is_active'],

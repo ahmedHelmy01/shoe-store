@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
@@ -40,12 +41,11 @@ class AdsTable extends StatelessWidget {
         AdminColumn<AdRow>(
           title: AdminLocalizations.translate(context, 'image'),
           cell: (_, a) => a.imageUrl != null
-              ? Image.network(
-                  a.imageUrl!,
+              ? AppImage(
+                  imagePath: a.imageUrl!,
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => const Icon(Icons.image_not_supported, size: 24),
                 )
               : const Icon(Icons.image_not_supported, size: 24),
           width: 80,
@@ -108,12 +108,11 @@ class AdDetailsDialog extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 20),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                ad.imageUrl!,
+              child: AppImage(
+                imagePath: ad.imageUrl!,
                 height: 180,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
               ),
             ),
           ),

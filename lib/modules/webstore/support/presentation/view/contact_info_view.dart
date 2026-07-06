@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -148,26 +148,18 @@ class ContactInfoView extends ConsumerWidget {
       physics: const BouncingScrollPhysics(),
       child: Column(
         children: [
-          SizedBox(height: 40.h),
           Container(
-            width: 100.w,
+            width: double.infinity,
             height: 100.w,
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
               color: isDark ? Colors.white.withValues(alpha: 0.05) : const Color(0xFFF8FAFC),
-              border: Border.all(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08)),
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(50.r),
-              child: settings.logo != null && settings.logo!.isNotEmpty
-                  ? CachedNetworkImage(
-                      imageUrl: settings.logo!,
-                      fit: BoxFit.cover,
-                      placeholder: (context2, url) => Icon(Icons.store_rounded, size: 44.sp, color: theme.hintColor),
-                      errorWidget: (context2, url, error) => Icon(Icons.store_rounded, size: 44.sp, color: AppColors.primaryOrange),
-                    )
-                  : Icon(Icons.store_rounded, size: 44.sp, color: AppColors.primaryOrange),
-            ),
+            child: settings.logo != null && settings.logo!.isNotEmpty
+                ? AppImage(
+                    imagePath: settings.logo!,
+                    fit: BoxFit.cover,
+                  )
+                : Icon(Icons.store_rounded, size: 44.sp, color: AppColors.primaryOrange),
           ),
           SizedBox(height: 24.h),
           Text(LocaleKeys.common.contact_us.tr(context: context),

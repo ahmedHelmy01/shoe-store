@@ -1,11 +1,10 @@
 import 'dart:ui' as ui;
-import 'dart:io' show File;
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:erp/core/common_widget/app_image/image_renderer.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/providers/core_providers.dart';
 
 class AdminImagePicker extends ConsumerStatefulWidget {
@@ -351,56 +350,12 @@ class _AdminImagePickerState extends ConsumerState<AdminImagePicker> {
 
   Widget _buildInitialImage() {
     if (kIsWeb) {
-      return Image.network(
-        widget.initialImage!,
+      return AppImage(
+        imagePath: widget.initialImage!,
         fit: BoxFit.cover,
-        loadingBuilder: (context, child, progress) {
-          if (progress == null) {
-            // Image loaded successfully
-            if (_initialImageFailed) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (mounted) setState(() => _initialImageFailed = false);
-              });
-            }
-            return child;
-          }
-          return const Center(child: CircularProgressIndicator(strokeWidth: 2));
-        },
-        errorBuilder: (context, error, stackTrace) {
-          if (!_initialImageFailed) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) setState(() => _initialImageFailed = true);
-            });
-          }
-          return Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.image_outlined, size: 40, color: Colors.grey.withValues(alpha: 0.5)),
-                const SizedBox(height: 8),
-                Text(
-                  'Image saved on server',
-                  style: TextStyle(
-                    color: Colors.grey.withValues(alpha: 0.7),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Click to replace',
-                  style: TextStyle(
-                    color: Colors.grey.withValues(alpha: 0.5),
-                    fontSize: 11,
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
       );
     }
-    return ImageRenderer.rendererImage(imagePath: widget.initialImage!);
+    return AppImage(imagePath: widget.initialImage!);
   }
 
   Widget _buildSingleLayout(bool isDark, ThemeData theme) {
@@ -426,12 +381,11 @@ class _AdminImagePickerState extends ConsumerState<AdminImagePicker> {
                 borderRadius: BorderRadius.circular(23),
                 child: _selectedFile != null
                     ? kIsWeb
-                        ? Image.network(
-                            _selectedFile!.path,
+                        ? AppImage(
+                            imagePath: _selectedFile!.path,
                             fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => _buildBrokenImagePlaceholder(),
                           )
-                        : Image.file(File(_selectedFile!.path), fit: BoxFit.cover)
+                        : AppImage(imagePath: 'file://${_selectedFile!.path}', fit: BoxFit.cover)
                     : _buildInitialImage(),
               ),
             ),
@@ -606,14 +560,10 @@ class _AdminImagePickerState extends ConsumerState<AdminImagePicker> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: isNetwork
-                  ? ImageRenderer.rendererImage(imagePath: path)
+                  ? AppImage(imagePath: path)
                   : kIsWeb
-                      ? Image.network(
-                          path,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => _buildBrokenImagePlaceholder(isSmall: true),
-                        )
-                      : Image.file(File(path), fit: BoxFit.cover),
+                      ? AppImage(imagePath: path)
+                      : AppImage(imagePath: 'file://$path'),
             ),
           ),
           Positioned(

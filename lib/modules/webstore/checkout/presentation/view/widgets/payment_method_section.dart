@@ -6,6 +6,7 @@ import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/modules/webstore/checkout/data/models/payment_method_model.dart';
 import 'package:erp/modules/webstore/checkout/presentation/view_model/checkout_providers.dart';
 
@@ -169,7 +170,7 @@ class PaymentMethodSection extends ConsumerWidget {
               borderRadius: BorderRadius.circular(6.r),
               border: Border.all(color: Colors.grey[200]!),
             ),
-            child: Image.asset(iconPath, fit: BoxFit.contain),
+            child: AppImage(imagePath: iconPath, fit: BoxFit.contain),
           ),
           16.horizontalSpace,
           Expanded(
@@ -227,16 +228,10 @@ class PaymentMethodSection extends ConsumerWidget {
               borderRadius: BorderRadius.circular(6.r),
               border: Border.all(color: Colors.grey[200]!),
             ),
-            child: method.image != null && method.image!.startsWith('http')
-                ? Image.network(
-                    method.image!,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => _fallbackIcon(method.code),
-                  )
-                : Image.asset(
-                    _getPaymentAsset(method.code),
-                    fit: BoxFit.contain,
-                  ),
+            child: AppImage(
+              imagePath: method.image ?? _getPaymentAsset(method.code),
+              fit: BoxFit.contain,
+            ),
           ),
           16.horizontalSpace,
           Expanded(
@@ -266,7 +261,7 @@ class PaymentMethodSection extends ConsumerWidget {
   }
 
   Widget _fallbackIcon(String? code) {
-    return Image.asset(_getPaymentAsset(code), fit: BoxFit.contain);
+    return AppImage(imagePath: _getPaymentAsset(code), fit: BoxFit.contain);
   }
 
   String _getPaymentAsset(String? code) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/common_widget/app_bar/common_app_bar.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
@@ -30,9 +31,14 @@ class WebStoreOrderTrackView extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: CommonAppBar(titleText: LocaleKeys.webstore.orders.order_tracking.tr(context: context)),
+      appBar: CommonAppBar(
+        titleText: LocaleKeys.webstore.orders.order_tracking.tr(
+          context: context,
+        ),
+      ),
       body: trackingAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator.adaptive()),
+        loading: () =>
+            const Center(child: CircularProgressIndicator.adaptive()),
         error: (err, stack) => Center(
           child: AppErrorWidget(
             errorMessage: err.toString(),
@@ -70,7 +76,8 @@ class WebStoreOrderTrackView extends ConsumerWidget {
           final status = (data['status'] ?? data['order_status'] ?? '')
               .toString()
               .toLowerCase();
-          final total = (data['total'] ?? data['total_amount'] ?? '0.00').toString();
+          final total = (data['total'] ?? data['total_amount'] ?? '0.00')
+              .toString();
           final createdAt = data['created_at'] != null
               ? DateTime.tryParse(data['created_at'].toString())
               : DateTime.now();
@@ -90,7 +97,10 @@ class WebStoreOrderTrackView extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              LocaleKeys.webstore.orders.order_id.tr(context: context, args: [orderNumber]),
+                              LocaleKeys.webstore.orders.order_id.tr(
+                                context: context,
+                                args: [orderNumber],
+                              ),
                               style: TextStyle(
                                 fontSize: 15.sp,
                                 fontWeight: FontWeight.w800,
@@ -98,7 +108,9 @@ class WebStoreOrderTrackView extends ConsumerWidget {
                             ),
                             4.verticalSpace,
                             Text(
-                              DateFormat('MMM d, yyyy \'at\' h:mm a').format(createdAt ?? DateTime.now()),
+                              DateFormat(
+                                'MMM d, yyyy \'at\' h:mm a',
+                              ).format(createdAt ?? DateTime.now()),
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 color: theme.hintColor,
@@ -123,36 +135,56 @@ class WebStoreOrderTrackView extends ConsumerWidget {
 
                 // ─── Map Placeholder ───────────────────────
                 AppAnimation.fadeInUp(
-                  child: Container(
-                    height: 180.h,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.r),
-                      image: const DecorationImage(
-                        image: NetworkImage('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=800&auto=format&fit=crop'),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20.r),
-                          boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 10)],
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16.r),
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: AppImage(
+                            imagePath:
+                                'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=800&auto=format&fit=crop',
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.directions_bike_rounded, color: AppColors.primaryOrange, size: 20.sp),
-                            8.horizontalSpace,
-                            Text(
-                              LocaleKeys.webstore.orders.arriving_in.tr(context: context),
-                              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                        Center(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.w,
+                              vertical: 8.h,
                             ),
-                          ],
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20.r),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 10,
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.directions_bike_rounded,
+                                  color: AppColors.primaryOrange,
+                                  size: 20.sp,
+                                ),
+                                8.horizontalSpace,
+                                Text(
+                                  LocaleKeys.webstore.orders.arriving_in.tr(
+                                    context: context,
+                                  ),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ),
@@ -165,29 +197,53 @@ class WebStoreOrderTrackView extends ConsumerWidget {
                   child: Column(
                     children: [
                       WebStoreOrderTrackTimelineStepWidget(
-                        title: LocaleKeys.webstore.orders.order_placed.tr(context: context),
-                        subtitle: LocaleKeys.webstore.orders.order_placed_subtitle.tr(context: context),
-                        time: DateFormat('h:mm a').format(createdAt ?? DateTime.now()),
+                        title: LocaleKeys.webstore.orders.order_placed.tr(
+                          context: context,
+                        ),
+                        subtitle: LocaleKeys
+                            .webstore
+                            .orders
+                            .order_placed_subtitle
+                            .tr(context: context),
+                        time: DateFormat(
+                          'h:mm a',
+                        ).format(createdAt ?? DateTime.now()),
                         isActive: true,
                         isCompleted: true,
                       ),
                       WebStoreOrderTrackTimelineStepWidget(
-                        title: LocaleKeys.webstore.orders.status_processing.tr(context: context),
-                        subtitle: LocaleKeys.webstore.orders.processing_subtitle.tr(context: context),
+                        title: LocaleKeys.webstore.orders.status_processing.tr(
+                          context: context,
+                        ),
+                        subtitle: LocaleKeys.webstore.orders.processing_subtitle
+                            .tr(context: context),
                         time: '--:--',
-                        isActive: status == 'processing' || status == 'shipped' || status == 'delivered',
-                        isCompleted: status == 'shipped' || status == 'delivered',
+                        isActive:
+                            status == 'processing' ||
+                            status == 'shipped' ||
+                            status == 'delivered',
+                        isCompleted:
+                            status == 'shipped' || status == 'delivered',
                       ),
                       WebStoreOrderTrackTimelineStepWidget(
-                        title: LocaleKeys.webstore.orders.out_for_delivery.tr(context: context),
-                        subtitle: LocaleKeys.webstore.orders.out_for_delivery_subtitle.tr(context: context),
+                        title: LocaleKeys.webstore.orders.out_for_delivery.tr(
+                          context: context,
+                        ),
+                        subtitle: LocaleKeys
+                            .webstore
+                            .orders
+                            .out_for_delivery_subtitle
+                            .tr(context: context),
                         time: '--:--',
                         isActive: status == 'shipped' || status == 'delivered',
                         isCompleted: status == 'delivered',
                       ),
                       WebStoreOrderTrackTimelineStepWidget(
-                        title: LocaleKeys.webstore.orders.status_delivered.tr(context: context),
-                        subtitle: LocaleKeys.webstore.orders.delivered_subtitle.tr(context: context),
+                        title: LocaleKeys.webstore.orders.status_delivered.tr(
+                          context: context,
+                        ),
+                        subtitle: LocaleKeys.webstore.orders.delivered_subtitle
+                            .tr(context: context),
                         time: '--:--',
                         isActive: status == 'delivered',
                         isCompleted: status == 'delivered',
@@ -204,19 +260,37 @@ class WebStoreOrderTrackView extends ConsumerWidget {
                   padding: EdgeInsets.all(16.w),
                   child: Row(
                     children: [
-                      CircleAvatar(
-                        radius: 24.r,
-                        backgroundImage: const NetworkImage('https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200&auto=format&fit=crop'),
+                      ClipOval(
+                        child: SizedBox(
+                          width: 48.r,
+                          height: 48.r,
+                          child: AppImage(
+                            imagePath:
+                                'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200&auto=format&fit=crop',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                       16.horizontalSpace,
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Ahmed Mohamed', style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold)),
                             Text(
-                              LocaleKeys.webstore.orders.delivery_partner.tr(context: context),
-                              style: TextStyle(fontSize: 12.sp, color: theme.hintColor),
+                              'Ahmed Mohamed',
+                              style: TextStyle(
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              LocaleKeys.webstore.orders.delivery_partner.tr(
+                                context: context,
+                              ),
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: theme.hintColor,
+                              ),
                             ),
                           ],
                         ),
@@ -236,11 +310,19 @@ class WebStoreOrderTrackView extends ConsumerWidget {
 
                 // Rate Order Button
                 AppButton(
-                  onPressed: () => AppNavigator.push(context, AppRouteNames.webstoreRateOrder, arguments: {'order_id': orderId}),
+                  onPressed: () => AppNavigator.push(
+                    context,
+                    AppRouteNames.webstoreRateOrder,
+                    arguments: {'order_id': orderId},
+                  ),
                   isGradient: true,
                   child: Text(
                     LocaleKeys.webstore.orders.rate_order.tr(context: context),
-                    style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
                 20.verticalSpace,
@@ -256,10 +338,16 @@ class WebStoreOrderTrackView extends ConsumerWidget {
     return Container(
       padding: EdgeInsets.all(8.w),
       decoration: BoxDecoration(
-        color: (isGreen ? Colors.green : AppColors.primaryOrange).withValues(alpha: 0.1),
+        color: (isGreen ? Colors.green : AppColors.primaryOrange).withValues(
+          alpha: 0.1,
+        ),
         shape: BoxShape.circle,
       ),
-      child: Icon(icon, color: isGreen ? Colors.green : AppColors.primaryOrange, size: 20.sp),
+      child: Icon(
+        icon,
+        color: isGreen ? Colors.green : AppColors.primaryOrange,
+        size: 20.sp,
+      ),
     );
   }
 }

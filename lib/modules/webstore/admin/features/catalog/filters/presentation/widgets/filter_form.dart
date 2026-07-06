@@ -57,7 +57,7 @@ class _FilterFormState extends ConsumerState<FilterForm> {
         'name_en': _nameCtrl.text.trim(),
         'name_ar': _nameArCtrl.text.trim(),
         'color_code': _colorCtrl.text.trim(),
-        'parent_id': _selectedParentId ?? 0,
+        'parent_id': _selectedParentId,
         'is_active': _isActive,
       });
     }

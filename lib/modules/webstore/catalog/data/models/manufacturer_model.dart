@@ -1,4 +1,5 @@
 import 'package:erp/core/common_model/base_model.dart';
+import 'package:erp/core/network/network_url.dart';
 
 class ManufacturerModel extends BaseEntity with JsonSerializable {
   final String name;
@@ -23,22 +24,16 @@ class ManufacturerModel extends BaseEntity with JsonSerializable {
   });
 
   factory ManufacturerModel.fromJson(Map<String, dynamic> json) {
-    String? logoPath = json['logo'] as String?;
-    
-    // Ensure full URL for logo with the correct /storage/ prefix
-    if (logoPath != null && logoPath.isNotEmpty && !logoPath.startsWith('http')) {
-      final cleanPath = logoPath.startsWith('/') ? logoPath.substring(1) : logoPath;
-      logoPath = 'https://moon-erp.elbaset.com/storage/$cleanPath';
-    }
+    final logoPath = json['logo'] as String?;
 
     return ManufacturerModel(
       id: json['id'],
       name: json['name'] ?? '',
       nameEn: json['name_en'],
+      logo: logoPath != null && logoPath.isNotEmpty ? NetworkUrl.imageUrl(logoPath) : null,
       nameAr: json['name_ar'],
       description: json['description_en'] as String? ?? json['description'] as String?,
       descriptionAr: json['description_ar'] as String?,
-      logo: logoPath,
       isActive: json['is_active'] ?? true,
       createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
       updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,

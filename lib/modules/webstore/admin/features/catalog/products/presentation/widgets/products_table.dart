@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/products/data/models/product_row.dart';
@@ -136,17 +137,11 @@ class ProductDetailsDialog extends StatelessWidget {
         if (product.imageUrl != null) ...[
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
-            child: Image.network(
-              product.imageUrl!,
+            child: AppImage(
+              imagePath: product.imageUrl!,
               width: double.infinity,
               height: 200,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                width: double.infinity,
-                height: 200,
-                color: Colors.grey[200],
-                child: const Icon(Icons.image_not_supported, size: 48),
-              ),
             ),
           ),
           const SizedBox(height: 24),
@@ -179,17 +174,11 @@ class ProductDetailsDialog extends StatelessWidget {
                           final url = product.imageUrls![index];
                           return ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child: Image.network(
-                              url,
+                            child: AppImage(
+                              imagePath: url,
                               width: 80,
                               height: 80,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => Container(
-                                width: 80,
-                                height: 80,
-                                color: Colors.grey[200],
-                                child: const Icon(Icons.image_not_supported, size: 20),
-                              ),
                             ),
                           );
                         },

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 
 class AuthGlassCard extends StatelessWidget {
@@ -57,8 +58,8 @@ class AuthGlassCard extends StatelessWidget {
                       child: Container(
                         height: 60,
                         padding: const EdgeInsets.all(8),
-                        child: Image.asset(
-                          AssetManager.logoElTarshopy,
+                        child: AppImage(
+                          imagePath: AssetManager.logoElTarshopy,
                           fit: BoxFit.contain,
                         ),
                       ),

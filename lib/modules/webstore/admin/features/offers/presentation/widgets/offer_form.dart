@@ -1,6 +1,7 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_dropdown/app_dropdown.dart';
@@ -336,7 +337,7 @@ class _OfferFormState extends ConsumerState<OfferForm> {
                     avatar: imageUrl != null
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(4),
-                            child: Image.network(imageUrl, width: 28, height: 28, fit: BoxFit.cover, errorBuilder: (_, _, _) => const Icon(Icons.inventory_2, size: 20)),
+                            child: AppImage(imagePath: imageUrl, width: 28, height: 28, fit: BoxFit.cover),
                           )
                         : const Icon(Icons.inventory_2, size: 20),
                     label: Text(name, style: const TextStyle(fontSize: 13)),
@@ -433,7 +434,7 @@ class _ProductPickerDialogState extends State<_ProductPickerDialog> {
                     secondary: p.imageUrl != null
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: Image.network(p.imageUrl!, width: 40, height: 40, fit: BoxFit.cover, errorBuilder: (_, _, _) => const Icon(Icons.inventory_2)),
+                            child: AppImage(imagePath: p.imageUrl!, width: 40, height: 40, fit: BoxFit.cover),
                           )
                         : const Icon(Icons.inventory_2),
                     title: Text(p.name, maxLines: 1, overflow: TextOverflow.ellipsis),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/constants/configure_system_ui.dart';
@@ -199,8 +200,8 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
                           ),
                           padding: EdgeInsets.all(20.w),
                           child: ClipOval(
-                            child: Image.asset(
-                              AssetManager.logoElTarshopy,
+                            child: AppImage(
+                              imagePath: AssetManager.logoElTarshopy,
                               fit: BoxFit.contain,
                             ),
                           ),

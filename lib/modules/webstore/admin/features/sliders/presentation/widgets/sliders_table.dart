@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
@@ -40,12 +41,11 @@ class SlidersTable extends StatelessWidget {
         AdminColumn<SliderRow>(
           title: AdminLocalizations.translate(context, 'image'),
           cell: (_, s) => s.imageUrl != null
-              ? Image.network(
-                  s.imageUrl!,
+              ? AppImage(
+                  imagePath: s.imageUrl!,
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => const Icon(Icons.image_not_supported, size: 24),
                 )
               : const Icon(Icons.image_not_supported, size: 24),
           width: 80,
@@ -111,31 +111,11 @@ class SliderDetailsDialog extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 20),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                slider.imageUrl!,
+              child: AppImage(
+                imagePath: slider.imageUrl!,
                 height: 180,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  height: 120,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.image_outlined, size: 36, color: Colors.grey.withValues(alpha: 0.5)),
-                        const SizedBox(height: 8),
-                        Text(
-                          AdminLocalizations.translate(context, 'image saved on server'),
-                          style: TextStyle(color: Colors.grey.withValues(alpha: 0.7), fontSize: 12, fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
               ),
             ),
           ),

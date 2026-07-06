@@ -3,10 +3,10 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/modules/webstore/wishlist/presentation/view_model/wishlist_providers.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
 import 'package:erp/core/localization/locale_keys.dart';
@@ -96,26 +96,11 @@ class ProductCard extends ConsumerWidget {
                       child: Container(
                         color: Theme.of(context).hintColor.withValues(alpha: 0.05),
                         padding: const EdgeInsets.all(6),
-                        child: Image.network(
-                          product.image ?? '',
+                        child: AppImage(
+                          imagePath: product.image ?? '',
                           width: double.infinity,
                           height: double.infinity,
                           fit: BoxFit.contain,
-                          loadingBuilder: (context, child, progress) {
-                            if (progress == null) return child;
-                            return Shimmer.fromColors(
-                              baseColor: Colors.grey.shade200,
-                              highlightColor: Colors.grey.shade100,
-                              child: Container(color: Colors.white),
-                            );
-                          },
-                          errorBuilder: (context, error, stackTrace) => Container(
-                            color: Theme.of(context).hintColor.withValues(alpha: 0.1),
-                            child: Icon(
-                              Icons.image_not_supported_outlined,
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ),
                         ),
                       ),
                     ),

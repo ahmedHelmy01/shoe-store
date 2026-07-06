@@ -48,7 +48,7 @@ class CategoryRow {
       image: imagePath,
       imageUrl: (providedUrl != null && providedUrl.isNotEmpty)
           ? providedUrl
-          : (imagePath != null ? NetworkUrl.fullUrl(imagePath) : null),
+          : (imagePath != null ? NetworkUrl.imageUrl(imagePath) : null),
       isActive: (json['active'] ?? json['is_active'] ?? true) as bool,
       hasChildren: json['has_children'] == true || json['has_children'] == 1,
     );

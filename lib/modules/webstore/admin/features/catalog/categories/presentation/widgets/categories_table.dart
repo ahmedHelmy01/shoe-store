@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/features/catalog/categories/data/models/category_row.dart';
@@ -68,12 +69,11 @@ class CategoriesTable extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 12),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(6),
-                    child: Image.network(
-                      c.imageUrl!,
+                    child: AppImage(
+                      imagePath: c.imageUrl!,
                       width: 36,
                       height: 36,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const SizedBox.shrink(),
                     ),
                   ),
                 ),
@@ -149,12 +149,11 @@ class CategoryDetailsDialog extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: category.imageUrl != null
-                ? Image.network(
-                    category.imageUrl!,
+                ? AppImage(
+                    imagePath: category.imageUrl!,
                     height: 180,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => _buildImagePlaceholder(isDark, context),
                   )
                 : _buildImagePlaceholder(isDark, context),
           ),

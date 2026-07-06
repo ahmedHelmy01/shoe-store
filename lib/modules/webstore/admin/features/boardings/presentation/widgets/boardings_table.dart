@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
@@ -40,12 +41,11 @@ class BoardingsTable extends StatelessWidget {
         AdminColumn<BoardingRow>(
           title: AdminLocalizations.translate(context, 'image'),
           cell: (_, b) => b.imageUrl != null
-              ? Image.network(
-                  b.imageUrl!,
+              ? AppImage(
+                  imagePath: b.imageUrl!,
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => const Icon(Icons.image_not_supported, size: 24),
                 )
               : const Icon(Icons.image_not_supported, size: 24),
           width: 80,
@@ -111,12 +111,11 @@ class BoardingDetailsDialog extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 20),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                boarding.imageUrl!,
+              child: AppImage(
+                imagePath: boarding.imageUrl!,
                 height: 180,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
               ),
             ),
           ),

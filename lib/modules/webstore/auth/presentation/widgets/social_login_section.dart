@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 
@@ -108,13 +109,8 @@ class _SocialButton extends StatelessWidget {
                   ),
                 ],
         ),
-        child: Image.asset(
-          assetPath,
-          errorBuilder: (context, error, stackTrace) => Icon(
-            Icons.login_rounded,
-            color: AppColors.primaryOrange,
-            size: 24.sp,
-          ),
+        child: AppImage(
+          imagePath: assetPath,
         ),
       ),
     );

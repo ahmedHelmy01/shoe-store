@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
 import 'package:erp/core/utils/asset_manager.dart';
@@ -198,7 +199,7 @@ class _LogoHeader extends StatelessWidget {
               width: 3,
             ),
           ),
-          child: Image.asset(AssetManager.splashTarshouby, fit: BoxFit.contain),
+          child: AppImage(imagePath: AssetManager.splashTarshouby, fit: BoxFit.contain),
         ),
         const SizedBox(height: 24),
         const Text(

@@ -1,4 +1,4 @@
-import 'package:erp/core/network/network_service.dart';
+import 'package:erp/core/network/network_url.dart';
 
 /// WebStore Ad Model
 ///
@@ -19,20 +19,12 @@ class AdModel {
   });
 
   factory AdModel.fromJson(Map<String, dynamic> json) {
-    String? imagePath = json['image'] as String?;
-    
-    // Ensure full URL for images with the correct /storage/ prefix
-    if (imagePath != null && imagePath.isNotEmpty && !imagePath.startsWith('http')) {
-      // Fix potential double uploads/ prefix and ensure storage/ exists
-      final cleanPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
-      imagePath = 'https://moon-erp.elbaset.com/storage/$cleanPath';
-    }
-
+    final imagePath = json['image'] as String?;
     return AdModel(
       id: json['id'] as int,
       title: json['title'] as String? ?? '',
       titleAr: json['title_ar'] as String? ?? '',
-      image: imagePath,
+      image: imagePath != null ? NetworkUrl.imageUrl(imagePath) : null,
       position: json['position'] as int? ?? 0,
     );
   }

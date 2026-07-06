@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 
@@ -114,26 +114,10 @@ class _DetailsImageGalleryState extends State<DetailsImageGallery> {
                     panEnabled: true,
                     minScale: 1.0,
                     maxScale: 4.0,
-                    child: Image.network(
-                      allImages[widget.selectedImageIndex],
+                    child: AppImage(
+                      imagePath: allImages[widget.selectedImageIndex],
                       fit: BoxFit.contain,
                       width: double.infinity,
-                      loadingBuilder: (context, child, progress) {
-                        if (progress == null) return child;
-                        return Shimmer.fromColors(
-                          baseColor: Colors.grey.shade200,
-                          highlightColor: Colors.grey.shade100,
-                          child: Container(color: Colors.white),
-                        );
-                      },
-                      errorBuilder: (_, __, ___) =>
-                          Center(
-                            child: Icon(
-                              Icons.image_not_supported_outlined,
-                              size: 60.sp,
-                              color: Colors.grey,
-                            ),
-                          ),
                     ),
                   ),
                   Positioned(
@@ -187,11 +171,9 @@ class _DetailsImageGalleryState extends State<DetailsImageGallery> {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(7.r),
-                      child: Image.network(
-                        allImages[index],
+                      child: AppImage(
+                        imagePath: allImages[index],
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) =>
-                        const Icon(Icons.image, size: 20),
                       ),
                     ),
                   ),

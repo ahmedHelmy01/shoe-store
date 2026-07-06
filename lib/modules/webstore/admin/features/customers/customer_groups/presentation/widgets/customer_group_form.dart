@@ -53,7 +53,7 @@ class _CustomerGroupFormState extends ConsumerState<CustomerGroupForm> {
       widget.onSave({
         'title': _titleCtrl.text.trim(),
         'title_ar': _titleArCtrl.text.trim(),
-        'parent_id': _selectedParentId ?? 0,
+        'parent_id': _selectedParentId,
         'is_default': _isDefault,
         'is_active': _isActive,
       });

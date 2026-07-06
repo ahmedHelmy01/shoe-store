@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
@@ -138,12 +139,11 @@ class OfferDetailsDialog extends ConsumerWidget {
                 padding: const EdgeInsets.only(bottom: 20),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    detailedOffer.imageUrl!,
+                  child: AppImage(
+                    imagePath: detailedOffer.imageUrl!,
                     height: 180,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) => const SizedBox.shrink(),
                   ),
                 ),
               ),
@@ -238,12 +238,9 @@ class OfferDetailsDialog extends ConsumerWidget {
                                       ? Colors.white.withValues(alpha: 0.04)
                                       : Colors.grey.shade100,
                                   child: hasImage
-                                      ? Image.network(
-                                          product!.imageUrl!,
+                                      ? AppImage(
+                                          imagePath: product!.imageUrl!,
                                           fit: BoxFit.cover,
-                                          errorBuilder: (_, _, _) => Center(
-                                            child: Icon(Icons.inventory_2_rounded, size: 24, color: theme.primaryColor.withValues(alpha: 0.4)),
-                                          ),
                                         )
                                       : Center(
                                           child: Icon(Icons.inventory_2_rounded, size: 24, color: theme.primaryColor.withValues(alpha: 0.4)),

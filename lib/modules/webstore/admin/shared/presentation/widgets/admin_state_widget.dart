@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:erp/core/utils/asset_manager.dart';
+import 'package:flutter/material.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 
 /// A premium, illustration-driven state widget for Admin CRUD pages.
 /// Handles error, unauthorized, and empty states with a consistent, 
@@ -46,14 +47,9 @@ class AdminStateWidget extends StatelessWidget {
               // Illustration
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 320, maxHeight: 320),
-                child: Image.asset(
-                  illustrationPath,
+                child: AppImage(
+                  imagePath: illustrationPath,
                   fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => Icon(
-                    isUnauthorized ? Icons.lock_outline_rounded : Icons.error_outline_rounded,
-                    size: 80,
-                    color: AppColors.primaryOrange.withValues(alpha: 0.6),
-                  ),
                 ),
               ),
 

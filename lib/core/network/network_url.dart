@@ -14,7 +14,7 @@ class NetworkUrl {
   /// Full URL combined with base
   static String fullUrl(String path) {
     if (path.isEmpty) return '';
-    if (path.startsWith('http')) return path;
+    if (path.startsWith('http') || path.startsWith('blob:')) return path;
     
     // ONLY add /storage if it's explicitly a media path starting with uploads/
     // Do NOT match if it's an API path containing the words
@@ -24,5 +24,17 @@ class NetworkUrl {
 
     final cleanPath = path.startsWith('/') ? path : '/$path';
     return '$baseUrl$cleanPath';
+  }
+
+  /// Full URL for uploaded/storage images.
+  /// Always prefixes with /storage/ for relative paths (unless already present).
+  static String imageUrl(String path) {
+    if (path.isEmpty) return '';
+    if (path.startsWith('http') || path.startsWith('blob:')) return path;
+    String cleanPath = path.startsWith('/') ? path.substring(1) : path;
+    if (!cleanPath.startsWith('storage/')) {
+      cleanPath = 'storage/$cleanPath';
+    }
+    return '$baseUrl/$cleanPath';
   }
 }

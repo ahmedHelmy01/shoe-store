@@ -57,7 +57,7 @@ class _PropertyFormState extends ConsumerState<PropertyForm> {
         'title': _titleCtrl.text.trim(),
         'title_ar': _titleArCtrl.text.trim(),
         'property_url': _urlCtrl.text.trim(),
-        'parent_id': _selectedParentId ?? 0,
+        'parent_id': _selectedParentId,
         'is_default': _isDefault,
         'is_active': _isActive,
       });

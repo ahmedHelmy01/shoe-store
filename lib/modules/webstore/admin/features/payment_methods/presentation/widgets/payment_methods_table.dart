@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/data_table/admin_data_table.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_dialog.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
@@ -40,12 +41,11 @@ class PaymentMethodsTable extends StatelessWidget {
         AdminColumn<PaymentMethodRow>(
           title: AdminLocalizations.translate(context, 'icon'),
           cell: (_, p) => p.imageUrl != null
-              ? Image.network(
-                  p.imageUrl!,
+              ? AppImage(
+                  imagePath: p.imageUrl!,
                   width: 40,
                   height: 40,
                   fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const Icon(Icons.payment, size: 20),
                 )
               : const Icon(Icons.payment, size: 20),
           width: 80,
@@ -120,11 +120,10 @@ class PaymentMethodDetailsDialog extends StatelessWidget {
             child: Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  method.imageUrl!,
+                child: AppImage(
+                  imagePath: method.imageUrl!,
                   height: 100,
                   fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
                 ),
               ),
             ),

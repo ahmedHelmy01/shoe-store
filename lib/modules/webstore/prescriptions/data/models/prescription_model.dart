@@ -1,3 +1,5 @@
+import 'package:erp/core/network/network_url.dart';
+
 class PrescriptionModel {
   final int id;
   final int companyId;
@@ -24,12 +26,13 @@ class PrescriptionModel {
   });
 
   factory PrescriptionModel.fromJson(Map<String, dynamic> json) {
+    final rawImage = json['image'] as String? ?? '';
     return PrescriptionModel(
       id: json['id'] as int,
       companyId: json['company_id'] as int,
       customerId: json['customer_id'] as int,
       note: json['note'] as String? ?? '',
-      image: json['image'] as String? ?? '',
+      image: rawImage.isNotEmpty ? NetworkUrl.imageUrl(rawImage) : '',
       status: json['status'] as String? ?? 'pending',
       reviewedBy: json['reviewed_by'],
       createdAt: DateTime.parse(json['created_at'] as String),
