@@ -208,6 +208,195 @@ class AdminLocalizations {
         return 'أفضل العملاء';
       case 'cost':
         return 'التكلفة';
+      
+      // Report titles (all lowercase — translate() normalizes keys)
+      case 'balances report':
+        return 'تقرير الأرصدة';
+      case 'movement report':
+        return 'تقرير الحركة';
+      case 'redemptions report':
+        return 'تقرير الاستخدام';
+      case 'earned points report':
+        return 'تقرير النقاط المكتسبة';
+      case 'expired points report':
+        return 'تقرير النقاط المنتهية';
+      case 'top customers report':
+        return 'تقرير أفضل العملاء';
+      case 'loyalty cost report':
+        return 'تقرير تكلفة نقاطي';
+      case 'loyalty reports':
+        return 'تقارير نقاطي';
+      
+      // Report columns
+      case 'customer':
+        return 'العميل';
+      case 'balance':
+        return 'الرصيد';
+      case 'value':
+        return 'القيمة';
+      case 'used':
+        return 'المستخدمة';
+      case 'date':
+        return 'التاريخ';
+      case 'type':
+        return 'النوع';
+      case 'points':
+        return 'النقاط';
+      case 'reason':
+        return 'السبب';
+      case 'order':
+        return 'الطلب';
+      case 'orders':
+        return 'الطلبات';
+      case 'source':
+        return 'المصدر';
+      case 'expiry date':
+        return 'تاريخ الانتهاء';
+      case 'order#':
+        return 'رقم الطلب';
+      case 'points used':
+        return 'النقاط المستخدمة';
+      case 'discount value':
+        return 'قيمة الخصم';
+      case 'invoice#':
+        return 'رقم الفاتورة';
+      case 'points earned':
+        return 'النقاط المكتسبة';
+      case 'points lost':
+        return 'النقاط المفقودة';
+      case 'metric':
+        return 'المعيار';
+      
+      // Summary cards
+      case 'total points':
+        return 'إجمالي النقاط';
+      case 'total value':
+        return 'إجمالي القيمة';
+      case 'customers':
+        return 'العملاء';
+      case 'transactions':
+        return 'المعاملات';
+      
+      // DataTable toolbar
+      case 'search':
+        return 'بحث';
+      case 'clear':
+        return 'مسح';
+      case 'selected':
+        return 'محدد';
+      case 'rows per page':
+        return 'الصفوف لكل صفحة';
+      case 'rows':
+        return 'صفوف';
+      case 'export csv':
+        return 'تصدير CSV';
+      case 'export selected':
+        return 'تصدير المحدد';
+      case 'csv':
+        return 'CSV';
+      case 'export pdf':
+        return 'تصدير PDF';
+      case 'pdf':
+        return 'PDF';
+      case 'export excel':
+        return 'تصدير Excel';
+      case 'excel':
+        return 'Excel';
+      
+      // DataTable footer
+      case 'no rows':
+        return 'لا توجد صفوف';
+      case 'showing':
+        return 'عرض';
+      case 'of':
+        return 'من';
+      case 'page':
+        return 'صفحة';
+      case 'prev':
+        return 'السابق';
+      case 'next':
+        return 'التالي';
+      
+      // DataTable empty state
+      case 'no data found':
+        return 'لا توجد بيانات';
+      case 'there are no records to display yet.':
+        return 'لا توجد سجلات لعرضها بعد.';
+      
+      // Loyalty Settings View
+      case 'saving...':
+        return 'جاري الحفظ...';
+      case 'save changes':
+        return 'حفظ التغييرات';
+      case 'changes saved!':
+        return 'تم حفظ التغييرات!';
+      case 'your store settings have been updated successfully.':
+        return 'تم تحديث إعدادات المتجر بنجاح.';
+      case 'update failed':
+        return 'فشل التحديث';
+      case 'try again':
+        return 'حاول مرة أخرى';
+      case 'done':
+        return 'تم';
+      case 'e.g. 100':
+        return 'مثال: 100';
+      case 'e.g. 50':
+        return 'مثال: 50';
+      case 'e.g. 30':
+        return 'مثال: 30';
+      
+      // Customer Points View
+      case 'points adjusted':
+        return 'تم تعديل النقاط';
+      case 'customer points have been updated successfully.':
+        return 'تم تحديث نقاط العميل بنجاح.';
+      case 'adjustment failed':
+        return 'فشل التعديل';
+      case 'customer points & transactions':
+        return 'نقاط ومعاملات العميل';
+      case 'transaction history':
+        return 'سجل المعاملات';
+      case 'no transactions found.':
+        return 'لم يتم العثور على معاملات.';
+      case 'summary':
+        return 'ملخص';
+      case 'total earned':
+        return 'الإجمالي المكتسب';
+      case 'total used':
+        return 'الإجمالي المستخدم';
+      case 'total expired':
+        return 'الإجمالي المنتهي';
+      case 'nearest expiry':
+        return 'أقرب انتهاء';
+      case 'monetary value':
+        return 'القيمة المالية';
+      case 'adjust points':
+        return 'تعديل النقاط';
+      case 'add':
+        return 'إضافة';
+      case 'deduct':
+        return 'خصم';
+      case 'enter number of points':
+        return 'أدخل عدد النقاط';
+      case 'points is required':
+        return 'النقاط مطلوبة';
+      case 'points must be greater than 0':
+        return 'يجب أن تكون النقاط أكبر من 0';
+      case 'reason':
+        return 'السبب';
+      case 'why are you adjusting points?':
+        return 'لماذا تقوم بتعديل النقاط؟';
+      case 'reason is required':
+        return 'السبب مطلوب';
+      case 'cancel':
+        return 'إلغاء';
+      case 'confirm':
+        return 'تأكيد';
+      
+      // Common
+      case 'search…':
+        return 'بحث…';
+      
       case 'settings':
         return 'الإعدادات';
       case 'configure storefront behavior, delivery, payments, and branding.':

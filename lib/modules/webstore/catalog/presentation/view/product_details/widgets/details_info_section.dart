@@ -173,7 +173,7 @@ class DetailsInfoSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            product.price.toStringAsFixed(0),
+            product.price.toStringAsFixed(3),
             style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.w900, color: theme.textTheme.bodyLarge?.color),
           ),
           4.horizontalSpace,
@@ -185,7 +185,7 @@ class DetailsInfoSection extends StatelessWidget {
           if (product.hasDiscount) ...[
             Padding(
               padding: EdgeInsets.only(bottom: 4.h),
-              child: Text('${product.oldPrice?.toStringAsFixed(0)} ${AppConstants.currency}', style:  TextStyle(fontSize: 14.sp, color: Colors.grey, decoration: TextDecoration.lineThrough)),
+              child: Text('${product.oldPrice?.toStringAsFixed(3)} ${AppConstants.currency}', style:  TextStyle(fontSize: 14.sp, color: Colors.grey, decoration: TextDecoration.lineThrough)),
             ),
             8.horizontalSpace,
             Container(

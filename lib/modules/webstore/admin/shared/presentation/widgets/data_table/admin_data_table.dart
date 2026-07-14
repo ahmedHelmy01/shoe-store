@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_empty_widget/app_empty_widget.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 // Modular imports
 import 'widgets/admin_table_models.dart';
@@ -229,10 +230,10 @@ class _AdminDataTableState<T> extends State<AdminDataTable<T>> {
             ),
             Divider(height: 1, thickness: 1, color: border),
             if (isEmptyState)
-              const Expanded(
+              Expanded(
                 child: AppEmptyWidget(
-                  message: 'No data found',
-                  subtitle: 'There are no records to display yet.',
+                  message: AdminLocalizations.translate(context, 'No data found'),
+                  subtitle: AdminLocalizations.translate(context, 'There are no records to display yet.'),
                   showGlassBackground: false,
                 ),
               )

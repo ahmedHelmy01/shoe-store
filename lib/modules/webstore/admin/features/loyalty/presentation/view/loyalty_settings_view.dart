@@ -116,42 +116,50 @@ class _LoyaltySettingsViewState extends ConsumerState<LoyaltySettingsView> {
       }
     });
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(theme, isSaving),
-            const SizedBox(height: 32),
-            if (settingsAsync is AsyncLoading) ...[
-              const Center(child: CircularProgressIndicator())
-            ] else if (settingsAsync is AsyncError) ...[
-              Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.error_outline_rounded, size: 64, color: theme.colorScheme.error),
-                    const SizedBox(height: 16),
-                    Text(
-                      AdminLocalizations.translate(context, 'فشل تحميل الإعدادات'),
-                      style: theme.textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    TextButton.icon(
-                      onPressed: () => ref.invalidate(loyaltySettingsProvider),
-                      icon: const Icon(Icons.refresh_rounded),
-                      label: Text(AdminLocalizations.translate(context, 'إعادة المحاولة')),
-                    ),
-                  ],
-                ),
-              )
-            ] else
-              ..._buildSections(),
-          ],
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+          child: _buildHeader(theme, isSaving),
         ),
-      ),
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (settingsAsync is AsyncLoading) ...[
+                    const Center(child: CircularProgressIndicator())
+                  ] else if (settingsAsync is AsyncError) ...[
+                    Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.error_outline_rounded, size: 64, color: theme.colorScheme.error),
+                          const SizedBox(height: 16),
+                          Text(
+                            AdminLocalizations.translate(context, 'فشل تحميل الإعدادات'),
+                            style: theme.textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          TextButton.icon(
+                            onPressed: () => ref.invalidate(loyaltySettingsProvider),
+                            icon: const Icon(Icons.refresh_rounded),
+                            label: Text(AdminLocalizations.translate(context, 'إعادة المحاولة')),
+                          ),
+                        ],
+                      ),
+                    )
+                  ] else
+                    ..._buildSections(),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

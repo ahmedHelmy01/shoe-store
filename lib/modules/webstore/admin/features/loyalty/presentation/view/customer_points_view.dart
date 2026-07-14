@@ -107,7 +107,7 @@ class _CustomerPointsViewState extends ConsumerState<CustomerPointsView> {
                   icon: isAdjusting
                       ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                       : const Icon(Icons.swap_horiz_rounded),
-                  label: Text(isAdjusting ? 'Adjusting...' : 'Adjust Points'),
+                  label: Text(isAdjusting ? 'Adjusting...' : AdminLocalizations.translate(context, 'Adjust Points')),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
@@ -150,21 +150,21 @@ class _CustomerPointsViewState extends ConsumerState<CustomerPointsView> {
           const SizedBox(height: 24),
           Row(
             children: [
-              Expanded(child: _buildStatCard('Balance', '${data.balance}', AppColors.primary, Icons.account_balance_wallet_rounded)),
+              Expanded(child: _buildStatCard(AdminLocalizations.translate(context, 'Balance'), '${data.balance}', AppColors.primary, Icons.account_balance_wallet_rounded)),
               const SizedBox(width: 12),
-              Expanded(child: _buildStatCard('Total Earned', '${data.totalEarned}', AppColors.success, Icons.arrow_upward_rounded)),
+              Expanded(child: _buildStatCard(AdminLocalizations.translate(context, 'Total Earned'), '${data.totalEarned}', AppColors.success, Icons.arrow_upward_rounded)),
               const SizedBox(width: 12),
-              Expanded(child: _buildStatCard('Total Used', '${data.totalUsed}', AppColors.error, Icons.arrow_downward_rounded)),
+              Expanded(child: _buildStatCard(AdminLocalizations.translate(context, 'Total Used'), '${data.totalUsed}', AppColors.error, Icons.arrow_downward_rounded)),
             ],
           ),
           const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(child: _buildStatCard('Total Expired', '${data.totalExpired}', AppColors.warning, Icons.timer_off_rounded)),
+              Expanded(child: _buildStatCard(AdminLocalizations.translate(context, 'Total Expired'), '${data.totalExpired}', AppColors.warning, Icons.timer_off_rounded)),
               const SizedBox(width: 12),
               Expanded(
                 child: _buildStatCard(
-                  'Nearest Expiry',
+                  AdminLocalizations.translate(context, 'Nearest Expiry'),
                   data.nearestExpiryDate ?? 'N/A',
                   AppColors.info,
                   Icons.event_rounded,
@@ -173,7 +173,7 @@ class _CustomerPointsViewState extends ConsumerState<CustomerPointsView> {
               const SizedBox(width: 12),
               Expanded(
                 child: _buildStatCard(
-                  'Monetary Value',
+                  AdminLocalizations.translate(context, 'Monetary Value'),
                   data.monetaryValue != null ? '${data.monetaryValue!.toStringAsFixed(2)} EGP' : 'N/A',
                   AppColors.accent,
                   Icons.attach_money_rounded,

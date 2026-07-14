@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_text_field/app_text_field.dart';
+import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class CustomerPointsAdjustResult {
   final int points;
@@ -86,7 +87,7 @@ class _CustomerPointsAdjustDialogState extends State<CustomerPointsAdjustDialog>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Adjust Points',
+                          AdminLocalizations.translate(context, 'Adjust Points'),
                           style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900, color: AppColors.textColor),
                         ),
                         Text(
@@ -113,12 +114,12 @@ class _CustomerPointsAdjustDialogState extends State<CustomerPointsAdjustDialog>
                             color: !_isDeduct ? AppColors.success : AppColors.textHint.withValues(alpha: 0.3),
                           ),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.add_circle_outline, color: AppColors.success, size: 20),
-                            SizedBox(width: 8),
-                            Text('Add', style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.success)),
+                            const Icon(Icons.add_circle_outline, color: AppColors.success, size: 20),
+                            const SizedBox(width: 8),
+                            Text(AdminLocalizations.translate(context, 'Add'), style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.success)),
                           ],
                         ),
                       ),
@@ -137,12 +138,12 @@ class _CustomerPointsAdjustDialogState extends State<CustomerPointsAdjustDialog>
                             color: _isDeduct ? AppColors.error : AppColors.textHint.withValues(alpha: 0.3),
                           ),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.remove_circle_outline, color: AppColors.error, size: 20),
-                            SizedBox(width: 8),
-                            Text('Deduct', style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.error)),
+                            const Icon(Icons.remove_circle_outline, color: AppColors.error, size: 20),
+                            const SizedBox(width: 8),
+                            Text(AdminLocalizations.translate(context, 'Deduct'), style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.error)),
                           ],
                         ),
                       ),
@@ -153,24 +154,24 @@ class _CustomerPointsAdjustDialogState extends State<CustomerPointsAdjustDialog>
               const SizedBox(height: 20),
               AppTextField(
                 controller: _pointsCtrl,
-                label: 'Points',
-                hint: 'Enter number of points',
+                label: AdminLocalizations.translate(context, 'Points'),
+                hint: AdminLocalizations.translate(context, 'Enter number of points'),
                 keyboardType: TextInputType.number,
                 validator: (v) {
-                  if (v == null || v.trim().isEmpty) return 'Points is required';
+                  if (v == null || v.trim().isEmpty) return AdminLocalizations.translate(context, 'Points is required');
                   final val = int.tryParse(v.trim());
-                  if (val == null || val <= 0) return 'Points must be greater than 0';
+                  if (val == null || val <= 0) return AdminLocalizations.translate(context, 'Points must be greater than 0');
                   return null;
                 },
               ),
               const SizedBox(height: 16),
               AppTextField(
                 controller: _reasonCtrl,
-                label: 'Reason',
-                hint: 'Why are you adjusting points?',
+                label: AdminLocalizations.translate(context, 'Reason'),
+                hint: AdminLocalizations.translate(context, 'Why are you adjusting points?'),
                 maxLines: 2,
                 validator: (v) {
-                  if (v == null || v.trim().isEmpty) return 'Reason is required';
+                  if (v == null || v.trim().isEmpty) return AdminLocalizations.translate(context, 'Reason is required');
                   return null;
                 },
               ),
@@ -185,7 +186,7 @@ class _CustomerPointsAdjustDialogState extends State<CustomerPointsAdjustDialog>
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                         side: BorderSide(color: AppColors.textHint.withValues(alpha: 0.3)),
                       ),
-                      child: Text('Cancel', style: TextStyle(color: AppColors.textColor.withValues(alpha: 0.6), fontWeight: FontWeight.w600)),
+                      child: Text(AdminLocalizations.translate(context, 'Cancel'), style: TextStyle(color: AppColors.textColor.withValues(alpha: 0.6), fontWeight: FontWeight.w600)),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -200,7 +201,7 @@ class _CustomerPointsAdjustDialogState extends State<CustomerPointsAdjustDialog>
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                       ),
-                      child: const Text('Confirm', style: TextStyle(fontWeight: FontWeight.bold)),
+                      child: Text(AdminLocalizations.translate(context, 'Confirm'), style: const TextStyle(fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],
