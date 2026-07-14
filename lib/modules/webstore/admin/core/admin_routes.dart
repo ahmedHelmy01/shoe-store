@@ -38,6 +38,10 @@ enum AdminRouteId {
   countries,
   login,
   addresses,
+  loyalty,
+  loyaltySettings,
+  loyaltyReports,
+  customerPoints,
 }
 
 class AdminNavNode {
@@ -265,6 +269,25 @@ class AdminRoutes {
       ],
     ),
     AdminNavNode(
+      id: AdminRouteId.loyalty,
+      title: 'Loyalty',
+      icon: Icons.redeem_rounded,
+      children: [
+        AdminNavNode(
+          id: AdminRouteId.loyaltySettings,
+          routeName: AppRouteNames.webstoreAdminLoyaltySettings,
+          title: 'Loyalty Settings',
+          icon: Icons.tune_rounded,
+        ),
+        AdminNavNode(
+          id: AdminRouteId.loyaltyReports,
+          routeName: AppRouteNames.webstoreAdminLoyaltyReports,
+          title: 'Loyalty Reports',
+          icon: Icons.bar_chart_rounded,
+        ),
+      ],
+    ),
+    AdminNavNode(
       id: AdminRouteId.settings,
       routeName: AppRouteNames.webstoreAdminSettings,
       title: 'Settings',
@@ -304,6 +327,9 @@ class AdminRoutes {
       AppRouteNames.webstoreAdminContacts => AdminRouteId.contacts,
       AppRouteNames.webstoreAdminCountries => AdminRouteId.countries,
       AppRouteNames.webstoreAdminAddresses => AdminRouteId.addresses,
+      AppRouteNames.webstoreAdminLoyaltySettings => AdminRouteId.loyaltySettings,
+      AppRouteNames.webstoreAdminLoyaltyReports => AdminRouteId.loyaltyReports,
+      AppRouteNames.webstoreAdminCustomerPoints => AdminRouteId.customerPoints,
       'login' => AdminRouteId.login,
       _ => AdminRouteId.dashboard,
     };
@@ -342,6 +368,10 @@ class AdminRoutes {
       AdminRouteId.contacts => AppRouteNames.webstoreAdminContacts,
       AdminRouteId.countries => AppRouteNames.webstoreAdminCountries,
       AdminRouteId.addresses => AppRouteNames.webstoreAdminAddresses,
+      AdminRouteId.loyalty => AppRouteNames.webstoreAdminLoyaltySettings,
+      AdminRouteId.loyaltySettings => AppRouteNames.webstoreAdminLoyaltySettings,
+      AdminRouteId.loyaltyReports => AppRouteNames.webstoreAdminLoyaltyReports,
+      AdminRouteId.customerPoints => AppRouteNames.webstoreAdminCustomerPoints,
       AdminRouteId.catalog => AppRouteNames.webstoreAdminProducts,
       AdminRouteId.operations => AdminRouteId.governorates.toString(),
       AdminRouteId.storefront => AdminRouteId.sliders.toString(),

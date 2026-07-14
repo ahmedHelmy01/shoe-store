@@ -9,4 +9,12 @@ class PointsRemoteDataSource {
   Future<dynamic> getPoints() {
     return _networkService.get(ApiEndpoints.webstore.points);
   }
+
+  Future<dynamic> getLoyaltySummary() {
+    return _networkService.get(ApiEndpoints.webstore.loyaltySummary);
+  }
+
+  Future<dynamic> previewLoyalty(Map<String, dynamic> body) {
+    return _networkService.post(ApiEndpoints.webstore.loyaltyPreview, body: body);
+  }
 }

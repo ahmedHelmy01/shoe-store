@@ -41,6 +41,9 @@ import 'package:erp/modules/webstore/admin/features/warehouses/presentation/view
 import 'package:erp/modules/webstore/admin/features/contacts/presentation/view/contacts_view.dart';
 import 'package:erp/modules/webstore/admin/features/countries/presentation/view/countries_view.dart';
 import 'package:erp/modules/webstore/admin/features/prescriptions/presentation/view/admin_prescriptions_view.dart';
+import 'package:erp/modules/webstore/admin/features/loyalty/presentation/view/loyalty_settings_view.dart';
+import 'package:erp/modules/webstore/admin/features/loyalty/presentation/view/loyalty_reports_view.dart';
+import 'package:erp/modules/webstore/admin/features/loyalty/presentation/view/customer_points_view.dart';
 
 class AdminShell extends ConsumerStatefulWidget {
   final AdminRouteId initial;
@@ -214,6 +217,10 @@ class _AdminShellState extends ConsumerState<AdminShell> {
       AdminRouteId.contacts => const ContactsView(),
       AdminRouteId.supportGroup => const ContactsView(),
       AdminRouteId.login => const LoginView(),
+      AdminRouteId.loyalty => const LoyaltySettingsView(),
+      AdminRouteId.loyaltySettings => const LoyaltySettingsView(),
+      AdminRouteId.loyaltyReports => const LoyaltyReportsView(),
+      AdminRouteId.customerPoints => const LoyaltySettingsView(),
     };
   }
 }

@@ -62,6 +62,11 @@ class AppRouteNames {
   static const String webstoreAdminContacts = '/webstore/admin/contacts';
   static const String webstoreAdminCountries = '/webstore/admin/countries';
   static const String webstoreAdminAddresses = '/webstore/admin/addresses';
+
+  // Loyalty / Points
+  static const String webstoreAdminLoyaltySettings = '/webstore/admin/loyalty/settings';
+  static const String webstoreAdminLoyaltyReports = '/webstore/admin/loyalty/reports';
+  static const String webstoreAdminCustomerPoints = '/webstore/admin/loyalty/customer-points';
 }
 
 class AppNavigator {

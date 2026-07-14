@@ -16,6 +16,8 @@ class WebStoreEndpoints {
   final cms = const _WebStoreCms();
   final prescriptions = const _WebStorePrescriptions();
   final String points = '/api/store/points';
+  final String loyaltySummary = '/api/store/loyalty/summary';
+  final String loyaltyPreview = '/api/store/loyalty/preview';
   final String governorates = '/api/store/governorates';
   final String cities = '/api/store/cities';
 
@@ -156,6 +158,14 @@ class _WebStoreAdmin {
 
   final String settings = '/api/store/admin/settings';
 
+  // Loyalty / Points
+  final String loyaltySettings = '/api/store/admin/loyalty/settings';
+  final String loyaltyOrders = '/api/store/admin/orders'; // used with {order}/award-points, {order}/cancel
+  String awardPoints(dynamic orderId) => '/api/store/admin/orders/$orderId/award-points';
+  String cancelOrder(dynamic orderId) => '/api/store/admin/orders/$orderId/cancel';
+  String clientPoints(dynamic customerId) => '/api/store/admin/clients/$customerId/points';
+  String adjustClientPoints(dynamic customerId) => '/api/store/admin/clients/$customerId/points/adjust';
+
   // Customers
   final String clients = '/api/store/admin/clients';
   String clientAddresses(dynamic customerId) => '/api/store/admin/clients/$customerId/addresses';
@@ -167,9 +177,21 @@ class _WebStoreAdmin {
   final String coupons = '/api/store/admin/coupons';
   final String offers = '/api/store/admin/offers';
 
+  // Reports
+  // NOTE: These endpoints return 200 (SPA fallback) but are NOT actual API routes.
+  // Backend must implement them before they work.
+  final String reportsBalances = '/reports/balances';
+  final String reportsMovement = '/reports/movement';
+  final String reportsRedemptions = '/reports/redemptions';
+  final String reportsEarned = '/reports/earned';
+  final String reportsExpired = '/reports/expired';
+  final String reportsTop = '/reports/top';
+  final String reportsCost = '/reports/cost';
+
   // Other
   final String contacts = '/api/store/admin/contacts';
 }
+
 
 class _WebStoreUpload {
   const _WebStoreUpload();

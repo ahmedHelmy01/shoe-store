@@ -63,7 +63,6 @@ class _WebStorePointsViewState extends ConsumerState<WebStorePointsView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Balance Card
                   AppAnimation.fadeInDown(
                     child: Container(
                       width: double.infinity,
@@ -104,14 +103,40 @@ class _WebStorePointsViewState extends ConsumerState<WebStorePointsView> {
                               ),
                             ],
                           ),
+                          if (pointsModel.monetaryValue != null) ...[
+                            8.verticalSpace,
+                            Text(
+                              '≈ \$${pointsModel.monetaryValue!.toStringAsFixed(2)}',
+                              style: TextStyle(fontSize: 14.sp, color: Colors.white.withValues(alpha: 0.7)),
+                            ),
+                          ],
+                          if (pointsModel.nearestExpiryDate != null) ...[
+                            8.verticalSpace,
+                            Text(
+                              'ينتهي في: ${pointsModel.nearestExpiryDate}',
+                              style: TextStyle(fontSize: 12.sp, color: Colors.white.withValues(alpha: 0.6)),
+                            ),
+                          ],
                         ],
                       ),
                     ),
                   ),
-                  
-                  32.verticalSpace,
 
-                  // History Title
+                  24.verticalSpace,
+
+                  Row(
+                    children: [
+                      _statCard(theme, 'webstore.points.earned'.tr(), pointsModel.totalEarned.toString(), Colors.green),
+                      12.horizontalSpace,
+                      _statCard(theme, 'webstore.points.spent'.tr(), pointsModel.totalUsed.toString(), Colors.red),
+                      12.horizontalSpace,
+                      if (pointsModel.totalExpired > 0)
+                        _statCard(theme, 'منتهية', pointsModel.totalExpired.toString(), Colors.grey),
+                    ],
+                  ),
+
+                  24.verticalSpace,
+
                   Text(
                     'webstore.points.history'.tr(context: context),
                     style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w800),
@@ -129,12 +154,10 @@ class _WebStorePointsViewState extends ConsumerState<WebStorePointsView> {
                       ),
                     )
                   else
-                    // Transactions List
                     ...transactions.asMap().entries.map((entry) {
                       final index = entry.key;
                       final t = entry.value;
                       final isEarned = t.isEarned;
-                      final points = t.points;
 
                       return AppAnimation.fadeInUp(
                         delay: Duration(milliseconds: index * 50),
@@ -170,11 +193,18 @@ class _WebStorePointsViewState extends ConsumerState<WebStorePointsView> {
                                           t.date,
                                           style: TextStyle(fontSize: 12.sp, color: theme.hintColor),
                                         ),
+                                        if (t.expiryDate != null) ...[
+                                          2.verticalSpace,
+                                          Text(
+                                            'تنتهي: ${t.expiryDate}',
+                                            style: TextStyle(fontSize: 10.sp, color: Colors.orange),
+                                          ),
+                                        ],
                                       ],
                                     ),
                                   ),
                                   Text(
-                                    '${isEarned ? '+' : '-'}$points',
+                                    '${isEarned ? '+' : '-'}${t.points}',
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w900,
@@ -193,6 +223,28 @@ class _WebStorePointsViewState extends ConsumerState<WebStorePointsView> {
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _statCard(ThemeData theme, String label, String value, Color color) {
+    return Expanded(
+      child: AppCard(
+        padding: EdgeInsets.symmetric(vertical: 16.w, horizontal: 12.w),
+        child: Column(
+          children: [
+            Text(
+              value,
+              style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w900, color: color),
+            ),
+            4.verticalSpace,
+            Text(
+              label,
+              style: TextStyle(fontSize: 12.sp, color: theme.hintColor),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

@@ -27,14 +27,18 @@ class CheckoutVm extends Notifier<CheckoutState> {
     int? addressId,
     String? couponCode,
     int? paymentMethodId,
+    int? pointsToRedeem,
   }) async {
     state = const CheckoutCalculating();
     final repository = ref.read(checkoutRepositoryProvider);
 
+    _pointsToRedeem = (pointsToRedeem != null && pointsToRedeem > 0) ? pointsToRedeem : null;
+
     final body = {
-      'address_id': addressId ?? 5, // fallback to example address ID
-      'payment_method_id': paymentMethodId ?? 1, // fallback to example payment ID
+      'address_id': addressId ?? 5,
+      'payment_method_id': paymentMethodId ?? 1,
       if (couponCode != null && couponCode.isNotEmpty) 'coupon_code': couponCode,
+      if (_pointsToRedeem != null) 'points_to_redeem': _pointsToRedeem,
     };
 
     final result = await repository.calculateTotals(body);
@@ -45,6 +49,12 @@ class CheckoutVm extends Notifier<CheckoutState> {
     );
   }
 
+  int? _pointsToRedeem;
+
+  int get pointsToRedeem => _pointsToRedeem ?? 0;
+
+  void setPointsToRedeem(int pts) => _pointsToRedeem = pts > 0 ? pts : null;
+
   Future<void> confirmOrder({
     required String paymentMethod,
     required String address,
@@ -53,6 +63,7 @@ class CheckoutVm extends Notifier<CheckoutState> {
     int? paymentMethodId,
     String? couponCode,
     String? notes,
+    int? pointsToRedeem,
   }) async {
     state = const CheckoutSubmitting();
     
@@ -74,11 +85,13 @@ class CheckoutVm extends Notifier<CheckoutState> {
       }
     }
 
+    final redeemPts = pointsToRedeem ?? _pointsToRedeem;
     final orderBody = {
       'address_id': addressId ?? 5,
       'payment_method_id': finalPaymentMethodId,
       if (couponCode != null && couponCode.isNotEmpty) 'coupon_code': couponCode,
       if (notes != null && notes.isNotEmpty) 'notes': notes,
+      if (redeemPts != null && redeemPts > 0) 'points_to_redeem': redeemPts,
     };
 
     final repository = ref.read(checkoutRepositoryProvider);

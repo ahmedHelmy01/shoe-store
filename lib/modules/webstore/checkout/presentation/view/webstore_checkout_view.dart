@@ -17,6 +17,7 @@ import 'widgets/delivery_address_section.dart';
 import 'widgets/payment_method_section.dart';
 import 'widgets/promo_code_section.dart';
 import 'widgets/checkout_summary_section.dart';
+import 'widgets/points_redemption_section.dart';
 
 class WebStoreCheckoutView extends ConsumerStatefulWidget {
   const WebStoreCheckoutView({super.key});
@@ -266,7 +267,13 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
                     selectedAddressId: selectedAddress?.id,
                     selectedPaymentId: selectedPaymentId,
                   ),
-                  24.verticalSpace,
+                  20.verticalSpace,
+                  PointsRedemptionSection(
+                    addressId: selectedAddress?.id,
+                    paymentMethodId: selectedPaymentId,
+                    couponCode: promoController.text,
+                  ),
+                  20.verticalSpace,
                   const CheckoutSummarySection(),
                   24.verticalSpace,
                 ],

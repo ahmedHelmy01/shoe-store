@@ -66,7 +66,6 @@ class WebStoreOrderDetailsBottomBar extends ConsumerWidget {
               ),
             ),
             12.horizontalSpace,
-
             // Reorder Button
             Expanded(
               child: AppButton(
@@ -85,10 +84,8 @@ class WebStoreOrderDetailsBottomBar extends ConsumerWidget {
                 ),
               ),
             ),
-
             // Spacing
             if (!isCancelled || isDelivered) 12.horizontalSpace,
-
             // Cancel / Track button
             if (!isCancelled && !isDelivered)
               Expanded(
@@ -117,9 +114,10 @@ class WebStoreOrderDetailsBottomBar extends ConsumerWidget {
                             },
                           );
                         },
-                  child: Text(
-                    LocaleKeys.webstore.orders.track_order.tr(context: context),
-                  ),
+                child: Text(
+                  LocaleKeys.webstore.orders.track_order.tr(context: context),
+                  style: const TextStyle(color: Colors.white),
+                ),
                 ),
               ),
           ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
@@ -128,7 +129,7 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
         onTap: () => Navigator.pop(context),
       ),
       actions: [
-        _buildCircleButton(Icons.share_rounded, onTap: () {}),
+        _buildCircleButton(Icons.share_rounded, onTap: () => _shareProduct(product)),
         8.horizontalSpace,
         _buildCircleButton(
           isWishlisted ? Icons.favorite_rounded : Icons.favorite_border_rounded,
@@ -148,6 +149,15 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
         ),
       ),
     );
+  }
+
+  Future<void> _shareProduct(WebStoreProduct product) async {
+    final text = '${product.name}\n'
+        '${product.description ?? ''}\n'
+        'السعر: ${product.price} ${AppConstants.currency}';
+    final encoded = Uri.encodeComponent(text);
+    final uri = Uri.parse('https://wa.me/?text=$encoded');
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
   Widget _buildCircleButton(

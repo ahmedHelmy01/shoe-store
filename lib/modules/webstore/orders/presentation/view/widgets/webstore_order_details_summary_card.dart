@@ -40,12 +40,18 @@ class WebStoreOrderDetailsSummaryCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       '${LocaleKeys.webstore.orders.order_number.tr(context: context)}: $orderNumber',
-                      style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 6.h,
+                    ),
                     decoration: BoxDecoration(
                       color: statusColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20.r),
@@ -71,7 +77,10 @@ class WebStoreOrderDetailsSummaryCard extends StatelessWidget {
                   ),
                   Text(
                     dateStr,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14.sp,
+                    ),
                   ),
                 ],
               ),
@@ -88,14 +97,19 @@ class WebStoreOrderDetailsSummaryCard extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          paymentMethod!['type'] == 'card' ? Icons.credit_card : Icons.money,
+                          paymentMethod!['type'] == 'card'
+                              ? Icons.credit_card
+                              : Icons.money,
                           size: 14.sp,
                           color: theme.hintColor,
                         ),
                         4.horizontalSpace,
                         Text(
                           paymentMethod!['name']?.toString() ?? '',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.sp,
+                          ),
                         ),
                       ],
                     ),
@@ -118,14 +132,24 @@ class WebStoreOrderDetailsSummaryCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        LocaleKeys.webstore.orders.order_cancelled.tr(context: context),
-                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: Colors.red),
+                        LocaleKeys.webstore.orders.order_cancelled.tr(
+                          context: context,
+                        ),
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                        ),
                       ),
-                      if (cancelledReason != null && cancelledReason!.isNotEmpty) ...[
+                      if (cancelledReason != null &&
+                          cancelledReason!.isNotEmpty) ...[
                         4.verticalSpace,
                         Text(
                           cancelledReason!,
-                          style: TextStyle(fontSize: 12.sp, color: theme.hintColor),
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: theme.hintColor,
+                          ),
                         ),
                       ],
                     ],

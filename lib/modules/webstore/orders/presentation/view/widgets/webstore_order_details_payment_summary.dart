@@ -34,7 +34,7 @@ class WebStoreOrderDetailsPaymentSummary extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // ─── Coupon Notice (if exists) ──────────────────
-        if (couponCode != null) ...[
+        if (couponCode != null && couponCode!.trim().isNotEmpty) ...[
           AppCard(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
             child: Row(

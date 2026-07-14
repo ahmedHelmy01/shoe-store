@@ -142,6 +142,72 @@ class AdminLocalizations {
         return 'الدعم الفني';
       case 'messages':
         return 'الرسائل';
+      case 'loyalty':
+        return 'نقاطي';
+      case 'loyalty settings':
+        return 'إعدادات نقاطي';
+      case 'loyalty reports':
+        return 'تقارير نقاطي';
+      case 'loyalty program':
+        return 'نقاطي';
+      case 'manage loyalty points and rewards settings.':
+        return 'إدارة إعدادات نقاطي.';
+      case 'general settings':
+        return 'الإعدادات العامة';
+      case 'enable loyalty program':
+        return 'تفعيل نقاطي';
+      case 'allow customers to earn and redeem points.':
+        return 'السماح للعملاء بكسب واستبدال النقاط.';
+      case 'earn rate':
+        return 'معدل الكسب';
+      case 'points per currency unit':
+        return 'نقاط لكل وحدة عملة';
+      case 'point value':
+        return 'قيمة النقطة';
+      case 'monetary value per point':
+        return 'القيمة المالية للنقطة';
+      case 'usage rules':
+        return 'قواعد الاستخدام';
+      case 'max usage type':
+        return 'نوع الحد الأقصى للاستخدام';
+      case 'max usage value':
+        return 'قيمة الحد الأقصى للاستخدام';
+      case 'min invoice amount':
+        return 'الحد الأدنى لقيمة الفاتورة';
+      case 'min points to use':
+        return 'الحد الأدنى لاستخدام النقاط';
+      case 'expiry settings':
+        return 'إعدادات الصلاحية';
+      case 'expiry type':
+        return 'نوع الصلاحية';
+      case 'expiry value':
+        return 'قيمة الصلاحية';
+      case 'restrictions':
+        return 'القيود';
+      case 'customer types':
+        return 'أنواع العملاء';
+      case 'excluded product ids':
+        return 'معرفات المنتجات المستثناة';
+      case 'excluded category ids':
+        return 'معرفات التصنيفات المستثناة';
+      case 'comma-separated ids':
+        return 'معرفات مفصولة بفواصل';
+      case 'view loyalty program reports and analytics':
+        return 'عرض تقارير وتحليلات نقاطي';
+      case 'balances':
+        return 'الأرصدة';
+      case 'movement':
+        return 'الحركة';
+      case 'redemptions':
+        return 'الاستخدام';
+      case 'earned':
+        return 'المكتسبة';
+      case 'expired':
+        return 'المنتهية';
+      case 'top customers':
+        return 'أفضل العملاء';
+      case 'cost':
+        return 'التكلفة';
       case 'settings':
         return 'الإعدادات';
       case 'configure storefront behavior, delivery, payments, and branding.':

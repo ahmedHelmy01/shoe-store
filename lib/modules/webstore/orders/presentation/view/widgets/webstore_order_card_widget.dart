@@ -19,7 +19,7 @@ class WebStoreOrderCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final orderId = order['id'] as int;
+    final orderId = (order['id'] as num?)?.toInt() ?? 0;
     final orderNumber = order['order_number']?.toString() ?? '#$orderId';
     final total = order['total']?.toString() ?? '0.00';
     final createdAt = order['created_at'] != null
@@ -30,7 +30,7 @@ class WebStoreOrderCardWidget extends StatelessWidget {
         : '';
     final statusName = _getStatusName(context, order);
     final statusColor = _getStatusColor(order);
-    final items = order['items'] as List<dynamic>? ?? [];
+    final items = order['items'] is List ? order['items'] as List<dynamic> : [];
     final rawPayment = order['payment_method'];
     final Map<String, dynamic>? paymentMethod = rawPayment is Map<String, dynamic>
         ? rawPayment
@@ -126,7 +126,7 @@ class WebStoreOrderCardWidget extends StatelessWidget {
                     style: TextStyle(fontSize: 12.sp, color: theme.hintColor),
                   ),
                 ],
-                if (couponCode != null) ...[
+                if (couponCode != null && couponCode.trim().isNotEmpty) ...[
                   8.horizontalSpace,
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),

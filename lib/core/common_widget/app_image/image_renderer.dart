@@ -1,9 +1,7 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:erp/core/extension/image_type_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
 
 /// Class for loading images based on their type
@@ -42,57 +40,33 @@ class ImageRenderer {
     }
     switch (cleanPath.imageType) {
       case ImageType.network:
-        if (kIsWeb) {
-          return Image.network(
-            cleanPath,
-            height: height,
-            width: width,
-            fit: fit,
-            color: color,
-            errorBuilder: (context, error, stackTrace) => _buildPlaceholder(height, width, fit),
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return SizedBox(
-                width: width,
-                height: height,
-                child: AppShimmer(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-              );
-            },
-          );
-        }
-        return CachedNetworkImage(
-          imageUrl: cleanPath,
+        return Image.network(
+          cleanPath,
           height: height,
           width: width,
           fit: fit,
           color: color,
-          memCacheWidth: memCacheWidth,
-          memCacheHeight: memCacheHeight,
-          httpHeaders: const {
+          headers: const {
             'User-Agent': 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36',
             'Accept': 'image/avif,image/webp,image/apng,image/png,image/jpg,*/*;q=0.8',
             'Connection': 'close',
           },
-          placeholder: (context, url) => SizedBox(
-            width: width,
-            height: height,
-            child: AppShimmer(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return SizedBox(
+              width: width,
+              height: height,
+              child: AppShimmer(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
-            ),
-          ),
-          errorWidget: (context, url, error) => _buildPlaceholder(height, width, fit),
+            );
+          },
+          errorBuilder: (context, error, stackTrace) => _buildPlaceholder(height, width, fit),
         );
       case ImageType.file:
         final filePath = cleanPath.startsWith('file://')

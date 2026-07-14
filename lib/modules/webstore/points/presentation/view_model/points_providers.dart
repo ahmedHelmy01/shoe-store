@@ -40,3 +40,21 @@ class PointsNotifier extends AsyncNotifier<PointsModel> {
     state = await AsyncValue.guard(() => _fetchPoints());
   }
 }
+
+final loyaltySummaryProvider = FutureProvider<Map<String, dynamic>>((ref) async {
+  final repo = ref.read(pointsRepositoryProvider);
+  final result = await repo.getLoyaltySummary();
+  return result.when(
+    success: (data) => data,
+    failure: (e) => throw e,
+  );
+});
+
+final loyaltyPreviewProvider = FutureProvider.family<Map<String, dynamic>, int>((ref, points) async {
+  final repo = ref.read(pointsRepositoryProvider);
+  final result = await repo.previewLoyalty(points);
+  return result.when(
+    success: (data) => data,
+    failure: (e) => throw e,
+  );
+});

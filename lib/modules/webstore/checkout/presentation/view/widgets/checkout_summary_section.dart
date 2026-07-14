@@ -5,7 +5,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
-import 'package:erp/modules/webstore/checkout/presentation/view_model/checkout_providers.dart';
 import 'package:erp/modules/webstore/checkout/presentation/view_model/checkout_view_model.dart';
 import 'package:erp/modules/webstore/checkout/presentation/state/checkout_state.dart';
 
@@ -28,6 +27,8 @@ class CheckoutSummarySection extends ConsumerWidget {
     double subtotal = cartNotifier.subtotal;
     double shipping = cartNotifier.shipping;
     double discount = 0.0;
+    double pointsDiscount = 0.0;
+    int pointsUsed = 0;
     double total = cartNotifier.total;
 
     if (checkoutState is CheckoutCalculated) {
@@ -42,6 +43,8 @@ class CheckoutSummarySection extends ConsumerWidget {
       discount = (data['discount_amount'] as num?)?.toDouble() ??
           (data['discount'] as num?)?.toDouble() ??
           discount;
+      pointsDiscount = (data['points_discount'] as num?)?.toDouble() ?? 0.0;
+      pointsUsed = (data['points_used'] as int?) ?? 0;
       total = (data['total'] as num?)?.toDouble() ?? total;
     }
 
@@ -64,6 +67,15 @@ class CheckoutSummarySection extends ConsumerWidget {
             context,
             LocaleKeys.webstore.checkout.discount.tr(context: context),
             isCalculating ? '...' : '-\$${discount.toStringAsFixed(2)}',
+            isGreen: true,
+          ),
+        ],
+        if (pointsDiscount > 0) ...[
+          12.verticalSpace,
+          _summaryRow(
+            context,
+            'خصم النقاط ($pointsUsed نقطة)',
+            '-\$${pointsDiscount.toStringAsFixed(2)}',
             isGreen: true,
           ),
         ],

@@ -4,6 +4,7 @@
 library;
 
 import 'package:erp/core/common_model/base_model.dart';
+import 'package:erp/core/network/network_url.dart';
 import 'package:erp/modules/webstore/catalog/data/models/category_model.dart';
 
 class WebStoreProduct extends BaseEntity with JsonSerializable {
@@ -75,8 +76,8 @@ class WebStoreProduct extends BaseEntity with JsonSerializable {
       if (value == null) return [];
       if (value is List) {
         return value.map((e) {
-          if (e is String) return e;
-          if (e is Map) return e['image']?.toString() ?? '';
+          if (e is String) return NetworkUrl.imageUrl(e);
+          if (e is Map) return NetworkUrl.imageUrl(e['image']?.toString() ?? '');
           return '';
         }).where((element) => element.isNotEmpty).toList();
       }
@@ -108,7 +109,7 @@ class WebStoreProduct extends BaseEntity with JsonSerializable {
       oldPrice: parsePrice(json['old_price'] ?? json['compare_at_price']),
       discount: parsePrice(json['discount']),
       stock: json['available_quantity'] ?? json['stock'] ?? json['quantity'] ?? 0,
-      image: json['image'],
+      image: NetworkUrl.imageUrl(json['image']),
       images: parseImages(json['images']),
       category: json['category'] != null ? WebStoreCategory.fromJson(json['category']) : null,
       manufacturer: json['manufacturer'] is Map<String, dynamic> ? json['manufacturer'] : null,
