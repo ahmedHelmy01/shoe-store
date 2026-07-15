@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
@@ -21,6 +23,7 @@ class AddressAddEditFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final keys = LocaleKeys.webstore.addresses;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -39,10 +42,8 @@ class AddressAddEditFooter extends StatelessWidget {
             ),
           ),
           child: SwitchListTile.adaptive(
-            title: const Text('تعيين كعنوان افتراضي للتوصيل'),
-            subtitle: const Text(
-              'سيتم اختيار هذا العنوان تلقائياً عند إنهاء الطلب',
-            ),
+            title: Text(keys.set_default_title.tr(context: context)),
+            subtitle: Text(keys.set_default_subtitle.tr(context: context)),
             value: isDefault,
             activeThumbColor: AppColors.primaryOrange,
             contentPadding: EdgeInsets.symmetric(horizontal: 8.w),
@@ -53,7 +54,11 @@ class AddressAddEditFooter extends StatelessWidget {
         AppButton(
           onPressed: onSubmit,
           isLoading: isSaving,
-          child: Text(isEditMode ? 'حفظ التعديلات' : 'إضافة العنوان'),
+          child: Text(
+            isEditMode
+                ? keys.save_changes.tr(context: context)
+                : keys.add_address_btn.tr(context: context),
+          ),
         ),
       ],
     );

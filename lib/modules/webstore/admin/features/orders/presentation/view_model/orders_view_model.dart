@@ -7,7 +7,7 @@ import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_row.dart';
 import 'package:erp/modules/webstore/admin/features/orders/data/models/order_detail.dart';
 
-final ordersVmProvider = NotifierProvider<OrdersVm, AdminCrudState<OrderRow>>(OrdersVm.new);
+final ordersVmProvider = NotifierProvider.autoDispose<OrdersVm, AdminCrudState<OrderRow>>(OrdersVm.new);
 
 class OrdersVm extends AdminCrudVm<OrderRow> {
   int? _customerId;

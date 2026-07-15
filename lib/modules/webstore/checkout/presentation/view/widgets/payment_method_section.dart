@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
@@ -11,6 +9,8 @@ import 'package:erp/modules/webstore/checkout/data/models/payment_method_model.d
 import 'package:erp/modules/webstore/checkout/presentation/view_model/checkout_providers.dart';
 
 import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 
 class PaymentMethodSection extends ConsumerWidget {
   final int? selectedPaymentId;
@@ -51,9 +51,7 @@ class PaymentMethodSection extends ConsumerWidget {
               _buildPaymentOption(
                 context,
                 'visa',
-                LocaleKeys.webstore.checkout.visa_mastercard.tr(
-                  context: context,
-                ),
+                LocaleKeys.webstore.checkout.visa_mastercard.tr(context: context),
                 AssetManager.visa,
               ),
               12.verticalSpace,
@@ -67,9 +65,7 @@ class PaymentMethodSection extends ConsumerWidget {
               _buildPaymentOption(
                 context,
                 'cash',
-                LocaleKeys.webstore.checkout.cash_on_delivery.tr(
-                  context: context,
-                ),
+                LocaleKeys.webstore.checkout.cash_on_delivery.tr(context: context),
                 AssetManager.car,
               ),
             ],
@@ -81,9 +77,7 @@ class PaymentMethodSection extends ConsumerWidget {
                   _buildPaymentOption(
                     context,
                     'visa',
-                    LocaleKeys.webstore.checkout.visa_mastercard.tr(
-                      context: context,
-                    ),
+                    LocaleKeys.webstore.checkout.visa_mastercard.tr(context: context),
                     AssetManager.visa,
                   ),
                   12.verticalSpace,
@@ -97,9 +91,7 @@ class PaymentMethodSection extends ConsumerWidget {
                   _buildPaymentOption(
                     context,
                     'cash',
-                    LocaleKeys.webstore.checkout.cash_on_delivery.tr(
-                      context: context,
-                    ),
+                    LocaleKeys.webstore.checkout.cash_on_delivery.tr(context: context),
                     AssetManager.car,
                   ),
                 ],

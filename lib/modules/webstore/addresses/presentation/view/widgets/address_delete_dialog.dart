@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
@@ -10,15 +12,16 @@ abstract final class AddressDeleteDialog {
     WidgetRef ref,
     AddressModel address,
   ) async {
+    final keys = LocaleKeys.webstore.addresses;
     await showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('حذف العنوان'),
-        content: const Text('هل أنت متأكد من رغبتك في حذف عنوان التوصيل هذا؟'),
+        title: Text(keys.delete_title.tr(context: context)),
+        content: Text(keys.delete_confirm.tr(context: context)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('إلغاء'),
+            child: Text(LocaleKeys.common.cancel.tr(context: context)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -34,17 +37,22 @@ abstract final class AddressDeleteDialog {
               if (error != null) {
                 await AppStatusDialog.showError(
                   context,
-                  title: 'تعذّر حذف العنوان',
+                  title: keys.delete_failed_title.tr(context: context),
                   message: error,
                 );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('تم حذف العنوان بنجاح')),
+                  SnackBar(
+                    content: Text(keys.deleted_success.tr(context: context)),
+                  ),
                 );
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('حذف', style: TextStyle(color: Colors.white)),
+            child: Text(
+              LocaleKeys.common.delete.tr(context: context),
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),

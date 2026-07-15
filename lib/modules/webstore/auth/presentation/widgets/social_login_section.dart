@@ -29,7 +29,7 @@ class SocialLoginSection extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Text(
-                'OR',
+                'أو',
                 style: TextStyle(
                   color: theme.hintColor.withOpacity(0.6),
                   fontSize: 11.sp,

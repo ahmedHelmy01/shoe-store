@@ -6,7 +6,7 @@ import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_respon
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/features/branches/data/models/branch_row.dart';
 
-final branchesVmProvider = NotifierProvider<BranchesVm, AdminCrudState<BranchRow>>(BranchesVm.new);
+final branchesVmProvider = NotifierProvider.autoDispose<BranchesVm, AdminCrudState<BranchRow>>(BranchesVm.new);
 
 class BranchesVm extends AdminCrudVm<BranchRow> {
   @override

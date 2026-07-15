@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 
 /// Content Widgets (Description and Specifications Table)
@@ -23,14 +25,14 @@ class DetailsContentSection extends StatelessWidget {
             color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.withOpacity(0.1),
           ),
         ),
-        _buildDescription(theme),
+        _buildDescription(context, theme),
         if (product.attributes != null && product.attributes!.isNotEmpty)
-          _buildAttributes(theme, isDark),
+          _buildAttributes(context, theme, isDark),
       ],
     );
   }
 
-  Widget _buildDescription(ThemeData theme) {
+  Widget _buildDescription(BuildContext context, ThemeData theme) {
     if (product.description == null || product.description!.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -40,7 +42,7 @@ class DetailsContentSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('وصف المنتج', style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),
+          Text(LocaleKeys.webstore.catalog.product_description.tr(context: context), style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),
           12.verticalSpace,
           Text(
             product.description!.replaceAll(RegExp(r'<[^>]*>'), '').replaceAll('&nbsp;', ' ').trim(),
@@ -51,7 +53,7 @@ class DetailsContentSection extends StatelessWidget {
     );
   }
 
-  Widget _buildAttributes(ThemeData theme, bool isDark) {
+  Widget _buildAttributes(BuildContext context, ThemeData theme, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -65,7 +67,7 @@ class DetailsContentSection extends StatelessWidget {
         ),
         Padding(
           padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
-          child: Text('المواصفات', style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),
+          child: Text(LocaleKeys.webstore.catalog.specifications.tr(context: context), style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),
         ),
         ...product.attributes!.entries.map((entry) {
           return Container(

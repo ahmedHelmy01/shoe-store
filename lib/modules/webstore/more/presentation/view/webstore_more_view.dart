@@ -127,7 +127,7 @@ class WebStoreMoreView extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'webstore.addresses.title'.tr(context: context),
+                    LocaleKeys.webstore.addresses.title.tr(context: context),
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
@@ -136,7 +136,7 @@ class WebStoreMoreView extends ConsumerWidget {
                   ),
                   4.verticalSpace,
                   Text(
-                    'webstore.addresses.subtitle'.tr(context: context),
+                    LocaleKeys.webstore.addresses.subtitle.tr(context: context),
                     style: TextStyle(
                       fontSize: 11.sp,
                       color: theme.hintColor,

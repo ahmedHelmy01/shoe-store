@@ -82,7 +82,7 @@ class _WebStoreRegisterScreenState extends ConsumerState<WebStoreRegisterScreen>
     ref.read(webStoreAuthViewModelProvider.notifier).socialLogin(
           providerType: provider,
           providerIdentifier: 'dummy-id-${DateTime.now().millisecondsSinceEpoch}',
-          name: 'Social User',
+          name: 'مستخدم اجتماعي',
           mobile: phone,
           branchId: branchId,
         );

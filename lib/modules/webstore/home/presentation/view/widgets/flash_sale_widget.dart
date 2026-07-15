@@ -2,15 +2,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:erp/core/localization/locale_keys.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/product_card_widget.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 import 'package:erp/core/common_widget/app_section_header/app_section_header.dart';
 import 'package:erp/core/router/app_navigator.dart';
-import 'package:erp/core/router/route_generator.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class FlashSaleWidget extends StatefulWidget {
   const FlashSaleWidget({super.key});

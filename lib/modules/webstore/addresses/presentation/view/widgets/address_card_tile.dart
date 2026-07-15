@@ -1,8 +1,11 @@
 import 'dart:ui';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/addresses/data/models/address_model.dart';
+import 'package:erp/modules/webstore/addresses/presentation/utils/address_localization.dart';
 
 class AddressCardTile extends StatelessWidget {
   final AddressModel address;
@@ -22,6 +25,7 @@ class AddressCardTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final keys = LocaleKeys.webstore.addresses;
     final theme = Theme.of(context);
     final primaryColor = address.isDefault ? AppColors.primaryOrange : theme.primaryColor;
     
@@ -115,7 +119,7 @@ class AddressCardTile extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              address.displayTitle,
+                              address.localizedDisplayTitle(context),
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w700,
@@ -132,7 +136,7 @@ class AddressCardTile extends StatelessWidget {
                                   border: Border.all(color: primaryColor.withOpacity(0.2)),
                                 ),
                                 child: Text(
-                                  'الافتراضي',
+                                  keys.default_badge.tr(context: context),
                                   style: TextStyle(
                                     color: primaryColor,
                                     fontSize: 10.sp,
@@ -166,7 +170,7 @@ class AddressCardTile extends StatelessWidget {
                             8.horizontalSpace,
                             Expanded(
                               child: Text(
-                                address.printableAddress,
+                                address.localizedPrintableAddress(context),
                                 style: TextStyle(
                                   fontSize: 13.sp,
                                   color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
@@ -239,7 +243,7 @@ class AddressCardTile extends StatelessWidget {
                                     Icon(Icons.check_circle_outline_rounded, size: 16.sp, color: theme.hintColor),
                                     6.horizontalSpace,
                                     Text(
-                                      'تعيين كافتراضي', 
+                                      keys.set_as_default.tr(context: context),
                                       style: TextStyle(fontSize: 12.sp, color: theme.hintColor),
                                     ),
                                   ],
@@ -252,13 +256,17 @@ class AddressCardTile extends StatelessWidget {
                       
                       Container(
                         decoration: BoxDecoration(
-                          color: isDark ? Colors.white.withOpacity(0.05) : theme.primaryColor.withOpacity(0.05),
+                          color: isDark ? Colors.white.withOpacity(0.05) : AppColors.primaryOrange.withOpacity(0.05),
                           shape: BoxShape.circle,
                         ),
                         child: IconButton(
                           onPressed: onEdit,
-                          icon: Icon(Icons.edit_outlined, color: theme.primaryColor, size: 18.sp),
-                          tooltip: 'تعديل',
+                          icon: Icon(
+                            Icons.edit_outlined, 
+                            color: isDark ? Colors.orangeAccent : AppColors.primaryOrange, 
+                            size: 18.sp
+                          ),
+                          tooltip: LocaleKeys.common.edit.tr(context: context),
                           splashRadius: 24,
                         ),
                       ),
@@ -271,7 +279,7 @@ class AddressCardTile extends StatelessWidget {
                         child: IconButton(
                           onPressed: onDelete,
                           icon: Icon(Icons.delete_outline_rounded, color: Colors.red[400], size: 18.sp),
-                          tooltip: 'حذف',
+                          tooltip: LocaleKeys.common.delete.tr(context: context),
                           splashRadius: 24,
                         ),
                       ),

@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -6,6 +8,7 @@ class AddressesEmptyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final keys = LocaleKeys.webstore.addresses;
     final theme = Theme.of(context);
 
     return SingleChildScrollView(
@@ -23,7 +26,7 @@ class AddressesEmptyView extends StatelessWidget {
               ),
               16.verticalSpace,
               Text(
-                'لا يوجد عناوين توصيل مضافة',
+                keys.empty_title.tr(context: context),
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
@@ -32,7 +35,7 @@ class AddressesEmptyView extends StatelessWidget {
               ),
               8.verticalSpace,
               Text(
-                'أضف عنوان توصيل ليسهل عليك إنهاء طلباتك بسرعة',
+                keys.empty_subtitle.tr(context: context),
                 style: TextStyle(
                   fontSize: 12.sp,
                   color: theme.hintColor.withValues(alpha: 0.7),

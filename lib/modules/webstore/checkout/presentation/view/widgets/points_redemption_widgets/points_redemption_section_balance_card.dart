@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
@@ -35,11 +37,18 @@ class PointsRedemptionSectionBalanceCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  balance > 0 ? 'الرصيد المتاح' : 'نقاطي',
+                  balance > 0
+                      ? LocaleKeys.webstore.checkout.available_balance.tr(context: context)
+                      : LocaleKeys.webstore.home.my_points.tr(context: context),
                   style: TextStyle(fontSize: 12.sp, color: theme.hintColor),
                 ),
                 Text(
-                  balance > 0 ? '$balance نقطة' : 'ليس لديك نقاط حالياً',
+                  balance > 0
+                      ? LocaleKeys.webstore.checkout.points_unit.tr(
+                          context: context,
+                          args: [balance.toString()],
+                        )
+                      : LocaleKeys.webstore.checkout.no_points_yet.tr(context: context),
                   style: TextStyle(
                     fontSize: balance > 0 ? 18.sp : 14.sp,
                     fontWeight: FontWeight.bold,
@@ -55,7 +64,7 @@ class PointsRedemptionSectionBalanceCard extends StatelessWidget {
               children: [
                 Text('≈', style: TextStyle(color: theme.hintColor, fontSize: 12.sp)),
                 Text(
-                  '\$${monetaryValue!.toStringAsFixed(2)}',
+                  '${monetaryValue!.toStringAsFixed(2)} ${AppConstants.currency}',
                   style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w900, color: Colors.green.shade600),
                 ),
               ],

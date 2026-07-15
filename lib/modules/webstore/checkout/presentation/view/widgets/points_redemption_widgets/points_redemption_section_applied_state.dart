@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
@@ -29,7 +31,10 @@ class PointsRedemptionSectionAppliedState extends StatelessWidget {
               8.horizontalSpace,
               Expanded(
                 child: Text(
-                  'تم تطبيق خصم $appliedPoints نقطة',
+                  LocaleKeys.webstore.checkout.points_applied_discount.tr(
+                    context: context,
+                    args: [appliedPoints.toString()],
+                  ),
                   style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Colors.green.shade700),
                 ),
               ),
@@ -42,7 +47,7 @@ class PointsRedemptionSectionAppliedState extends StatelessWidget {
           child: OutlinedButton.icon(
             onPressed: onCancel,
             icon: Icon(Icons.close_rounded, size: 16.sp),
-            label: Text('إلغاء خصم النقاط'),
+            label: Text(LocaleKeys.webstore.checkout.cancel_points_discount.tr(context: context)),
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.red,
               side: BorderSide(color: Colors.red.shade200),

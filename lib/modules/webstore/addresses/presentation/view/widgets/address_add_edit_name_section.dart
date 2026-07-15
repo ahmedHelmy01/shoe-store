@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'address_form_section.dart';
 import 'address_form_text_field.dart';
@@ -9,18 +11,20 @@ class AddressAddEditNameSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final keys = LocaleKeys.webstore.addresses;
     return AddressFormSection(
-      title: 'تسمية العنوان',
+      title: keys.name_section_title.tr(context: context),
       icon: Icons.label_outline_rounded,
       children: [
         AddressFormTextField(
           controller: nameController,
-          label: 'اسم العنوان',
-          hint: 'مثال: البيت، العمل، بيت العائلة',
+          label: keys.address_name.tr(context: context),
+          hint: keys.address_name_hint.tr(context: context),
           icon: Icons.home_work_outlined,
           isRequired: true,
-          validator: (v) =>
-              v == null || v.trim().isEmpty ? 'اسم العنوان مطلوب' : null,
+          validator: (v) => v == null || v.trim().isEmpty
+              ? keys.address_name_required.tr(context: context)
+              : null,
         ),
       ],
     );

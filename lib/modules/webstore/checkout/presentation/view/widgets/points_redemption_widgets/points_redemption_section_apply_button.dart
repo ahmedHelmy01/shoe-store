@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
@@ -22,7 +24,12 @@ class PointsRedemptionSectionApplyButton extends StatelessWidget {
       child: ElevatedButton.icon(
         onPressed: (isPreviewLoading || selectedPoints <= 0) ? null : onApply,
         icon: Icon(Icons.check_rounded, size: 18.sp),
-        label: Text('تطبيق $selectedPoints نقطة'),
+        label: Text(
+          LocaleKeys.webstore.checkout.apply_points_btn.tr(
+            context: context,
+            args: [selectedPoints.toString()],
+          ),
+        ),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,

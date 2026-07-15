@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,10 +28,11 @@ class AddressAddEditGovernorateCitySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final keys = LocaleKeys.webstore.addresses;
     final r = AddressFormConstants.fieldRadius;
 
     return AddressFormSection(
-      title: 'المحافظة والمدينة',
+      title: keys.governorate_city.tr(context: context),
       icon: Icons.map_outlined,
       children: [
         governoratesAsync.when(
@@ -40,12 +43,12 @@ class AddressAddEditGovernorateCitySection extends StatelessWidget {
             ),
           ),
           error: (_, _) => Text(
-            'خطأ في تحميل المحافظات',
+            keys.governorates_load_error.tr(context: context),
             style: TextStyle(color: Colors.red, fontSize: 12.sp),
           ),
           data: (governorates) => AppDropdown<int>(
-            label: 'المحافظة *',
-            hint: 'اختر المحافظة',
+            label: keys.governorate_label.tr(context: context),
+            hint: keys.select_governorate.tr(context: context),
             value: selectedGovernorateId,
             borderRadius: r,
             items: governorates
@@ -62,8 +65,8 @@ class AddressAddEditGovernorateCitySection extends StatelessWidget {
         14.verticalSpace,
         if (selectedGovernorateId == null)
           AppDropdown<int>(
-            label: 'المدينة *',
-            hint: 'اختر المحافظة أولاً',
+            label: keys.city_label.tr(context: context),
+            hint: keys.select_governorate_first.tr(context: context),
             value: null,
             enabled: false,
             borderRadius: r,
@@ -79,14 +82,14 @@ class AddressAddEditGovernorateCitySection extends StatelessWidget {
               ),
             ),
             error: (_, _) => Text(
-              'خطأ في تحميل المدن',
+              keys.cities_load_error.tr(context: context),
               style: TextStyle(color: Colors.red, fontSize: 12.sp),
             ),
             data: (cities) => AppDropdown<int>(
-              label: 'المدينة *',
+              label: keys.city_label.tr(context: context),
               hint: cities.isEmpty
-                  ? 'لا توجد مدن لهذه المحافظة'
-                  : 'اختر المدينة',
+                  ? keys.no_cities_for_governorate.tr(context: context)
+                  : keys.select_city.tr(context: context),
               value: selectedCityId,
               enabled: cities.isNotEmpty,
               borderRadius: r,

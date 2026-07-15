@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,9 +33,9 @@ class ProductGridView extends ConsumerWidget {
     }
 
     if (state.items.isEmpty) {
-      return const AppEmptyWidget(
-        message: 'لا توجد منتجات',
-        subtitle: 'لم نجد أي منتجات في هذا القسم حالياً، جرب تصفح أقسام أخرى.',
+      return AppEmptyWidget(
+        message: LocaleKeys.webstore.catalog.no_products.tr(context: context),
+        subtitle: LocaleKeys.webstore.catalog.no_products_subtitle.tr(context: context),
       );
     }
 
@@ -48,11 +50,11 @@ class ProductGridView extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Picks for you',
+                  LocaleKeys.webstore.catalog.picks_for_you.tr(context: context),
                   style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16.sp),
                 ),
                 Text(
-                  'أحدث المنتجات',
+                  LocaleKeys.webstore.home.latest_products.tr(context: context),
                   style: TextStyle(color: AppColors.primaryOrange, fontSize: 12.sp, fontWeight: FontWeight.bold),
                 ),
               ],

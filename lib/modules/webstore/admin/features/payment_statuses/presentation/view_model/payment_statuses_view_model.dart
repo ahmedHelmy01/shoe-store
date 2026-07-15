@@ -6,7 +6,7 @@ import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_respon
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/features/payment_statuses/data/models/payment_status_row.dart';
 
-final paymentStatusesVmProvider = NotifierProvider<PaymentStatusesVm, AdminCrudState<PaymentStatusRow>>(PaymentStatusesVm.new);
+final paymentStatusesVmProvider = NotifierProvider.autoDispose<PaymentStatusesVm, AdminCrudState<PaymentStatusRow>>(PaymentStatusesVm.new);
 
 class PaymentStatusesVm extends AdminCrudVm<PaymentStatusRow> {
   @override

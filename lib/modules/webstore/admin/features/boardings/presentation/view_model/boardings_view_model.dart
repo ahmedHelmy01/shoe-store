@@ -6,7 +6,7 @@ import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_respon
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/features/boardings/data/models/boarding_row.dart';
 
-final boardingsVmProvider = NotifierProvider<BoardingsVm, AdminCrudState<BoardingRow>>(BoardingsVm.new);
+final boardingsVmProvider = NotifierProvider.autoDispose<BoardingsVm, AdminCrudState<BoardingRow>>(BoardingsVm.new);
 
 class BoardingsVm extends AdminCrudVm<BoardingRow> {
   @override

@@ -39,31 +39,34 @@ class FeatureLinksWidget extends ConsumerWidget {
   }
 
   void _handleFeatureTap(BuildContext context, FeatureItemData feature) {
-    switch (feature.title) {
-      case 'فروعنا':
+    switch (feature.type) {
+      case FeatureType.ourBranches:
         Navigator.of(
           context,
         ).push(MaterialPageRoute(builder: (_) => const BranchesMapView()));
         break;
-      case 'الروشتة':
+      case FeatureType.prescription:
         AppNavigator.push(
           context,
           AppRouteNames.webstorePrescriptions,
         );
         break;
-      case 'خدمات طبية':
+      case FeatureType.medicalServices:
         AppNavigator.push(
           context,
           AppRouteNames.webstorePage,
-          arguments: {'slug': 'medical-services', 'title': feature.title},
+          arguments: {
+            'slug': 'medical-services',
+            'title': feature.title(context),
+          },
         );
         break;
-      case 'عروض حصرية':
-      case 'الأكثر مبيعاً':
-      case 'تسوق الآن':
-        final preset = switch (feature.title) {
-          'عروض حصرية' => 'exclusive',
-          'الأكثر مبيعاً' => 'best_seller',
+      case FeatureType.exclusiveOffers:
+      case FeatureType.bestSellers:
+      case FeatureType.shopNow:
+        final preset = switch (feature.type) {
+          FeatureType.exclusiveOffers => 'exclusive',
+          FeatureType.bestSellers => 'best_seller',
           _ => 'shop_now',
         };
         AppNavigator.push(

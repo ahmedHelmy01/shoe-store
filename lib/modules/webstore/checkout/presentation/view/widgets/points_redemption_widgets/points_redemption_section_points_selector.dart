@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
@@ -25,7 +27,10 @@ class PointsRedemptionSectionPointsSelector extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('النقاط المستخدمة', style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600)),
+            Text(
+              LocaleKeys.webstore.checkout.points_used_label.tr(context: context),
+              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600),
+            ),
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
@@ -58,7 +63,10 @@ class PointsRedemptionSectionPointsSelector extends StatelessWidget {
             min: 0,
             max: maxPoints.toDouble(),
             divisions: maxPoints > 200 ? (maxPoints / 10).round() : maxPoints,
-            label: '$selectedPoints نقطة',
+            label: LocaleKeys.webstore.checkout.points_unit.tr(
+              context: context,
+              args: [selectedPoints.toString()],
+            ),
             onChanged: onSliderChanged,
           ),
         ),
@@ -79,7 +87,12 @@ class PointsRedemptionSectionPointsSelector extends StatelessWidget {
             8.horizontalSpace,
             _quickBtn('75%', 0.75, selectedPoints, theme),
             8.horizontalSpace,
-            _quickBtn('الكل', 1.0, selectedPoints, theme),
+            _quickBtn(
+              LocaleKeys.webstore.checkout.all_points.tr(context: context),
+              1.0,
+              selectedPoints,
+              theme,
+            ),
           ],
         ),
       ],

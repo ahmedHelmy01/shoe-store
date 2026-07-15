@@ -6,6 +6,8 @@ import 'package:erp/modules/webstore/catalog/presentation/view/products/widgets/
 import 'package:erp/modules/webstore/catalog/presentation/view/products/widgets/catalog_products_filter_action.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view/products/widgets/catalog_products_filter_drawer.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -92,23 +94,24 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
     }
   }
 
-  String _screenTitle() {
+  String _screenTitle(BuildContext context) {
     final custom = widget.initialScreenTitle?.trim();
     if (custom != null && custom.isNotEmpty) {
       return custom;
     }
+    final keys = LocaleKeys.webstore;
     switch (widget.initialPreset) {
       case 'exclusive':
-        return 'عروض حصرية';
+        return keys.home.feature_exclusive_offers.tr(context: context);
       case 'best_seller':
-        return 'الأكثر مبيعاً';
+        return keys.home.feature_best_sellers.tr(context: context);
       case 'shop_now':
-        return 'تسوق الآن';
+        return keys.home.shop_now.tr(context: context);
       case 'latest':
       case 'newest':
-        return 'وصل حديثاً';
+        return keys.home.feature_new_arrivals.tr(context: context);
       default:
-        return 'كل المنتجات';
+        return keys.catalog.all_products.tr(context: context);
     }
   }
 
@@ -175,7 +178,7 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
       key: _scaffoldKey,
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: CommonAppBar(
-        titleText: _screenTitle(),
+        titleText: _screenTitle(context),
         backgroundColor:
             appBarTheme.backgroundColor ?? theme.colorScheme.surface,
         foregroundColor:

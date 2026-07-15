@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
-import 'package:erp/core/localization/locale_keys.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/common_widget/main_layout/webstore_base_scaffold.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/unified_header_widget.dart';
@@ -120,7 +120,10 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                     delay: const Duration(milliseconds: 300),
                     child: Column(
                       children: [
-                        AppSectionHeader(title: 'أقسام الصيدلية'),
+                        AppSectionHeader(
+                          title: LocaleKeys.webstore.home.pharmacy_sections
+                              .tr(context: context),
+                        ),
                         const HomeCategoriesRow(),
                       ],
                     ),
@@ -133,9 +136,7 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                     child: Column(
                       children: [
                         AppSectionHeader(
-                          title: LocaleKeys.webstore.home.medical_services.tr(
-                            context: context,
-                          ),
+                          title: LocaleKeys.webstore.home.all_services.tr(context: context),
                         ),
                         isLoading
                             ? AppShimmer.featureLinksGrid()
@@ -165,9 +166,7 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                     child: Column(
                       children: [
                         AppSectionHeader(
-                          title: LocaleKeys.webstore.home.most_ordered.tr(
-                            context: context,
-                          ),
+                          title: LocaleKeys.webstore.home.most_ordered.tr(context: context),
                           onViewAllTap: () {
                             AppNavigator.push(
                               context,
@@ -196,9 +195,7 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                     child: Column(
                       children: [
                         AppSectionHeader(
-                          title: LocaleKeys.webstore.home.trusted_brands.tr(
-                            context: context,
-                          ),
+                          title: LocaleKeys.webstore.home.trusted_brands.tr(context: context),
                         ),
                         12.verticalSpace,
                         const CompanyProduceWidget(),

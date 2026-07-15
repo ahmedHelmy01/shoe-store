@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:erp/core/localization/locale_keys.dart';
+import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
 import 'package:erp/modules/webstore/checkout/presentation/view_model/checkout_view_model.dart';
 import 'package:erp/modules/webstore/checkout/presentation/state/checkout_state.dart';
 
 import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 
 class CheckoutSummarySection extends ConsumerWidget {
   const CheckoutSummarySection({super.key});
@@ -53,20 +54,20 @@ class CheckoutSummarySection extends ConsumerWidget {
         _summaryRow(
           context,
           LocaleKeys.webstore.checkout.order_amount.tr(context: context),
-          '\$${subtotal.toStringAsFixed(2)}',
+          '${subtotal.toStringAsFixed(2)} ${AppConstants.currency}',
         ),
         12.verticalSpace,
         _summaryRow(
           context,
           LocaleKeys.webstore.checkout.delivery_fee.tr(context: context),
-          '\$${shipping.toStringAsFixed(0)}',
+          '${shipping.toStringAsFixed(0)} ${AppConstants.currency}',
         ),
         if (discount > 0 || isCalculating) ...[
           12.verticalSpace,
           _summaryRow(
             context,
             LocaleKeys.webstore.checkout.discount.tr(context: context),
-            isCalculating ? '...' : '-\$${discount.toStringAsFixed(2)}',
+            isCalculating ? '...' : '-${discount.toStringAsFixed(2)} ${AppConstants.currency}',
             isGreen: true,
           ),
         ],
@@ -74,8 +75,9 @@ class CheckoutSummarySection extends ConsumerWidget {
           12.verticalSpace,
           _summaryRow(
             context,
-            'خصم النقاط ($pointsUsed نقطة)',
-            '-\$${pointsDiscount.toStringAsFixed(2)}',
+            LocaleKeys.webstore.checkout.points_discount
+                .tr(context: context, args: ['$pointsUsed']),
+            '-${pointsDiscount.toStringAsFixed(2)} ${AppConstants.currency}',
             isGreen: true,
           ),
         ],
@@ -85,7 +87,7 @@ class CheckoutSummarySection extends ConsumerWidget {
         _summaryRow(
           context,
           LocaleKeys.webstore.checkout.total_amount.tr(context: context),
-          '\$${total.toStringAsFixed(2)}',
+          '${total.toStringAsFixed(2)} ${AppConstants.currency}',
           isTotal: true,
         ),
       ],

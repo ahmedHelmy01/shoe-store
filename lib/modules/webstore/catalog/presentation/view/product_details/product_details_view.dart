@@ -154,7 +154,7 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
   Future<void> _shareProduct(WebStoreProduct product) async {
     final text = '${product.name}\n'
         '${product.description ?? ''}\n'
-        'السعر: ${product.price} ${AppConstants.currency}';
+        '${LocaleKeys.webstore.catalog.price_share.tr(context: context, args: ['${product.price} ${AppConstants.currency}'])}';
     final encoded = Uri.encodeComponent(text);
     final uri = Uri.parse('https://wa.me/?text=$encoded');
     await launchUrl(uri, mode: LaunchMode.externalApplication);

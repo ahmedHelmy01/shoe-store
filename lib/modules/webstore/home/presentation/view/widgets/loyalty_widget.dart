@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:erp/core/common_widget/app_card/app_card.dart';
 
 class UserLoyaltyWidget extends ConsumerWidget {
   const UserLoyaltyWidget({super.key});

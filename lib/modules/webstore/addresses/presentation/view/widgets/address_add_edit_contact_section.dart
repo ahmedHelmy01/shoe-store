@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'address_form_section.dart';
 import 'address_form_text_field.dart';
@@ -14,24 +16,26 @@ class AddressAddEditContactSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final keys = LocaleKeys.webstore.addresses;
     return AddressFormSection(
-      title: 'التواصل والملاحظات',
+      title: keys.contact_notes.tr(context: context),
       icon: Icons.contact_phone_outlined,
       children: [
         AddressFormTextField(
           controller: phoneCtrl,
-          label: 'رقم الهاتف',
+          label: LocaleKeys.common.phone.tr(context: context),
           hint: '01123949058',
           icon: Icons.phone_iphone_rounded,
           keyboardType: TextInputType.phone,
           isRequired: true,
-          validator: (v) =>
-              v == null || v.trim().isEmpty ? 'رقم الهاتف مطلوب' : null,
+          validator: (v) => v == null || v.trim().isEmpty
+              ? keys.phone_required.tr(context: context)
+              : null,
         ),
         AddressFormTextField(
           controller: notesCtrl,
-          label: 'ملاحظات إضافية',
-          hint: 'مثال: العمارة بجوار صيدلية العزبي، أو بجوار مسجد السلام',
+          label: keys.additional_notes.tr(context: context),
+          hint: keys.notes_hint.tr(context: context),
           icon: Icons.notes_rounded,
           maxLines: 3,
         ),

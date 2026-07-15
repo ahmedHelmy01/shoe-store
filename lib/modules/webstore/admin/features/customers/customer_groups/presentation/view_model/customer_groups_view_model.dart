@@ -6,7 +6,7 @@ import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_respon
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/features/customers/customer_groups/data/models/customer_group_row.dart';
 
-final customerGroupsVmProvider = NotifierProvider<CustomerGroupsVm, AdminCrudState<CustomerGroupRow>>(CustomerGroupsVm.new);
+final customerGroupsVmProvider = NotifierProvider.autoDispose<CustomerGroupsVm, AdminCrudState<CustomerGroupRow>>(CustomerGroupsVm.new);
 
 class CustomerGroupsVm extends AdminCrudVm<CustomerGroupRow> {
   @override

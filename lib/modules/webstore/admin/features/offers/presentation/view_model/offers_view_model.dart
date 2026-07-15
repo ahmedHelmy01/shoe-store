@@ -6,7 +6,7 @@ import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_respon
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/features/offers/data/models/offer_row.dart';
 
-final offersVmProvider = NotifierProvider<OffersVm, AdminCrudState<OfferRow>>(OffersVm.new);
+final offersVmProvider = NotifierProvider.autoDispose<OffersVm, AdminCrudState<OfferRow>>(OffersVm.new);
 
 class OffersVm extends AdminCrudVm<OfferRow> {
   @override

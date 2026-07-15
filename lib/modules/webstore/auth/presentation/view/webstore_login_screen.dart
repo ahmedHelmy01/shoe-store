@@ -52,7 +52,7 @@ class _WebStoreLoginScreenState extends ConsumerState<WebStoreLoginScreen> {
     ref.read(webStoreAuthViewModelProvider.notifier).socialLogin(
           providerType: provider,
           providerIdentifier: 'dummy-id-${DateTime.now().millisecondsSinceEpoch}',
-          name: 'Social User',
+          name: 'مستخدم اجتماعي',
         );
   }
 

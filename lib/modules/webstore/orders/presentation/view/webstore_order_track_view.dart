@@ -53,10 +53,7 @@ class WebStoreOrderTrackView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final trackingAsync = ref.watch(orderTrackingProvider(orderId));
-    final isAr = context.locale.languageCode == 'ar';
-    final emptyMessage = isAr
-        ? 'لا توجد تحديثات لتتبع الطلب حالياً'
-        : 'No tracking updates available yet.';
+    final emptyMessage = LocaleKeys.webstore.orders.no_tracking_updates.tr(context: context);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -130,36 +127,43 @@ class WebStoreOrderTrackView extends ConsumerWidget {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          LocaleKeys.webstore.orders.order_id.tr(
-                                            context: context,
-                                            args: [orderNumber],
-                                          ),
-                                          style: TextStyle(
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.w800,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                        if (timeline.isNotEmpty) ...[
-                                          6.verticalSpace,
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
                                           Text(
-                                            _formatStepDate(
-                                              DateTime.tryParse(
-                                                timeline.first['date']?.toString() ?? ''
-                                              ),
+                                            LocaleKeys.webstore.orders.order_id.tr(
+                                              context: context,
+                                              args: [orderNumber],
                                             ),
                                             style: TextStyle(
-                                              fontSize: 12.sp,
-                                              color: Colors.white.withValues(alpha: 0.85),
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w800,
+                                              color: Colors.white,
                                             ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
+                                          if (timeline.isNotEmpty) ...[
+                                            6.verticalSpace,
+                                            Text(
+                                              _formatStepDate(
+                                                DateTime.tryParse(
+                                                  timeline.first['date']?.toString() ?? ''
+                                                ),
+                                              ),
+                                              style: TextStyle(
+                                                fontSize: 12.sp,
+                                                color: Colors.white.withValues(alpha: 0.85),
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
                                         ],
-                                      ],
+                                      ),
                                     ),
+                                    12.horizontalSpace,
                                     if (timeline.isNotEmpty)
                                       Container(
                                         padding: EdgeInsets.symmetric(
@@ -246,7 +250,7 @@ class WebStoreOrderTrackView extends ConsumerWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    isAr ? "حالة الشحن والتحديثات" : "Shipping Updates & Status",
+                                    LocaleKeys.webstore.orders.shipping_status_updates.tr(context: context),
                                     style: TextStyle(
                                       fontSize: 15.sp,
                                       fontWeight: FontWeight.w800,

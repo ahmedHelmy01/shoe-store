@@ -6,7 +6,7 @@ import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_respon
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/features/coupons/data/models/coupon_row.dart';
 
-final couponsVmProvider = NotifierProvider<CouponsVm, AdminCrudState<CouponRow>>(CouponsVm.new);
+final couponsVmProvider = NotifierProvider.autoDispose<CouponsVm, AdminCrudState<CouponRow>>(CouponsVm.new);
 
 class CouponsVm extends AdminCrudVm<CouponRow> {
   @override

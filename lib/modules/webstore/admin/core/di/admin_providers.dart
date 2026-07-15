@@ -196,14 +196,14 @@ final clientReportsRepositoryProvider = Provider<IClientReportsRepository>((ref)
 // --- Dropdown Data Providers ---
 
 /// Fetches category tree from `/api/store/categories/tree` for hierarchical dropdown.
-final categoryTreeProvider = FutureProvider<List<dynamic>>((ref) async {
+final categoryTreeProvider = FutureProvider.autoDispose<List<dynamic>>((ref) async {
   final network = ref.read(networkServiceProvider);
   final response = await network.get('/api/store/categories/tree');
   final data = response as Map<String, dynamic>;
   return (data['data'] as List?) ?? [];
 });
 
-final allCategoriesProvider = FutureProvider((ref) async {
+final allCategoriesProvider = FutureProvider.autoDispose((ref) async {
   final repo = ref.read(categoriesRepositoryProvider);
   final res = await repo.getCategories(page: 1, perPage: 1000);
   return res.when(
@@ -212,7 +212,7 @@ final allCategoriesProvider = FutureProvider((ref) async {
   );
 });
 
-final allCompaniesProvider = FutureProvider((ref) async {
+final allCompaniesProvider = FutureProvider.autoDispose((ref) async {
   final repo = ref.read(companiesRepositoryProvider);
   final res = await repo.getCompanies(page: 1, perPage: 1000);
   return res.when(
@@ -221,7 +221,7 @@ final allCompaniesProvider = FutureProvider((ref) async {
   );
 });
 
-final allTagsProvider = FutureProvider((ref) async {
+final allTagsProvider = FutureProvider.autoDispose((ref) async {
   final repo = ref.read(filtersRepositoryProvider);
   final res = await repo.getFilters(page: 1, perPage: 1000);
   return res.when(
@@ -230,7 +230,7 @@ final allTagsProvider = FutureProvider((ref) async {
   );
 });
 
-final allPropertiesProvider = FutureProvider((ref) async {
+final allPropertiesProvider = FutureProvider.autoDispose((ref) async {
   final repo = ref.read(propertiesRepositoryProvider);
   final res = await repo.getProperties(page: 1, perPage: 1000);
   return res.when(
@@ -239,7 +239,7 @@ final allPropertiesProvider = FutureProvider((ref) async {
   );
 });
 
-final allProductsProvider = FutureProvider((ref) async {
+final allProductsProvider = FutureProvider.autoDispose((ref) async {
   final repo = ref.read(productsRepositoryProvider);
   final res = await repo.getProducts(page: 1, perPage: 1000);
   return res.when(
@@ -248,7 +248,7 @@ final allProductsProvider = FutureProvider((ref) async {
   );
 });
 
-final allCustomerGroupsProvider = FutureProvider((ref) async {
+final allCustomerGroupsProvider = FutureProvider.autoDispose((ref) async {
   final repo = ref.read(customerGroupsRepositoryProvider);
   final res = await repo.getCustomerGroups(page: 1);
   return res.when(
@@ -257,7 +257,7 @@ final allCustomerGroupsProvider = FutureProvider((ref) async {
   );
 });
 
-final allCountriesProvider = FutureProvider((ref) async {
+final allCountriesProvider = FutureProvider.autoDispose((ref) async {
   final repo = ref.read(countriesRepositoryProvider);
   final res = await repo.getCountries(page: 1, perPage: 1000);
   return res.when(
@@ -266,7 +266,7 @@ final allCountriesProvider = FutureProvider((ref) async {
   );
 });
 
-final paymentMethodTypesProvider = FutureProvider((ref) async {
+final paymentMethodTypesProvider = FutureProvider.autoDispose((ref) async {
   final repo = ref.read(paymentMethodsRepositoryProvider);
   final res = await repo.getPaymentMethodTypes();
   return res.when(
@@ -275,7 +275,7 @@ final paymentMethodTypesProvider = FutureProvider((ref) async {
   );
 });
 
-final allClientsProvider = FutureProvider((ref) async {
+final allClientsProvider = FutureProvider.autoDispose((ref) async {
   final repo = ref.read(usersRepositoryProvider);
   final res = await repo.getUsers(page: 1, perPage: 1000);
   return res.when(
@@ -284,7 +284,7 @@ final allClientsProvider = FutureProvider((ref) async {
   );
 });
 
-final singleOfferProvider = FutureProvider.family<OfferRow, int>((ref, id) async {
+final singleOfferProvider = FutureProvider.family.autoDispose<OfferRow, int>((ref, id) async {
   final repo = ref.read(offersRepositoryProvider);
   final res = await repo.getOffer(id);
   return res.when(

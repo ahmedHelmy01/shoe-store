@@ -1,46 +1,74 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/utils/asset_manager.dart';
+import 'package:flutter/material.dart';
+
+enum FeatureType {
+  exclusiveOffers,
+  bestSellers,
+  shopNow,
+  prescription,
+  medicalServices,
+  ourBranches,
+}
 
 /// Data model for a single feature link item on the home screen.
 class FeatureItemData {
-  final String title;
+  final FeatureType type;
   final String icon;
   final String? iconPath;
 
   const FeatureItemData({
-    required this.title,
+    required this.type,
     required this.icon,
     this.iconPath,
   });
 
+  String title(BuildContext context) {
+    final keys = LocaleKeys.webstore.home;
+    return switch (type) {
+      FeatureType.exclusiveOffers =>
+        keys.exclusive_offers.tr(context: context),
+      FeatureType.bestSellers =>
+        keys.most_ordered.tr(context: context),
+      FeatureType.shopNow => keys.shop_now.tr(context: context),
+      FeatureType.prescription =>
+        keys.feature_prescription.tr(context: context),
+      FeatureType.medicalServices =>
+        keys.medical_services.tr(context: context),
+      FeatureType.ourBranches => keys.our_branches.tr(context: context),
+    };
+  }
+
   /// Pre-defined list of feature links displayed on the home screen.
   static final List<FeatureItemData> all = [
     FeatureItemData(
-      title: 'عروض حصرية',
+      type: FeatureType.exclusiveOffers,
       icon: '🎁',
       iconPath: AssetManager.specialTag,
     ),
     FeatureItemData(
-      title: 'الأكثر مبيعاً',
+      type: FeatureType.bestSellers,
       icon: '🔥',
       iconPath: AssetManager.bestSeller,
     ),
     FeatureItemData(
-      title: 'تسوق الآن',
+      type: FeatureType.shopNow,
       icon: '🛒',
       iconPath: AssetManager.shopping,
     ),
     FeatureItemData(
-      title: 'الروشتة',
+      type: FeatureType.prescription,
       icon: '📝',
       iconPath: AssetManager.medicine,
     ),
     FeatureItemData(
-      title: 'خدمات طبية',
+      type: FeatureType.medicalServices,
       icon: '👨‍⚕️',
       iconPath: AssetManager.medicalServices,
     ),
     FeatureItemData(
-      title: 'فروعنا',
+      type: FeatureType.ourBranches,
       icon: '📍',
       iconPath: AssetManager.information,
     ),

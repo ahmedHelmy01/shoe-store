@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -27,12 +29,18 @@ class AddressesLoadErrorView extends StatelessWidget {
               Icon(Icons.error_outline_rounded, size: 60.sp, color: Colors.red),
               16.verticalSpace,
               Text(
-                'حدث خطأ ما: $error',
+                LocaleKeys.webstore.addresses.load_error.tr(
+                  context: context,
+                  args: [error.toString()],
+                ),
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 14.sp, color: theme.hintColor),
               ),
               16.verticalSpace,
-              ElevatedButton(onPressed: onRetry, child: const Text('إعادة المحاولة')),
+              ElevatedButton(
+                onPressed: onRetry,
+                child: Text(LocaleKeys.common.retry.tr(context: context)),
+              ),
             ],
           ),
         ),

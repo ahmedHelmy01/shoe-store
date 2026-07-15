@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,7 +59,7 @@ class _PointsRedemptionSectionState extends ConsumerState<PointsRedemptionSectio
     setState(() => _isPreviewLoading = true);
     final discount = await PointsRedemptionSectionLogic.previewLoyalty(pts, ref);
     if (!mounted) return;
-    setState(() { _isPreviewLoading = false; _previewDiscount = discount; _previewError = discount == null ? 'حدث خطأ في المعاينة' : null; });
+    setState(() { _isPreviewLoading = false; _previewDiscount = discount; _previewError = discount == null ? LocaleKeys.webstore.checkout.preview_failed.tr(context: context) : null; });
   }
 
   void _applyPoints() {
@@ -87,7 +89,7 @@ class _PointsRedemptionSectionState extends ConsumerState<PointsRedemptionSectio
           Row(children: [
             Icon(Icons.error_outline_rounded, size: 16.sp, color: Colors.red),
             8.horizontalSpace,
-            Text('تعذر تحميل النقاط', style: TextStyle(fontSize: 13.sp, color: Colors.red.shade600)),
+            Text(LocaleKeys.webstore.checkout.load_points_failed.tr(context: context), style: TextStyle(fontSize: 13.sp, color: Colors.red.shade600)),
           ]),
         ]),
       ),

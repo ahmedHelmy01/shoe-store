@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
@@ -36,7 +38,10 @@ class PointsRedemptionSectionPreviewCard extends StatelessWidget {
               children: [
                 SizedBox(width: 16.w, height: 16.w, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary)),
                 8.horizontalSpace,
-                Text('جاري المعاينة...', style: TextStyle(fontSize: 13.sp, color: theme.hintColor)),
+                Text(
+                  LocaleKeys.webstore.checkout.previewing.tr(context: context),
+                  style: TextStyle(fontSize: 13.sp, color: theme.hintColor),
+                ),
               ],
             )
           : hasError
@@ -63,9 +68,12 @@ class PointsRedemptionSectionPreviewCard extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('الخصم المتوقع', style: TextStyle(fontSize: 11.sp, color: theme.hintColor)),
                               Text(
-                                '-\$${previewDiscount!.toStringAsFixed(2)}',
+                                LocaleKeys.webstore.checkout.expected_discount.tr(context: context),
+                                style: TextStyle(fontSize: 11.sp, color: theme.hintColor),
+                              ),
+                              Text(
+                                '-${previewDiscount!.toStringAsFixed(2)} ${AppConstants.currency}',
                                 style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w900, color: Colors.green.shade700),
                               ),
                             ],

@@ -6,7 +6,7 @@ import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_respon
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/features/sliders/data/models/slider_row.dart';
 
-final slidersVmProvider = NotifierProvider<SlidersVm, AdminCrudState<SliderRow>>(SlidersVm.new);
+final slidersVmProvider = NotifierProvider.autoDispose<SlidersVm, AdminCrudState<SliderRow>>(SlidersVm.new);
 
 class SlidersVm extends AdminCrudVm<SliderRow> {
   @override

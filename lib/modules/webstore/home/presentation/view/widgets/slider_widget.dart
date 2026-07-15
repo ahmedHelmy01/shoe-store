@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
 import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
@@ -11,6 +10,7 @@ import 'package:erp/modules/webstore/home/presentation/state/slider_state.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/modules/webstore/home/data/models/slider_model.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/common_widget/app_empty_widget/app_empty_widget.dart';
 
 class SliderSection extends ConsumerStatefulWidget {
@@ -79,9 +79,7 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
         padding: EdgeInsets.symmetric(vertical: 24.h),
         child: AppEmptyWidget(
           message: LocaleKeys.webstore.home.no_offers.tr(context: context),
-          subtitle: LocaleKeys.webstore.home.wait_for_offers.tr(
-            context: context,
-          ),
+          subtitle: LocaleKeys.webstore.home.wait_for_offers.tr(context: context),
           showGlassBackground: false,
         ),
       );

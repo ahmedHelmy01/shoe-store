@@ -14,7 +14,7 @@ final addressesRepositoryProvider = Provider<IAddressesRepository>((ref) {
 
 // Using a standard Notifier but managing the customerId internally or via extraData
 final addressesVmProvider =
-    NotifierProvider<AddressesVm, AdminCrudState<AddressRow>>(AddressesVm.new);
+    NotifierProvider.autoDispose<AddressesVm, AdminCrudState<AddressRow>>(AddressesVm.new);
 
 class AddressesVm extends AdminCrudVm<AddressRow> {
   int? _customerId;

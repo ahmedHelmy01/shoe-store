@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/common_widget/app_bar/common_app_bar.dart';
 import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/modules/webstore/addresses/data/models/address_model.dart';
 import 'package:erp/modules/webstore/addresses/presentation/view_model/address_providers.dart';
 import 'package:erp/modules/webstore/addresses/presentation/view/widgets/address_add_edit_controllers.dart';
@@ -43,16 +45,21 @@ class _WebStoreAddEditAddressViewState
   }
 
   Future<void> _save() async {
+    final keys = LocaleKeys.webstore.addresses;
     if (!_formKey.currentState!.validate()) return;
     if (_govId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('الرجاء اختيار المحافظة')),
+        SnackBar(
+          content: Text(keys.select_governorate_required.tr(context: context)),
+        ),
       );
       return;
     }
     if (_cityId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('الرجاء اختيار المدينة')),
+        SnackBar(
+          content: Text(keys.select_city_required.tr(context: context)),
+        ),
       );
       return;
     }
@@ -83,7 +90,7 @@ class _WebStoreAddEditAddressViewState
     if (err != null) {
       await AppStatusDialog.showError(
         context,
-        title: 'تعذّر حفظ العنوان',
+        title: keys.save_failed_title.tr(context: context),
         message: err,
       );
       return;
@@ -92,8 +99,8 @@ class _WebStoreAddEditAddressViewState
       SnackBar(
         content: Text(
           widget.addressToEdit == null
-              ? 'تمت إضافة العنوان بنجاح'
-              : 'تم تعديل العنوان بنجاح',
+              ? keys.added_success.tr(context: context)
+              : keys.updated_success.tr(context: context),
         ),
       ),
     );
@@ -102,6 +109,7 @@ class _WebStoreAddEditAddressViewState
 
   @override
   Widget build(BuildContext context) {
+    final keys = LocaleKeys.webstore.addresses;
     final theme = Theme.of(context);
     final gov = ref.watch(governoratesProvider);
     final cities = _govId != null ? ref.watch(citiesProvider(_govId!)) : null;
@@ -110,8 +118,8 @@ class _WebStoreAddEditAddressViewState
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: CommonAppBar(
         titleText: widget.addressToEdit == null
-            ? 'إضافة عنوان جديد'
-            : 'تعديل العنوان',
+            ? keys.add_new.tr(context: context)
+            : keys.edit_address.tr(context: context),
       ),
       body: SafeArea(
         child: AddressAddEditFormBody(

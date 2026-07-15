@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/modules/webstore/addresses/data/models/address_model.dart';
+import 'package:erp/modules/webstore/addresses/presentation/utils/address_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 
 class DeliveryAddressSection extends StatelessWidget {
   final AddressModel? selectedAddress;
@@ -59,7 +60,7 @@ class DeliveryAddressSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      selectedAddress?.displayTitle ??
+                      selectedAddress?.localizedDisplayTitle(context) ??
                           LocaleKeys.webstore.checkout.no_registered_addresses.tr(context: context),
                       style: TextStyle(
                         fontSize: 15.sp,
@@ -70,7 +71,7 @@ class DeliveryAddressSection extends StatelessWidget {
                     if (selectedAddress != null) ...[
                       4.verticalSpace,
                       Text(
-                        selectedAddress!.printableAddress,
+                        selectedAddress!.localizedPrintableAddress(context),
                         style: TextStyle(
                           fontSize: 13.sp,
                           color: theme.hintColor,
@@ -211,10 +212,10 @@ class DeliveryAddressSection extends StatelessWidget {
                             color: isSelected ? AppColors.primaryOrange : null,
                           ),
                           title: Text(
-                            addr.displayTitle,
+                            addr.localizedDisplayTitle(context),
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          subtitle: Text(addr.printableAddress),
+                          subtitle: Text(addr.localizedPrintableAddress(context)),
                           trailing: isSelected
                               ? const Icon(
                                   Icons.check_circle,

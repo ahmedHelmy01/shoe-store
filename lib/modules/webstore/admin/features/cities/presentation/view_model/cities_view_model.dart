@@ -6,7 +6,7 @@ import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_respon
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/features/cities/data/models/city_row.dart';
 
-final citiesVmProvider = NotifierProvider<CitiesVm, AdminCrudState<CityRow>>(CitiesVm.new);
+final citiesVmProvider = NotifierProvider.autoDispose<CitiesVm, AdminCrudState<CityRow>>(CitiesVm.new);
 
 class CitiesVm extends AdminCrudVm<CityRow> {
   @override

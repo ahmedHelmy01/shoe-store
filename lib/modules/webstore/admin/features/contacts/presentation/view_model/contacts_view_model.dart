@@ -85,6 +85,6 @@ class AdminContactsNotifier extends Notifier<AdminContactsState> {
   }
 }
 
-final adminContactsProvider = NotifierProvider<AdminContactsNotifier, AdminContactsState>(
+final adminContactsProvider = NotifierProvider.autoDispose<AdminContactsNotifier, AdminContactsState>(
   AdminContactsNotifier.new,
 );

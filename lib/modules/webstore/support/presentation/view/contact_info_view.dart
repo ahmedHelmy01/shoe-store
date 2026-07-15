@@ -21,7 +21,7 @@ class ContactInfoView extends ConsumerWidget {
 
     return Scaffold(
       appBar: CommonAppBar(
-        titleText: LocaleKeys.common.contact_us.tr(context: context),
+        titleText: LocaleKeys.webstore.more.contact_info.tr(context: context),
         showBackButton: true,
         onPressBack: () => Navigator.pop(context),
       ),
@@ -202,7 +202,7 @@ class ContactInfoView extends ConsumerWidget {
                       isDark: isDark,
                       icon: Icons.location_on_rounded,
                       iconColor: Colors.orange,
-                      label: context.locale.languageCode == 'ar' ? 'العنوان' : 'Address',
+                      label: LocaleKeys.webstore.more.contact_address.tr(context: context),
                       value: address,
                       onTap: () => openUrl('https://maps.google.com/?q=${Uri.encodeComponent(address)}'),
                     ),
@@ -219,20 +219,22 @@ class ContactInfoView extends ConsumerWidget {
                     ),
                     child: Column(
                       children: [
-                        Text(context.locale.languageCode == 'ar' ? 'وسائل التواصل الاجتماعي' : 'Social Media',
-                          style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold)),
+                        Text(
+                          LocaleKeys.webstore.more.social_media.tr(context: context),
+                          style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold),
+                        ),
                         SizedBox(height: 20.h),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             if (facebook.isNotEmpty)
-                              _socialButton(theme: theme, icon: Icons.facebook_rounded, color: const Color(0xFF1877F2), label: 'Facebook', onTap: () => openUrl(facebook)),
+                              _socialButton(theme: theme, icon: Icons.facebook_rounded, color: const Color(0xFF1877F2), label: LocaleKeys.webstore.more.facebook.tr(context: context), onTap: () => openUrl(facebook)),
                             if (twitter.isNotEmpty)
-                              _socialButton(theme: theme, icon: Icons.alternate_email_rounded, color: const Color(0xFF1DA1F2), label: 'X', onTap: () => openUrl(twitter)),
+                              _socialButton(theme: theme, icon: Icons.alternate_email_rounded, color: const Color(0xFF1DA1F2), label: LocaleKeys.webstore.more.twitter.tr(context: context), onTap: () => openUrl(twitter)),
                             if (instagram.isNotEmpty)
-                              _socialButton(theme: theme, icon: Icons.camera_alt_rounded, color: const Color(0xFFE4405F), label: 'Instagram', onTap: () => openUrl(instagram)),
+                              _socialButton(theme: theme, icon: Icons.camera_alt_rounded, color: const Color(0xFFE4405F), label: LocaleKeys.webstore.more.instagram.tr(context: context), onTap: () => openUrl(instagram)),
                             if (telegram.isNotEmpty)
-                              _socialButton(theme: theme, icon: Icons.send_rounded, color: const Color(0xFF0088CC), label: 'Telegram', onTap: () => openUrl(telegram)),
+                              _socialButton(theme: theme, icon: Icons.send_rounded, color: const Color(0xFF0088CC), label: LocaleKeys.webstore.more.telegram.tr(context: context), onTap: () => openUrl(telegram)),
                           ],
                         ),
                       ],

@@ -40,6 +40,9 @@ class HomeCategoriesRow extends ConsumerWidget {
         separatorBuilder: (context, index) => 12.horizontalSpace,
         itemBuilder: (context, index) {
           final category = state.items[index];
+          final displayName = Localizations.localeOf(context).languageCode == 'ar' && category.nameAr != null && category.nameAr!.isNotEmpty
+              ? category.nameAr!
+              : category.name;
           final accent = _accentFor(category.name);
 
           return GestureDetector(
@@ -49,7 +52,7 @@ class HomeCategoriesRow extends ConsumerWidget {
                 MaterialPageRoute(
                   builder: (_) => CategoryDrillDownView(
                     categoryId: category.id!,
-                    categoryName: category.name,
+                    categoryName: displayName,
                   ),
                 ),
               );
@@ -94,7 +97,7 @@ class HomeCategoriesRow extends ConsumerWidget {
                 SizedBox(
                   width: 60.w,
                   child: Text(
-                    category.name,
+                    displayName,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,

@@ -6,7 +6,7 @@ import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_respon
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/features/countries/data/models/country_row.dart';
 
-final countriesViewModelProvider = NotifierProvider<CountriesViewModel, AdminCrudState<CountryRow>>(CountriesViewModel.new);
+final countriesViewModelProvider = NotifierProvider.autoDispose<CountriesViewModel, AdminCrudState<CountryRow>>(CountriesViewModel.new);
 
 class CountriesViewModel extends AdminCrudVm<CountryRow> {
   @override

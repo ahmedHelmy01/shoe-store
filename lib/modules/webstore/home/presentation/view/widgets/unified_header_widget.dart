@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
-import 'package:erp/core/localization/locale_keys.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 import 'package:erp/core/common_widget/app_bottom_sheet/branch_selection_sheet.dart';
@@ -12,7 +10,8 @@ import 'package:erp/modules/webstore/home/presentation/view/widgets/search_resul
 import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/core/providers/navigation_provider.dart';
 import 'package:erp/core/router/app_navigator.dart';
-import 'package:erp/core/router/route_generator.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class UnifiedHomeHeader extends ConsumerStatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -79,9 +78,7 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
                     6.horizontalSpace,
                     Text(
                       locationState.selectedBranch ??
-                          LocaleKeys.webstore.home.select_branch.tr(
-                            context: context,
-                          ),
+                          LocaleKeys.webstore.home.select_branch.tr(context: context),
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.bold,
@@ -142,9 +139,7 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
                     textInputAction: TextInputAction.search,
                     style: TextStyle(color: theme.textTheme.bodyLarge?.color),
                     decoration: InputDecoration(
-                      hintText: LocaleKeys.webstore.home.search_hint.tr(
-                        context: context,
-                      ),
+                      hintText: LocaleKeys.webstore.home.search_hint.tr(context: context),
                       hintStyle: TextStyle(
                         fontSize: 14.sp,
                         color: theme.hintColor,

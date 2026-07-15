@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/checkout/presentation/view_model/checkout_view_model.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 
 class PromoCodeSection extends ConsumerStatefulWidget {
   final TextEditingController promoController;
@@ -96,8 +96,7 @@ class _PromoCodeSectionState extends ConsumerState<PromoCodeSection> {
                 child: TextField(
                   controller: widget.promoController,
                   decoration: InputDecoration(
-                    hintText: LocaleKeys.webstore.checkout.enter_promo_code
-                        .tr(context: context),
+                    hintText: LocaleKeys.webstore.checkout.enter_promo_code.tr(context: context),
                     border: InputBorder.none,
                     isDense: true,
                     hintStyle: TextStyle(
@@ -195,9 +194,7 @@ class _PromoCodeSectionState extends ConsumerState<PromoCodeSection> {
                         ),
                       )
                     : Text(
-                        LocaleKeys.webstore.checkout.apply.tr(
-                          context: context,
-                        ),
+                        LocaleKeys.webstore.checkout.apply.tr(context: context,),
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w900,

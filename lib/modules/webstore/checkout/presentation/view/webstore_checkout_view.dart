@@ -5,13 +5,14 @@ import 'package:erp/core/common_widget/app_bar/common_app_bar.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
 import 'package:erp/core/router/app_navigator.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
 import 'package:erp/modules/webstore/checkout/presentation/view_model/checkout_view_model.dart';
 import 'package:erp/modules/webstore/checkout/presentation/state/checkout_state.dart';
-import 'package:erp/modules/webstore/addresses/presentation/view_model/address_providers.dart';
 import 'package:erp/modules/webstore/addresses/data/models/address_model.dart';
+import 'package:erp/modules/webstore/addresses/presentation/view_model/address_providers.dart';
+import 'package:erp/modules/webstore/addresses/presentation/utils/address_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 
 import 'widgets/delivery_address_section.dart';
 import 'widgets/payment_method_section.dart';
@@ -299,7 +300,7 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
                   onPressed: selectedAddress == null ? null : () {
                     ref.read(checkoutVmProvider.notifier).confirmOrder(
                           paymentMethod: selectedPayment,
-                          address: selectedAddress!.printableAddress,
+                          address: selectedAddress!.localizedPrintableAddress(context),
                           addressId: selectedAddress!.id,
                           paymentMethodId: selectedPaymentId,
                           totalAmount: cartNotifier.total,
@@ -308,9 +309,7 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
                   },
                   isGradient: true,
                   child: Text(
-                    LocaleKeys.webstore.checkout.place_order.tr(
-                      context: context,
-                    ),
+                    LocaleKeys.webstore.checkout.place_order.tr(context: context,),
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,

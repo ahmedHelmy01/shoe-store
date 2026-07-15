@@ -111,6 +111,8 @@ class _WebStore {
   final checkout = const _WebStoreCheckout();
   final profile = const _WebStoreProfile();
   final prescriptions = const _WebStorePrescriptions();
+  final addresses = const _WebStoreAddresses();
+  final catalog = const _WebStoreCatalog();
 }
 
 class _WebStorePrescriptions {
@@ -191,7 +193,6 @@ class _WebStoreAuth {
   final otp_verified = 'webstore.auth.otp_verified';
   final otp_resent = 'webstore.auth.otp_resent';
   final password_reset_success = 'webstore.auth.password_reset_success';
-  // ─── New keys ──────────────────────────
   final select_branch = 'webstore.auth.select_branch';
   final select_branch_hint = 'webstore.auth.select_branch_hint';
   final branch_required = 'webstore.auth.branch_required';
@@ -247,6 +248,13 @@ class _WebStoreHome {
   final feature_special_picks = 'webstore.home.feature_special_picks';
   final no_exclusive_offers = 'webstore.home.no_exclusive_offers';
   final no_exclusive_offers_subtitle = 'webstore.home.no_exclusive_offers_subtitle';
+  final pharmacy_sections = 'webstore.home.pharmacy_sections';
+  final all_services = 'webstore.home.all_services';
+  final feature_exclusive_offers = 'webstore.home.feature_exclusive_offers';
+  final feature_prescription = 'webstore.home.feature_prescription';
+  final feature_medical_services = 'webstore.home.feature_medical_services';
+  final our_branches = 'webstore.home.our_branches';
+  final all_products = 'webstore.home.all_products';
 }
 
 class _WebStoreNav {
@@ -325,6 +333,8 @@ class _WebStoreOrders {
   final update_rating = 'webstore.orders.update_rating';
   final submit_feedback = 'webstore.orders.submit_feedback';
   final rating_success = 'webstore.orders.rating_success';
+  final no_tracking_updates = 'webstore.orders.no_tracking_updates';
+  final shipping_status_updates = 'webstore.orders.shipping_status_updates';
 }
 
 class _WebStoreWishlist {
@@ -376,6 +386,13 @@ class _WebStoreMore {
   final wishlist = 'webstore.more.wishlist';
   final my_orders = 'webstore.more.my_orders';
   final my_points = 'webstore.more.my_points';
+  final contact_info = 'webstore.more.contact_info';
+  final contact_address = 'webstore.more.contact_address';
+  final social_media = 'webstore.more.social_media';
+  final facebook = 'webstore.more.facebook';
+  final twitter = 'webstore.more.twitter';
+  final instagram = 'webstore.more.instagram';
+  final telegram = 'webstore.more.telegram';
 }
 
 class _WebStoreCheckout {
@@ -408,4 +425,101 @@ class _WebStoreCheckout {
   final thanks_for_shopping_track_order = 'webstore.checkout.thanks_for_shopping_track_order';
   final track_order_btn = 'webstore.checkout.track_order_btn';
   final back_to_home = 'webstore.checkout.back_to_home';
+  final points_discount = 'webstore.checkout.points_discount';
+  final previewing = 'webstore.checkout.previewing';
+  final expected_discount = 'webstore.checkout.expected_discount';
+  final available_balance = 'webstore.checkout.available_balance';
+  final no_points_yet = 'webstore.checkout.no_points_yet';
+  final points_unit = 'webstore.checkout.points_unit';
+  final preview_failed = 'webstore.checkout.preview_failed';
+  final load_points_failed = 'webstore.checkout.load_points_failed';
+  final points_used_label = 'webstore.checkout.points_used_label';
+  final all_points = 'webstore.checkout.all_points';
+  final points_applied_discount = 'webstore.checkout.points_applied_discount';
+  final cancel_points_discount = 'webstore.checkout.cancel_points_discount';
+  final apply_points_btn = 'webstore.checkout.apply_points_btn';
+}
+
+class _WebStoreCatalog {
+  const _WebStoreCatalog();
+  final product_sku = 'webstore.catalog.product_sku';
+  final barcode = 'webstore.catalog.barcode';
+  final scan_in_store = 'webstore.catalog.scan_in_store';
+  final reviews_count = 'webstore.catalog.reviews_count';
+  final in_stock = 'webstore.catalog.in_stock';
+  final out_of_stock = 'webstore.catalog.out_of_stock';
+  final stock_quantity = 'webstore.catalog.stock_quantity';
+  final product_description = 'webstore.catalog.product_description';
+  final specifications = 'webstore.catalog.specifications';
+  final add_to_cart = 'webstore.catalog.add_to_cart';
+  final price_share = 'webstore.catalog.price_share';
+  final all_products = 'webstore.catalog.all_products';
+  final picks_for_you = 'webstore.catalog.picks_for_you';
+  final no_products = 'webstore.catalog.no_products';
+  final no_products_subtitle = 'webstore.catalog.no_products_subtitle';
+}
+
+class _WebStoreAddresses {
+  const _WebStoreAddresses();
+  final title = 'webstore.addresses.title';
+  final subtitle = 'webstore.addresses.subtitle';
+  final add_new = 'webstore.addresses.add_new';
+  final edit_address = 'webstore.addresses.edit_address';
+  final default_delivery_address = 'webstore.addresses.default_delivery_address';
+  final default_badge = 'webstore.addresses.default_badge';
+  final set_as_default = 'webstore.addresses.set_as_default';
+  final name_section_title = 'webstore.addresses.name_section_title';
+  final address_name = 'webstore.addresses.address_name';
+  final address_name_hint = 'webstore.addresses.address_name_hint';
+  final address_name_required = 'webstore.addresses.address_name_required';
+  final location_details = 'webstore.addresses.location_details';
+  final area = 'webstore.addresses.area';
+  final area_label = 'webstore.addresses.area_label';
+  final area_hint = 'webstore.addresses.area_hint';
+  final area_required = 'webstore.addresses.area_required';
+  final block = 'webstore.addresses.block';
+  final block_hint = 'webstore.addresses.block_hint';
+  final block_required = 'webstore.addresses.block_required';
+  final street = 'webstore.addresses.street';
+  final street_hint = 'webstore.addresses.street_hint';
+  final street_required = 'webstore.addresses.street_required';
+  final building = 'webstore.addresses.building';
+  final building_label = 'webstore.addresses.building_label';
+  final building_hint = 'webstore.addresses.building_hint';
+  final building_required = 'webstore.addresses.building_required';
+  final floor = 'webstore.addresses.floor';
+  final floor_label = 'webstore.addresses.floor_label';
+  final floor_hint = 'webstore.addresses.floor_hint';
+  final apartment = 'webstore.addresses.apartment';
+  final apartment_label = 'webstore.addresses.apartment_label';
+  final apartment_hint = 'webstore.addresses.apartment_hint';
+  final contact_notes = 'webstore.addresses.contact_notes';
+  final phone_required = 'webstore.addresses.phone_required';
+  final additional_notes = 'webstore.addresses.additional_notes';
+  final notes_hint = 'webstore.addresses.notes_hint';
+  final governorate_city = 'webstore.addresses.governorate_city';
+  final governorates_load_error = 'webstore.addresses.governorates_load_error';
+  final governorate_label = 'webstore.addresses.governorate_label';
+  final select_governorate = 'webstore.addresses.select_governorate';
+  final select_governorate_first = 'webstore.addresses.select_governorate_first';
+  final cities_load_error = 'webstore.addresses.cities_load_error';
+  final city_label = 'webstore.addresses.city_label';
+  final no_cities_for_governorate = 'webstore.addresses.no_cities_for_governorate';
+  final select_city = 'webstore.addresses.select_city';
+  final select_governorate_required = 'webstore.addresses.select_governorate_required';
+  final select_city_required = 'webstore.addresses.select_city_required';
+  final set_default_title = 'webstore.addresses.set_default_title';
+  final set_default_subtitle = 'webstore.addresses.set_default_subtitle';
+  final save_changes = 'webstore.addresses.save_changes';
+  final add_address_btn = 'webstore.addresses.add_address_btn';
+  final save_failed_title = 'webstore.addresses.save_failed_title';
+  final added_success = 'webstore.addresses.added_success';
+  final updated_success = 'webstore.addresses.updated_success';
+  final delete_title = 'webstore.addresses.delete_title';
+  final delete_confirm = 'webstore.addresses.delete_confirm';
+  final delete_failed_title = 'webstore.addresses.delete_failed_title';
+  final deleted_success = 'webstore.addresses.deleted_success';
+  final empty_title = 'webstore.addresses.empty_title';
+  final empty_subtitle = 'webstore.addresses.empty_subtitle';
+  final load_error = 'webstore.addresses.load_error';
 }

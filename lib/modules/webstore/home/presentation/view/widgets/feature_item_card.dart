@@ -57,7 +57,7 @@ class FeatureItemCard extends StatelessWidget {
           ),
           8.verticalSpace,
           Text(
-            feature.title,
+            feature.title(context),
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

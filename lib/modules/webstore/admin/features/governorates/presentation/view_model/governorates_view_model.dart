@@ -6,7 +6,7 @@ import 'package:erp/modules/webstore/admin/shared/data/models/admin_paged_respon
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/features/governorates/data/models/governorate_row.dart';
 
-final governoratesVmProvider = NotifierProvider<GovernoratesVm, AdminCrudState<GovernorateRow>>(GovernoratesVm.new);
+final governoratesVmProvider = NotifierProvider.autoDispose<GovernoratesVm, AdminCrudState<GovernorateRow>>(GovernoratesVm.new);
 
 class GovernoratesVm extends AdminCrudVm<GovernorateRow> {
   @override

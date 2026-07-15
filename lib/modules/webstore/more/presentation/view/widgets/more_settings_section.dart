@@ -122,7 +122,7 @@ class MoreSettingsSection extends ConsumerWidget {
           _buildListTile(
             context,
             icon: Icons.headphones_rounded,
-            title: context.locale.languageCode == 'ar' ? 'معلومات الاتصال' : 'Contact Info',
+            title: LocaleKeys.webstore.more.contact_info.tr(context: context),
             onTap: () {
               Navigator.push(
                 context,

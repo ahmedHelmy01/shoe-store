@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
@@ -20,7 +22,10 @@ class PointsRedemptionSectionHeader extends StatelessWidget {
           child: Icon(Icons.redeem_rounded, color: AppColors.primary, size: 20.sp),
         ),
         12.horizontalSpace,
-        Text('نقاطي', style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w800)),
+        Text(
+          LocaleKeys.webstore.home.my_points.tr(context: context),
+          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w800),
+        ),
         if (loading) ...[
           8.horizontalSpace,
           SizedBox(

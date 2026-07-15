@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 
 /// Combined Basic Info Widgets (Price, Title, Rating, Stock)
 class DetailsInfoSection extends StatelessWidget {
   final WebStoreProduct product;
+
   const DetailsInfoSection({super.key, required this.product});
 
   @override
@@ -19,11 +22,11 @@ class DetailsInfoSection extends StatelessWidget {
       children: [
         // 🏷️ Manufacturer & Tags Row
         _buildTopBadges(),
-        
+
         _buildPrice(theme),
         _buildTitle(theme),
-        _buildRating(),
-        
+        _buildRating(context),
+
         // 📋 Technical Details (SKU, Barcode)
         _buildTechnicalInfo(context, theme, isDark),
 
@@ -32,10 +35,12 @@ class DetailsInfoSection extends StatelessWidget {
           child: Divider(
             height: 1,
             thickness: 1,
-            color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.withOpacity(0.1),
+            color: isDark
+                ? Colors.white.withOpacity(0.05)
+                : Colors.grey.withOpacity(0.1),
           ),
         ),
-        _buildStock(),
+        _buildStock(context),
       ],
     );
   }
@@ -55,69 +60,125 @@ class DetailsInfoSection extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.primaryBlue.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(color: AppColors.primaryBlue.withValues(alpha: 0.1)),
+                border: Border.all(
+                  color: AppColors.primaryBlue.withValues(alpha: 0.1),
+                ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.factory_outlined, size: 14.sp, color: AppColors.primaryBlue),
+                  Icon(
+                    Icons.factory_outlined,
+                    size: 14.sp,
+                    color: AppColors.primaryBlue,
+                  ),
                   6.horizontalSpace,
                   Text(
-                    product.manufacturer!['name_ar'] ?? product.manufacturer!['name'] ?? '',
-                    style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.bold, color: AppColors.primaryBlue),
+                    product.manufacturer!['name_ar'] ??
+                        product.manufacturer!['name'] ??
+                        '',
+                    style: TextStyle(
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryBlue,
+                    ),
                   ),
                 ],
               ),
             ),
-          
+
           // Tags
           if (product.tags != null)
-            ...product.tags!.map((tag) => Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-              decoration: BoxDecoration(
-                color: Colors.green.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(20.r),
+            ...product.tags!.map(
+              (tag) => Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                decoration: BoxDecoration(
+                  color: Colors.green.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                child: Text(
+                  '# $tag',
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.green,
+                  ),
+                ),
               ),
-              child: Text(
-                '# $tag',
-                style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w600, color: Colors.green),
-              ),
-            )),
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildTechnicalInfo(BuildContext context, ThemeData theme, bool isDark) {
-    if (product.sku == null && product.barcode == null) return const SizedBox.shrink();
+  Widget _buildTechnicalInfo(
+    BuildContext context,
+    ThemeData theme,
+    bool isDark,
+  ) {
+    if (product.sku == null && product.barcode == null)
+      return const SizedBox.shrink();
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        color: isDark ? Colors.white.withOpacity(0.03) : theme.primaryColor.withOpacity(0.03),
+        color: isDark
+            ? Colors.white.withOpacity(0.03)
+            : theme.primaryColor.withOpacity(0.03),
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: isDark ? Colors.white.withOpacity(0.05) : theme.primaryColor.withOpacity(0.08)),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withOpacity(0.05)
+              : theme.primaryColor.withOpacity(0.08),
+        ),
       ),
       child: Column(
         children: [
           if (product.sku != null)
-            _buildInfoRow(context, Icons.tag_rounded, 'رمز المنتج (SKU)', product.sku!),
+            _buildInfoRow(
+              context,
+              Icons.tag_rounded,
+              LocaleKeys.webstore.catalog.product_sku.tr(context: context),
+              product.sku!,
+            ),
           if (product.sku != null && product.barcode != null) 8.verticalSpace,
           if (product.barcode != null)
-            _buildInfoRow(context, Icons.qr_code_scanner_rounded, 'الباركود', product.barcode!, isBarcode: true),
+            _buildInfoRow(
+              context,
+              Icons.qr_code_scanner_rounded,
+              LocaleKeys.webstore.catalog.barcode.tr(context: context),
+              product.barcode!,
+              isBarcode: true,
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildInfoRow(BuildContext context, IconData icon, String label, String value, {bool isBarcode = false}) {
+  Widget _buildInfoRow(
+    BuildContext context,
+    IconData icon,
+    String label,
+    String value, {
+    bool isBarcode = false,
+  }) {
     final content = Row(
       children: [
         Icon(icon, size: 16.sp, color: Colors.grey),
         8.horizontalSpace,
-        Text(label, style: TextStyle(fontSize: 12.sp, color: Colors.grey)),
+        Text(
+          label,
+          style: TextStyle(fontSize: 12.sp, color: Colors.grey),
+        ),
         const Spacer(),
-        Text(value, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, fontFamily: 'monospace')),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'monospace',
+          ),
+        ),
         if (isBarcode) ...[
           6.horizontalSpace,
           Icon(Icons.fullscreen, size: 14.sp, color: Colors.grey.shade400),
@@ -138,13 +199,22 @@ class DetailsInfoSection extends StatelessWidget {
       context: context,
       builder: (_) => Dialog(
         backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
         child: Padding(
           padding: EdgeInsets.all(24.w),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(barcode, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'monospace')),
+              Text(
+                barcode,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'monospace',
+                ),
+              ),
               20.verticalSpace,
               ClipRRect(
                 borderRadius: BorderRadius.circular(16.r),
@@ -153,12 +223,21 @@ class DetailsInfoSection extends StatelessWidget {
                   version: QrVersions.auto,
                   size: 250.w,
                   backgroundColor: Colors.white,
-                  eyeStyle: const QrEyeStyle(eyeShape: QrEyeShape.square, color: Colors.black),
-                  dataModuleStyle: const QrDataModuleStyle(dataModuleShape: QrDataModuleShape.square, color: Colors.black),
+                  eyeStyle: const QrEyeStyle(
+                    eyeShape: QrEyeShape.square,
+                    color: Colors.black,
+                  ),
+                  dataModuleStyle: const QrDataModuleStyle(
+                    dataModuleShape: QrDataModuleShape.square,
+                    color: Colors.black,
+                  ),
                 ),
               ),
               16.verticalSpace,
-              Text('امسح الرمز ضوئيًا في المتجر', style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600)),
+              Text(
+                LocaleKeys.webstore.catalog.scan_in_store.tr(context: context),
+                style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade600),
+              ),
             ],
           ),
         ),
@@ -174,24 +253,52 @@ class DetailsInfoSection extends StatelessWidget {
         children: [
           Text(
             product.price.toStringAsFixed(3),
-            style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.w900, color: theme.textTheme.bodyLarge?.color),
+            style: TextStyle(
+              fontSize: 28.sp,
+              fontWeight: FontWeight.w900,
+              color: theme.textTheme.bodyLarge?.color,
+            ),
           ),
           4.horizontalSpace,
           Padding(
             padding: EdgeInsets.only(bottom: 4.h),
-            child: Text(AppConstants.currency, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: AppColors.primaryOrange)),
+            child: Text(
+              AppConstants.currency,
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primaryOrange,
+              ),
+            ),
           ),
           12.horizontalSpace,
           if (product.hasDiscount) ...[
             Padding(
               padding: EdgeInsets.only(bottom: 4.h),
-              child: Text('${product.oldPrice?.toStringAsFixed(3)} ${AppConstants.currency}', style:  TextStyle(fontSize: 14.sp, color: Colors.grey, decoration: TextDecoration.lineThrough)),
+              child: Text(
+                '${product.oldPrice?.toStringAsFixed(3)} ${AppConstants.currency}',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.grey,
+                  decoration: TextDecoration.lineThrough,
+                ),
+              ),
             ),
             8.horizontalSpace,
             Container(
               padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-              decoration: BoxDecoration(color: Colors.red.shade50, borderRadius: BorderRadius.circular(6.r)),
-              child: Text('-${product.discountPercent.toStringAsFixed(0)}%', style:  TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.red)),
+              decoration: BoxDecoration(
+                color: Colors.red.shade50,
+                borderRadius: BorderRadius.circular(6.r),
+              ),
+              child: Text(
+                '-${product.discountPercent.toStringAsFixed(0)}%',
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red,
+                ),
+              ),
             ),
           ],
         ],
@@ -204,12 +311,17 @@ class DetailsInfoSection extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Text(
         product.name,
-        style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold, height: 1.4, color: theme.textTheme.bodyLarge?.color),
+        style: TextStyle(
+          fontSize: 20.sp,
+          fontWeight: FontWeight.bold,
+          height: 1.4,
+          color: theme.textTheme.bodyLarge?.color,
+        ),
       ),
     );
   }
 
-  Widget _buildRating() {
+  Widget _buildRating(BuildContext context) {
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
       child: Row(
@@ -217,30 +329,65 @@ class DetailsInfoSection extends StatelessWidget {
           ...List.generate(5, (i) {
             final rating = product.rating ?? 0;
             return Icon(
-              i < rating.floor() ? Icons.star_rounded : (i < rating ? Icons.star_half_rounded : Icons.star_outline_rounded),
+              i < rating.floor()
+                  ? Icons.star_rounded
+                  : (i < rating
+                        ? Icons.star_half_rounded
+                        : Icons.star_outline_rounded),
               color: Colors.amber,
               size: 20.sp,
             );
           }),
           8.horizontalSpace,
-          Text('${product.rating ?? 0}', style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
+          Text(
+            '${product.rating ?? 0}',
+            style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+          ),
           4.horizontalSpace,
-          Text('(${product.reviewsCount ?? 0} تقييم)', style: TextStyle(fontSize: 12.sp, color: Colors.grey)),
+          Text(
+            LocaleKeys.webstore.catalog.reviews_count.tr(
+              context: context,
+              args: ['${product.reviewsCount ?? 0}'],
+            ),
+            style: TextStyle(fontSize: 12.sp, color: Colors.grey),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildStock() {
+  Widget _buildStock(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       child: Row(
         children: [
-          Icon(product.isInStock ? Icons.check_circle_rounded : Icons.cancel_rounded, color: product.isInStock ? Colors.green : Colors.red, size: 20.sp),
+          Icon(
+            product.isInStock
+                ? Icons.check_circle_rounded
+                : Icons.cancel_rounded,
+            color: product.isInStock ? Colors.green : Colors.red,
+            size: 20.sp,
+          ),
           8.horizontalSpace,
-          Text(product.isInStock ? 'متوفر في المخزن' : 'غير متوفر حالياً', style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: product.isInStock ? Colors.green : Colors.red)),
+          Text(
+            product.isInStock
+                ? LocaleKeys.webstore.catalog.in_stock.tr(context: context)
+                : LocaleKeys.webstore.catalog.out_of_stock.tr(context: context),
+            style: TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+              color: product.isInStock ? Colors.green : Colors.red,
+            ),
+          ),
           const Spacer(),
-          if (product.isInStock) Text('الكمية: ${product.stock}', style: TextStyle(fontSize: 12.sp, color: Colors.grey)),
+          if (product.isInStock)
+            Text(
+              LocaleKeys.webstore.catalog.stock_quantity.tr(
+                context: context,
+                args: ['${product.stock}'],
+              ),
+              style: TextStyle(fontSize: 12.sp, color: Colors.grey),
+            ),
         ],
       ),
     );
