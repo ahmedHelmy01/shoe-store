@@ -262,7 +262,7 @@ class OrderDetailsDialog extends StatelessWidget {
                   if (addr.street != null && addr.street!.isNotEmpty) '${AdminLocalizations.translate(context, 'street')}: ${addr.street}',
                   if (addr.area != null && addr.area!.isNotEmpty) '${AdminLocalizations.translate(context, 'area')}: ${addr.area}',
                   if (addr.block != null && addr.block!.isNotEmpty) '${AdminLocalizations.translate(context, 'block')}: ${addr.block}',
-                ].where((e) => e != null && e.isNotEmpty).join(', '),
+                ].where((e) => e.isNotEmpty).join(', '),
                 Icons.location_on_outlined,
               ),
               if (gov != null || city != null) ...[

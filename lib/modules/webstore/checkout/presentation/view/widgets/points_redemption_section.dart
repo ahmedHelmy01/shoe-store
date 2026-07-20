@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/modules/webstore/points/presentation/view_model/points_providers.dart';
-import 'package:erp/modules/webstore/points/data/models/points_model.dart';
 import 'points_redemption_widgets/points_redemption_section_header.dart';
 import 'points_redemption_widgets/points_redemption_section_balance_card.dart';
 import 'points_redemption_widgets/points_redemption_section_points_selector.dart';
@@ -77,7 +76,6 @@ class _PointsRedemptionSectionState extends ConsumerState<PointsRedemptionSectio
   @override
   Widget build(BuildContext context) {
     final pointsAsync = ref.watch(pointsProvider);
-    const _useMock = true;
 
     return pointsAsync.when(
       loading: () => AppCard(padding: EdgeInsets.all(20.w), child: const PointsRedemptionSectionHeader(loading: true)),
@@ -94,9 +92,7 @@ class _PointsRedemptionSectionState extends ConsumerState<PointsRedemptionSectio
         ]),
       ),
       data: (rawData) {
-        final pointsData = _useMock
-            ? PointsModel(balance: 1250, monetaryValue: 12.50, transactions: const [])
-            : rawData;
+        final pointsData = rawData;
         final maxPoints = pointsData.balance;
         _cachedMaxPoints = maxPoints;
         if (_sliderValue > maxPoints) _sliderValue = maxPoints.toDouble();

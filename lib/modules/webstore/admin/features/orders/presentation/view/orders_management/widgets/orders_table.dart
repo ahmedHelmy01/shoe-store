@@ -10,7 +10,7 @@ class OrdersTable extends StatelessWidget {
   final Function(OrderRow o)? onView;
   final Widget Function(BuildContext context, OrderRow o)? cardBuilder;
 
-  OrdersTable({
+  const OrdersTable({
     super.key,
     required this.items,
     required this.onEdit,

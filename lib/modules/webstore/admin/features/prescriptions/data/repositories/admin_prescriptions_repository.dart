@@ -53,7 +53,7 @@ class AdminPrescriptionsRepository extends AdminBaseRepository implements IAdmin
     return safeApiCall(() async {
       final data = {
         'status': status,
-        if (note != null) 'note': note,
+        'note': ?note,
       };
       final json = await _ds.reviewPrescription(id, data);
       return parseSingle(json, (j) => AdminPrescriptionRow.fromJson(j));

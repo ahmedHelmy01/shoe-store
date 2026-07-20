@@ -5,7 +5,6 @@
 /// Uses modern Riverpod 3.0 Notifier pattern.
 library;
 
-import 'package:erp/modules/webstore/auth/data/models/webstore_auth_response.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/modules/webstore/auth/data/repositories/auth_repository.dart';
@@ -125,12 +124,8 @@ class WebStoreAuthViewModel extends Notifier<WebStoreAuthState> {
       String? realEmail = email;
 
       if (providerType == 'google') {
-        final GoogleSignInAccount? googleUser = await _googleSignIn
+        final GoogleSignInAccount googleUser = await _googleSignIn
             .authenticate();
-        if (googleUser == null) {
-          state = const WebStoreAuthIdle();
-          return; // User cancelled
-        }
         realId = googleUser.id;
         realName = googleUser.displayName;
         realEmail = googleUser.email;

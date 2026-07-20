@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_card_popup_menu.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:erp/core/common_widget/app_animation/app_animation.dart';
 import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
 import 'package:erp/core/common_widget/app_dialog/app_status_dialog.dart';
-import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_action_icon_button.dart';
-import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_details_panel.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/view_model/admin_crud_vm.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_dialog_form.dart';
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_page_header.dart';

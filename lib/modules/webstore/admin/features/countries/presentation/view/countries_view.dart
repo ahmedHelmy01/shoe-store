@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:erp/core/common_widget/app_card/app_card.dart';
 import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 import 'package:erp/modules/webstore/admin/features/countries/presentation/view_model/countries_view_model.dart';
 import 'package:erp/modules/webstore/admin/features/countries/presentation/widgets/countries_table.dart';
@@ -96,7 +95,7 @@ class CountriesView extends ConsumerWidget {
     }
 
     final items = state is AdminCrudData<CountryRow>
-        ? (state as AdminCrudData<CountryRow>).items
+        ? (state).items
         : <CountryRow>[];
 
     return AppAnimation.fadeInUp(

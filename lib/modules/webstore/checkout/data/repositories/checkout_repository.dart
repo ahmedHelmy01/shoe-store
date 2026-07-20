@@ -25,14 +25,18 @@ class CheckoutRepository extends BaseRepository implements ICheckoutRepository {
   @override
   Future<ApiResult<Map<String, dynamic>>> calculateTotals(Map<String, dynamic> data) =>
       safeApiCall<Map<String, dynamic>>(() async {
+        print('=== [CheckoutRepository] calling POST /api/store/checkout/calculate with payload: $data ===');
         final res = await _remoteDataSource.calculateTotals(data);
+        print('=== [CheckoutRepository] POST /api/store/checkout/calculate response: $res ===');
         return res as Map<String, dynamic>;
       });
 
   @override
   Future<ApiResult<Map<String, dynamic>>> placeOrder(Map<String, dynamic> data) =>
       safeApiCall<Map<String, dynamic>>(() async {
+        print('=== [CheckoutRepository] calling POST /api/store/checkout/place-order with payload: $data ===');
         final res = await _remoteDataSource.placeOrder(data);
+        print('=== [CheckoutRepository] POST /api/store/checkout/place-order response: $res ===');
         return res as Map<String, dynamic>;
       });
 

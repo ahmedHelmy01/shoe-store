@@ -80,8 +80,10 @@ class _DetailsImageGalleryState extends State<DetailsImageGallery> {
     final isDark = theme.brightness == Brightness.dark;
 
     final allImages = <String>[];
-    if (widget.product.image != null) allImages.add(
+    if (widget.product.image != null) {
+      allImages.add(
         _formatImageUrl(widget.product.image!));
+    }
     if (widget.product.images != null) {
       for (final img in widget.product.images!) {
         final formatted = _formatImageUrl(img);

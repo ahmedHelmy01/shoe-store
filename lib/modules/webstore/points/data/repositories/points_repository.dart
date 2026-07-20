@@ -17,7 +17,9 @@ class PointsRepository extends BaseRepository implements IPointsRepository {
   @override
   Future<ApiResult<PointsModel>> getPoints() {
     return safeApiCall<PointsModel>(() async {
-      final response = await _dataSource.getPoints();
+      print('=== [PointsRepository] calling GET /api/store/loyalty/summary ===');
+      final response = await _dataSource.getLoyaltySummary();
+      print('=== [PointsRepository] GET /api/store/loyalty/summary response: $response ===');
       final data = response['data'] ?? response;
       return PointsModel.fromJson(data as Map<String, dynamic>);
     });
@@ -26,7 +28,9 @@ class PointsRepository extends BaseRepository implements IPointsRepository {
   @override
   Future<ApiResult<Map<String, dynamic>>> getLoyaltySummary() {
     return safeApiCall<Map<String, dynamic>>(() async {
+      print('=== [PointsRepository] calling GET /api/store/loyalty/summary (direct) ===');
       final response = await _dataSource.getLoyaltySummary();
+      print('=== [PointsRepository] GET /api/store/loyalty/summary response: $response ===');
       final data = response['data'] ?? response;
       return Map<String, dynamic>.from(data as Map);
     });
@@ -35,7 +39,9 @@ class PointsRepository extends BaseRepository implements IPointsRepository {
   @override
   Future<ApiResult<Map<String, dynamic>>> previewLoyalty(int points) {
     return safeApiCall<Map<String, dynamic>>(() async {
+      print('=== [PointsRepository] calling POST /api/store/loyalty/preview with points: $points ===');
       final response = await _dataSource.previewLoyalty({'points': points});
+      print('=== [PointsRepository] POST /api/store/loyalty/preview response: $response ===');
       final data = response['data'] ?? response;
       return Map<String, dynamic>.from(data as Map);
     });

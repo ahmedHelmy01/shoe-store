@@ -49,7 +49,7 @@ class _AdminImagePickerState extends ConsumerState<AdminImagePicker> {
   XFile? _selectedFile;
   List<XFile> _selectedFiles = [];
   bool _hasInitialRemoved = false;
-  bool _initialImageFailed = false;
+  final bool _initialImageFailed = false;
   
   bool _isProcessing = false;
   double _internalProgress = 0;

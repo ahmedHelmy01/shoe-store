@@ -96,7 +96,11 @@ class LoyaltyAdminRepository extends BaseRepository
   }) {
     return safeApiCall(() async {
       final json = await _ds.getReport(endpoint, query: query);
-      return PointsReportModel.fromJson(json as Map<String, dynamic>);
+      final rawData = json['data'];
+      final data = rawData is Map<String, dynamic>
+          ? rawData
+          : json as Map<String, dynamic>;
+      return PointsReportModel.fromJson(data);
     });
   }
 }

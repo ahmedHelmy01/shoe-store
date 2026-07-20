@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
-import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/utils/asset_manager.dart';
 
 class SocialLoginSection extends StatelessWidget {

@@ -167,7 +167,7 @@ class ProductGridCard extends ConsumerWidget {
             ],
           ),
           // Ranking Badge (#1, #2, #3)
-          if (ranking != null && ranking! <= 3)
+          if (ranking != null && ranking <= 3)
             Positioned(
               top: 0,
               right: 12.w,
@@ -211,7 +211,7 @@ class ProductGridCard extends ConsumerWidget {
           if (isLoggedIn)
             Positioned(
               top: 4.h,
-              right: ranking != null && ranking! <= 3 ? 40.w : 4.w,
+              right: ranking != null && ranking <= 3 ? 40.w : 4.w,
               child: IconButton(
                 onPressed: () {
                   if (product.id != null) {

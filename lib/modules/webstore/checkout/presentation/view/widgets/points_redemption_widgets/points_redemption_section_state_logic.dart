@@ -7,12 +7,6 @@ class PointsRedemptionSectionLogic {
   static Future<double?> previewLoyalty(int selectedPoints, WidgetRef ref) async {
     if (selectedPoints <= 0) return null;
 
-    const _useMock = true;
-    if (_useMock) {
-      await Future.delayed(const Duration(milliseconds: 300));
-      return selectedPoints * 0.01;
-    }
-
     try {
       final repo = ref.read(pointsRepositoryProvider);
       final result = await repo.previewLoyalty(selectedPoints);

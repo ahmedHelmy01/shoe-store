@@ -14,9 +14,9 @@ class AdminPrescriptionsRemoteDataSource {
   }) async {
     final queryParams = <String, dynamic>{
       'page': page,
-      if (status != null) 'status': status,
-      if (customerId != null) 'customer_id': customerId,
-      if (perPage != null) 'per_page': perPage,
+      'status': ?status,
+      'customer_id': ?customerId,
+      'per_page': ?perPage,
     };
 
     return await _ns.get(ApiEndpoints.webstore.admin.prescriptions, query: queryParams);

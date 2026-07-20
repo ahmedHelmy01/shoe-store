@@ -56,14 +56,14 @@ class PointsModel {
 
   factory PointsModel.fromJson(Map<String, dynamic> json) {
     final balanceVal = json['points_balance'] ?? json['balance'] ?? json['points'] ?? json['total_points'] ?? 0;
-    final transList = (json['transactions'] as List?) ?? (json['data'] as List?) ?? [];
+    final transList = (json['transactions'] as List?) ?? (json['history'] as List?) ?? (json['data'] as List?) ?? [];
     return PointsModel(
       balance: balanceVal is int ? balanceVal : (double.tryParse(balanceVal.toString())?.toInt() ?? int.tryParse(balanceVal.toString()) ?? 0),
       totalEarned: json['total_earned'] as int? ?? 0,
-      totalUsed: json['total_used'] as int? ?? 0,
+      totalUsed: json['total_used'] as int? ?? json['total_redeemed'] as int? ?? 0,
       totalExpired: json['total_expired'] as int? ?? 0,
-      monetaryValue: (json['monetary_value'] as num?)?.toDouble(),
-      nearestExpiryDate: json['nearest_expiry_date'] as String?,
+      monetaryValue: (json['monetary_value'] ?? json['balance_value'] as num?)?.toDouble(),
+      nearestExpiryDate: json['nearest_expiry_date'] as String? ?? json['next_expiry_at'] as String?,
       transactions: transList
           .whereType<Map<String, dynamic>>()
           .map((e) => PointTransaction.fromJson(e))

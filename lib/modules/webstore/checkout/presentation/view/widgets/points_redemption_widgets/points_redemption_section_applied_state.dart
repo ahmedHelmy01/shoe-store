@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:erp/core/constants/app_constants.dart';
 
 class PointsRedemptionSectionAppliedState extends StatelessWidget {
   final int appliedPoints;

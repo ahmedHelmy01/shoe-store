@@ -59,7 +59,7 @@ class OrdersRepository extends AdminBaseRepository implements IOrdersRepository 
         ApiEndpoints.webstore.admin.orderStatusUpdate(id),
         {
           'order_status_id': statusId,
-          if (notes != null) 'notes': notes,
+          'notes': ?notes,
         },
       );
     });

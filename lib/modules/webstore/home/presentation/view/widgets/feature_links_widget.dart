@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/router/app_navigator.dart';
-import 'package:erp/core/router/route_generator.dart';
 import 'package:erp/modules/webstore/branches/presentation/view/branches_map_view.dart';
 import 'feature_item_data.dart';
 import 'feature_item_card.dart';

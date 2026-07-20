@@ -43,7 +43,6 @@ import 'package:erp/modules/webstore/admin/features/countries/presentation/view/
 import 'package:erp/modules/webstore/admin/features/prescriptions/presentation/view/admin_prescriptions_view.dart';
 import 'package:erp/modules/webstore/admin/features/loyalty/presentation/view/loyalty_settings_view.dart';
 import 'package:erp/modules/webstore/admin/features/loyalty/presentation/view/loyalty_reports_view.dart';
-import 'package:erp/modules/webstore/admin/features/loyalty/presentation/view/customer_points_view.dart';
 
 class AdminShell extends ConsumerStatefulWidget {
   final AdminRouteId initial;

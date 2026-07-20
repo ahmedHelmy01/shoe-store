@@ -1,4 +1,3 @@
-import 'package:erp/core/network/network_service.dart';
 import 'package:erp/core/network/endpoints/endpoints_registry.dart';
 import 'package:erp/modules/webstore/admin/shared/data/datasource/admin_remote_datasource.dart';
 
@@ -15,7 +14,7 @@ class OrdersRemoteDataSource extends AdminRemoteDataSource {
       query: {
         'page': page,
         if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
-        if (customerId != null) 'customer_id': customerId,
+        'customer_id': ?customerId,
       },
     );
     return (res as Map).cast<String, dynamic>();

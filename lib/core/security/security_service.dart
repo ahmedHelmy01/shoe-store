@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:freerasp/freerasp.dart';
 
 /// A professional security layer designed to protect the app.
 class SecurityService {

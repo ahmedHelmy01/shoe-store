@@ -241,7 +241,7 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
               ),
-              activeColor: AppColors.primaryOrange,
+              activeThumbColor: AppColors.primaryOrange,
               value: onlyInStock,
               title: Text('المتاح فقط', style: theme.textTheme.bodyMedium),
               onChanged: onOnlyInStockChanged,

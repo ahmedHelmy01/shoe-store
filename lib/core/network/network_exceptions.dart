@@ -32,51 +32,46 @@ class DeadlineExceededException extends NetworkException {
 
 /// 🔐 Unauthorized (401)
 class UnauthorizedException extends NetworkException {
-  UnauthorizedException({String? message, dynamic data})
+  UnauthorizedException({String? message, super.data})
       : super(
           message: message ?? LocaleKeys.common.unauthorized,
           statusCode: 401,
-          data: data,
         );
 }
 
 /// ✋ Forbidden (403)
 class ForbiddenException extends NetworkException {
-  ForbiddenException({String? message, dynamic data})
+  ForbiddenException({String? message, super.data})
       : super(
           message: message ?? LocaleKeys.common.forbidden,
           statusCode: 403,
-          data: data,
         );
 }
 
 /// 🔍 Not Found (404)
 class NotFoundException extends NetworkException {
-  NotFoundException({String? message, dynamic data})
+  NotFoundException({String? message, super.data})
       : super(
           message: message ?? LocaleKeys.common.not_found_requested,
           statusCode: 404,
-          data: data,
         );
 }
 
 /// 📄 Conflict (409)
 class ConflictException extends NetworkException {
-  ConflictException({String? message, dynamic data})
+  ConflictException({String? message, super.data})
       : super(
           message: message ?? LocaleKeys.common.conflict,
           statusCode: 409,
-          data: data,
         );
 }
 
 /// 🏗️ Internal Server Error (500)
 class InternalServerErrorException extends NetworkException {
-  InternalServerErrorException({String? message, dynamic data})
+  InternalServerErrorException({String? message, super.data})
       : super(
           message: message ?? LocaleKeys.common.server_error_try_later,
           statusCode: 500,
-          data: data,
         );
 }
 

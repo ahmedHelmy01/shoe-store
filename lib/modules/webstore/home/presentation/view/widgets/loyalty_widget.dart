@@ -44,7 +44,10 @@ class UserLoyaltyWidget extends ConsumerWidget {
           Expanded(
             child: _buildLoyaltyItem(
               LocaleKeys.webstore.home.wallet.tr(context: context),
-              '0.00 LE',
+              pointsAsync.maybeWhen(
+                data: (points) => '${(points.monetaryValue ?? 0.0).toStringAsFixed(2)} ${AppConstants.currency}',
+                orElse: () => '...',
+              ),
               Icons.account_balance_wallet_rounded,
               theme,
             ),

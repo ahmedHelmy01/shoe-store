@@ -20,7 +20,9 @@ class PointsNotifier extends AsyncNotifier<PointsModel> {
   @override
   Future<PointsModel> build() async {
     final auth = ref.watch(authStateProvider);
+    print('=== [PointsNotifier] build called. AuthStatus: ${auth.status} ===');
     if (auth.status != AuthStatus.authenticated) {
+      print('=== [PointsNotifier] User is not authenticated, skipping API call ===');
       return PointsModel(balance: 0, transactions: const []);
     }
     return _fetchPoints();

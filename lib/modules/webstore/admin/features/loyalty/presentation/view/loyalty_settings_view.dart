@@ -265,7 +265,7 @@ class _LoyaltySettingsViewState extends ConsumerState<LoyaltySettingsView> {
             title: Text(AdminLocalizations.translate(context, 'Enable Loyalty Program'), style: const TextStyle(fontWeight: FontWeight.w600)),
             subtitle: Text(AdminLocalizations.translate(context, 'Allow customers to earn and redeem points.')),
             value: _enabled,
-            activeColor: AppColors.primary,
+            activeThumbColor: AppColors.primary,
             onChanged: (v) => setState(() => _enabled = v),
             contentPadding: EdgeInsets.zero,
           ),
@@ -296,7 +296,7 @@ class _LoyaltySettingsViewState extends ConsumerState<LoyaltySettingsView> {
           _buildSectionTitle(Icons.rule_rounded, AdminLocalizations.translate(context, 'Usage Rules')),
           const SizedBox(height: 24),
           DropdownButtonFormField<String>(
-            value: _maxUsageType,
+            initialValue: _maxUsageType,
             decoration: InputDecoration(
               labelText: AdminLocalizations.translate(context, 'Max Usage Type'),
               labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: AppColors.textSecondary),
@@ -348,7 +348,7 @@ class _LoyaltySettingsViewState extends ConsumerState<LoyaltySettingsView> {
           _buildSectionTitle(Icons.schedule_rounded, AdminLocalizations.translate(context, 'Expiry Settings')),
           const SizedBox(height: 24),
           DropdownButtonFormField<String>(
-            value: _expiryType,
+            initialValue: _expiryType,
             decoration: InputDecoration(
               labelText: AdminLocalizations.translate(context, 'Expiry Type'),
               labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: AppColors.textSecondary),

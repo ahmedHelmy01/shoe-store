@@ -63,7 +63,7 @@ class MoreSettingsSection extends ConsumerWidget {
             ),
             value: ref.watch(themeProvider.notifier).isDarkMode,
             onChanged: (_) => ref.read(themeProvider.notifier).toggleTheme(),
-            activeColor: AppColors.primaryOrange,
+            activeThumbColor: AppColors.primaryOrange,
           ),
           Divider(height: 1, indent: 50.w, endIndent: 20.w),
 

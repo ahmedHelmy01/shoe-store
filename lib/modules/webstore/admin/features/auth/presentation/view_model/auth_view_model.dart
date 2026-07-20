@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/modules/webstore/admin/core/di/admin_providers.dart';
-import 'package:erp/modules/webstore/admin/features/auth/data/models/admin_user.dart';
 
 class LoginState {
   final bool isLoading;

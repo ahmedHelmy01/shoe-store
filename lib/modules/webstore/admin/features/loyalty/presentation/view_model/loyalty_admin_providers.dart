@@ -104,7 +104,7 @@ final awardOrderPointsProvider = NotifierProvider<AwardOrderPointsNotifier, Upda
   AwardOrderPointsNotifier.new,
 );
 
-final _useMockReports = true; // ← temporary mock to preview report designs
+final _useMockReports = false;
 
 final reportProvider = FutureProvider.family<PointsReportModel, String>((ref, endpoint) async {
   if (_useMockReports) {
@@ -114,7 +114,7 @@ final reportProvider = FutureProvider.family<PointsReportModel, String>((ref, en
   final result = await repo.getReport(endpoint);
   return result.when(
     success: (data) => data,
-    failure: (e) => _mockReport(endpoint),
+    failure: (e) => throw e,
   );
 });
 

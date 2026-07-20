@@ -4,8 +4,7 @@ import 'package:http/http.dart' as http;
 class ProgressMultipartRequest extends http.MultipartRequest {
   final void Function(double)? onProgress;
 
-  ProgressMultipartRequest(String method, Uri url, {this.onProgress})
-    : super(method, url);
+  ProgressMultipartRequest(super.method, super.url, {this.onProgress});
 
   @override
   http.ByteStream finalize() {

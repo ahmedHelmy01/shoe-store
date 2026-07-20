@@ -178,15 +178,13 @@ class _WebStoreAdmin {
   final String offers = '/api/store/admin/offers';
 
   // Reports
-  // NOTE: These endpoints return 200 (SPA fallback) but are NOT actual API routes.
-  // Backend must implement them before they work.
-  final String reportsBalances = '/reports/balances';
-  final String reportsMovement = '/reports/movement';
-  final String reportsRedemptions = '/reports/redemptions';
-  final String reportsEarned = '/reports/earned';
-  final String reportsExpired = '/reports/expired';
-  final String reportsTop = '/reports/top';
-  final String reportsCost = '/reports/cost';
+  final String reportsBalances = '/api/store/admin/loyalty/reports/balances';
+  final String reportsMovement = '/api/store/admin/loyalty/reports/movement';
+  final String reportsRedemptions = '/api/store/admin/loyalty/reports/redemptions';
+  final String reportsEarned = '/api/store/admin/loyalty/reports/earned';
+  final String reportsExpired = '/api/store/admin/loyalty/reports/expired';
+  final String reportsTop = '/api/store/admin/loyalty/reports/top';
+  final String reportsCost = '/api/store/admin/loyalty/reports/cost';
 
   // Other
   final String contacts = '/api/store/admin/contacts';

@@ -22,11 +22,11 @@ class ProfileRemoteDataSource {
     return _networkService.put(
       ApiEndpoints.webstore.profile.profile,
       body: {
-        if (name != null) 'name': name,
-        if (email != null) 'email': email,
-        if (mobile != null) 'mobile': mobile,
-        if (password != null) 'password': password,
-        if (branchId != null) 'branch_id': branchId,
+        'name': ?name,
+        'email': ?email,
+        'mobile': ?mobile,
+        'password': ?password,
+        'branch_id': ?branchId,
       },
     );
   }

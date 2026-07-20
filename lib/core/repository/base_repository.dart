@@ -73,8 +73,9 @@ abstract class BaseRepository {
 
   ApiErrorType _mapStatusCodeToErrorType(int? statusCode) {
     if (statusCode == null) return ApiErrorType.unknown;
-    if (statusCode == 401 || statusCode == 403)
+    if (statusCode == 401 || statusCode == 403) {
       return ApiErrorType.unauthorized;
+    }
     if (statusCode == 404) return ApiErrorType.notFound;
     if (statusCode >= 400 && statusCode < 500) return ApiErrorType.client;
     if (statusCode >= 500) return ApiErrorType.server;

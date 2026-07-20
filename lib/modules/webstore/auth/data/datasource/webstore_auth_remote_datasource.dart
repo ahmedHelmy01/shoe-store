@@ -31,7 +31,7 @@ class WebStoreAuthRemoteDataSource {
         'password': password,
         'password_confirmation': passwordConfirmation,
         'company_id': 1, // Added for consistency
-        if (branchId != null) 'branch_id': branchId,
+        'branch_id': ?branchId,
       },
     );
   }
@@ -66,10 +66,10 @@ class WebStoreAuthRemoteDataSource {
         'provider_type': providerType,
         'provider_identifier': providerIdentifier,
         'company_id': 1, // Fixed to 1 as per user request
-        if (name != null) 'name': name,
-        if (email != null) 'email': email,
-        if (mobile != null) 'mobile': mobile,
-        if (branchId != null) 'branch_id': branchId,
+        'name': ?name,
+        'email': ?email,
+        'mobile': ?mobile,
+        'branch_id': ?branchId,
       },
     );
   }
@@ -163,10 +163,10 @@ class WebStoreAuthRemoteDataSource {
     return _networkService.put(
       ApiEndpoints.webstore.profile.profile,
       body: {
-        if (name != null) 'name': name,
-        if (email != null) 'email': email,
-        if (mobile != null) 'mobile': mobile,
-        if (password != null) 'password': password,
+        'name': ?name,
+        'email': ?email,
+        'mobile': ?mobile,
+        'password': ?password,
       },
     );
   }

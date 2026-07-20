@@ -1,5 +1,4 @@
 import 'package:erp/core/config/app_config_manager.dart';
-import 'package:erp/core/common_widget/network_listener.dart';
 import 'package:erp/core/common_widget/cart_listener.dart';
 import 'package:flutter/material.dart';
 import '../app_bar/common_app_bar.dart';

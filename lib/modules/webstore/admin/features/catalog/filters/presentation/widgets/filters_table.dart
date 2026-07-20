@@ -5,7 +5,6 @@ import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_det
 import 'package:erp/modules/webstore/admin/shared/presentation/widgets/admin_status_badge.dart';
 import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
-import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
 
 class FiltersTable extends StatelessWidget {
   final List<FilterRow> items;

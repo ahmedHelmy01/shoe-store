@@ -14,7 +14,7 @@ class CategoriesRemoteDataSource extends AdminRemoteDataSource {
       query: {
         'page': page,
         if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
-        if (perPage != null) 'per_page': perPage,
+        'per_page': ?perPage,
       },
     );
     return (res as Map).cast<String, dynamic>();

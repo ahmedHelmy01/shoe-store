@@ -116,8 +116,9 @@ class DetailsInfoSection extends StatelessWidget {
     ThemeData theme,
     bool isDark,
   ) {
-    if (product.sku == null && product.barcode == null)
+    if (product.sku == null && product.barcode == null) {
       return const SizedBox.shrink();
+    }
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       padding: EdgeInsets.all(12.w),

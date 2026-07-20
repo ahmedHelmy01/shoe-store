@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:erp/core/constants/app_constants.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class AppSnackBar {
   static void show(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/utils/asset_manager.dart';
-import 'package:erp/modules/webstore/admin/shared/utils/admin_localizations.dart';
 
 class AdminSidebarHeader extends StatelessWidget {
   final bool collapsed;
