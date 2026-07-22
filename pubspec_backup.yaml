@@ -53,12 +53,20 @@ dependencies:
   arabic_reshaper: ^0.0.1
   bidi: ^2.0.13
   image_picker: ^1.2.2
+  qr_flutter: ^4.1.0
 
   # Map
   flutter_map: ^8.1.1
   latlong2: ^0.9.0
   geolocator: ^14.0.0
   geocoding: ^4.0.0
+
+  # Firebase & Social Login
+  firebase_core: ^4.8.0
+  firebase_auth: ^6.5.0
+  google_sign_in: ^7.2.0
+  flutter_facebook_auth: ^7.1.6
+  sign_in_with_apple: ^7.0.1
 
 dev_dependencies:
   flutter_test:

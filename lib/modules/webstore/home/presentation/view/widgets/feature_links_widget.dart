@@ -53,11 +53,7 @@ class FeatureLinksWidget extends ConsumerWidget {
       case FeatureType.medicalServices:
         AppNavigator.push(
           context,
-          AppRouteNames.webstorePage,
-          arguments: {
-            'slug': 'medical-services',
-            'title': feature.title(context),
-          },
+          AppRouteNames.medicalServicesMain,
         );
         break;
       case FeatureType.exclusiveOffers:

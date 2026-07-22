@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الخدمات الطبية المبتكرة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-dark: #3F3D99;
+            --accent: #00BCD4;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #E91E63;
+            --purple: #9C27B0;
+            --gold: #FFD700;
+            --bg: #0A0E27;
+            --surface: #131639;
+            --surface-light: #1E2250;
+            --text: #FFFFFF;
+            --text-secondary: #A0A3BD;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.8;
+        }
+
+        /* ─── Hero Section ────────────────────────────── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0A0E27 0%, #1A1F4E 50%, #0A0E27 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(108, 99, 255, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(0, 188, 212, 0.06) 0%, transparent 50%);
+            animation: heroPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes heroPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.05) rotate(2deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            padding: 40px 20px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(108, 99, 255, 0.15);
+            border: 1px solid rgba(108, 99, 255, 0.3);
+            padding: 8px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            color: var(--primary);
+            margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .hero-badge::before {
+            content: '🏥';
+            font-size: 18px;
+        }
+
+        .hero h1 {
+            font-size: clamp(36px, 6vw, 64px);
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, #6C63FF, #00BCD4, #4CAF50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 650px;
+            margin: 0 auto 40px;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat .number {
+            font-size: 36px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-stat .label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator span {
+            display: block;
+            width: 30px;
+            height: 30px;
+            border-left: 3px solid var(--primary);
+            border-bottom: 3px solid var(--primary);
+            transform: rotate(-45deg);
+            opacity: 0.5;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-15px); }
+            60% { transform: translateX(-50%) translateY(-7px); }
+        }
+
+        /* ─── Section Styling ─────────────────────────── */
+        .section {
+            padding: 100px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ─── Feature Cards ───────────────────────────── */
+        .feature-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            padding: 60px;
+            margin-bottom: 80px;
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            animation: fadeInUp 0.6s ease both;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 32px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+
+        .feature-card .bg-glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .feature-info {
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .feature-icon-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 28px;
+            opacity: 0.2;
+        }
+
+        .feature-tag {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .feature-info h3 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .feature-info > p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.9;
+        }
+
+        .feature-benefits {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .feature-benefits li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+
+        .feature-benefits li .check {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .feature-preview {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ─── Phone Mockup ────────────────────────────── */
+        .phone-mockup {
+            width: 280px;
+            height: 560px;
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: 36px;
+            padding: 12px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4),
+                        inset 0 1px 0 rgba(255,255,255,0.05);
+            position: relative;
+        }
+
+        .phone-mockup::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            z-index: 10;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            border-radius: 26px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ─── Feature-specific phone screens ──────────── */
+        .screen-chatbot {
+            background: linear-gradient(180deg, #1a1f4e 0%, #0d1030 100%);
+            padding: 40px 16px 16px;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .chat-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6C63FF, #00BCD4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .chat-name {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .chat-status {
+            font-size: 10px;
+            color: #4CAF50;
+        }
+
+        .chat-bubble {
+            background: rgba(108, 99, 255, 0.15);
+            border-radius: 16px 16px 16px 4px;
+            padding: 12px 14px;
+            font-size: 12px;
+            line-height: 1.7;
+            margin-bottom: 12px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .chat-bubble.user {
+            background: var(--primary);
+            border-radius: 16px 16px 4px 16px;
+            margin-left: 40px;
+            color: white;
+        }
+
+        .chat-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .chat-option {
+            background: rgba(108, 99, 255, 0.2);
+            border: 1px solid rgba(108, 99, 255, 0.3);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 11px;
+            color: var(--primary);
+        }
+
+        /* Scanner Screen */
+        .screen-scanner {
+            background: linear-gradient(180deg, #0d1030 0%, #1a1f4e 100%);
+            padding: 40px 16px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .scanner-area {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed rgba(0, 188, 212, 0.4);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .scanner-area .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00BCD4, transparent);
+            animation: scanMove 2s linear infinite;
+        }
+
+        @keyframes scanMove {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        .scanner-area .icon {
+            font-size: 48px;
+            opacity: 0.3;
+        }
+
+        .scanner-result {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 12px;
+            padding: 10px 14px;
+            width: 100%;
+            font-size: 11px;
+            color: #4CAF50;
+            text-align: center;
+        }
+
+        /* Health Twin Screen */
+        .screen-twin {
+            background: linear-gradient(180deg, #1a1f4e 0%, #0d1030 100%);
+            padding: 40px 14px 14px;
+        }
+
+        .twin-header {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .twin-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .twin-name {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .twin-info {
+            font-size: 10px;
+            opacity: 0.8;
+        }
+
+        .twin-activities {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .twin-activity {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .twin-activity .emoji {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .twin-activity .label {
+            font-size: 9px;
+            color: var(--text-secondary);
+        }
+
+        .twin-activity .value {
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .twin-activity .progress {
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+
+        .twin-activity .progress-fill {
+            height: 100%;
+            border-radius: 2px;
+        }
+
+        /* Reminders Screen */
+        .screen-reminders {
+            background: linear-gradient(180deg, #1a1f4e 0%, #0d1030 100%);
+            padding: 40px 14px 14px;
+        }
+
+        .reminder-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-right: 3px solid;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reminder-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .reminder-name {
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .reminder-time {
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+
+        .reminder-check {
+            margin-right: auto;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .reminder-check.done {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        /* Telemedicine Screen */
+        .screen-tele {
+            background: linear-gradient(180deg, #1a1f4e 0%, #0d1030 100%);
+            padding: 40px 14px 14px;
+        }
+
+        .doctor-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .doctor-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6C63FF, #3F3D99);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            position: relative;
+        }
+
+        .doctor-avatar .online {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 12px;
+            height: 12px;
+            background: #4CAF50;
+            border-radius: 50%;
+            border: 2px solid var(--surface);
+        }
+
+        .doctor-name {
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .doctor-spec {
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+
+        .doctor-rating {
+            font-size: 10px;
+            color: var(--gold);
+        }
+
+        /* Wallet Screen */
+        .screen-wallet {
+            background: linear-gradient(180deg, #1a1f4e 0%, #0d1030 100%);
+            padding: 40px 14px 14px;
+        }
+
+        .wallet-card {
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .wallet-card .card-title {
+            font-size: 10px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .wallet-card .card-value {
+            font-size: 24px;
+            font-weight: 900;
+        }
+
+        .wallet-card .card-sub {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* Gamification Screen */
+        .screen-game {
+            background: linear-gradient(180deg, #1a1f4e 0%, #0d1030 100%);
+            padding: 40px 14px 14px;
+        }
+
+        .game-level {
+            background: linear-gradient(135deg, #FFD700, #FFA000);
+            border-radius: 16px;
+            padding: 14px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .game-level .level-num {
+            font-size: 28px;
+            font-weight: 900;
+            color: white;
+        }
+
+        .game-level .level-label {
+            font-size: 10px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .game-achievements {
+            display: flex;
+            gap: 8px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .game-ach {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background: rgba(255,215,0,0.1);
+            border: 1px solid rgba(255,215,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .game-ach.locked {
+            background: rgba(255,255,255,0.03);
+            border-color: rgba(255,255,255,0.08);
+            filter: grayscale(1);
+            opacity: 0.4;
+        }
+
+        .game-challenge {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 6px;
+        }
+
+        .game-challenge .ch-title {
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .game-challenge .ch-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .game-challenge .ch-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        /* AR Screen */
+        .screen-ar {
+            background: linear-gradient(180deg, #1a1040 0%, #0d1030 100%);
+            padding: 40px 14px 14px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ar-viewport {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.1), rgba(108, 99, 255, 0.1));
+            border: 1px solid rgba(156, 39, 176, 0.3);
+            border-radius: 16px;
+            position: relative;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .ar-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(156, 39, 176, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(156, 39, 176, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .ar-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            opacity: 0.6;
+        }
+
+        .ar-corner {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border-color: #9C27B0;
+        }
+
+        .ar-corner.tl { top: 12px; left: 12px; border-top: 2px solid; border-left: 2px solid; }
+        .ar-corner.tr { top: 12px; right: 12px; border-top: 2px solid; border-right: 2px solid; }
+        .ar-corner.bl { bottom: 12px; left: 12px; border-bottom: 2px solid; border-left: 2px solid; }
+        .ar-corner.br { bottom: 12px; right: 12px; border-bottom: 2px solid; border-right: 2px solid; }
+
+        .ar-medicine {
+            background: rgba(156, 39, 176, 0.1);
+            border: 1px solid rgba(156, 39, 176, 0.2);
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ar-medicine .med-icon {
+            font-size: 20px;
+        }
+
+        .ar-medicine .med-name {
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .ar-medicine .med-dose {
+            font-size: 9px;
+            color: var(--text-secondary);
+        }
+
+        .ar-warning {
+            background: rgba(255, 152, 0, 0.1);
+            border: 1px solid rgba(255, 152, 0, 0.3);
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin-top: 6px;
+        }
+
+        .ar-warning .warn-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: #FF9800;
+            margin-bottom: 2px;
+        }
+
+        .ar-warning .warn-text {
+            font-size: 9px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* ─── Alternating Layout ──────────────────────── */
+        .feature-card.reversed {
+            direction: ltr;
+        }
+
+        .feature-card.reversed .feature-info {
+            direction: rtl;
+        }
+
+        /* ─── Color Themes per Feature ─────────────────── */
+        .theme-purple .feature-icon-wrapper { background: linear-gradient(135deg, #6C63FF, #3F3D99); }
+        .theme-purple .bg-glow { background: #6C63FF; }
+        .theme-purple .feature-tag { background: rgba(108, 99, 255, 0.15); color: #6C63FF; border: 1px solid rgba(108, 99, 255, 0.3); }
+        .theme-purple .check { background: rgba(108, 99, 255, 0.15); color: #6C63FF; }
+
+        .theme-cyan .feature-icon-wrapper { background: linear-gradient(135deg, #00BCD4, #00838F); }
+        .theme-cyan .bg-glow { background: #00BCD4; }
+        .theme-cyan .feature-tag { background: rgba(0, 188, 212, 0.15); color: #00BCD4; border: 1px solid rgba(0, 188, 212, 0.3); }
+        .theme-cyan .check { background: rgba(0, 188, 212, 0.15); color: #00BCD4; }
+
+        .theme-green .feature-icon-wrapper { background: linear-gradient(135deg, #4CAF50, #2E7D32); }
+        .theme-green .bg-glow { background: #4CAF50; }
+        .theme-green .feature-tag { background: rgba(76, 175, 80, 0.15); color: #4CAF50; border: 1px solid rgba(76, 175, 80, 0.3); }
+        .theme-green .check { background: rgba(76, 175, 80, 0.15); color: #4CAF50; }
+
+        .theme-orange .feature-icon-wrapper { background: linear-gradient(135deg, #FF9800, #E65100); }
+        .theme-orange .bg-glow { background: #FF9800; }
+        .theme-orange .feature-tag { background: rgba(255, 152, 0, 0.15); color: #FF9800; border: 1px solid rgba(255, 152, 0, 0.3); }
+        .theme-orange .check { background: rgba(255, 152, 0, 0.15); color: #FF9800; }
+
+        .theme-green2 .feature-icon-wrapper { background: linear-gradient(135deg, #4CAF50, #1B5E20); }
+        .theme-green2 .bg-glow { background: #4CAF50; }
+        .theme-green2 .feature-tag { background: rgba(76, 175, 80, 0.15); color: #4CAF50; border: 1px solid rgba(76, 175, 80, 0.3); }
+        .theme-green2 .check { background: rgba(76, 175, 80, 0.15); color: #4CAF50; }
+
+        .theme-blue .feature-icon-wrapper { background: linear-gradient(135deg, #2196F3, #0D47A1); }
+        .theme-blue .bg-glow { background: #2196F3; }
+        .theme-blue .feature-tag { background: rgba(33, 150, 243, 0.15); color: #2196F3; border: 1px solid rgba(33, 150, 243, 0.3); }
+        .theme-blue .check { background: rgba(33, 150, 243, 0.15); color: #2196F3; }
+
+        .theme-gold .feature-icon-wrapper { background: linear-gradient(135deg, #FFD700, #FFA000); }
+        .theme-gold .bg-glow { background: #FFD700; }
+        .theme-gold .feature-tag { background: rgba(255, 215, 0, 0.15); color: #FFA000; border: 1px solid rgba(255, 215, 0, 0.3); }
+        .theme-gold .check { background: rgba(255, 215, 0, 0.15); color: #FFA000; }
+
+        .theme-pink .feature-icon-wrapper { background: linear-gradient(135deg, #9C27B0, #6A1B9A); }
+        .theme-pink .bg-glow { background: #9C27B0; }
+        .theme-pink .feature-tag { background: rgba(156, 39, 176, 0.15); color: #9C27B0; border: 1px solid rgba(156, 39, 176, 0.3); }
+        .theme-pink .check { background: rgba(156, 39, 176, 0.15); color: #9C27B0; }
+
+        /* ─── Animations ───────────────────────────────── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── Footer ──────────────────────────────────── */
+        .footer {
+            text-align: center;
+            padding: 60px 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .footer .tagline {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #6C63FF, #00BCD4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ─── Responsive ──────────────────────────────── */
+        @media (max-width: 900px) {
+            .feature-card {
+                grid-template-columns: 1fr;
+                padding: 32px;
+                gap: 40px;
+            }
+            .feature-card.reversed {
+                direction: rtl;
+            }
+            .hero-stats { gap: 20px; }
+        }
+
+        /* ─── Scroll Animation Classes ─────────────────── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════ HERO -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">الخدمات الطبية المبتكرة</div>
+        <h1>
+            صحتك في<br>
+            <span class="gradient-text">يدك وأمانة</span>
+        </h1>
+        <p>منصة طبية ذكية بتستخدم الذكاء الاصطناعي والواقع المعزز عشان تتابع صحتك يوم بيوم بأسلوب مبتكر</p>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="number">8</div>
+                <div class="label">ميزات طبية</div>
+            </div>
+            <div class="hero-stat">
+                <div class="number">24/7</div>
+                <div class="label">متاح طول الوقت</div>
+            </div>
+            <div class="hero-stat">
+                <div class="number">AI</div>
+                <div class="label">ذكاء اصطناعي</div>
+            </div>
+            <div class="hero-stat">
+                <div class="number">100%</div>
+                <div class="label">مجاني</div>
+            </div>
+        </div>
+    </div>
+    <div class="scroll-indicator"><span></span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════ 1. Symptom Chatbot -->
+<section class="section">
+    <div class="feature-card theme-purple reveal">
+        <div class="bg-glow" style="top: -100px; right: -100px;"></div>
+        <div class="feature-info">
+            <div class="feature-icon-wrapper">🤖</div>
+            <div class="feature-tag">ذكاء اصطناعي</div>
+            <h3>مساعد الأعراض الذكي</h3>
+            <p>مساعد طبي ذكي بيشتغل بالـ AI بيقرا أعراضك ويحللها في ثانية واحدة ويبقى لك تشخيص أولي ونصائح علاجية فورية من غير ما تروح للدكتور.</p>
+            <ul class="feature-benefits">
+                <li><span class="check">✓</span> وصف أعراضك بالعربي واحصل على تحليل فوري</li>
+                <li><span class="check">✓</span> تشخيص أولي بناءً على قاعدة بيانات طبية ضخمة</li>
+                <li><span class="check">✓</span> اقتراح أدوية مناسبة لحالتك</li>
+                <li><span class="check">✓</span> تحذيرك لو حالتك محتاجة دكتور فوراً</li>
+                <li><span class="check">✓</span> محادثة تفاعلية سهلة ومباشرة</li>
+            </ul>
+        </div>
+        <div class="feature-preview">
+            <div class="phone-mockup">
+                <div class="phone-screen screen-chatbot">
+                    <div class="chat-header">
+                        <div class="chat-avatar">🤖</div>
+                        <div>
+                            <div class="chat-name">المساعد الطبي</div>
+                            <div class="chat-status">متصل الآن</div>
+                        </div>
+                    </div>
+                    <div class="chat-bubble">
+                        مرحباً! أنا مساعدك الطبي الذكي. وصفلي أعراضك وهحللها لك 🔍
+                    </div>
+                    <div class="chat-bubble user">
+                        عندي صداع من الصبح مع حمى خفيفة
+                    </div>
+                    <div class="chat-bubble">
+                       بناءً على الأعراض، يبدو أنك تعاني من <strong>صداع توتري مع حمى خفيفة</strong>. أنصحك ب:
+                    </div>
+                    <div class="chat-options">
+                        <div class="chat-option">🌡️ حمى</div>
+                        <div class="chat-option">🤕 صداع</div>
+                        <div class="chat-option">🤢 معدة</div>
+                        <div class="chat-option">🤧 برد</div>
+                        <div class="chat-option">🦴 مفاصل</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════ 2. Health Scanner -->
+<section class="section">
+    <div class="feature-card reversed theme-cyan reveal">
+        <div class="bg-glow" style="top: -100px; left: -100px;"></div>
+        <div class="feature-info">
+            <div class="feature-icon-wrapper">📸</div>
+            <div class="feature-tag">تكنولوجيا متقدمة</div>
+            <h3>مسح صحي ذكي بالكاميرا</h3>
+            <p>صور أيدك أو لسانك أو عيونك والكاميرا الذكية هتقيس نسبتك الصحية في ثانية – أكسجين الدم، حرارة الجلد، ترطيب البشرة، ومزيد.</p>
+            <ul class="feature-benefits">
+                <li><span class="check">✓</span> مسح سريع بأكثر من 5 أنماط مختلفة</li>
+                <li><span class="check">✓</span> قياس نسبة الأكسجين في الدم بدون جهاز</li>
+                <li><span class="check">✓</span> تحليل ترطيب البشرة وإرهاق العيون</li>
+                <li><span class="check">✓</span> تقييم الدورة الدموية وصحة الهضم</li>
+                <li><span class="check">✓</span> نتائج فورية مع توصيات مخصصة</li>
+            </ul>
+        </div>
+        <div class="feature-preview">
+            <div class="phone-mockup">
+                <div class="phone-screen screen-scanner">
+                    <div style="font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #00BCD4;">مسح صحي ذكي</div>
+                    <div class="scanner-area">
+                        <div class="scan-line"></div>
+                        <div class="icon">🖐️</div>
+                    </div>
+                    <div class="scanner-result">
+                        ✅ تم اكتشاف: أكسجين 97.5% | نبض 72 ب/د | حرارة 33.2°
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════ 3. Health Twin -->
+<section class="section">
+    <div class="feature-card theme-green reveal">
+        <div class="bg-glow" style="top: -100px; right: -100px;"></div>
+        <div class="feature-info">
+            <div class="feature-icon-wrapper">🧬</div>
+            <div class="feature-tag">لوحة تحكم صحية</div>
+            <h3>التوأم الصحي</h3>
+            <p>ملفك الصحي الشخصي اللي بيتتبع نشاطك اليومي – المشي، المية، النوم، السعرات – وبيربطه بالمقياسات الصحية زي ضغط الدم وسكر الدم.</p>
+            <ul class="feature-benefits">
+                <li><span class="check">✓</span> تتبع يومي للمشي وشرب المية والنوم</li>
+                <li><span class="check">✓</span> إدخال القيم بسهولة بضغطة واحدة</li>
+                <li><span class="check">✓</span> عرض المقياسات الصحية مع الحالة (طبيعي/تنبيه/حرج)</li>
+                <li><span class="check">✓</span> حساب نسبة الصحة الشاملة تلقائياً</li>
+                <li><span class="check">✓</span> إضافة قياسات جديدة (ضغط، سكر، نبض، حرارة)</li>
+            </ul>
+        </div>
+        <div class="feature-preview">
+            <div class="phone-mockup">
+                <div class="phone-screen screen-twin">
+                    <div class="twin-header">
+                        <div class="twin-avatar">🧑</div>
+                        <div>
+                            <div class="twin-name">28 سنة • O+</div>
+                            <div class="twin-info">78.5 كجم • 175 سم</div>
+                        </div>
+                    </div>
+                    <div class="twin-activities">
+                        <div class="twin-activity">
+                            <div class="emoji">🚶</div>
+                            <div class="label">المشي</div>
+                            <div class="value">6,500</div>
+                            <div class="progress"><div class="progress-fill" style="width: 65%; background: #4CAF50;"></div></div>
+                        </div>
+                        <div class="twin-activity">
+                            <div class="emoji">💧</div>
+                            <div class="label">المية</div>
+                            <div class="value">5 / 8</div>
+                            <div class="progress"><div class="progress-fill" style="width: 62%; background: #2196F3;"></div></div>
+                        </div>
+                        <div class="twin-activity">
+                            <div class="emoji">😴</div>
+                            <div class="label">النوم</div>
+                            <div class="value">7.5 س</div>
+                            <div class="progress"><div class="progress-fill" style="width: 94%; background: #9C27B0;"></div></div>
+                        </div>
+                        <div class="twin-activity">
+                            <div class="emoji">🔥</div>
+                            <div class="label">السعرات</div>
+                            <div class="value">1,850</div>
+                            <div class="progress"><div class="progress-fill" style="width: 84%; background: #FF9800;"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════ 4. Medication Reminders -->
+<section class="section">
+    <div class="feature-card reversed theme-orange reveal">
+        <div class="bg-glow" style="top: -100px; left: -100px;"></div>
+        <div class="feature-info">
+            <div class="feature-icon-wrapper">💊</div>
+            <div class="feature-tag">تذكيرات ذكية</div>
+            <h3>تذكيرات الأدوية</h3>
+            <p>متفوتش جرعة أدويةك تاني! نظام تذكيرات ذكي بيفكرك بالوقت المناسب وبتتابع التزامك اليومي.</p>
+            <ul class="feature-benefits">
+                <li><span class="check">✓</span> تذكيرات في الأوقات المحددة لكل دواء</li>
+                <li><span class="check">✓</span> تسجيل اتخاذ الدواء بضغطة واحدة</li>
+                <li><span class="check">✓</span> تتبع التزامك اليومي والأسبوعي</li>
+                <li><span class="check">✓</span> إضافة أدوية بسهولة مع الجرعة والمواعيد</li>
+                <li><span class="check">✓</span> تنبيهات لو نسيت تاخد الدواء</li>
+            </ul>
+        </div>
+        <div class="feature-preview">
+            <div class="phone-mockup">
+                <div class="phone-screen screen-reminders">
+                    <div style="font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #FF9800;">تذكيرات الأدوية</div>
+                    <div class="reminder-card" style="border-color: #4CAF50;">
+                        <div class="reminder-icon" style="background: rgba(76,175,80,0.15);">💊</div>
+                        <div>
+                            <div class="reminder-name">فيتامين د</div>
+                            <div class="reminder-time">08:00 صباحاً</div>
+                        </div>
+                        <div class="reminder-check done">✓</div>
+                    </div>
+                    <div class="reminder-card" style="border-color: #2196F3;">
+                        <div class="reminder-icon" style="background: rgba(33,150,243,0.15);">🐟</div>
+                        <div>
+                            <div class="reminder-name">أوميغا 3</div>
+                            <div class="reminder-time">09:00 صباحاً</div>
+                        </div>
+                        <div class="reminder-check done">✓</div>
+                    </div>
+                    <div class="reminder-card" style="border-color: #9C27B0;">
+                        <div class="reminder-icon" style="background: rgba(156,39,176,0.15);">🧪</div>
+                        <div>
+                            <div class="reminder-name">Magnesium</div>
+                            <div class="reminder-time">10:00 مساءً</div>
+                        </div>
+                        <div class="reminder-check"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════ 5. Telemedicine -->
+<section class="section">
+    <div class="feature-card theme-green2 reveal">
+        <div class="bg-glow" style="top: -100px; right: -100px;"></div>
+        <div class="feature-info">
+            <div class="feature-icon-wrapper">🩺</div>
+            <div class="feature-tag">طب عن بُعد</div>
+            <h3>طب عن بُعد</h3>
+            <p>تواصل مع دكتور متخصص من البيت بالموبايل – فيديو أو مكالمة – من غير ما تتحشر في الزحمة أو تستنى في الاستراحة.</p>
+            <ul class="feature-benefits">
+                <li><span class="check">✓</span> قائمة بأطباء متخصصين وأسعارهم</li>
+                <li><span class="check">✓</span> فلترة حسب التخصص (باطنية، جلدية، أسنان...)</li>
+                <li><span class="check">✓</span> تقييمات المرضى لكل دكتور</li>
+                <li><span class="check">✓</span> إتاحة فورية للأطباء المتاحين</li>
+                <li><span class="check">✓</span> بدء جلسة فورية بضغطة واحدة</li>
+            </ul>
+        </div>
+        <div class="feature-preview">
+            <div class="phone-mockup">
+                <div class="phone-screen screen-tele">
+                    <div style="font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #4CAF50;">طب عن بُعد</div>
+                    <div class="doctor-card">
+                        <div class="doctor-avatar">👨‍⚕️<div class="online"></div></div>
+                        <div>
+                            <div class="doctor-name">د. أحمد محمد</div>
+                            <div class="doctor-spec">باطنية</div>
+                            <div class="doctor-rating">⭐ 4.8</div>
+                        </div>
+                    </div>
+                    <div class="doctor-card">
+                        <div class="doctor-avatar" style="background: linear-gradient(135deg, #E91E63, #AD1457);">👩‍⚕️<div class="online"></div></div>
+                        <div>
+                            <div class="doctor-name">د. سارة علي</div>
+                            <div class="doctor-spec">جلدية</div>
+                            <div class="doctor-rating">⭐ 4.9</div>
+                        </div>
+                    </div>
+                    <div class="doctor-card">
+                        <div class="doctor-avatar" style="background: linear-gradient(135deg, #FF9800, #E65100);">👩‍⚕️<div class="online"></div></div>
+                        <div>
+                            <div class="doctor-name">د. فاطمة أحمد</div>
+                            <div class="doctor-spec">أسنان</div>
+                            <div class="doctor-rating">⭐ 4.7</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════ 6. Health Wallet -->
+<section class="section">
+    <div class="feature-card reversed theme-blue reveal">
+        <div class="bg-glow" style="top: -100px; left: -100px;"></div>
+        <div class="feature-info">
+            <div class="feature-icon-wrapper">🏥</div>
+            <div class="feature-tag">ملف رقمي</div>
+            <h3>المحفظة الصحية</h3>
+            <p>كل بياناتك الصحية في مكان واحد آمن – ملفك الشخصي، المقياسات، التشخيصات، والوصفات الطبية – متاح في أي وقت.</p>
+            <ul class="feature-benefits">
+                <li><span class="check">✓</span> ملف شخصي شامل (العمر، الوزن، فصيلة الدم)</li>
+                <li><span class="check">✓</span> سجل المقياسات الصحية بالوقت والتاريخ</li>
+                <li><span class="check">✓</span> قائمة الحساسية والأمراض المزمنة</li>
+                <li><span class="check">✓</span> توقعات صحية مبنية على بياناتك</li>
+                <li><span class="check">✓</span> خطة وقائية مخصصة ليك</li>
+            </ul>
+        </div>
+        <div class="feature-preview">
+            <div class="phone-mockup">
+                <div class="phone-screen screen-wallet">
+                    <div style="font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #2196F3;">المحفظة الصحية</div>
+                    <div class="wallet-card" style="background: linear-gradient(135deg, #4CAF50, #2E7D32);">
+                        <div class="card-title">ضغط الدم</div>
+                        <div class="card-value">120 / 80</div>
+                        <div class="card-sub">mmHg • طبيعي ✅</div>
+                    </div>
+                    <div class="wallet-card" style="background: linear-gradient(135deg, #2196F3, #0D47A1);">
+                        <div class="card-title">سكر الدم</div>
+                        <div class="card-value">95 mg/dL</div>
+                        <div class="card-sub">صائم • طبيعي ✅</div>
+                    </div>
+                    <div class="wallet-card" style="background: linear-gradient(135deg, #E91E63, #AD1457);">
+                        <div class="card-title">نبضات القلب</div>
+                        <div class="card-value">72 ب/د</div>
+                        <div class="card-sub">معدل طبيعي ✅</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════ 7. Health Challenge -->
+<section class="section">
+    <div class="feature-card theme-gold reveal">
+        <div class="bg-glow" style="top: -100px; right: -100px;"></div>
+        <div class="feature-info">
+            <div class="feature-icon-wrapper">🏆</div>
+            <div class="feature-tag">تحفيز وتتبع</div>
+            <h3>تحدي الصحة</h3>
+            <p>خلّي صحتك لعبة! اكسب نقاط وإنجازات مع كل عادة صحية. التحديات بتتحسب من بياناتك الحقيقية في التوأم الصحي.</p>
+            <ul class="feature-benefits">
+                <li><span class="check">✓</span> إنجازات بتتفتح تلقائياً من نشاطك اليومي</li>
+                <li><span class="check">✓</span> تحديات المشي والمية والنوم والسعرات</li>
+                <li><span class="check">✓</span> سلسلة يومية (streak) للعادات الصحية</li>
+                <li><span class="check">✓</span> نظام نقاط ومستويات تحفيزي</li>
+                <li><span class="check">✓</span> ربط مباشر بالتوأم الصحي – بيانات حقيقية</li>
+            </ul>
+        </div>
+        <div class="feature-preview">
+            <div class="phone-mockup">
+                <div class="phone-screen screen-game">
+                    <div class="game-level">
+                        <div class="level-num">المستوى 5</div>
+                        <div class="level-label">محارب صحي • 1,250 نقطة</div>
+                    </div>
+                    <div class="game-achievements">
+                        <div class="game-ach">🎯</div>
+                        <div class="game-ach">🔥</div>
+                        <div class="game-ach">📸</div>
+                        <div class="game-ach locked">🏆</div>
+                        <div class="game-ach locked">🧠</div>
+                    </div>
+                    <div class="game-challenge">
+                        <div class="ch-title">🚶 تحدي المشي — 6,500 / 10,000</div>
+                        <div class="ch-bar"><div class="ch-fill" style="width: 65%; background: #4CAF50;"></div></div>
+                    </div>
+                    <div class="game-challenge">
+                        <div class="ch-title">💧 تحدي المية — 5 / 8</div>
+                        <div class="ch-bar"><div class="ch-fill" style="width: 62%; background: #2196F3;"></div></div>
+                    </div>
+                    <div class="game-challenge">
+                        <div class="ch-title">😴 تحدي النوم — 7.5 / 8 ساعات</div>
+                        <div class="ch-bar"><div class="ch-fill" style="width: 94%; background: #9C27B0;"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════ 8. AR Medicine Check -->
+<section class="section">
+    <div class="feature-card reversed theme-pink reveal">
+        <div class="bg-glow" style="top: -100px; left: -100px;"></div>
+        <div class="feature-info">
+            <div class="feature-icon-wrapper">🔬</div>
+            <div class="feature-tag">واقع معزز</div>
+            <h3>فحص الأدوية بالواقع المعزز</h3>
+            <p>صور الأدوية بكاميرا الموبايل والـ AR هيكتشفها وتفهمك تفاعلات الأدوية مع بعض – حماية من أخطار الدواء!</p>
+            <ul class="feature-benefits">
+                <li><span class="check">✓</span> اكتشاف الأدوية بالكاميرا أو المعرض</li>
+                <li><span class="check">✓</span> تحليل تفاعلات الأدوية مع بعض</li>
+                <li><span class="check">✓</span> تصنيف التفاعل: خطر، تنبيه، آمن</li>
+                <li><span class="check">✓</span> نصائح طبية لكل تفاعل مكتشف</li>
+                <li><span class="check">✓</span> واجهة AR تفاعلية مع شبكة قياس</li>
+            </ul>
+        </div>
+        <div class="feature-preview">
+            <div class="phone-mockup">
+                <div class="phone-screen screen-ar">
+                    <div style="font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #9C27B0;">فحص الأدوية AR</div>
+                    <div class="ar-viewport">
+                        <div class="ar-grid"></div>
+                        <div class="ar-icon">💊</div>
+                        <div class="ar-corner tl"></div>
+                        <div class="ar-corner tr"></div>
+                        <div class="ar-corner bl"></div>
+                        <div class="ar-corner br"></div>
+                    </div>
+                    <div class="ar-medicine">
+                        <div class="med-icon">💊</div>
+                        <div>
+                            <div class="med-name">باراسيتامول</div>
+                            <div class="med-dose">500mg • 3 مرات يومياً</div>
+                        </div>
+                    </div>
+                    <div class="ar-medicine">
+                        <div class="med-icon">💉</div>
+                        <div>
+                            <div class="med-name">أموكسيسيلين</div>
+                            <div class="med-dose">250mg • مضاد حيوي</div>
+                        </div>
+                    </div>
+                    <div class="ar-warning">
+                        <div class="warn-title">⚠️ تنبيه تفاعل</div>
+                        <div class="warn-text">أوميبرازول ممكن يقلل امتصاص أموكسيسيلين. خذ فاصل ساعتين.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════ Footer -->
+<footer class="footer">
+    <div class="tagline">صحتك أمانة – وكل خطوة بتفرق</div>
+    <p>الخدمات الطبية المبتكرة – منصة Engineers Syndicate ERP</p>
+</footer>
+
+<!-- ════════════════════════════════════════════════════ Scroll Reveal Script -->
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

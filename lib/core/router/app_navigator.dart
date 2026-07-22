@@ -67,6 +67,17 @@ class AppRouteNames {
   static const String webstoreAdminLoyaltySettings = '/webstore/admin/loyalty/settings';
   static const String webstoreAdminLoyaltyReports = '/webstore/admin/loyalty/reports';
   static const String webstoreAdminCustomerPoints = '/webstore/admin/loyalty/customer-points';
+
+  // ─── Medical Services (Futuristic) ────────────────────
+  static const String medicalServicesMain = '/medical/services';
+  static const String medicalSymptomChat = '/medical/symptom-chat';
+  static const String medicalHealthScanner = '/medical/health-scanner';
+  static const String medicalHealthTwin = '/medical/health-twin';
+  static const String medicalReminders = '/medical/reminders';
+  static const String medicalTelemedicine = '/medical/telemedicine';
+  static const String medicalHealthWallet = '/medical/health-wallet';
+  static const String medicalGamification = '/medical/gamification';
+  static const String medicalArCheck = '/medical/ar-check';
 }
 
 class AppNavigator {
