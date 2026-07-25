@@ -165,7 +165,7 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
     Color? iconColor,
     required VoidCallback onTap,
   }) {
-    return GestureDetector(
+    return GestureDetector (
       onTap: onTap,
       child: Icon(
         icon,

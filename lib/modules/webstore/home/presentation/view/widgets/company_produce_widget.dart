@@ -8,19 +8,32 @@ import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/modules/webstore/catalog/data/models/manufacturer_model.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import 'package:erp/core/common_widget/app_empty_widget/app_empty_widget.dart';
+import 'package:erp/core/localization/locale_keys.dart';
+
 class CompanyProduceWidget extends ConsumerWidget {
   const CompanyProduceWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final companies = ref.watch(companyProducesVmProvider);
+    final state = ref.watch(companyProducesVmProvider);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    if (companies.isEmpty) {
+    if (state.isLoading && state.manufacturers.isEmpty) {
       return SizedBox(
         height: 100.h,
         child: const Center(child: CircularProgressIndicator.adaptive()),
+      );
+    }
+
+    if (state.manufacturers.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.h),
+        child: AppEmptyWidget(
+          message: LocaleKeys.common.no_data.tr(context: context),
+          showGlassBackground: false,
+        ),
       );
     }
 
@@ -29,7 +42,7 @@ class CompanyProduceWidget extends ConsumerWidget {
       physics: const BouncingScrollPhysics(),
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       child: Row(
-        children: companies.map((company) => _buildCompanyItem(context, company, isDark, theme)).toList(),
+        children: state.manufacturers.map((company) => _buildCompanyItem(context, company, isDark, theme)).toList(),
       ),
     );
   }
