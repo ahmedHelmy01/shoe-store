@@ -2,7 +2,7 @@
   "appName": "Accounting ERP",
   "appVersion": "1.0.0",
   "bundleId": "com.moon.accounting",
-  "baseURL": "https://moon-erp.elbaset.com",
+  "baseURL": "https://tarshoby.elbaset.com",
   "selectedTheme": "light",
   "initialScreen": "/accounts_dashboard",
   "enabledScreens": [

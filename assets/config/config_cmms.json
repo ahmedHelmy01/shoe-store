@@ -2,7 +2,7 @@
   "appName": "CMMS ERP",
   "appVersion": "1.0.0",
   "bundleId": "com.moon.cmms",
-  "baseURL": "https://moon-erp.elbaset.com",
+  "baseURL": "https://tarshoby.elbaset.com",
   "selectedTheme": "light",
   "initialScreen": "/cmms_dashboard",
   "enabledScreens": [

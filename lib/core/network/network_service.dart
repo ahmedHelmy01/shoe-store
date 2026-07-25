@@ -19,16 +19,22 @@ import 'package:logger/logger.dart';
 import 'package:erp/core/services/session_manager.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'network_exceptions.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/network/progress_multipart_request.dart';
 
 class NetworkService {
   final http.Client _client;
   final SessionManager _session;
+  final void Function()? _onUnauthorized;
   final Logger _logger = Logger(
     printer: PrettyPrinter(methodCount: 0, printEmojis: true),
   );
 
-  NetworkService(this._client, this._session);
+  NetworkService(
+    this._client,
+    this._session, {
+    void Function()? onUnauthorized,
+  }) : _onUnauthorized = onUnauthorized;
 
   // ─── Core HTTP Methods ──────────────────────────────
 
@@ -140,16 +146,13 @@ class NetworkService {
 
       // 4. Logging & Processing Response
       _logResponse(response);
-      if (uri.toString().contains('/categories')) {
-        print('📦 CATEGORIES RESPONSE: ${_decodeBody(response.body)}');
-      }
       return _processResponse(response);
     } on SocketException {
       throw NoInternetException();
     } on TimeoutException {
       throw DeadlineExceededException();
     } on http.ClientException {
-      throw NetworkException(message: 'تعذر الاتصال بالخادم، تحقق من اتصالك وحاول مرة أخرى');
+      throw NetworkException(message: LocaleKeys.common.server_not_responding);
     } catch (e) {
       if (e is NetworkException) rethrow;
       throw NetworkException(message: e.toString());
@@ -239,7 +242,7 @@ class NetworkService {
     } on TimeoutException {
       throw DeadlineExceededException();
     } on http.ClientException {
-      throw NetworkException(message: 'تعذر الاتصال بالخادم، تحقق من اتصالك وحاول مرة أخرى');
+      throw NetworkException(message: LocaleKeys.common.server_not_responding);
     } catch (e) {
       if (e is NetworkException) rethrow;
       throw NetworkException(message: e.toString());
@@ -292,6 +295,7 @@ class NetworkService {
           data: data,
         );
       case 401:
+        _onUnauthorized?.call();
         throw UnauthorizedException(message: serverMessage, data: data);
       case 403:
         throw ForbiddenException(message: serverMessage, data: data);

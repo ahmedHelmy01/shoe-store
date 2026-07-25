@@ -15,7 +15,7 @@ class AppPriceText extends StatelessWidget {
     super.key,
     required this.price,
     this.oldPrice,
-    this.currency = 'LE',
+    this.currency = AppConstants.currency,
     this.priceStyle,
     this.oldPriceStyle,
     this.mainAxisAlignment = MainAxisAlignment.start,

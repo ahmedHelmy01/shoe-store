@@ -8,7 +8,7 @@ class EnvConfig {
   EnvConfig._();
 
   /// API Base URL
-  static const String baseUrl = 'https://moon-erp.elbaset.com';
+  static const String baseUrl = 'https://tarshoby.elbaset.com';
 
   /// API Version prefix (if needed)
   static const String apiPrefix = '/api';

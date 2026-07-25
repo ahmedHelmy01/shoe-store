@@ -2,7 +2,7 @@
   "appName": "HRM ERP",
   "appVersion": "1.0.0",
   "bundleId": "com.moon.hrm",
-  "baseURL": "https://moon-erp.elbaset.com",
+  "baseURL": "https://tarshoby.elbaset.com",
   "selectedTheme": "light",
   "initialScreen": "/hrm_dashboard",
   "enabledScreens": [

@@ -3,13 +3,13 @@
 /// Manages base URLs and path concatenations based on app flavor.
 library;
 
-import 'package:erp/core/config/env_config.dart';
+import 'package:erp/core/config/app_config_manager.dart';
 
 class NetworkUrl {
   NetworkUrl._();
 
-  /// The primary API base URL
-  static String get baseUrl => EnvConfig.baseUrl;
+  /// The primary API base URL (read from the loaded JSON config)
+  static String get baseUrl => AppConfigManager.instance.baseURL;
 
   /// Full URL combined with base
   static String fullUrl(String path) {

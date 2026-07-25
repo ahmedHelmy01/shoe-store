@@ -2,7 +2,7 @@
   "appName": "CRM ERP",
   "appVersion": "1.0.0",
   "bundleId": "com.moon.crm",
-  "baseURL": "https://moon-erp.elbaset.com",
+  "baseURL": "https://tarshoby.elbaset.com",
   "selectedTheme": "light",
   "initialScreen": "/crm_dashboard",
   "enabledScreens": [

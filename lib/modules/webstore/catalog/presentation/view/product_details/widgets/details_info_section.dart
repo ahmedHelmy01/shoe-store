@@ -36,8 +36,8 @@ class DetailsInfoSection extends StatelessWidget {
             height: 1,
             thickness: 1,
             color: isDark
-                ? Colors.white.withOpacity(0.05)
-                : Colors.grey.withOpacity(0.1),
+                ? Colors.white.withValues(alpha: 0.05)
+                : Colors.grey.withValues(alpha: 0.1),
           ),
         ),
         _buildStock(context),
@@ -116,7 +116,10 @@ class DetailsInfoSection extends StatelessWidget {
     ThemeData theme,
     bool isDark,
   ) {
-    if (product.sku == null && product.barcode == null) {
+    final hasSku = product.sku != null && product.sku!.trim().isNotEmpty;
+    final hasBarcode = product.barcode != null && product.barcode!.trim().isNotEmpty;
+
+    if (!hasSku && !hasBarcode) {
       return const SizedBox.shrink();
     }
     return Container(
@@ -124,31 +127,31 @@ class DetailsInfoSection extends StatelessWidget {
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: isDark
-            ? Colors.white.withOpacity(0.03)
-            : theme.primaryColor.withOpacity(0.03),
+            ? Colors.white.withValues(alpha: 0.03)
+            : theme.primaryColor.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
           color: isDark
-              ? Colors.white.withOpacity(0.05)
-              : theme.primaryColor.withOpacity(0.08),
+              ? Colors.white.withValues(alpha: 0.05)
+              : theme.primaryColor.withValues(alpha: 0.08),
         ),
       ),
       child: Column(
         children: [
-          if (product.sku != null)
+          if (hasSku)
             _buildInfoRow(
               context,
               Icons.tag_rounded,
               LocaleKeys.webstore.catalog.product_sku.tr(context: context),
-              product.sku!,
+              product.sku!.trim(),
             ),
-          if (product.sku != null && product.barcode != null) 8.verticalSpace,
-          if (product.barcode != null)
+          if (hasSku && hasBarcode) 8.verticalSpace,
+          if (hasBarcode)
             _buildInfoRow(
               context,
               Icons.qr_code_scanner_rounded,
               LocaleKeys.webstore.catalog.barcode.tr(context: context),
-              product.barcode!,
+              product.barcode!.trim(),
               isBarcode: true,
             ),
         ],

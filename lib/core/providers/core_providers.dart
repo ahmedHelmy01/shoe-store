@@ -32,6 +32,9 @@ final networkServiceProvider = Provider<NetworkService>((ref) {
   return NetworkService(
     ref.watch(httpClientProvider),
     ref.watch(sessionManagerProvider),
+    onUnauthorized: () {
+      ref.read(authStateProvider.notifier).setUnauthenticated();
+    },
   );
 });
 

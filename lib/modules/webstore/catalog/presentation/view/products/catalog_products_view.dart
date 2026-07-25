@@ -83,6 +83,11 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
         _sortBy = 'sale_price';
         _sortDir = 'desc';
         break;
+      case 'offers':
+      case 'tarshooby_offers':
+        _sortBy = 'sale_price';
+        _sortDir = 'desc';
+        break;
       case 'latest':
       case 'newest':
         _sortBy = 'created_at';
@@ -101,6 +106,9 @@ class _CatalogProductsViewState extends ConsumerState<CatalogProductsView> {
     }
     final keys = LocaleKeys.webstore;
     switch (widget.initialPreset) {
+      case 'offers':
+      case 'tarshooby_offers':
+        return keys.home.tarshooby_offers.tr(context: context);
       case 'exclusive':
         return keys.home.feature_exclusive_offers.tr(context: context);
       case 'best_seller':

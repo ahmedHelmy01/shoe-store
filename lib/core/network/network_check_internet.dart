@@ -4,7 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/constants/app_constants.dart';
-import 'package:erp/core/config/env_config.dart';
+import 'package:erp/core/config/app_config_manager.dart';
 
 /// 📶 Network Status Notifier (Modern Riverpod 3.0 Notifier)
 ///
@@ -113,7 +113,7 @@ class NetworkStatusNotifier extends Notifier<bool> {
     // 1. Try to resolve the backend host since that's what the app interacts with.
     //    This also solves emulator DNS issues for external sites like google.com.
     try {
-      final host = Uri.parse(EnvConfig.baseUrl).host;
+      final host = Uri.parse(AppConfigManager.instance.baseURL).host;
       if (host.isNotEmpty) {
         final result = await InternetAddress.lookup(host)
             .timeout(AppConstants.duration3s);

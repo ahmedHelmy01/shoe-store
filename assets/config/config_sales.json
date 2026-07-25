@@ -2,7 +2,7 @@
   "appName": "Sales ERP",
   "appVersion": "1.0.0",
   "bundleId": "com.moon.sales",
-  "baseURL": "https://moon-erp.elbaset.com",
+  "baseURL": "https://tarshoby.elbaset.com",
   "selectedTheme": "light",
   "initialScreen": "/dashboard",
   "enabledScreens": [

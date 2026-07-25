@@ -2,7 +2,7 @@
   "appName": "Full ERP System",
   "appVersion": "1.0.0",
   "bundleId": "com.moon.erp",
-  "baseURL": "https://moon-erp.elbaset.com",
+  "baseURL": "https://tarshoby.elbaset.com",
   "selectedTheme": "dark",
   "initialScreen": "/splash",
   "enabledScreens": [

@@ -9,7 +9,7 @@ final wishlistRepositoryProvider = Provider<IWishlistRepository>((ref) {
 });
 
 final wishlistProvider =
-    AsyncNotifierProvider.autoDispose<WishlistNotifier, List<WebStoreProduct>>(() {
+    AsyncNotifierProvider<WishlistNotifier, List<WebStoreProduct>>(() {
   return WishlistNotifier();
 });
 
@@ -39,7 +39,7 @@ class WishlistNotifier extends AsyncNotifier<List<WebStoreProduct>> {
             .toList();
       },
       failure: (failure) {
-        throw failure.message;
+        return <WebStoreProduct>[];
       },
     );
   }

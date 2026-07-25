@@ -2,7 +2,7 @@
   "appName": "POS ERP",
   "appVersion": "1.0.0",
   "bundleId": "com.moon.pos",
-  "baseURL": "https://moon-erp.elbaset.com",
+  "baseURL": "https://tarshoby.elbaset.com",
   "selectedTheme": "light",
   "initialScreen": "/pos",
   "enabledScreens": [

@@ -61,7 +61,11 @@ class _FlashSaleWidgetState extends State<FlashSaleWidget> {
             AppNavigator.push(
               context,
               AppRouteNames.webstoreCatalogProducts,
-              arguments: {'preset': 'latest'},
+              arguments: {
+                'preset': 'offers',
+                'category_title':
+                    LocaleKeys.webstore.home.tarshooby_offers.tr(context: context),
+              },
             );
           },
           child: Row(
@@ -109,7 +113,7 @@ class _FlashSaleWidgetState extends State<FlashSaleWidget> {
                 scrollDirection: Axis.horizontal,
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 itemCount: flashProducts.length,
-                separatorBuilder: (_, __) => 12.horizontalSpace,
+                separatorBuilder: (context, index) => 12.horizontalSpace,
                 itemBuilder: (context, index) {
                   return SizedBox(
                     width: 160.w,

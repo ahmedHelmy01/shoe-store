@@ -20,9 +20,7 @@ class PointsNotifier extends AsyncNotifier<PointsModel> {
   @override
   Future<PointsModel> build() async {
     final auth = ref.watch(authStateProvider);
-    print('=== [PointsNotifier] build called. AuthStatus: ${auth.status} ===');
     if (auth.status != AuthStatus.authenticated) {
-      print('=== [PointsNotifier] User is not authenticated, skipping API call ===');
       return PointsModel(balance: 0, transactions: const []);
     }
     return _fetchPoints();
@@ -33,7 +31,7 @@ class PointsNotifier extends AsyncNotifier<PointsModel> {
     final result = await repo.getPoints();
     return result.when(
       success: (data) => data,
-      failure: (failure) => throw failure.message,
+      failure: (failure) => PointsModel(balance: 0, transactions: const []),
     );
   }
 
@@ -44,19 +42,27 @@ class PointsNotifier extends AsyncNotifier<PointsModel> {
 }
 
 final loyaltySummaryProvider = FutureProvider<Map<String, dynamic>>((ref) async {
+  final auth = ref.watch(authStateProvider);
+  if (auth.status != AuthStatus.authenticated) {
+    return {};
+  }
   final repo = ref.read(pointsRepositoryProvider);
   final result = await repo.getLoyaltySummary();
   return result.when(
     success: (data) => data,
-    failure: (e) => throw e,
+    failure: (e) => {},
   );
 });
 
 final loyaltyPreviewProvider = FutureProvider.family<Map<String, dynamic>, int>((ref, points) async {
+  final auth = ref.watch(authStateProvider);
+  if (auth.status != AuthStatus.authenticated) {
+    return {};
+  }
   final repo = ref.read(pointsRepositoryProvider);
   final result = await repo.previewLoyalty(points);
   return result.when(
     success: (data) => data,
-    failure: (e) => throw e,
+    failure: (e) => {},
   );
 });

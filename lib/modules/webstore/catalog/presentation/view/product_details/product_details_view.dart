@@ -167,34 +167,14 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.only(top: 8.h),
-        width: 40.w,
-        height: 40.w,
-        decoration: BoxDecoration(
-          color: Theme.of(context).brightness == Brightness.dark
-              ? Colors.white.withOpacity(0.1)
-              : Colors.black.withOpacity(0.05),
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
-        ),
-        child: ClipOval(
-          child: BackdropFilter(
-            filter: ColorFilter.mode(
-              Colors.black.withOpacity(0.1),
-              BlendMode.darken,
-            ),
-            child: Icon(
-              icon,
-              color:
-                  iconColor ??
-                  (Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.black87),
-              size: 20.sp,
-            ),
-          ),
-        ),
+      child: Icon(
+        icon,
+        color:
+            iconColor ??
+            (Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black87),
+        size: 20.sp,
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/core/network/network_url.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 
 class DetailsImageGallery extends StatefulWidget {
@@ -71,7 +72,7 @@ class _DetailsImageGalleryState extends State<DetailsImageGallery> {
   String _formatImageUrl(String url) {
     if (url.isEmpty) return '';
     if (url.startsWith('http')) return url;
-    return 'https://moon-erp.elbaset.com/storage/$url';
+    return NetworkUrl.imageUrl(url);
   }
 
   @override

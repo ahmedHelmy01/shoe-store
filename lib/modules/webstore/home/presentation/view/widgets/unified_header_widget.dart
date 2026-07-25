@@ -25,6 +25,7 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
   final TextEditingController _searchController = TextEditingController();
 
   void _onSearch() {
+    FocusManager.instance.primaryFocus?.unfocus();
     final keyword = _searchController.text.trim();
     if (keyword.isEmpty) return;
     ref.read(homeVmProvider.notifier).searchProducts(keyword);
@@ -144,7 +145,10 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
                         fontSize: 14.sp,
                         color: theme.hintColor,
                       ),
-                      prefixIcon: Icon(Icons.search, color: theme.hintColor),
+                      prefixIcon: IconButton(
+                        icon: Icon(Icons.search, color: theme.hintColor),
+                        onPressed: _onSearch,
+                      ),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(vertical: 12.h),
                     ),
@@ -153,7 +157,7 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
               ),
               12.horizontalSpace,
               InkWell(
-                onTap: () => widget.scaffoldKey.currentState?.openDrawer(),
+                onTap: _onSearch,
                 child: Container(
                   height: 48.h,
                   width: 48.h,

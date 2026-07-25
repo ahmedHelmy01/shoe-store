@@ -1,4 +1,5 @@
 import 'package:erp/core/network/network_url.dart';
+import 'package:erp/core/constants/app_constants.dart';
 
 class StoreCouponModel {
   final int? id;
@@ -103,7 +104,7 @@ class StoreCouponModel {
 
   String get valueLabel {
     if (discountType == 'fixed') {
-      return '${discountValue.toStringAsFixed(0)} LE';
+      return '${discountValue.toStringAsFixed(0)} ${AppConstants.currency}';
     } else {
       return '${discountValue.toStringAsFixed(0)}%';
     }
