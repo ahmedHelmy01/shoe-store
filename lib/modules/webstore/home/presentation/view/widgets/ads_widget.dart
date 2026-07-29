@@ -57,7 +57,7 @@ class AdsSection extends ConsumerWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20.r),
                     child: AppImage(
-                      imagePath: ad.image ?? '',
+                      imagePath: ad.image,
                       width: double.infinity,
                       height: double.infinity,
                       fit: BoxFit.cover,

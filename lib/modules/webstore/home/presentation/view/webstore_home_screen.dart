@@ -15,7 +15,7 @@ import 'package:erp/modules/webstore/home/presentation/view/widgets/ads_widget.d
 import 'package:erp/modules/webstore/home/presentation/view/widgets/product_grid_widget.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/company_produce_widget.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/slider_widget.dart';
-import 'package:erp/modules/webstore/home/presentation/view/widgets/flash_sale_widget.dart';
+import 'package:erp/modules/webstore/home/presentation/view/widgets/dynamic_offers_section.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/home_categories_row.dart';
 import 'package:erp/core/common_widget/app_section_header/app_section_header.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/ads/ads_view_model.dart';
@@ -116,7 +116,7 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                   ),
                   24.verticalSpace,
 
-                  // 4. Categories Row
+                  // 4. Categories Row (أقسام الصيدلية)
                   AppAnimation.fadeInUp(
                     delay: const Duration(milliseconds: 300),
                     child: Column(
@@ -131,7 +131,13 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                   ),
                   16.verticalSpace,
 
-                  // 5. Feature Links
+                  // 💥 Offer Slot 1: Hero Offer (With Timer & Products Reel) - Right after Pharmacy Sections
+                  AppAnimation.fadeInUp(
+                    delay: const Duration(milliseconds: 320),
+                    child: const OfferSlot1HeroWidget(),
+                  ),
+
+                  // 5. Feature Links (جميع الخدمات)
                   AppAnimation.fadeInUp(
                     delay: const Duration(milliseconds: 350),
                     child: Column(
@@ -145,23 +151,28 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                       ],
                     ),
                   ),
-                  24.verticalSpace,
+                  16.verticalSpace,
 
-                  // 5. Vouchers
+                  // 💥 Offer Slot 2: Dual Banners - Right after Services
+                  AppAnimation.fadeInUp(
+                    delay: const Duration(milliseconds: 370),
+                    child: const OfferSlot2DualWidget(),
+                  ),
+
+                  // 6. Vouchers (الكوبونات)
                   AppAnimation.fadeInUp(
                     delay: const Duration(milliseconds: 400),
                     child: const VouchersWidget(),
                   ),
-                  24.verticalSpace,
+                  16.verticalSpace,
 
-                  // 6. Flash Sale
+                  // 💥 Offer Slot 3: Featured Deals Carousel - Right after Vouchers
                   AppAnimation.fadeInUp(
-                    delay: const Duration(milliseconds: 500),
-                    child: const FlashSaleWidget(),
+                    delay: const Duration(milliseconds: 450),
+                    child: const OfferSlot3ReelWidget(),
                   ),
-                  24.verticalSpace,
 
-                  // 7. Most Ordered
+                  // 7. Most Ordered (الأكثر طلباً)
                   AppAnimation.fadeInUp(
                     delay: const Duration(milliseconds: 600),
                     child: Column(
@@ -181,7 +192,13 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                       ],
                     ),
                   ),
-                  24.verticalSpace,
+                  16.verticalSpace,
+
+                  // 💥 Offer Slot 4: Wide Promo Strip - Right after Most Ordered
+                  AppAnimation.fadeInUp(
+                    delay: const Duration(milliseconds: 650),
+                    child: const OfferSlot4StripWidget(),
+                  ),
 
                   // 8. Promotional Ads (Header is inside AdsSection now)
                   AppAnimation.fadeInUp(

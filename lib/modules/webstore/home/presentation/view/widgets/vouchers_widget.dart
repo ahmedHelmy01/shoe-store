@@ -32,7 +32,7 @@ class VouchersWidget extends ConsumerWidget {
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               scrollDirection: Axis.horizontal,
               itemCount: coupons.length,
-              separatorBuilder: (_, __) => 12.horizontalSpace,
+              separatorBuilder: (_, _) => 12.horizontalSpace,
               itemBuilder: (context, index) {
                 final coupon = coupons[index];
                 final theme = Theme.of(context);

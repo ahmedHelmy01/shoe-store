@@ -28,15 +28,13 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      ref.read(sliderVmProvider.notifier).getSliders();
-    });
     _startTimer();
   }
 
   void _startTimer() {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      if (!mounted) return;
       final isScrolling = ref.read(homeScrollProvider);
       if (isScrolling) return;
 
@@ -133,7 +131,7 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -148,17 +146,17 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
               width: double.infinity,
               height: double.infinity,
               fit: isDefault ? BoxFit.contain : BoxFit.cover,
-              color: isDefault ? Colors.white.withOpacity(0.9) : null,
+              color: isDefault ? Colors.white.withValues(alpha: 0.9) : null,
             ),
 
             if (isDefault)
-              Container(color: AppColors.primary.withOpacity(0.02)),
+              Container(color: AppColors.primary.withValues(alpha: 0.02)),
 
             Positioned.fill(
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.black.withOpacity(0.7), Colors.transparent],
+                    colors: [Colors.black.withValues(alpha: 0.7), Colors.transparent],
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                   ),
@@ -179,7 +177,7 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
                       fontSize: 22.sp,
                       shadows: [
                         Shadow(
-                          color: Colors.black.withOpacity(0.5),
+                          color: Colors.black.withValues(alpha: 0.5),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),

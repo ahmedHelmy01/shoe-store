@@ -44,7 +44,7 @@ class CompanyProduceWidget extends ConsumerWidget {
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
         itemCount: state.manufacturers.length,
-        separatorBuilder: (_, __) => 14.horizontalSpace,
+        separatorBuilder: (_, _) => 14.horizontalSpace,
         itemBuilder: (context, index) {
           return _buildDynamicManufacturerCard(
             context,
@@ -214,8 +214,8 @@ class CompanyProduceWidget extends ConsumerWidget {
         physics: const NeverScrollableScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
         itemCount: 3,
-        separatorBuilder: (_, __) => 14.horizontalSpace,
-        itemBuilder: (_, __) {
+        separatorBuilder: (_, _) => 14.horizontalSpace,
+        itemBuilder: (_, _) {
           return AppShimmer.box(
             width: 250.w,
             height: 95.h,

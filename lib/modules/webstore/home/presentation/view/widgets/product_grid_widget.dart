@@ -24,8 +24,8 @@ class ProductGridSection extends ConsumerWidget {
           scrollDirection: Axis.horizontal,
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           itemCount: 4,
-          separatorBuilder: (_, __) => 12.horizontalSpace,
-          itemBuilder: (_, __) => AppShimmer.productCard(),
+          separatorBuilder: (_, _) => 12.horizontalSpace,
+          itemBuilder: (_, _) => AppShimmer.productCard(),
         ),
       );
     }
@@ -62,7 +62,7 @@ class ProductGridSection extends ConsumerWidget {
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
           itemCount: products.length,
-          separatorBuilder: (_, __) => 12.horizontalSpace,
+          separatorBuilder: (_, _) => 12.horizontalSpace,
           itemBuilder: (context, index) {
             final product = products[index];
             return SizedBox(

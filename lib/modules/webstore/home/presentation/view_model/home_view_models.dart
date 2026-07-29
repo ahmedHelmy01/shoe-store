@@ -1,12 +1,11 @@
 import 'dart:convert';
-import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/modules/webstore/home/presentation/state/home_state.dart';
 import 'package:erp/modules/webstore/shared/data/providers/webstore_providers.dart';
 import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
-
 import 'package:erp/modules/webstore/home/data/models/coupon_model.dart';
 
 // ─── Re-exports for backward compatibility ──────────
@@ -27,31 +26,28 @@ class HomeVm extends Notifier<HomeState> {
     return HomeState();
   }
 
-  /// Initial loading sequence — runs in parallel for speed
+  /// Initial loading sequence — runs in parallel safely
   Future<void> initHome() async {
     await Future.wait([
       getCoupons(),
       getLatestProducts(),
     ]);
-    // Note: SliderVm and AdsVm handle their own initialization on build
   }
 
   Future<void> getCoupons() async {
     final prefs = ref.read(sharedPreferencesProvider);
-    final cacheKey = 'webstore_coupons_cache';
+    const cacheKey = 'webstore_coupons_cache';
 
     final result = await ref.read(cmsRepositoryProvider).getCoupons();
     result.when(
       success: (coupons) {
         state = state.copyWith(coupons: coupons);
-        // Cache the successful result
         final jsonList = coupons.map((c) => c.toJson()).toList();
         prefs.setString(cacheKey, jsonEncode(jsonList));
       },
       failure: (error) {
         debugPrint('❌ HomeVm: Coupons fetch failed: ${error.message}');
         
-        // Try to load from cache on failure
         final cachedData = prefs.getString(cacheKey);
         if (cachedData != null) {
           try {
@@ -62,26 +58,17 @@ class HomeVm extends Notifier<HomeState> {
             debugPrint('Error parsing cached coupons: $e');
           }
         }
-
-        if (error.message.contains('timeout')) {
-          Future.delayed(const Duration(seconds: 3), () => getCoupons());
-        }
       },
     );
   }
 
   Future<void> getLatestProducts() async {
     final prefs = ref.read(sharedPreferencesProvider);
-    final cacheKey = 'webstore_latest_products_cache';
+    const cacheKey = 'webstore_latest_products_cache';
     
     state = state.copyWith(isLoading: true);
 
-    var result = await ref.read(catalogRepositoryProvider).getProducts();
-
-    if (result.isFailure) {
-      await Future.delayed(const Duration(seconds: 1));
-      result = await ref.read(catalogRepositoryProvider).getProducts();
-    }
+    final result = await ref.read(catalogRepositoryProvider).getProducts();
 
     result.when(
       success: (data) {
@@ -94,14 +81,11 @@ class HomeVm extends Notifier<HomeState> {
           isLoading: false,
           errorMessage: null,
         );
-        
-        // Cache the successful result
         prefs.setString(cacheKey, jsonEncode(data));
       },
       failure: (error) {
         debugPrint('❌ HomeVm: Products fetch failed: ${error.message}');
         
-        // Try to load from cache on failure
         final cachedData = prefs.getString(cacheKey);
         if (cachedData != null) {
           try {

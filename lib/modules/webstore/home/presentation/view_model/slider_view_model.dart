@@ -17,32 +17,24 @@ class SliderVm extends Notifier<SliderState> {
 
   Future<void> getSliders() async {
     final prefs = ref.read(sharedPreferencesProvider);
-    final cacheKey = 'webstore_sliders_cache';
+    const cacheKey = 'webstore_sliders_cache';
 
-    state = SliderLoading();
-
-    // Attempt 1
-    var result = await ref.read(cmsRepositoryProvider).getSliders();
-
-    // Retry Logic
-    if (result.isFailure) {
-      await Future.delayed(const Duration(seconds: 1));
-      result = await ref.read(cmsRepositoryProvider).getSliders();
+    if (state is! SliderSuccess) {
+      state = SliderLoading();
     }
+
+    final result = await ref.read(cmsRepositoryProvider).getSliders();
 
     result.when(
       success: (data) {
         final List<dynamic> sliderJson = data['data'] ?? [];
         final sliders = sliderJson.map((j) => SliderModel.fromJson(j)).toList();
         state = SliderSuccess(sliders);
-        
-        // Cache successful result
         prefs.setString(cacheKey, jsonEncode(data));
       },
       failure: (error) {
         debugPrint('❌ SliderVm: Fetch failed: ${error.message}');
         
-        // Try cache
         final cachedData = prefs.getString(cacheKey);
         if (cachedData != null) {
           try {
