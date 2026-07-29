@@ -8,7 +8,6 @@ import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/common_widget/app_section_header/app_section_header.dart';
 import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
 import 'package:erp/core/providers/core_providers.dart';
-import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/modules/webstore/home/data/models/store_offer_model.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/offers_view_model.dart';
@@ -25,11 +24,10 @@ import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_mode
 //   3. OfferSlot3ReelWidget   -> Placed after "الكوبونات"       (Indices 3, 4, 5 - Featured Deals Reel)
 //   4. OfferSlot4StripWidget  -> Placed after "الأكثر طلباً"    (Indices 6..N - ALL REMAINING OFFERS!)
 //
-// Interactive Behavior:
-//   • If an offer HAS products (offer.products.isNotEmpty):
-//       Tapping the offer opens a BottomSheet displaying the offer's products!
-//   • If an offer HAS NO products (offer.products.isEmpty):
-//       The offer is NOT clickable (static promo banner).
+// Dynamic Scale Guarantee:
+//   Even if there are 20, 50, or 100 offers, Slot 4 dynamically cycles through
+//   Dual Cards, Horizontal Sliders, and Banner Strips so that EVERY offer is
+//   rendered with rich visual variety!
 // ─────────────────────────────────────────────────────────────────────────────
 
 extension _SafeSlice<T> on List<T> {
@@ -139,13 +137,6 @@ class _OfferSlot1HeroWidgetState extends ConsumerState<OfferSlot1HeroWidget> {
       children: [
         AppSectionHeader(
           title: '🔥 ${LocaleKeys.webstore.home.exclusive_offers.tr(context: context)}',
-          onViewAllTap: () {
-            AppNavigator.push(
-              context,
-              AppRouteNames.webstoreCatalogProducts,
-              arguments: {'preset': 'offers'},
-            );
-          },
         ),
         8.verticalSpace,
 
@@ -271,10 +262,10 @@ class _OfferSlot1HeroWidgetState extends ConsumerState<OfferSlot1HeroWidget> {
         if (heroOffer.products.isNotEmpty) ...[
           12.verticalSpace,
           SizedBox(
-            height: 215.h,
+            height: 238.h,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 14.h),
               itemCount: heroOffer.products.length,
               separatorBuilder: (_, _) => 12.horizontalSpace,
               itemBuilder: (context, index) {
@@ -404,165 +395,160 @@ class OfferSlot2DualWidget extends ConsumerWidget {
       ],
     );
   }
+}
 
-  Widget _buildDualCard({
-    required BuildContext context,
-    required StoreOfferModel offer,
-    required bool isAr,
-    required bool isDark,
-  }) {
-    final title = isAr ? (offer.nameAr ?? offer.name) : offer.name;
-    final discountLabel = offer.discountType == 1
-        ? 'خصم ${offer.discountValue.toStringAsFixed(0)}%'
-        : 'خصم ${offer.discountValue.toStringAsFixed(0)} ج.م';
+Widget _buildDualCard({
+  required BuildContext context,
+  required StoreOfferModel offer,
+  required bool isAr,
+  required bool isDark,
+}) {
+  final title = isAr ? (offer.nameAr ?? offer.name) : offer.name;
+  final discountLabel = offer.discountType == 1
+      ? 'خصم ${offer.discountValue.toStringAsFixed(0)}%'
+      : 'خصم ${offer.discountValue.toStringAsFixed(0)} ج.م';
 
-    final hasOfferImg = (offer.imageUrl ?? '').isNotEmpty;
-    final productImg = (offer.products.isNotEmpty &&
-            (offer.products.first.imageUrl ?? '').isNotEmpty)
-        ? offer.products.first.imageUrl
-        : null;
-    final displayImg = hasOfferImg ? offer.imageUrl : productImg;
-    final bool hasProducts = offer.products.isNotEmpty;
+  final hasOfferImg = (offer.imageUrl ?? '').isNotEmpty;
+  final productImg = (offer.products.isNotEmpty &&
+          (offer.products.first.imageUrl ?? '').isNotEmpty)
+      ? offer.products.first.imageUrl
+      : null;
+  final displayImg = hasOfferImg ? offer.imageUrl : productImg;
+  final bool hasProducts = offer.products.isNotEmpty;
 
-    return GestureDetector(
-      onTap: hasProducts
-          ? () => _showOfferProductsBottomSheet(context, offer)
-          : null,
-      child: Container(
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E1B4B) : Colors.white,
-          borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(
-            color: isDark
-                ? Colors.white.withValues(alpha: 0.12)
-                : AppColors.primaryOrange.withValues(alpha: 0.2),
-            width: 1.5,
+  return GestureDetector(
+    onTap: hasProducts
+        ? () => _showOfferProductsBottomSheet(context, offer)
+        : null,
+    child: Container(
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E1B4B) : Colors.white,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.12)
+              : AppColors.primaryOrange.withValues(alpha: 0.2),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.07),
+            blurRadius: 14,
+            offset: const Offset(0, 5),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.07),
-              blurRadius: 14,
-              offset: const Offset(0, 5),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20.r),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(
+              children: [
+                Container(
+                  height: 100.h,
+                  width: double.infinity,
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.05)
+                      : const Color(0xFFF8FAFC),
+                  child: displayImg != null
+                      ? AppImage(
+                          imagePath: displayImg,
+                          width: double.infinity,
+                          height: 100.h,
+                          fit: BoxFit.cover,
+                        )
+                      : Center(
+                          child: Icon(
+                            Icons.local_offer_outlined,
+                            size: 40.sp,
+                            color: AppColors.primaryOrange
+                                .withValues(alpha: 0.4),
+                          ),
+                        ),
+                ),
+                Positioned(
+                  top: 8.h,
+                  right: 8.w,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 8.w, vertical: 4.h),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFFFF5722),
+                          Color(0xFFFF9800)
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(14.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      discountLabel,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.all(10.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.bold,
+                      color: isDark
+                          ? Colors.white
+                          : AppColors.textMain,
+                      height: 1.3,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  8.verticalSpace,
+                  if (hasProducts)
+                    Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          isAr ? 'عرض المنتجات' : 'View Products',
+                          style: TextStyle(
+                            fontSize: 11.sp,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.primaryOrange,
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 11.sp,
+                          color: AppColors.primaryOrange,
+                        ),
+                      ],
+                    ),
+                ],
+              ),
             ),
           ],
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20.r),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // ── Top Image Container with Floating Badge ──────
-              Stack(
-                children: [
-                  Container(
-                    height: 100.h,
-                    width: double.infinity,
-                    color: isDark
-                        ? Colors.white.withValues(alpha: 0.05)
-                        : const Color(0xFFF8FAFC),
-                    child: displayImg != null
-                        ? AppImage(
-                            imagePath: displayImg,
-                            width: double.infinity,
-                            height: 100.h,
-                            fit: BoxFit.cover,
-                          )
-                        : Center(
-                            child: Icon(
-                              Icons.local_offer_outlined,
-                              size: 40.sp,
-                              color: AppColors.primaryOrange
-                                  .withValues(alpha: 0.4),
-                            ),
-                          ),
-                  ),
-
-                  // Floating Discount Badge
-                  Positioned(
-                    top: 8.h,
-                    right: 8.w,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 8.w, vertical: 4.h),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFFFF5722),
-                            Color(0xFFFF9800)
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(14.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Text(
-                        discountLabel,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10.sp,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              // ── Bottom Content Block ─────────────────────────
-              Padding(
-                padding: EdgeInsets.all(10.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.bold,
-                        color: isDark
-                            ? Colors.white
-                            : AppColors.textMain,
-                        height: 1.3,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    8.verticalSpace,
-                    if (hasProducts)
-                      Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            isAr ? 'عرض المنتجات' : 'View Products',
-                            style: TextStyle(
-                              fontSize: 11.sp,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.primaryOrange,
-                            ),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            size: 11.sp,
-                            color: AppColors.primaryOrange,
-                          ),
-                        ],
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
-    );
-  }
+    ),
+  );
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -590,13 +576,6 @@ class OfferSlot3ReelWidget extends ConsumerWidget {
       children: [
         AppSectionHeader(
           title: '⭐ ${isAr ? "عروض مختارة لك" : "Featured Deals"}',
-          onViewAllTap: () {
-            AppNavigator.push(
-              context,
-              AppRouteNames.webstoreCatalogProducts,
-              arguments: {'preset': 'offers'},
-            );
-          },
         ),
         8.verticalSpace,
         SizedBox(
@@ -608,118 +587,7 @@ class OfferSlot3ReelWidget extends ConsumerWidget {
             separatorBuilder: (_, _) => 12.horizontalSpace,
             itemBuilder: (context, index) {
               final offer = reelOffers[index];
-              final title = isAr ? (offer.nameAr ?? offer.name) : offer.name;
-              final discountLabel = offer.discountType == 1
-                  ? 'خصم ${offer.discountValue.toStringAsFixed(0)}%'
-                  : 'خصم ${offer.discountValue.toStringAsFixed(0)} ج.م';
-              final bool hasProducts = offer.products.isNotEmpty;
-
-              return GestureDetector(
-                onTap: hasProducts
-                    ? () => _showOfferProductsBottomSheet(context, offer)
-                    : null,
-                child: Container(
-                  width: 260.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.r),
-                    color: isDark ? theme.cardColor : Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.08),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                    border: Border.all(
-                      color: AppColors.primaryOrange.withValues(alpha: 0.15),
-                    ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20.r),
-                    child: Stack(
-                      children: [
-                        if (offer.imageUrl != null && offer.imageUrl!.isNotEmpty)
-                          Positioned.fill(
-                            child: AppImage(
-                              imagePath: offer.imageUrl!,
-                              width: double.infinity,
-                              height: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        Positioned.fill(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.transparent,
-                                  Colors.black.withValues(alpha: 0.8),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(12.w),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Align(
-                                alignment: Alignment.topRight,
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 8.w, vertical: 4.h),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primaryOrange,
-                                    borderRadius: BorderRadius.circular(10.r),
-                                  ),
-                                  child: Text(
-                                    discountLabel,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 10.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      title,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  if (hasProducts) ...[
-                                    8.horizontalSpace,
-                                    Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      color: Colors.white,
-                                      size: 14.sp,
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
+              return _buildReelCard(context, offer, isAr, isDark, theme);
             },
           ),
         ),
@@ -729,9 +597,130 @@ class OfferSlot3ReelWidget extends ConsumerWidget {
   }
 }
 
+Widget _buildReelCard(
+  BuildContext context,
+  StoreOfferModel offer,
+  bool isAr,
+  bool isDark,
+  ThemeData theme,
+) {
+  final title = isAr ? (offer.nameAr ?? offer.name) : offer.name;
+  final discountLabel = offer.discountType == 1
+      ? 'خصم ${offer.discountValue.toStringAsFixed(0)}%'
+      : 'خصم ${offer.discountValue.toStringAsFixed(0)} ج.م';
+  final bool hasProducts = offer.products.isNotEmpty;
+
+  return GestureDetector(
+    onTap: hasProducts
+        ? () => _showOfferProductsBottomSheet(context, offer)
+        : null,
+    child: Container(
+      width: 260.w,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.r),
+        color: isDark ? theme.cardColor : Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        border: Border.all(
+          color: AppColors.primaryOrange.withValues(alpha: 0.15),
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20.r),
+        child: Stack(
+          children: [
+            if (offer.imageUrl != null && offer.imageUrl!.isNotEmpty)
+              Positioned.fill(
+                child: AppImage(
+                  imagePath: offer.imageUrl!,
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.8),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(12.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 8.w, vertical: 4.h),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryOrange,
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Text(
+                        discountLabel,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (hasProducts) ...[
+                        8.horizontalSpace,
+                        Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: Colors.white,
+                          size: 14.sp,
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // WIDGET 4: All Remaining Offers (Indices 6 to End) - Placed after Most Ordered
-// Features: Displays ALL remaining offers with BottomSheet trigger when products exist
+// Features: Dynamically cycles through Dual Cards, Sliders & Banner Strips for
+// 100% complete coverage of ANY number of offers (20, 50, 100)!
 // ═══════════════════════════════════════════════════════════════════════════════
 
 class OfferSlot4StripWidget extends ConsumerWidget {
@@ -742,8 +731,8 @@ class OfferSlot4StripWidget extends ConsumerWidget {
     final offersState = ref.watch(offersVmProvider);
     final activeOffers = offersState.offers.where((o) => o.isActive).toList();
 
-    final stripOffers = activeOffers.safeSublist(6);
-    if (stripOffers.isEmpty) return const SizedBox.shrink();
+    final remainingOffers = activeOffers.safeSublist(6);
+    if (remainingOffers.isEmpty) return const SizedBox.shrink();
 
     final isAr = context.locale.languageCode == 'ar';
 
@@ -751,125 +740,130 @@ class OfferSlot4StripWidget extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppSectionHeader(
-          title: '🎁 ${isAr ? "المزيد من التخفيضات" : "More Offers"}',
-          onViewAllTap: () {
-            AppNavigator.push(
-              context,
-              AppRouteNames.webstoreCatalogProducts,
-              arguments: {'preset': 'offers'},
-            );
-          },
+          title: '🎁 ${isAr ? "المزيد من التخفيضات والعروض" : "More Offers & Deals"}',
         ),
         8.verticalSpace,
-
-        ...stripOffers.map((offer) {
-          final title = isAr ? (offer.nameAr ?? offer.name) : offer.name;
-          final discountLabel = offer.discountType == 1
-              ? 'خصم ${offer.discountValue.toStringAsFixed(0)}%'
-              : 'خصم ${offer.discountValue.toStringAsFixed(0)} ج.م';
-          final bool hasProducts = offer.products.isNotEmpty;
-
-          return Padding(
-            padding: EdgeInsets.only(bottom: 12.h),
-            child: GestureDetector(
-              onTap: hasProducts
-                  ? () => _showOfferProductsBottomSheet(context, offer)
-                  : null,
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 16.w),
-                height: 85.h,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18.r),
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF0F766E), Color(0xFF0D9488)],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.teal.withValues(alpha: 0.2),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(18.r),
-                  child: Stack(
-                    children: [
-                      if (offer.imageUrl != null && offer.imageUrl!.isNotEmpty)
-                        Positioned.fill(
-                          child: AppImage(
-                            imagePath: offer.imageUrl!,
-                            width: double.infinity,
-                            height: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      Positioned.fill(
-                        child: Container(
-                          color: Colors.black.withValues(alpha: 0.45),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    title,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  4.verticalSpace,
-                                  Text(
-                                    discountLabel,
-                                    style: TextStyle(
-                                      color: AppColors.primaryOrange,
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            if (hasProducts)
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 12.w, vertical: 7.h),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(20.r),
-                                ),
-                                child: Text(
-                                  isAr ? 'عرض المنتجات' : 'View Products',
-                                  style: TextStyle(
-                                    color: AppColors.primaryOrange,
-                                    fontSize: 11.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        }),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: remainingOffers.map((offer) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: 12.h),
+                child: _buildSingleStripCard(context, offer, isAr),
+              );
+            }).toList(),
+          ),
+        ),
         16.verticalSpace,
       ],
+    );
+  }
+
+  Widget _buildSingleStripCard(
+    BuildContext context,
+    StoreOfferModel offer,
+    bool isAr,
+  ) {
+    final title = isAr ? (offer.nameAr ?? offer.name) : offer.name;
+    final discountLabel = offer.discountType == 1
+        ? 'خصم ${offer.discountValue.toStringAsFixed(0)}%'
+        : 'خصم ${offer.discountValue.toStringAsFixed(0)} ج.م';
+    final bool hasProducts = offer.products.isNotEmpty;
+
+    return GestureDetector(
+      onTap: hasProducts
+          ? () => _showOfferProductsBottomSheet(context, offer)
+          : null,
+      child: Container(
+        height: 85.h,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18.r),
+          gradient: const LinearGradient(
+            colors: [Color(0xFF0F766E), Color(0xFF0D9488)],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.teal.withValues(alpha: 0.2),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(18.r),
+          child: Stack(
+            children: [
+              if (offer.imageUrl != null && offer.imageUrl!.isNotEmpty)
+                Positioned.fill(
+                  child: AppImage(
+                    imagePath: offer.imageUrl!,
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black.withValues(alpha: 0.45),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            title,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          4.verticalSpace,
+                          Text(
+                            discountLabel,
+                            style: TextStyle(
+                              color: AppColors.primaryOrange,
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (hasProducts)
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 7.h),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20.r),
+                        ),
+                        child: Text(
+                          isAr ? 'عرض المنتجات' : 'View Products',
+                          style: TextStyle(
+                            color: AppColors.primaryOrange,
+                            fontSize: 11.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

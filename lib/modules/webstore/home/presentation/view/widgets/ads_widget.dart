@@ -5,7 +5,6 @@ import 'package:erp/modules/webstore/home/presentation/view_model/ads/ads_view_m
 import 'package:erp/modules/webstore/home/presentation/view_model/ads/ads_state.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/common_widget/app_section_header/app_section_header.dart';
-import 'package:erp/core/localization/locale_keys.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
 
@@ -32,7 +31,7 @@ class AdsSection extends ConsumerWidget {
       return Column(
         children: [
           AppSectionHeader(
-            title: LocaleKeys.webstore.home.exclusive_offers.tr(context: context),
+            title: '📢 ${context.locale.languageCode == "ar" ? "حملات إعلانية وترويجية" : "Featured Promotions"}',
           ),
           SizedBox(
             height: 180.h,
