@@ -240,8 +240,14 @@ class CartNotifier extends Notifier<List<CartItemModel>> {
     );
   }
 
+  double? _serverShipping;
+
+  void setServerShipping(double? cost) {
+    _serverShipping = cost;
+  }
+
   double get subtotal => _serverSubtotal ?? state.fold<double>(0.0, (sum, item) => sum + (item.product.price * item.quantity));
-  double get shipping => state.isEmpty ? 0.0 : 25.0;
+  double get shipping => _serverShipping ?? 0.0;
   double get total => subtotal + shipping;
 }
 

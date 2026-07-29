@@ -23,29 +23,44 @@ class CheckoutVm extends Notifier<CheckoutState> {
     );
   }
 
+  String? _lastPayloadKey;
+
   Future<void> calculateTotals({
     int? addressId,
     String? couponCode,
     int? paymentMethodId,
     int? pointsToRedeem,
   }) async {
-    state = const CheckoutCalculating();
-    final repository = ref.read(checkoutRepositoryProvider);
+    // Don't call the API without a valid address
+    if (addressId == null) return;
 
     _pointsToRedeem = (pointsToRedeem != null && pointsToRedeem > 0) ? pointsToRedeem : null;
 
     final body = {
-      'address_id': addressId ?? 5,
+      'address_id': addressId,
       'payment_method_id': paymentMethodId ?? 1,
       if (couponCode != null && couponCode.isNotEmpty) 'coupon_code': couponCode,
       if (_pointsToRedeem != null) 'points_to_redeem': _pointsToRedeem,
     };
 
+    final payloadKey = body.toString();
+    if (_lastPayloadKey == payloadKey && (state is CheckoutCalculated || state is CheckoutCalculating)) {
+      // Ignore duplicate API calls with identical parameters
+      return;
+    }
+
+    _lastPayloadKey = payloadKey;
+    state = const CheckoutCalculating();
+    final repository = ref.read(checkoutRepositoryProvider);
+
     final result = await repository.calculateTotals(body);
 
     result.when(
       success: (data) => state = CheckoutCalculated(data),
-      failure: (error) => state = CheckoutError(error.message),
+      failure: (error) {
+        _lastPayloadKey = null; // Reset on failure so retries are allowed
+        state = CheckoutError(error.message);
+      },
     );
   }
 
@@ -87,7 +102,7 @@ class CheckoutVm extends Notifier<CheckoutState> {
 
     final redeemPts = pointsToRedeem ?? _pointsToRedeem;
     final orderBody = {
-      'address_id': addressId ?? 5,
+      'address_id': addressId,
       'payment_method_id': finalPaymentMethodId,
       if (couponCode != null && couponCode.isNotEmpty) 'coupon_code': couponCode,
       if (notes != null && notes.isNotEmpty) 'notes': notes,

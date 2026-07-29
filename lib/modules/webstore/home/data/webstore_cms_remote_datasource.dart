@@ -23,6 +23,10 @@ class WebStoreCmsRemoteDataSource {
     return _networkService.get(ApiEndpoints.webstore.cms.coupons);
   }
 
+  Future<dynamic> getOffers() {
+    return _networkService.get('/api/store/offers');
+  }
+
   Future<dynamic> getBoardings() {
     return _networkService.get(ApiEndpoints.webstore.cms.boardings);
   }

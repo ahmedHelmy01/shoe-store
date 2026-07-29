@@ -165,16 +165,46 @@ class _ProductDetailsViewState extends ConsumerState<ProductDetailsView> {
     Color? iconColor,
     required VoidCallback onTap,
   }) {
-    return GestureDetector (
-      onTap: onTap,
-      child: Icon(
-        icon,
-        color:
-            iconColor ??
-            (Theme.of(context).brightness == Brightness.dark
-                ? Colors.white
-                : Colors.black87),
-        size: 20.sp,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Center(
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 4.w),
+        decoration: BoxDecoration(
+          color: isDark
+              ? Colors.black.withValues(alpha: 0.75)
+              : Colors.white.withValues(alpha: 0.9),
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.12),
+              blurRadius: 10,
+              spreadRadius: 1,
+              offset: const Offset(0, 2),
+            ),
+          ],
+          border: Border.all(
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.25)
+                : Colors.black.withValues(alpha: 0.08),
+            width: 1,
+          ),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(20.r),
+            child: Padding(
+              padding: EdgeInsets.all(8.w),
+              child: Icon(
+                icon,
+                color: iconColor ?? (isDark ? Colors.white : Colors.black87),
+                size: 18.sp,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -13,6 +13,7 @@ import 'package:erp/modules/webstore/addresses/presentation/view_model/address_p
 import 'package:erp/modules/webstore/addresses/presentation/utils/address_localization.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/localization/locale_keys.dart';
+import 'package:erp/modules/webstore/points/presentation/view_model/points_providers.dart';
 
 import 'widgets/delivery_address_section.dart';
 import 'widgets/payment_method_section.dart';
@@ -40,25 +41,6 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
     super.initState();
     Future.microtask(() {
       ref.read(checkoutVmProvider.notifier).validateCart();
-      
-      // If addresses are already loaded, select the default one and calculate totals
-      final addressState = ref.read(addressesProvider);
-      if (addressState.hasValue && addressState.value!.isNotEmpty) {
-        final addresses = addressState.value!;
-        final defaultAddr = addresses.firstWhere(
-          (a) => a.isDefault,
-          orElse: () => addresses.first,
-        );
-        setState(() {
-          selectedAddress = defaultAddr;
-        });
-        ref.read(checkoutVmProvider.notifier).calculateTotals(
-              addressId: defaultAddr.id,
-            );
-      } else {
-        // Initial calculation call (might use defaults if no address yet)
-        ref.read(checkoutVmProvider.notifier).calculateTotals();
-      }
     });
   }
 
@@ -202,17 +184,30 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
       }
     });
 
-    // Default to the default address, or first address if none is currently selected
+    // If addresses loaded before the listener was registered (e.g. cached),
+    // select default address and trigger calculation via post-frame callback
     if (selectedAddress == null && addresses.isNotEmpty) {
-      selectedAddress = addresses.firstWhere(
+      final defaultAddr = addresses.firstWhere(
         (a) => a.isDefault,
         orElse: () => addresses.first,
       );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && selectedAddress == null) {
+          setState(() {
+            selectedAddress = defaultAddr;
+          });
+          ref.read(checkoutVmProvider.notifier).calculateTotals(
+                addressId: defaultAddr.id,
+              );
+        }
+      });
     }
 
     // Listen for Checkout status
     ref.listen<CheckoutState>(checkoutVmProvider, (previous, next) {
       if (next is CheckoutSuccess) {
+        // Invalidate points so loyalty/summary re-fetches with fresh data
+        ref.invalidate(pointsProvider);
         _showOrderSuccessDialog(context, next.orderResult);
       } else if (next is CheckoutError) {
         AppSnackBar.showError(context, next.message);

@@ -38,6 +38,13 @@ class MoreAuthButton extends ConsumerWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
+          foregroundColor: Colors.white,
+          textStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+            inherit: false,
+          ),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16.r)),
         ),
@@ -57,9 +64,11 @@ class MoreAuthButton extends ConsumerWidget {
                   : LocaleKeys.webstore.auth.login_or_register
                       .tr(context: context),
               style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold),
+                color: Colors.white,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.bold,
+                inherit: false,
+              ),
             ),
           ],
         ),

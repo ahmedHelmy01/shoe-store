@@ -13,6 +13,7 @@ import 'package:erp/modules/webstore/home/data/models/coupon_model.dart';
 export 'package:erp/modules/webstore/home/presentation/state/home_state.dart';
 export 'package:erp/modules/webstore/home/presentation/view_model/slider_view_model.dart';
 export 'package:erp/modules/webstore/home/presentation/view_model/company_produces_view_model.dart';
+export 'package:erp/modules/webstore/home/presentation/view_model/offers_view_model.dart';
 export 'package:erp/modules/webstore/home/presentation/view_model/location_view_model.dart';
 export 'package:erp/modules/webstore/branches/presentation/view_model/branch_view_model.dart';
 export 'package:erp/modules/webstore/branches/presentation/state/branch_state.dart';

@@ -98,12 +98,8 @@ class PaymentMethodSection extends ConsumerWidget {
               );
             }
 
-            // Auto-select first payment if none is selected
-            if (selectedPaymentId == null) {
-              Future.microtask(() {
-                onPaymentSelected(methods.first.id, methods.first.code ?? 'cash');
-              });
-            }
+            // Fallback effective selected payment ID (defaults to first if none explicitly selected)
+            final effectiveSelectedId = selectedPaymentId ?? methods.first.id;
 
             return ListView.separated(
               shrinkWrap: true,
@@ -111,7 +107,7 @@ class PaymentMethodSection extends ConsumerWidget {
               itemCount: methods.length,
               separatorBuilder: (_, __) => 12.verticalSpace,
               itemBuilder: (context, index) =>
-                  _buildDynamicPaymentOption(context, methods[index]),
+                  _buildDynamicPaymentOption(context, methods[index], effectiveSelectedId),
             );
           },
         ),
@@ -194,8 +190,9 @@ class PaymentMethodSection extends ConsumerWidget {
   Widget _buildDynamicPaymentOption(
     BuildContext context,
     PaymentMethodModel method,
+    int? effectiveSelectedId,
   ) {
-    final bool isSelected = selectedPaymentId == method.id;
+    final bool isSelected = effectiveSelectedId == method.id;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 

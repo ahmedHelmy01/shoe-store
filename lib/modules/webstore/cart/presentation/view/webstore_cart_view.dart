@@ -9,6 +9,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
 import '../widgets/cart_item_card.dart';
 import 'package:erp/core/common_widget/app_dialog/app_dialog.dart';
+import 'package:erp/core/constants/app_constants.dart';
 
 class WebStoreCartView extends ConsumerWidget {
   const WebStoreCartView({super.key});
@@ -119,13 +120,25 @@ class WebStoreCartView extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Order Details
-            _summaryRow(LocaleKeys.webstore.checkout.delivery_fee.tr(context: context), '\$${cartNotifier.shipping.toStringAsFixed(0)}'),
+            _summaryRow(
+              LocaleKeys.webstore.checkout.order_amount.tr(context: context),
+              '${cartNotifier.subtotal.toStringAsFixed(2)} ${AppConstants.currency}',
+            ),
             12.verticalSpace,
-            _summaryRow(LocaleKeys.webstore.checkout.order_amount.tr(context: context), '\$${cartNotifier.subtotal.toStringAsFixed(2)}'),
+            _summaryRow(
+              LocaleKeys.webstore.checkout.delivery_fee.tr(context: context),
+              cartNotifier.shipping > 0
+                  ? '${cartNotifier.shipping.toStringAsFixed(0)} ${AppConstants.currency}'
+                  : (context.locale.languageCode == 'ar' ? 'تحدد في خطوة الشراء' : 'Calculated at checkout'),
+            ),
             16.verticalSpace,
             const Divider(),
             16.verticalSpace,
-            _summaryRow(LocaleKeys.webstore.checkout.total_amount.tr(context: context), '\$${cartNotifier.total.toStringAsFixed(2)}', isTotal: true),
+            _summaryRow(
+              LocaleKeys.webstore.checkout.total_amount.tr(context: context),
+              '${cartNotifier.total.toStringAsFixed(2)} ${AppConstants.currency}',
+              isTotal: true,
+            ),
             
             32.verticalSpace,
             

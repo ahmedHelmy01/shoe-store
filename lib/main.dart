@@ -7,7 +7,6 @@ AppFlavor _parseFlavor(String value) {
   for (final f in AppFlavor.values) {
     if (f.name.toLowerCase() == normalized) return f;
   }
-
   return AppFlavor.webstore;
 }
 

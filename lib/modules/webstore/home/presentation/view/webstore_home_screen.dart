@@ -40,6 +40,7 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
     ref.invalidate(adsVmProvider);
     ref.invalidate(sliderVmProvider);
     ref.invalidate(companyProducesVmProvider);
+    ref.invalidate(offersVmProvider);
     ref.invalidate(branchVmProvider);
     ref.invalidate(pointsProvider);
   }
