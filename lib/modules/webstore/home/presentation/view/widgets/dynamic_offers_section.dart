@@ -719,8 +719,7 @@ Widget _buildReelCard(
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // WIDGET 4: All Remaining Offers (Indices 6 to End) - Placed after Most Ordered
-// Features: Dynamically cycles through Dual Cards, Sliders & Banner Strips for
-// 100% complete coverage of ANY number of offers (20, 50, 100)!
+// Features: Displays ALL remaining offers stacked vertically as full-width banner strips
 // ═══════════════════════════════════════════════════════════════════════════════
 
 class OfferSlot4StripWidget extends ConsumerWidget {
