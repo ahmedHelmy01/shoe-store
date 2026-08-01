@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
+import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view/categories/category_drill_down_view.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
 
@@ -28,6 +29,12 @@ class HomeCategoriesRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(catalogCategoriesProvider);
 
+    // Show shimmer while loading
+    if (state.isLoading && state.items.isEmpty) {
+      return AppShimmer.categoryCircle();
+    }
+
+    // Truly empty — nothing to show
     if (state.items.isEmpty) return const SizedBox.shrink();
 
     return SizedBox(

@@ -7,6 +7,11 @@ class HomeState {
   final List<WebStoreProduct> filteredProducts;
   final List<StoreCouponModel> coupons;
   final bool isLoading;
+  final bool isSearchLoading;
+  final bool isSearchLoadingMore;
+  final bool searchHasMore;
+  final int searchPage;
+  final String searchKeyword;
   final String? errorMessage;
 
   HomeState({
@@ -15,6 +20,11 @@ class HomeState {
     this.filteredProducts = const [],
     this.coupons = const [],
     this.isLoading = false,
+    this.isSearchLoading = false,
+    this.isSearchLoadingMore = false,
+    this.searchHasMore = true,
+    this.searchPage = 1,
+    this.searchKeyword = '',
     this.errorMessage,
   });
 
@@ -24,6 +34,11 @@ class HomeState {
     List<WebStoreProduct>? filteredProducts,
     List<StoreCouponModel>? coupons,
     bool? isLoading,
+    bool? isSearchLoading,
+    bool? isSearchLoadingMore,
+    bool? searchHasMore,
+    int? searchPage,
+    String? searchKeyword,
     String? errorMessage,
   }) {
     return HomeState(
@@ -32,6 +47,11 @@ class HomeState {
       filteredProducts: filteredProducts ?? this.filteredProducts,
       coupons: coupons ?? this.coupons,
       isLoading: isLoading ?? this.isLoading,
+      isSearchLoading: isSearchLoading ?? this.isSearchLoading,
+      isSearchLoadingMore: isSearchLoadingMore ?? this.isSearchLoadingMore,
+      searchHasMore: searchHasMore ?? this.searchHasMore,
+      searchPage: searchPage ?? this.searchPage,
+      searchKeyword: searchKeyword ?? this.searchKeyword,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }

@@ -2,8 +2,10 @@
 library;
 
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:erp/core/network/pagination/paginated_response.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/modules/webstore/catalog/data/models/category_model.dart';
@@ -252,47 +254,9 @@ class CategoriesNotifier extends Notifier<CategoriesState> {
 
   @override
   CategoriesState build() {
-    // 1. Try to load cached categories synchronously on startup to make UI load instantly!
-    List<WebStoreCategory> cachedItems = [];
-    int? firstCachedId;
-    try {
-      final prefs = ref.read(sharedPreferencesProvider);
-      final cachedData = prefs.getString('webstore_categories_cache');
-      if (cachedData != null) {
-        final Map<String, dynamic> data = jsonDecode(cachedData);
-        final List<dynamic> list = data['data'] ?? [];
-        cachedItems = list
-            .map(
-              (item) => WebStoreCategory.fromJson(
-                Map<String, dynamic>.from(item as Map),
-              ),
-            )
-            .toList();
-        if (cachedItems.isNotEmpty) {
-          final firstCategory = cachedItems.first;
-          firstCachedId = firstCategory.children.isNotEmpty
-              ? firstCategory.children.first.id
-              : firstCategory.id;
-        }
-      }
-    } catch (e) {
-      debugPrint('❌ CategoriesNotifier: Error loading cached categories: $e');
-    }
-
-    // 2. Trigger async background fetch to get latest categories
-    Future.microtask(() {
-      if (firstCachedId != null) {
-        ref
-            .read(catalogProductsProvider.notifier)
-            .filterByCategory(firstCachedId);
-      }
-      getCategories();
-    });
-
-    return CategoriesState(
-      items: cachedItems,
-      selectedCategoryId: firstCachedId,
-    );
+    // Fetch directly from server on every build — no cache
+    Future.microtask(() => getCategories());
+    return const CategoriesState(isLoading: true);
   }
 
   Future<void> getCategories({bool isRefresh = false}) async {
@@ -385,15 +349,7 @@ class CategoriesNotifier extends Notifier<CategoriesState> {
           selectedCategoryId: newSelectedId,
         );
 
-        // Cache the successful result if it is the first page or a refresh
-        if (pageSent == 1 || isRefresh) {
-          try {
-            final prefs = ref.read(sharedPreferencesProvider);
-            prefs.setString('webstore_categories_cache', jsonEncode(data));
-          } catch (e) {
-            debugPrint('❌ CategoriesNotifier: Error caching categories: $e');
-          }
-        }
+
 
         if (hasMorePages) {
           _nextCategoriesApiPage = pageSent + 1;

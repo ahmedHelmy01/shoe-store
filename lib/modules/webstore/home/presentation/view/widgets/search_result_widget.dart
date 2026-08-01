@@ -12,7 +12,7 @@ enum ProductSheetType {
   filter,
 }
 
-class ProductResultBottomSheet extends ConsumerWidget {
+class ProductResultBottomSheet extends ConsumerStatefulWidget {
   final ProductSheetType type;
 
   const ProductResultBottomSheet({
@@ -21,15 +21,57 @@ class ProductResultBottomSheet extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProductResultBottomSheet> createState() =>
+      _ProductResultBottomSheetState();
+}
+
+class _ProductResultBottomSheetState
+    extends ConsumerState<ProductResultBottomSheet> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      if (widget.type == ProductSheetType.search) {
+        ref.read(homeVmProvider.notifier).loadMoreSearch();
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final homeState = ref.watch(homeVmProvider);
-    final products = type == ProductSheetType.search
+
+    final products = widget.type == ProductSheetType.search
         ? homeState.searchProducts
         : homeState.filteredProducts;
 
+    final isLoading = widget.type == ProductSheetType.search
+        ? homeState.isSearchLoading
+        : homeState.isLoading;
+
+    final isLoadingMore = widget.type == ProductSheetType.search
+        ? homeState.isSearchLoadingMore
+        : false;
+
     return Container(
+      height: MediaQuery.of(context).size.height * 0.85,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? theme.scaffoldBackgroundColor : Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
       ),
       padding: EdgeInsets.only(
@@ -39,13 +81,12 @@ class ProductResultBottomSheet extends ConsumerWidget {
         bottom: MediaQuery.of(context).viewInsets.bottom + 20.h,
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 40.w,
             height: 4.h,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: isDark ? Colors.white24 : Colors.grey[300],
               borderRadius: BorderRadius.circular(2.r),
             ),
           ),
@@ -54,48 +95,62 @@ class ProductResultBottomSheet extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                type == ProductSheetType.search
+                widget.type == ProductSheetType.search
                     ? LocaleKeys.webstore.home.search_results.tr(context: context)
                     : LocaleKeys.webstore.home.filter_results.tr(context: context),
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textColor,
+                  color: isDark ? Colors.white : AppColors.textColor,
                 ),
               ),
               IconButton(
                 onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.close),
+                icon: Icon(
+                  Icons.close,
+                  color: isDark ? Colors.white70 : Colors.black87,
+                ),
               ),
             ],
           ),
           10.verticalSpace,
-          if (homeState.isLoading)
-            const Center(
-              child: Padding(
-                padding: EdgeInsets.all(40.0),
-                child: CircularProgressIndicator(),
+          if (isLoading && products.isEmpty)
+            const Expanded(
+              child: Center(
+                child: CircularProgressIndicator.adaptive(),
               ),
             )
           else if (products.isEmpty)
-            _buildEmptyState(context, type)
+            Expanded(child: _buildEmptyState(context, widget.type))
           else
-            Flexible(
-              child: GridView.builder(
-                shrinkWrap: true,
-                padding: EdgeInsets.only(bottom: 20.h),
-                itemCount: products.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisExtent: 260.h,
-                  crossAxisSpacing: 12.w,
-                  mainAxisSpacing: 12.h,
-                ),
-                itemBuilder: (_, index) {
-                  return ProductGridCard(
-                    product: products[index],
-                  );
-                },
+            Expanded(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: GridView.builder(
+                      controller: _scrollController,
+                      physics: const BouncingScrollPhysics(),
+                      padding: EdgeInsets.only(bottom: 16.h),
+                      itemCount: products.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisExtent: 260.h,
+                        crossAxisSpacing: 12.w,
+                        mainAxisSpacing: 12.h,
+                      ),
+                      itemBuilder: (_, index) {
+                        return ProductGridCard(
+                          product: products[index],
+                        );
+                      },
+                    ),
+                  ),
+                  if (isLoadingMore) ...[
+                    SizedBox(height: 8.h),
+                    const Center(child: CircularProgressIndicator.adaptive()),
+                    SizedBox(height: 8.h),
+                  ],
+                ],
               ),
             ),
         ],
@@ -104,11 +159,11 @@ class ProductResultBottomSheet extends ConsumerWidget {
   }
 
   Widget _buildEmptyState(BuildContext context, ProductSheetType type) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 60.h),
+    return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.search_off, size: 64.sp, color: Colors.grey[300]),
+          Icon(Icons.search_off, size: 64.sp, color: Colors.grey[400]),
           16.verticalSpace,
           Text(
             type == ProductSheetType.search

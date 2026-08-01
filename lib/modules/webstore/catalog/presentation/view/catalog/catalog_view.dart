@@ -4,12 +4,27 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view/categories/category_drill_down_view.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
+import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
 
-class CatalogView extends ConsumerWidget {
+class CatalogView extends ConsumerStatefulWidget {
   const CatalogView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CatalogView> createState() => _CatalogViewState();
+}
+
+class _CatalogViewState extends ConsumerState<CatalogView> {
+  @override
+  void initState() {
+    super.initState();
+    // Refresh from server every time this tab is entered
+    Future.microtask(() {
+      ref.read(catalogCategoriesProvider.notifier).getCategories(isRefresh: true);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final categoriesState = ref.watch(catalogCategoriesProvider);
@@ -25,7 +40,7 @@ class CatalogView extends ConsumerWidget {
         scrolledUnderElevation: 1,
       ),
       body: categoriesState.isLoading && categoriesState.items.isEmpty
-          ? const Center(child: CircularProgressIndicator.adaptive())
+          ? AppShimmer.categoryGrid()
           : categoriesState.items.isEmpty
               ? Center(
                   child: Text(

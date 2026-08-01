@@ -21,9 +21,8 @@ class WebStoreEndpoints {
   final String governorates = '/api/store/governorates';
   final String cities = '/api/store/cities';
 
-  // ─── Admin Facing ──────────────────────────────────
+  // ─── Wishlist & Upload ─────────────────────────────────────
   final wishlist = const _WebStoreWishlist();
-  final admin = const _WebStoreAdmin();
   final upload = const _WebStoreUpload();
 }
 
@@ -113,83 +112,14 @@ class _WebStoreWishlist {
   final String remove = '/api/store/wishlist';
 }
 
-class _WebStoreAdmin {
-  const _WebStoreAdmin();
-  
-  // Dashboard
-  final String dashboard = '/api/store/admin/dashboard';
-  final String statistics = '/api/store/admin/statistics';
-
-  // Catalog
-  final String products = '/api/store/admin/products';
-  final String productsImport = '/api/store/admin/products/import';
-  final String categories = '/api/store/admin/categories';
-  final String properties = '/api/store/admin/properties';
-  final String filters = '/api/store/admin/properties'; // Alias for compatibility
-  final String companies = '/api/store/admin/manufacturers'; // Alias
-  final String manufacturers = '/api/store/admin/manufacturers';
-  final String tags = '/api/store/admin/tags';
-
-  // CMS
-  final String sliders = '/api/store/admin/sliders';
-  final String ads = '/api/store/admin/ads';
-  final String boardings = '/api/store/admin/boardings';
-  final String pages = '/api/store/admin/pages';
-
-  // Sales
-  final String orders = '/api/store/admin/orders';
-  final String orderStatuses = '/api/store/admin/order-statuses';
-  final String prescriptions = '/api/store/admin/prescriptions';
-  String orderStatusUpdate(int id) => '/api/store/admin/orders/$id/status';
-
-  // Localize
-  final String governorates = '/api/store/admin/governorates';
-  final String cities = '/api/store/admin/cities';
-  final String countries = '/api/core/countries';
 
 
-  // Configuration
-  final String branches = '/api/store/admin/branches';
-  final String warehouses = '/api/store/admin/warehouses';
-  String warehouseReport(int id) => '/api/store/admin/warehouses/$id/report';
-  final String paymentMethods = '/api/store/admin/payment-methods';
-  final String paymentMethodTypes = '/api/store/admin/payment-methods/types';
-  final String paymentStatuses = '/api/store/admin/payment-statuses';
+class _WebStorePrescriptions {
+  const _WebStorePrescriptions();
 
-  final String settings = '/api/store/admin/settings';
-
-  // Loyalty / Points
-  final String loyaltySettings = '/api/store/admin/loyalty/settings';
-  final String loyaltyOrders = '/api/store/admin/orders'; // used with {order}/award-points, {order}/cancel
-  String awardPoints(dynamic orderId) => '/api/store/admin/orders/$orderId/award-points';
-  String cancelOrder(dynamic orderId) => '/api/store/admin/orders/$orderId/cancel';
-  String clientPoints(dynamic customerId) => '/api/store/admin/clients/$customerId/points';
-  String adjustClientPoints(dynamic customerId) => '/api/store/admin/clients/$customerId/points/adjust';
-
-  // Customers
-  final String clients = '/api/store/admin/clients';
-  String clientAddresses(dynamic customerId) => '/api/store/admin/clients/$customerId/addresses';
-  String clientReport(int customerId) => '/api/store/admin/clients/$customerId/report';
-  final String addresses = '/api/store/admin/addresses';
-  final String customerGroups = '/api/store/admin/customer-groups';
-
-  // Marketing
-  final String coupons = '/api/store/admin/coupons';
-  final String offers = '/api/store/admin/offers';
-
-  // Reports
-  final String reportsBalances = '/api/store/admin/loyalty/reports/balances';
-  final String reportsMovement = '/api/store/admin/loyalty/reports/movement';
-  final String reportsRedemptions = '/api/store/admin/loyalty/reports/redemptions';
-  final String reportsEarned = '/api/store/admin/loyalty/reports/earned';
-  final String reportsExpired = '/api/store/admin/loyalty/reports/expired';
-  final String reportsTop = '/api/store/admin/loyalty/reports/top';
-  final String reportsCost = '/api/store/admin/loyalty/reports/cost';
-
-  // Other
-  final String contacts = '/api/store/admin/contacts';
+  final String index = '/api/store/prescriptions';
+  final String detail = '/api/store/prescriptions/{id}';
 }
-
 
 class _WebStoreUpload {
   const _WebStoreUpload();
@@ -197,12 +127,5 @@ class _WebStoreUpload {
   final String single = '/api/store/upload';
   final String multiple = '/api/store/upload/multi';
   final String delete = '/api/store/upload/delete';
-}
-
-class _WebStorePrescriptions {
-  const _WebStorePrescriptions();
-
-  final String index = '/api/store/prescriptions';
-  final String detail = '/api/store/prescriptions/{id}';
 }
 

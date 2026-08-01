@@ -25,59 +25,10 @@ class AppRouteNames {
   static const String webstoreAddEditAddress = '/webstore/addresses/add-edit';
   static const String webstoreNotifications = '/webstore/notifications';
 
-  // ─── WebStore Admin ───────────────────────────────
-  static const String webstoreAdmin = '/webstore/admin';
-  static const String webstoreAdminDashboard = '/webstore/admin/dashboard';
-  static const String webstoreAdminUsers = '/webstore/admin/users';
-  static const String webstoreAdminProducts = '/webstore/admin/products';
-  static const String webstoreAdminCategories = '/webstore/admin/categories';
-  static const String webstoreAdminCompanies = '/webstore/admin/companies';
-  static const String webstoreAdminFilters = '/webstore/admin/filters';
-  static const String webstoreAdminOrders = '/webstore/admin/orders';
-  static const String webstoreAdminPrescriptions = '/webstore/admin/prescriptions';
-  static const String webstoreAdminOrderCreate = '/webstore/admin/orders/new';
-  static const String webstoreAdminCoupons = '/webstore/admin/coupons';
-  static const String webstoreAdminOffers = '/webstore/admin/offers';
-  static const String webstoreAdminBranches = '/webstore/admin/branches';
-  static const String webstoreAdminWarehouses = '/webstore/admin/warehouses';
-  static const String webstoreAdminSliders = '/webstore/admin/sliders';
-  static const String webstoreAdminAds = '/webstore/admin/ads';
-  static const String webstoreAdminBoardings = '/webstore/admin/boardings';
-  static const String webstoreAdminPages = '/webstore/admin/pages';
-  static const String webstoreAdminProperties = '/webstore/admin/properties';
-  static const String webstoreAdminPaymentStatuses =
-      '/webstore/admin/payment-statuses';
-  static const String webstoreAdminPaymentMethods =
-      '/webstore/admin/payment-methods';
-  static const String webstoreAdminCities = '/webstore/admin/cities';
-  static const String webstoreAdminGovernorates =
-      '/webstore/admin/governorates';
-  static const String webstoreAdminOrderStatuses =
-      '/webstore/admin/order-statuses';
-  static const String webstoreAdminCustomerGroups =
-      '/webstore/admin/customer-groups';
-  static const String webstoreAdminClientReports =
-      '/webstore/admin/client-reports';
-  static const String webstoreAdminSettings = '/webstore/admin/settings';
-  static const String webstoreAdminContacts = '/webstore/admin/contacts';
-  static const String webstoreAdminCountries = '/webstore/admin/countries';
-  static const String webstoreAdminAddresses = '/webstore/admin/addresses';
 
-  // Loyalty / Points
-  static const String webstoreAdminLoyaltySettings = '/webstore/admin/loyalty/settings';
-  static const String webstoreAdminLoyaltyReports = '/webstore/admin/loyalty/reports';
-  static const String webstoreAdminCustomerPoints = '/webstore/admin/loyalty/customer-points';
-
-  // ─── Medical Services (Futuristic) ────────────────────
+  // ─── Medical Services ────────────────────────
   static const String medicalServicesMain = '/medical/services';
-  static const String medicalSymptomChat = '/medical/symptom-chat';
-  static const String medicalHealthScanner = '/medical/health-scanner';
-  static const String medicalHealthTwin = '/medical/health-twin';
   static const String medicalReminders = '/medical/reminders';
-  static const String medicalTelemedicine = '/medical/telemedicine';
-  static const String medicalHealthWallet = '/medical/health-wallet';
-  static const String medicalGamification = '/medical/gamification';
-  static const String medicalArCheck = '/medical/ar-check';
 }
 
 class AppNavigator {

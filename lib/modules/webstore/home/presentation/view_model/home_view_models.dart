@@ -111,10 +111,23 @@ class HomeVm extends Notifier<HomeState> {
   }
 
   Future<void> searchProducts(String keyword) async {
-    state = state.copyWith(isLoading: true);
+    final trimmed = keyword.trim();
+    if (trimmed.isEmpty) return;
+
+    // Reset search state & clear old results immediately
+    state = state.copyWith(
+      isSearchLoading: true,
+      isSearchLoadingMore: false,
+      searchProducts: [],
+      searchKeyword: trimmed,
+      searchPage: 1,
+      searchHasMore: true,
+      errorMessage: null,
+    );
+
     final result = await ref
         .read(catalogRepositoryProvider)
-        .getProducts(queryParams: {'search': keyword});
+        .getProducts(queryParams: {'search': trimmed, 'page': 1});
 
     result.when(
       success: (data) {
@@ -122,9 +135,78 @@ class HomeVm extends Notifier<HomeState> {
         final products = productsJson
             .map((j) => WebStoreProduct.fromJson(j))
             .toList();
-        state = state.copyWith(searchProducts: products, isLoading: false);
+
+        final meta = data['meta'];
+        int total = 0;
+        int lastPage = 1;
+        if (meta is Map) {
+          total = meta['total'] as int? ?? 0;
+          lastPage = meta['last_page'] as int? ?? 1;
+        }
+
+        final bool hasMore = products.isNotEmpty &&
+            (total > 0 ? products.length < total : 1 < lastPage);
+
+        state = state.copyWith(
+          searchProducts: products,
+          isSearchLoading: false,
+          searchPage: 2,
+          searchHasMore: hasMore,
+        );
       },
-      failure: (error) => state = state.copyWith(isLoading: false),
+      failure: (error) => state = state.copyWith(
+        isSearchLoading: false,
+        errorMessage: error.message,
+      ),
+    );
+  }
+
+  Future<void> loadMoreSearch() async {
+    if (state.isSearchLoadingMore ||
+        state.isSearchLoading ||
+        !state.searchHasMore ||
+        state.searchKeyword.isEmpty) {
+      return;
+    }
+
+    state = state.copyWith(isSearchLoadingMore: true);
+
+    final nextPage = state.searchPage;
+    final result = await ref
+        .read(catalogRepositoryProvider)
+        .getProducts(queryParams: {
+      'search': state.searchKeyword,
+      'page': nextPage,
+    });
+
+    result.when(
+      success: (data) {
+        final List<dynamic> productsJson = data['data'] ?? [];
+        final newProducts = productsJson
+            .map((j) => WebStoreProduct.fromJson(j))
+            .toList();
+
+        final updatedList = [...state.searchProducts, ...newProducts];
+
+        final meta = data['meta'];
+        int total = 0;
+        int lastPage = nextPage;
+        if (meta is Map) {
+          total = meta['total'] as int? ?? 0;
+          lastPage = meta['last_page'] as int? ?? nextPage;
+        }
+
+        final bool hasMore = newProducts.isNotEmpty &&
+            (total > 0 ? updatedList.length < total : nextPage < lastPage);
+
+        state = state.copyWith(
+          searchProducts: updatedList,
+          isSearchLoadingMore: false,
+          searchPage: nextPage + 1,
+          searchHasMore: hasMore,
+        );
+      },
+      failure: (error) => state = state.copyWith(isSearchLoadingMore: false),
     );
   }
 
@@ -134,7 +216,7 @@ class HomeVm extends Notifier<HomeState> {
     int? categoryId,
     int? manufacturerId,
   }) async {
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoading: true, filteredProducts: []);
     final result = await ref
         .read(catalogRepositoryProvider)
         .getProducts(

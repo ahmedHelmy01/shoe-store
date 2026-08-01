@@ -235,4 +235,55 @@ class AppShimmer extends StatelessWidget {
       ),
     );
   }
+
+  /// Specialized shimmer for Categories Grid (4-column grid with circle + text)
+  static Widget categoryGrid({int itemCount = 16}) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          mainAxisSpacing: 10.h,
+          crossAxisSpacing: 8.w,
+          childAspectRatio: 0.65,
+        ),
+        itemCount: itemCount,
+        itemBuilder: (_, __) => AppShimmer(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 50.w,
+                height: 50.w,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              6.verticalSpace,
+              Container(
+                width: 48.w,
+                height: 10.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4.r),
+                ),
+              ),
+              4.verticalSpace,
+              Container(
+                width: 32.w,
+                height: 8.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4.r),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

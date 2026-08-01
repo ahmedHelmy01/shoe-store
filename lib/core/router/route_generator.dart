@@ -1,5 +1,3 @@
-import 'package:erp/modules/webstore/admin/core/admin_routes.dart';
-import 'package:erp/modules/webstore/admin/core/admin_shell.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/localization/locale_keys.dart';
@@ -30,14 +28,7 @@ import 'package:erp/modules/webstore/addresses/presentation/view/webstore_addres
 import 'package:erp/modules/webstore/addresses/presentation/view/webstore_add_edit_address_view.dart';
 import 'package:erp/modules/webstore/notifications/presentation/view/webstore_notifications_view.dart';
 import 'package:erp/modules/webstore/medical_services/presentation/view/medical_services_main_view.dart';
-import 'package:erp/modules/webstore/medical_services/presentation/view/symptom_chatbot_view.dart';
-import 'package:erp/modules/webstore/medical_services/presentation/view/health_scanner_view.dart';
-import 'package:erp/modules/webstore/medical_services/presentation/view/health_twin_view.dart';
 import 'package:erp/modules/webstore/medical_services/presentation/view/medication_reminders_view.dart';
-import 'package:erp/modules/webstore/medical_services/presentation/view/telemedicine_view.dart';
-import 'package:erp/modules/webstore/medical_services/presentation/view/health_wallet_view.dart';
-import 'package:erp/modules/webstore/medical_services/presentation/view/health_gamification_view.dart';
-import 'package:erp/modules/webstore/medical_services/presentation/view/ar_medicine_check_view.dart';
 
 // Models for type casting in arguments
 
@@ -165,36 +156,13 @@ class RouteGenerator {
           ),
         );
 
-      // ─── Medical Services (Futuristic) ─────────────────────
+      // ─── Medical Services ─────────────────────────
       case AppRouteNames.medicalServicesMain:
         return _guarded(const MedicalServicesMainView());
-      case AppRouteNames.medicalSymptomChat:
-        return _guarded(const SymptomChatbotView());
-      case AppRouteNames.medicalHealthScanner:
-        return _guarded(const HealthScannerView());
-      case AppRouteNames.medicalHealthTwin:
-        return _guarded(const HealthTwinView());
       case AppRouteNames.medicalReminders:
         return _guarded(const MedicationRemindersView());
-      case AppRouteNames.medicalTelemedicine:
-        return _guarded(const TelemedicineView());
-      case AppRouteNames.medicalHealthWallet:
-        return _guarded(const HealthWalletView());
-      case AppRouteNames.medicalGamification:
-        return _guarded(const HealthGamificationView());
-      case AppRouteNames.medicalArCheck:
-        return _guarded(const ArMedicineCheckView());
 
-      // ─── WebStore Admin ─────────────────────────────
       default:
-        if (settings.name != null &&
-            settings.name!.startsWith(AppRouteNames.webstoreAdmin)) {
-          final id = AdminRoutes.fromRouteName(settings.name);
-          return MaterialPageRoute(
-            settings: settings,
-            builder: (_) => AdminShell(initial: id),
-          );
-        }
         return _errorRoute();
     }
   }

@@ -12,6 +12,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:erp/core/config/app_flavor.dart';
 import 'package:erp/core/config/app_config_manager.dart';
 import 'package:erp/core/security/security_service.dart';
+import 'package:erp/core/services/local_notification_service.dart';
 
 class AppInitializer {
   AppInitializer._();
@@ -40,7 +41,16 @@ class AppInitializer {
     // 7. Initialize Security Service (RASP, Root Detection, etc.)
     await SecurityService().init();
 
-    // 8. Cleanup splash (will be manually removed later)
+    // 8. Initialize Local Notifications Service
+    try {
+      await LocalNotificationService().initialize();
+    } catch (e) {
+      if (kDebugMode) {
+        print('⚠️ Notification Service Init Error: $e');
+      }
+    }
+
+    // 9. Cleanup splash (will be manually removed later)
     if (!kIsWeb) {
       FlutterNativeSplash.remove();
     }

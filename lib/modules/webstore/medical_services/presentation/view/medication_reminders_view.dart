@@ -215,7 +215,7 @@ class MedicationRemindersView extends ConsumerWidget {
               }).toList(),
             ),
             10.verticalSpace,
-            // Adherence Bar
+            // Adherence Bar & Action Button
             Row(
               children: [
                 Expanded(
@@ -260,6 +260,40 @@ class MedicationRemindersView extends ConsumerWidget {
                   ),
                 ),
               ],
+            ),
+            12.verticalSpace,
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  ref.read(medicationRemindersProvider.notifier).markTaken(reminder.id);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('تم تسجيل الجرعة لـ ${reminder.medicationName} 👏'),
+                      backgroundColor: AppColors.success,
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                },
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.success,
+                  side: const BorderSide(color: AppColors.success, width: 1.2),
+                  padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                ),
+                icon: Icon(Icons.check_circle_outline_rounded, size: 18.sp),
+                label: Text(
+                  'تم أخذ الجرعة 💊',
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ),
             ),
           ],
         ),
@@ -331,16 +365,20 @@ class MedicationRemindersView extends ConsumerWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) => _AddReminderSheet(
+        onAdd: (data) {
+          Navigator.pop(sheetContext);
+          ref.read(medicationRemindersProvider.notifier).addReminder(data);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('✅ تم إضافة تذكير ${data['medication_name']} بنجاح'),
+              backgroundColor: AppColors.success,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        },
       ),
-      builder: (context) =>
-          _AddReminderSheet(
-            onAdd: (data) {
-              ref.read(medicationRemindersProvider.notifier).addReminder(data);
-              Navigator.pop(context);
-            },
-          ),
     );
   }
 }
@@ -355,10 +393,12 @@ class _AddReminderSheet extends StatefulWidget {
 }
 
 class _AddReminderSheetState extends State<_AddReminderSheet> {
+  final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _dosageController = TextEditingController();
   String _frequency = 'يومياً';
-  final List<String> _times = ['08:00'];
+  List<TimeOfDay> _selectedTimes = [];
+  String? _timeError;
 
   @override
   void dispose() {
@@ -367,109 +407,407 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
     super.dispose();
   }
 
+  Future<void> _pickTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _selectedTimes.isNotEmpty
+          ? _selectedTimes.last
+          : TimeOfDay.now(),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: const ColorScheme.light(
+                primary: AppColors.primaryOrange,
+                onPrimary: Colors.white,
+                onSurface: Colors.black87,
+              ),
+            ),
+            child: child!,
+          ),
+        );
+      },
+    );
+
+    if (picked != null) {
+      setState(() {
+        _timeError = null;
+        if (!_selectedTimes.any((t) => t.hour == picked.hour && t.minute == picked.minute)) {
+          _selectedTimes.add(picked);
+        }
+      });
+    }
+  }
+
+  String _formatTimeDisplay(TimeOfDay time) {
+    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+    final minute = time.minute.toString().padLeft(2, '0');
+    final period = time.period == DayPeriod.am ? 'صباحاً' : 'مساءً';
+    return '$hour:$minute $period';
+  }
+
+  String _formatTimeApi(TimeOfDay time) {
+    final hour = time.hour.toString().padLeft(2, '0');
+    final minute = time.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? theme.scaffoldBackgroundColor : Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 20,
+            offset: const Offset(0, -4),
+          ),
+        ],
+      ),
       padding: EdgeInsets.only(
         left: 20.w,
         right: 20.w,
-        top: 20.h,
-        bottom: MediaQuery
-            .of(context)
-            .viewInsets
-            .bottom + 20.h,
+        top: 16.h,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20.h,
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Container(
-              width: 40.w,
-              height: 4.h,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(2.r),
-              ),
-            ),
-          ),
-          16.verticalSpace,
-          Text(
-            'تذكير جديد',
-            style: TextStyle(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          16.verticalSpace,
-          TextField(
-            controller: _nameController,
-            decoration: InputDecoration(
-              labelText: 'اسم الدواء',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-            ),
-          ),
-          12.verticalSpace,
-          TextField(
-            controller: _dosageController,
-            decoration: InputDecoration(
-              labelText: 'الجرعة',
-              hintText: 'مثال: قرص واحد',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-            ),
-          ),
-          12.verticalSpace,
-          DropdownButtonFormField<String>(
-            initialValue: _frequency,
-            decoration: InputDecoration(
-              labelText: 'التكرار',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-            ),
-            items: ['يومياً', 'مرتين يومياً', '3 مرات يومياً', 'أسبوعياً']
-                .map((f) => DropdownMenuItem(value: f, child: Text(f)))
-                .toList(),
-            onChanged: (v) => setState(() => _frequency = v ?? _frequency),
-          ),
-          20.verticalSpace,
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                if (_nameController.text.isNotEmpty) {
-                  widget.onAdd({
-                    'medication_name': _nameController.text,
-                    'dosage': _dosageController.text,
-                    'frequency': _frequency,
-                    'times': _times,
-                    'start_date': DateTime.now().toIso8601String(),
-                    'is_active': true,
-                  });
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryOrange,
-                padding: EdgeInsets.symmetric(vertical: 14.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
+      child: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Top Grab Handle Bar
+              Center(
+                child: Container(
+                  width: 44.w,
+                  height: 5.h,
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.white24 : Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(3.r),
+                  ),
                 ),
               ),
-              child: Text(
-                'إضافة',
+              16.verticalSpace,
+
+              // Header Section
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryOrange.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    child: Icon(
+                      Icons.alarm_add_rounded,
+                      color: AppColors.primaryOrange,
+                      size: 26.sp,
+                    ),
+                  ),
+                  14.horizontalSpace,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'تذكير دواء جديد',
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.white : AppColors.textColor,
+                          ),
+                        ),
+                        4.verticalSpace,
+                        Text(
+                          'أدخل اسم الدواء والجرعة وأوقات التنبيه',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(
+                      Icons.close,
+                      color: isDark ? Colors.white60 : Colors.black54,
+                    ),
+                  ),
+                ],
+              ),
+              20.verticalSpace,
+
+              // 1. Medication Name Input
+              Text(
+                'اسم الدواء *',
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.sp,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : AppColors.textColor,
                 ),
               ),
-            ),
+              8.verticalSpace,
+              TextFormField(
+                controller: _nameController,
+                validator: (val) =>
+                    (val == null || val.trim().isEmpty) ? 'برجاء كتابة اسم الدواء' : null,
+                style: TextStyle(fontSize: 14.sp, color: isDark ? Colors.white : Colors.black87),
+                decoration: InputDecoration(
+                  hintText: 'مثال: بنادول إكسترا',
+                  hintStyle: TextStyle(fontSize: 13.sp, color: AppColors.textHint),
+                  prefixIcon: const Icon(Icons.medication_outlined, color: AppColors.primaryOrange),
+                  filled: true,
+                  fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey.shade50,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade300),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade200),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: const BorderSide(color: AppColors.primaryOrange, width: 1.5),
+                  ),
+                ),
+              ),
+              16.verticalSpace,
+
+              // 2. Dosage Input
+              Text(
+                'الجرعة (اختياري)',
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : AppColors.textColor,
+                ),
+              ),
+              8.verticalSpace,
+              TextFormField(
+                controller: _dosageController,
+                style: TextStyle(fontSize: 14.sp, color: isDark ? Colors.white : Colors.black87),
+                decoration: InputDecoration(
+                  hintText: 'مثال: قرص واحد بعد الأكل',
+                  hintStyle: TextStyle(fontSize: 13.sp, color: AppColors.textHint),
+                  prefixIcon: const Icon(Icons.pie_chart_outline_rounded, color: AppColors.primaryOrange),
+                  filled: true,
+                  fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey.shade50,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade300),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade200),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: const BorderSide(color: AppColors.primaryOrange, width: 1.5),
+                  ),
+                ),
+              ),
+              16.verticalSpace,
+
+              // 3. Frequency Dropdown
+              Text(
+                'معدل التكرار',
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : AppColors.textColor,
+                ),
+              ),
+              8.verticalSpace,
+              DropdownButtonFormField<String>(
+                value: _frequency,
+                style: TextStyle(fontSize: 14.sp, color: isDark ? Colors.white : Colors.black87),
+                dropdownColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.repeat_rounded, color: AppColors.primaryOrange),
+                  filled: true,
+                  fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey.shade50,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade300),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade200),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: const BorderSide(color: AppColors.primaryOrange, width: 1.5),
+                  ),
+                ),
+                items: ['يومياً', 'مرتين يومياً', '3 مرات يومياً', 'أسبوعياً', 'عند الحاجة']
+                    .map((f) => DropdownMenuItem(value: f, child: Text(f)))
+                    .toList(),
+                onChanged: (v) => setState(() => _frequency = v ?? _frequency),
+              ),
+              20.verticalSpace,
+
+              // 4. Time Selection Section
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'أوقات التنبيه *',
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : AppColors.textColor,
+                    ),
+                  ),
+                  TextButton.icon(
+                    onPressed: _pickTime,
+                    icon: const Icon(Icons.add_alarm_rounded, color: AppColors.primaryOrange, size: 18),
+                    label: Text(
+                      'إضافة وقت',
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primaryOrange,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              8.verticalSpace,
+
+              // Selected Time Chips or Empty Placeholder
+              if (_selectedTimes.isEmpty)
+                GestureDetector(
+                  onTap: _pickTime,
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
+                    decoration: BoxDecoration(
+                      color: _timeError != null
+                          ? AppColors.error.withValues(alpha: 0.05)
+                          : (isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey.shade50),
+                      borderRadius: BorderRadius.circular(14.r),
+                      border: Border.all(
+                        color: _timeError != null
+                            ? AppColors.error
+                            : (isDark ? Colors.white10 : Colors.grey.shade300),
+                        width: 1.2,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.access_time_rounded,
+                          color: _timeError != null ? AppColors.error : AppColors.primaryOrange,
+                          size: 20.sp,
+                        ),
+                        8.horizontalSpace,
+                        Text(
+                          _timeError ?? 'اضغط هنا لاختيار وقت التنبيه',
+                          style: TextStyle(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w600,
+                            color: _timeError != null ? AppColors.error : AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else
+                Wrap(
+                  spacing: 8.w,
+                  runSpacing: 8.h,
+                  children: _selectedTimes.map((time) {
+                    return Chip(
+                      avatar: const Icon(Icons.access_time_rounded, color: AppColors.primaryOrange, size: 16),
+                      label: Text(
+                        _formatTimeDisplay(time),
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primaryOrange,
+                        ),
+                      ),
+                      backgroundColor: AppColors.primaryOrange.withValues(alpha: 0.1),
+                      deleteIcon: const Icon(Icons.cancel_rounded, size: 16),
+                      deleteIconColor: AppColors.primaryOrange,
+                      onDeleted: () {
+                        setState(() {
+                          _selectedTimes.remove(time);
+                        });
+                      },
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.r),
+                        side: BorderSide(color: AppColors.primaryOrange.withValues(alpha: 0.2)),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              24.verticalSpace,
+
+              // 5. Submit Button
+              SizedBox(
+                width: double.infinity,
+                height: 50.h,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    final isFormValid = _formKey.currentState!.validate();
+                    if (_selectedTimes.isEmpty) {
+                      setState(() {
+                        _timeError = 'يرجى اختيار وقت واحد على الأقل للتذكير';
+                      });
+                    }
+                    if (isFormValid && _selectedTimes.isNotEmpty) {
+                      final timeStrings = _selectedTimes.map(_formatTimeApi).toList();
+                      widget.onAdd({
+                        'medication_name': _nameController.text.trim(),
+                        'dosage': _dosageController.text.trim().isEmpty
+                            ? 'جرعة واحدة'
+                            : _dosageController.text.trim(),
+                        'frequency': _frequency,
+                        'times': timeStrings,
+                        'start_date': DateTime.now().toIso8601String(),
+                        'is_active': true,
+                      });
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryOrange,
+                    foregroundColor: Colors.white,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                  ),
+                  icon: const Icon(Icons.check_circle_outline_rounded, color: Colors.white),
+                  label: Text(
+                    'حفظ التذكير وتفعيل الإشعارات',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
