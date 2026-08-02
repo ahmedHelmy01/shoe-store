@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:erp/core/common_widget/app_image/app_image.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/network/network_url.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class DetailsImageGallery extends StatefulWidget {
   final WebStoreProduct product;
@@ -22,52 +26,7 @@ class DetailsImageGallery extends StatefulWidget {
 }
 
 class _DetailsImageGalleryState extends State<DetailsImageGallery> {
-  final TransformationController _transformController = TransformationController();
-  bool _isZoomed = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _transformController.addListener(_onTransformChanged);
-  }
-
-  @override
-  void didUpdateWidget(DetailsImageGallery oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.selectedImageIndex != widget.selectedImageIndex) {
-      _resetZoom();
-    }
-  }
-
-  @override
-  void dispose() {
-    _transformController.removeListener(_onTransformChanged);
-    _transformController.dispose();
-    super.dispose();
-  }
-
-  void _onTransformChanged() {
-    final scale = _transformController.value.getMaxScaleOnAxis();
-    if (_isZoomed && scale <= 1.05) {
-      setState(() => _isZoomed = false);
-    } else if (!_isZoomed && scale > 1.05) {
-      setState(() => _isZoomed = true);
-    }
-  }
-
-  void _resetZoom() {
-    _transformController.value = Matrix4.identity();
-    setState(() => _isZoomed = false);
-  }
-
-  void _toggleZoom() {
-    if (_isZoomed) {
-      _resetZoom();
-    } else {
-      _transformController.value = Matrix4.diagonal3Values(3.0, 3.0, 1.0);
-      setState(() => _isZoomed = true);
-    }
-  }
+  bool _isOpeningViewer = false;
 
   String _formatImageUrl(String url) {
     if (url.isEmpty) return '';
@@ -75,15 +34,10 @@ class _DetailsImageGalleryState extends State<DetailsImageGallery> {
     return NetworkUrl.imageUrl(url);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
+  List<String> _getAllImages() {
     final allImages = <String>[];
     if (widget.product.image != null) {
-      allImages.add(
-        _formatImageUrl(widget.product.image!));
+      allImages.add(_formatImageUrl(widget.product.image!));
     }
     if (widget.product.images != null) {
       for (final img in widget.product.images!) {
@@ -92,13 +46,39 @@ class _DetailsImageGalleryState extends State<DetailsImageGallery> {
       }
     }
     if (allImages.isEmpty) allImages.add('');
+    return allImages;
+  }
+
+  void _openFullScreenViewer(List<String> images) {
+    if (_isOpeningViewer) return;
+    _isOpeningViewer = true;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FullScreenImageViewer(
+          images: images,
+          initialIndex: widget.selectedImageIndex,
+          heroTag: 'product_image_${widget.product.id}',
+          onPageChanged: widget.onImageSelected,
+        ),
+      ),
+    ).whenComplete(() => _isOpeningViewer = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final allImages = _getAllImages();
 
     return Column(
       children: [
         Expanded(
           child: GestureDetector(
+            onTap: () => _openFullScreenViewer(allImages),
             onHorizontalDragEnd: (details) {
-              if (!_isZoomed && details.primaryVelocity != null) {
+              if (details.primaryVelocity != null) {
                 if (details.primaryVelocity! < 0 &&
                     widget.selectedImageIndex < allImages.length - 1) {
                   widget.onImageSelected(widget.selectedImageIndex + 1);
@@ -110,39 +90,13 @@ class _DetailsImageGalleryState extends State<DetailsImageGallery> {
             },
             child: Container(
               color: isDark ? Colors.grey[900] : Colors.grey[50],
-              child: Stack(
-                children: [
-                  InteractiveViewer(
-                    transformationController: _transformController,
-                    panEnabled: true,
-                    minScale: 1.0,
-                    maxScale: 4.0,
-                    child: AppImage(
-                      imagePath: allImages[widget.selectedImageIndex],
-                      fit: BoxFit.contain,
-                      width: double.infinity,
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 8.h,
-                    right: 8.w,
-                    child: GestureDetector(
-                      onTap: _toggleZoom,
-                      child: Container(
-                        padding: EdgeInsets.all(8.w),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.5),
-                          borderRadius: BorderRadius.circular(20.r),
-                        ),
-                        child: Icon(
-                          _isZoomed ? Icons.zoom_out : Icons.zoom_in,
-                          color: Colors.white,
-                          size: 20.sp,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              child: Hero(
+                tag: 'product_image_${widget.product.id}',
+                child: AppImage(
+                  imagePath: allImages[widget.selectedImageIndex],
+                  fit: BoxFit.contain,
+                  width: double.infinity,
+                ),
               ),
             ),
           ),
@@ -185,6 +139,176 @@ class _DetailsImageGalleryState extends State<DetailsImageGallery> {
             ),
           ),
       ],
+    );
+  }
+}
+
+/// Full-screen image viewer with smooth pinch/double-tap zoom
+/// and swipe between product images.
+class FullScreenImageViewer extends StatefulWidget {
+  final List<String> images;
+  final int initialIndex;
+  final String heroTag;
+  final Function(int)? onPageChanged;
+
+  const FullScreenImageViewer({
+    super.key,
+    required this.images,
+    required this.initialIndex,
+    required this.heroTag,
+    this.onPageChanged,
+  });
+
+  @override
+  State<FullScreenImageViewer> createState() => _FullScreenImageViewerState();
+}
+
+class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
+  late final PageController _pageController;
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+    _pageController = PageController(initialPage: widget.initialIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          PhotoViewGallery.builder(
+            itemCount: widget.images.length,
+            pageController: _pageController,
+            onPageChanged: (index) {
+              setState(() => _currentIndex = index);
+              widget.onPageChanged?.call(index);
+            },
+            backgroundDecoration: const BoxDecoration(color: Colors.black),
+            loadingBuilder: (context, event) => Center(
+              child: CircularProgressIndicator(
+                value: event == null || event.expectedTotalBytes == null
+                    ? null
+                    : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
+                color: Colors.white70,
+              ),
+            ),
+            builder: (context, index) {
+              final url = widget.images[index];
+              return PhotoViewGalleryPageOptions(
+                imageProvider: NetworkImage(
+                  url,
+                  headers: const {
+                    'User-Agent':
+                        'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36',
+                    'Accept':
+                        'image/avif,image/webp,image/apng,image/png,image/jpg,*/*;q=0.8',
+                    'Connection': 'close',
+                  },
+                ),
+                heroAttributes: index == widget.initialIndex
+                    ? PhotoViewHeroAttributes(tag: widget.heroTag)
+                    : null,
+                minScale: PhotoViewComputedScale.contained,
+                maxScale: PhotoViewComputedScale.covered * 4,
+                initialScale: PhotoViewComputedScale.contained,
+                errorBuilder: (context, error, stackTrace) => Center(
+                  child: Icon(
+                    Icons.image_not_supported_outlined,
+                    color: Colors.white38,
+                    size: 48.sp,
+                  ),
+                ),
+              );
+            },
+          ),
+          // ─── Top bar: close button + counter ─────────────
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 8.h,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildTopButton(
+                  icon: Icons.close_rounded,
+                  onTap: () => Navigator.pop(context),
+                ),
+                if (widget.images.length > 1)
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                    child: Text(
+                      '${_currentIndex + 1} / ${widget.images.length}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                SizedBox(width: 44.w),
+              ],
+            ),
+          ),
+          // ─── Bottom hint ──────────────────────────────────
+          Positioned(
+            bottom: MediaQuery.of(context).padding.bottom + 24.h,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                child: Text(
+                  LocaleKeys.webstore.prescriptions.pinch_to_zoom
+                      .tr(context: context),
+                  style: TextStyle(color: Colors.white70, fontSize: 12.sp),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTopButton({
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      margin: EdgeInsets.only(left: 12.w),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.5),
+        shape: BoxShape.circle,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20.r),
+          child: Padding(
+            padding: EdgeInsets.all(8.w),
+            child: Icon(icon, color: Colors.white, size: 20.sp),
+          ),
+        ),
+      ),
     );
   }
 }

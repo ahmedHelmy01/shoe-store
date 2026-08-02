@@ -253,6 +253,14 @@ class CartNotifier extends Notifier<List<CartItemModel>> {
 
 final cartProvider = NotifierProvider<CartNotifier, List<CartItemModel>>(CartNotifier.new);
 
+/// Derived total item count in cart.
+/// Updates automatically whenever the cart state changes
+/// (add / remove / quantity change / clear / server fetch).
+final cartCountProvider = Provider<int>((ref) {
+  final items = ref.watch(cartProvider);
+  return items.fold<int>(0, (sum, item) => sum + item.quantity);
+});
+
 final cartDeletingItemsProvider = NotifierProvider<CartDeletingItemsNotifier, Set<int>>(CartDeletingItemsNotifier.new);
 
 class CartDeletingItemsNotifier extends Notifier<Set<int>> {

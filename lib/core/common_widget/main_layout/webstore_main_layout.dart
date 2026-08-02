@@ -9,6 +9,7 @@ import 'package:erp/modules/webstore/catalog/presentation/view/catalog/catalog_v
 import 'package:erp/modules/webstore/cart/presentation/view/webstore_cart_view.dart';
 import 'package:erp/modules/webstore/profile/presentation/view/webstore_profile_view.dart';
 import 'package:erp/modules/webstore/more/presentation/view/webstore_more_view.dart';
+import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
 import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/core/providers/navigation_provider.dart';
@@ -123,6 +124,7 @@ class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
   Widget _buildBottomNavBar(AuthState auth, int currentIndex) {
     final theme = Theme.of(context);
     final tabs = _tabs(context);
+    final cartCount = ref.watch(cartCountProvider);
 
     return Container(
       decoration: BoxDecoration(
@@ -175,13 +177,25 @@ class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
                       children: [
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 250),
-                          child: Icon(
-                            isActive ? tab.activeIcon : tab.icon,
-                            key: ValueKey(isActive),
-                            color: isActive
-                                ? AppColors.primary
-                                : theme.hintColor,
-                            size: 24,
+                          child: Badge(
+                            isLabelVisible: index == 2 && cartCount > 0,
+                            backgroundColor: AppColors.primaryOrange,
+                            textColor: Colors.white,
+                            label: Text(
+                              cartCount > 99 ? '99+' : '$cartCount',
+                              style: const TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            child: Icon(
+                              isActive ? tab.activeIcon : tab.icon,
+                              key: ValueKey(isActive),
+                              color: isActive
+                                  ? AppColors.primary
+                                  : theme.hintColor,
+                              size: 24,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 3),

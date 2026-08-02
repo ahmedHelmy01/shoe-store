@@ -225,13 +225,35 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
                                   : state is ProfileUpdateSuccess
                                       ? state.user
                                       : null;
-                              branchController.text = _selectedBranchName ??
-                                  userModel?.branchName ??
-                                  ((branchState is BranchLoaded)
-                                      ? (branchState.branches.any((b) => b.id == _selectedBranchId)
-                                          ? branchState.branches.firstWhere((b) => b.id == _selectedBranchId).name
-                                          : 'Branch ID: $_selectedBranchId')
-                                      : '...');
+                              final locale = context.locale.languageCode;
+                              final branchId = _selectedBranchId;
+
+                              // Resolve localized branch name from the branches
+                              // list first (same logic as BranchSelectionSheet),
+                              // then fall back to the API/user-session name.
+                              String displayName;
+                              if (branchState is BranchLoaded &&
+                                  branchId != null) {
+                                final matched = branchState.branches
+                                    .where((b) => b.id == branchId);
+                                if (matched.isNotEmpty) {
+                                  displayName = locale == 'ar'
+                                      ? matched.first.nameAr
+                                      : matched.first.name;
+                                } else {
+                                  displayName = _selectedBranchName ??
+                                      userModel?.branchName ??
+                                      'Branch ID: $branchId';
+                                }
+                              } else {
+                                displayName = _selectedBranchName ??
+                                    userModel?.branchName ??
+                                    (branchId != null
+                                        ? 'Branch ID: $branchId'
+                                        : '...');
+                              }
+                              branchController.text = displayName;
+
                               return ProfileDataField(
                                 label: LocaleKeys.webstore.profile.your_branch.tr(context: context),
                                 controller: branchController,
@@ -239,7 +261,6 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
                                 isEditing: isEditing,
                                 isLast: !hasAddress,
                                 onTap: () async {
-                                  final locale = context.locale.languageCode;
                                   final selected = await showModalBottomSheet<int>(
                                     context: context,
                                     isScrollControlled: true,

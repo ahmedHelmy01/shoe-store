@@ -6,7 +6,19 @@ class AppTheme {
   static const Color darkBackground = Color(0xFF0D1B2A);
   static const Color darkSurface = Color(0xFF1B263B);
 
-  static ThemeData get lightTheme {
+  /// Cached theme instances.
+  ///
+  /// IMPORTANT: these MUST be stable (single instances). If a new ThemeData is
+  /// created on every build (e.g. via getters), then any MaterialApp rebuild
+  /// (locale change, dark mode toggle, network status change...) makes the
+  /// internal AnimatedTheme lerp between two differently-built themes. The
+  /// interpolated styles end up with mismatched `inherit` values and the app
+  /// crashes with:
+  ///   "Failed to interpolate TextStyles with different inherit values."
+  static final ThemeData lightTheme = _buildLightTheme();
+  static final ThemeData darkTheme = _buildDarkTheme();
+
+  static ThemeData _buildLightTheme() {
     return ThemeData(
       useMaterial3: true,
       fontFamily: 'store',
@@ -165,7 +177,7 @@ class AppTheme {
     );
   }
 
-  static ThemeData get darkTheme {
+  static ThemeData _buildDarkTheme() {
     return ThemeData(
       useMaterial3: true,
       fontFamily: 'store',
@@ -241,6 +253,38 @@ class AppTheme {
           padding: const EdgeInsets.symmetric(
             vertical: AppConstants.paddingUnit * 2,
           ),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'store',
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.textMain,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+          ),
+          side: const BorderSide(color: Color(0xFFE6E6E6)),
+          minimumSize: const Size.fromHeight(48),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'store',
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.primary,
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'store',
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         ),
       ),
       cardTheme: CardThemeData(
