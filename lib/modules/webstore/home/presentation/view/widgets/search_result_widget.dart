@@ -68,92 +68,103 @@ class _ProductResultBottomSheetState
         ? homeState.isSearchLoadingMore
         : false;
 
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.85,
-      decoration: BoxDecoration(
-        color: isDark ? theme.scaffoldBackgroundColor : Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-      ),
-      padding: EdgeInsets.only(
-        top: 20.h,
-        left: 16.w,
-        right: 16.w,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 20.h,
-      ),
-      child: Column(
-        children: [
-          Container(
-            width: 40.w,
-            height: 4.h,
+    return ScaffoldMessenger(
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.85,
+        child: Scaffold(
+          // Sheet-local Scaffold + Messenger so snack bars (e.g. "Added to
+          // cart") appear in FRONT of the sheet instead of behind it on the
+          // underlying page scaffold.
+          backgroundColor: Colors.transparent,
+          resizeToAvoidBottomInset: false,
+          body: Container(
             decoration: BoxDecoration(
-              color: isDark ? Colors.white24 : Colors.grey[300],
-              borderRadius: BorderRadius.circular(2.r),
+              color: isDark ? theme.scaffoldBackgroundColor : Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
             ),
-          ),
-          20.verticalSpace,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                widget.type == ProductSheetType.search
-                    ? LocaleKeys.webstore.home.search_results.tr(context: context)
-                    : LocaleKeys.webstore.home.filter_results.tr(context: context),
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : AppColors.textColor,
+            padding: EdgeInsets.only(
+              top: 20.h,
+              left: 16.w,
+              right: 16.w,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 20.h,
+            ),
+            child: Column(
+              children: [
+                Container(
+                  width: 40.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.white24 : Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2.r),
+                  ),
                 ),
-              ),
-              IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: Icon(
-                  Icons.close,
-                  color: isDark ? Colors.white70 : Colors.black87,
-                ),
-              ),
-            ],
-          ),
-          10.verticalSpace,
-          if (isLoading && products.isEmpty)
-            const Expanded(
-              child: Center(
-                child: CircularProgressIndicator.adaptive(),
-              ),
-            )
-          else if (products.isEmpty)
-            Expanded(child: _buildEmptyState(context, widget.type))
-          else
-            Expanded(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: GridView.builder(
-                      controller: _scrollController,
-                      physics: const BouncingScrollPhysics(),
-                      padding: EdgeInsets.only(bottom: 16.h),
-                      itemCount: products.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisExtent: 260.h,
-                        crossAxisSpacing: 12.w,
-                        mainAxisSpacing: 12.h,
+                20.verticalSpace,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      widget.type == ProductSheetType.search
+                          ? LocaleKeys.webstore.home.search_results.tr(context: context)
+                          : LocaleKeys.webstore.home.filter_results.tr(context: context),
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : AppColors.textColor,
                       ),
-                      itemBuilder: (_, index) {
-                        return ProductGridCard(
-                          product: products[index],
-                        );
-                      },
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: Icon(
+                        Icons.close,
+                        color: isDark ? Colors.white70 : Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+                10.verticalSpace,
+                if (isLoading && products.isEmpty)
+                  const Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                  )
+                else if (products.isEmpty)
+                  Expanded(child: _buildEmptyState(context, widget.type))
+                else
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: GridView.builder(
+                            controller: _scrollController,
+                            physics: const BouncingScrollPhysics(),
+                            padding: EdgeInsets.only(bottom: 16.h),
+                            itemCount: products.length,
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisExtent: 260.h,
+                              crossAxisSpacing: 12.w,
+                              mainAxisSpacing: 12.h,
+                            ),
+                            itemBuilder: (_, index) {
+                              return ProductGridCard(
+                                product: products[index],
+                              );
+                            },
+                          ),
+                        ),
+                        if (isLoadingMore) ...[
+                          SizedBox(height: 8.h),
+                          const Center(child: CircularProgressIndicator.adaptive()),
+                          SizedBox(height: 8.h),
+                        ],
+                      ],
                     ),
                   ),
-                  if (isLoadingMore) ...[
-                    SizedBox(height: 8.h),
-                    const Center(child: CircularProgressIndicator.adaptive()),
-                    SizedBox(height: 8.h),
-                  ],
-                ],
-              ),
+              ],
             ),
-        ],
+          ),
+        ),
       ),
     );
   }

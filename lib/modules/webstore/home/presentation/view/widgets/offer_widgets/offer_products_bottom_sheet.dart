@@ -38,24 +38,31 @@ class OfferProductsBottomSheet extends ConsumerWidget {
         ? 'خصم ${offer.discountValue.toStringAsFixed(0)}%'
         : 'خصم ${offer.discountValue.toStringAsFixed(0)} ج.م';
 
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.85,
-      ),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1B4B) : Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, -5),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
+    return ScaffoldMessenger(
+      // Sheet-local Scaffold + Messenger so snack bars (e.g. "Added to cart")
+      // appear in FRONT of the sheet instead of behind it on the underlying
+      // page scaffold.
+      child: Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.85,
+        ),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1E1B4B) : Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 20,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          resizeToAvoidBottomInset: false,
+          body: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
           // ── Drag handle ───────────────────────────────────────────────
           12.verticalSpace,
           Container(
@@ -195,7 +202,9 @@ class OfferProductsBottomSheet extends ConsumerWidget {
           ),
         ],
       ),
-    );
+    ),
+  ),
+);
   }
 }
 
