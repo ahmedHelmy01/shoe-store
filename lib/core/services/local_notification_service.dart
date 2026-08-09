@@ -353,6 +353,79 @@ class LocalNotificationService {
     }
   }
 
+  /// Schedules a weekly-repeating notification for a specific weekday
+  /// (1 = Monday .. 7 = Sunday, matching DateTime.weekday) at hour:minute.
+  Future<void> scheduleWeeklyNotification({
+    required int id,
+    required String title,
+    required String body,
+    required int weekday,
+    required int hour,
+    required int minute,
+    String? payload,
+  }) async {
+    try {
+      await initialize();
+
+      final now = tz.TZDateTime.now(tz.local);
+      var scheduledDate = tz.TZDateTime(
+        tz.local,
+        now.year,
+        now.month,
+        now.day,
+        hour,
+        minute,
+      );
+      // Move forward to the next occurrence of [weekday]
+      while (scheduledDate.weekday != weekday) {
+        scheduledDate = scheduledDate.add(const Duration(days: 1));
+      }
+      if (scheduledDate.isBefore(now)) {
+        scheduledDate = scheduledDate.add(const Duration(days: 7));
+      }
+
+      final AndroidScheduleMode scheduleMode = await resolveScheduleMode();
+      _log('scheduleWeeklyNotification: preparing id=$id weekday=$weekday '
+          'hour=$hour minute=$minute title="$title" firstRun=$scheduledDate mode=$scheduleMode');
+
+      const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+        'medication_reminders_channel',
+        'تذكيرات الأدوية',
+        channelDescription: 'إشعارات وتنبيهات مواعيد الأدوية والجرعات اليومية',
+        importance: Importance.max,
+        priority: Priority.high,
+        playSound: true,
+        enableVibration: true,
+      );
+
+      const NotificationDetails notificationDetails = NotificationDetails(
+        android: androidDetails,
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      );
+
+      await _notificationsPlugin.zonedSchedule(
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: scheduledDate,
+        notificationDetails: notificationDetails,
+        androidScheduleMode: scheduleMode,
+        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+        payload: payload,
+      );
+
+      _log('scheduleWeeklyNotification: SUCCESS id=$id for weekday=$weekday '
+          '$hour:$minute (Next: $scheduledDate) payload=$payload');
+    } catch (e) {
+      _log('scheduleWeeklyNotification: ERROR id=$id for weekday=$weekday '
+          '$hour:$minute -> $e');
+    }
+  }
+
   Future<void> cancelNotification(int id) async {
     try {
       await _notificationsPlugin.cancel(id: id);

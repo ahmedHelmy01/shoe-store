@@ -7,7 +7,7 @@ import 'package:erp/core/utils/asset_manager.dart';
 class OnboardingVm extends Notifier<OnboardingState> {
   @override
   OnboardingState build() {
-    return OnboardingInitial();
+    return OnboardingLoading();
   }
 
   static final List<BoardingModel> _fallbackBoardings = [

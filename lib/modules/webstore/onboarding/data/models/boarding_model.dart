@@ -33,16 +33,4 @@ class BoardingModel {
       position: json['position'] as int? ?? 0,
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'title_ar': titleAr,
-      'content': content,
-      'content_ar': contentAr,
-      'image': image,
-      'position': position,
-    };
-  }
 }

@@ -3,17 +3,43 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
 import 'package:erp/core/common_widget/main_layout/webstore_base_scaffold.dart';
-import 'package:erp/core/common_widget/app_animation/app_animation.dart';
-import 'package:erp/modules/webstore/medical_services/presentation/view_model/medical_services_providers.dart';
 import 'package:erp/modules/webstore/medical_services/data/models/medication_reminder_model.dart';
+import 'package:erp/modules/webstore/medical_services/presentation/view/widgets/day_schedule_panel.dart';
+import 'package:erp/modules/webstore/medical_services/presentation/view/widgets/medication_plan_sheet.dart';
+import 'package:erp/modules/webstore/medical_services/presentation/view_model/medication_reminders_providers.dart';
 
-class MedicationRemindersView extends ConsumerWidget {
+class MedicationRemindersView extends ConsumerStatefulWidget {
   const MedicationRemindersView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+  ConsumerState<MedicationRemindersView> createState() => _MedicationRemindersViewState();
+}
+
+class _MedicationRemindersViewState extends ConsumerState<MedicationRemindersView> {
+  late DateTime _displayedMonth;
+  late DateTime _selectedDate;
+  bool _showList = false;
+
+  static const List<Color> _medColors = [
+    AppColors.primaryOrange,
+    Color(0xFF4C9F70),
+    Color(0xFF5B7BD5),
+    Color(0xFF9B59B6),
+    Color(0xFFE67E22),
+    Color(0xFF16A085),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _displayedMonth = DateTime(now.year, now.month);
+    _selectedDate = now;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final remindersAsync = ref.watch(medicationRemindersProvider);
 
     return WebStoreBaseScaffold(
@@ -26,49 +52,473 @@ class MedicationRemindersView extends ConsumerWidget {
       ),
       showBack: true,
       extendBodyBehindAppBar: false,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showAddReminderSheet(context, ref),
-        backgroundColor: AppColors.primaryOrange,
-        icon: const Icon(Icons.add, color: Colors.white),
-        label: Text(
-          'تذكير جديد',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+      floatingActionButton: remindersAsync.maybeWhen(
+        data: (reminders) => reminders.isEmpty
+            ? null
+            : FloatingActionButton.extended(
+                onPressed: () => _openPlanSheet(context),
+                backgroundColor: AppColors.primaryOrange,
+                icon: const Icon(Icons.add, color: Colors.white),
+                label: Text(
+                  'تذكير جديد',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+        orElse: () => null,
       ),
       body: remindersAsync.when(
-        data: (reminders) =>
-        reminders.isNotEmpty
-            ? ListView.builder(
-          padding: EdgeInsets.all(16.w),
-          itemCount: reminders.length,
-          itemBuilder: (context, index) {
-            return AppAnimation.fadeInUp(
-              delay: Duration(milliseconds: index * 100),
-              child: _buildReminderCard(reminders[index], isDark, ref, context),
-            );
-          },
-        )
-            : _buildEmptyState(isDark, context, ref),
-        loading: () =>
-            Center(
-              child: CircularProgressIndicator(color: AppColors.primaryOrange),
-            ),
-        error: (_, __) => _buildEmptyState(isDark, context, ref),
+        data: (reminders) {
+          if (reminders.isEmpty) return _buildEmptyState(isDark, context);
+          return Column(
+            children: [
+              _buildViewToggle(isDark),
+              8.verticalSpace,
+              Expanded(
+                child: _showList
+                    ? _buildPlansList(reminders, isDark, context)
+                    : _buildCalendarTab(reminders, isDark, context),
+              ),
+            ],
+          );
+        },
+        loading: () => Center(
+          child: CircularProgressIndicator(color: AppColors.primaryOrange),
+        ),
+        error: (_, _) => _buildEmptyState(isDark, context),
       ),
     );
   }
 
-  Widget _buildReminderCard(MedicationReminderModel reminder,
-      bool isDark,
-      WidgetRef ref,
-      BuildContext context,) {
+  // ─── Toggle ──────────────────────────────────────────────
+
+  Widget _buildViewToggle(bool isDark) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      child: Container(
+        padding: EdgeInsets.all(4.w),
+        decoration: BoxDecoration(
+          color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(14.r),
+        ),
+        child: Row(
+          children: [
+            _toggleItem(
+              label: 'جدول الشهر',
+              icon: Icons.calendar_month_rounded,
+              selected: !_showList,
+              onTap: () => setState(() => _showList = false),
+              isDark: isDark,
+            ),
+            _toggleItem(
+              label: 'خطتي',
+              icon: Icons.medication_rounded,
+              selected: _showList,
+              onTap: () => setState(() => _showList = true),
+              isDark: isDark,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _toggleItem({
+    required String label,
+    required IconData icon,
+    required bool selected,
+    required VoidCallback onTap,
+    required bool isDark,
+  }) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10.r),
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 9.h),
+          decoration: BoxDecoration(
+            color: selected ? AppColors.primaryOrange : Colors.transparent,
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 16.sp, color: selected ? Colors.white : AppColors.textSecondary),
+              6.horizontalSpace,
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.bold,
+                  color: selected ? Colors.white : AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ─── Calendar Tab ────────────────────────────────────────
+
+  Widget _buildCalendarTab(
+    List<MedicationReminderModel> reminders,
+    bool isDark,
+    BuildContext context,
+  ) {
+    final today = DateTime.now();
+    final todayDate = DateTime(today.year, today.month, today.day);
+    final selectedDate = DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
+
+    return Column(
+      children: [
+        _buildMonthHeader(isDark),
+        _buildWeekdayHeader(isDark),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _buildMonthGrid(reminders, isDark, todayDate, selectedDate),
+                8.verticalSpace,
+                _buildSelectedDayHeader(selectedDate, isDark),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: DaySchedulePanel(date: selectedDate, reminders: reminders),
+                ),
+                24.verticalSpace,
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMonthHeader(bool isDark) {
+    const months = [
+      'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
+    ];
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: Row(
+        children: [
+          IconButton(
+            onPressed: () => setState(() {
+              _displayedMonth = DateTime(_displayedMonth.year, _displayedMonth.month - 1);
+            }),
+            icon: Icon(Icons.chevron_right_rounded, color: AppColors.primaryOrange, size: 26.sp),
+          ),
+          Expanded(
+            child: Text(
+              '${months[_displayedMonth.month - 1]} ${_displayedMonth.year}',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : AppColors.textColor,
+              ),
+            ),
+          ),
+          IconButton(
+            onPressed: () => setState(() {
+              _displayedMonth = DateTime(_displayedMonth.year, _displayedMonth.month + 1);
+            }),
+            icon: Icon(Icons.chevron_left_rounded, color: AppColors.primaryOrange, size: 26.sp),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWeekdayHeader(bool isDark) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12.w),
+      child: Row(
+        children: PlanDaySchedule.weekOrder.map((weekday) {
+          return Expanded(
+            child: Center(
+              child: Text(
+                PlanDaySchedule.weekdayShortLabel(weekday),
+                style: TextStyle(
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.bold,
+                  color: weekday == DateTime.friday || weekday == DateTime.saturday
+                      ? AppColors.error.withValues(alpha: 0.8)
+                      : (isDark ? Colors.white60 : AppColors.textSecondary),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildMonthGrid(
+    List<MedicationReminderModel> reminders,
+    bool isDark,
+    DateTime todayDate,
+    DateTime selectedDate,
+  ) {
+    final firstDay = DateTime(_displayedMonth.year, _displayedMonth.month, 1);
+    final daysInMonth = DateTime(_displayedMonth.year, _displayedMonth.month + 1, 0).day;
+    final leadingBlanks = (firstDay.weekday + 1) % 7; // الأسبوع يبدأ السبت
+    final totalCells = ((leadingBlanks + daysInMonth) / 7).ceil() * 7;
+
+    // الأدوية المجدولة لكل يوم في الأسبوع (مرة واحدة)
+    final byWeekday = <int, List<MedicationReminderModel>>{};
+    for (final weekday in PlanDaySchedule.weekOrder) {
+      byWeekday[weekday] = reminders
+          .where((r) => r.slotsFor(weekday).isNotEmpty)
+          .toList();
+    }
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 7,
+          mainAxisSpacing: 4.h,
+          crossAxisSpacing: 4.w,
+          childAspectRatio: 0.82,
+        ),
+        itemCount: totalCells,
+        itemBuilder: (context, index) {
+          final date = firstDay.subtract(Duration(days: leadingBlanks - index));
+          final inMonth = date.month == _displayedMonth.month;
+          final isToday = date == todayDate;
+          final isSelected = date == selectedDate;
+          final meds = inMonth
+              ? (byWeekday[date.weekday] ?? const <MedicationReminderModel>[])
+              : const <MedicationReminderModel>[];
+          return _buildDayCell(
+            date: date,
+            inMonth: inMonth,
+            isToday: isToday,
+            isSelected: isSelected,
+            meds: meds,
+            isDark: isDark,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildDayCell({
+    required DateTime date,
+    required bool inMonth,
+    required bool isToday,
+    required bool isSelected,
+    required List<MedicationReminderModel> meds,
+    required bool isDark,
+  }) {
+    return InkWell(
+      onTap: () => setState(() => _selectedDate = date),
+      borderRadius: BorderRadius.circular(10.r),
+      child: Container(
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.primaryOrange.withValues(alpha: 0.12)
+              : isToday
+                  ? AppColors.primaryOrange.withValues(alpha: 0.07)
+                  : null,
+          borderRadius: BorderRadius.circular(10.r),
+          border: Border.all(
+            color: isSelected
+                ? AppColors.primaryOrange
+                : isToday
+                    ? AppColors.primaryOrange.withValues(alpha: 0.4)
+                    : Colors.transparent,
+            width: 1.2,
+          ),
+        ),
+        padding: EdgeInsets.symmetric(vertical: 4.h),
+        child: Column(
+          children: [
+            Text(
+              '${date.day}',
+              style: TextStyle(
+                fontSize: 12.sp,
+                fontWeight: isToday ? FontWeight.bold : FontWeight.w500,
+                color: !inMonth
+                    ? AppColors.textHint.withValues(alpha: 0.5)
+                    : isToday
+                        ? AppColors.primaryOrange
+                        : (isDark ? Colors.white : AppColors.textColor),
+              ),
+            ),
+            4.verticalSpace,
+            if (meds.isNotEmpty)
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (meds.length <= 3)
+                      ...meds.map((m) {
+                        final color = _medColors[m.id % _medColors.length];
+                        return Container(
+                          width: 16.w,
+                          height: 4.h,
+                          margin: EdgeInsets.only(bottom: 2.h),
+                          decoration: BoxDecoration(
+                            color: m.isActive
+                                ? color
+                                : color.withValues(alpha: 0.3),
+                            borderRadius: BorderRadius.circular(2.r),
+                          ),
+                        );
+                      })
+                    else ...[
+                      Wrap(
+                        spacing: 2.w,
+                        runSpacing: 2.h,
+                        children: meds.take(3).map((m) {
+                          final color = _medColors[m.id % _medColors.length];
+                          return Container(
+                            width: 5.w,
+                            height: 5.w,
+                            decoration: BoxDecoration(
+                              color: m.isActive ? color : color.withValues(alpha: 0.3),
+                              shape: BoxShape.circle,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                      2.verticalSpace,
+                      Text(
+                        '+${meds.length - 3}',
+                        style: TextStyle(
+                          fontSize: 8.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textHint,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectedDayHeader(DateTime date, bool isDark) {
+    const months = [
+      'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
+    ];
+    final today = DateTime.now();
+    final isToday = DateTime(date.year, date.month, date.day) ==
+        DateTime(today.year, today.month, today.day);
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 8.h),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(8.w),
+            decoration: BoxDecoration(
+              color: AppColors.primaryOrange.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            child: Icon(
+              isToday ? Icons.today_rounded : Icons.event_rounded,
+              color: AppColors.primaryOrange,
+              size: 18.sp,
+            ),
+          ),
+          10.horizontalSpace,
+          Text(
+            isToday
+                ? 'جدول اليوم'
+                : 'جدول ${PlanDaySchedule.weekdayLabel(date.weekday)} ${date.day} ${months[date.month - 1]}',
+            style: TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : AppColors.textColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ─── Plans List Tab ───────────────────────────────────────
+
+  Widget _buildPlansList(
+    List<MedicationReminderModel> reminders,
+    bool isDark,
+    BuildContext context,
+  ) {
+    // تجميع حسب الخطة/الحالة
+    final grouped = <String?, List<MedicationReminderModel>>{};
+    for (final r in reminders) {
+      grouped.putIfAbsent(r.conditionName, () => []).add(r);
+    }
+    final sortedKeys = grouped.keys.toList()
+      ..sort((a, b) => (a ?? '~').compareTo(b ?? '~'));
+
+    return ListView(
+      padding: EdgeInsets.all(16.w),
+      children: [
+        for (final key in sortedKeys) ...[
+          Padding(
+            padding: EdgeInsets.only(bottom: 8.h),
+            child: Row(
+              children: [
+                Icon(
+                  key == null ? Icons.medication_rounded : Icons.folder_rounded,
+                  size: 15.sp,
+                  color: AppColors.primaryOrange,
+                ),
+                6.horizontalSpace,
+                Text(
+                  key ?? 'أدوية بدون خطة',
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.bold,
+                    color: key == null ? AppColors.textSecondary : AppColors.primaryOrange,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  '${grouped[key]!.length}',
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textHint,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ...grouped[key]!.map(
+            (r) => _buildPlanCard(r, isDark, context),
+          ),
+          8.verticalSpace,
+        ],
+      ],
+    );
+  }
+
+  Widget _buildPlanCard(
+    MedicationReminderModel reminder,
+    bool isDark,
+    BuildContext context,
+  ) {
+    final adherence = reminder.adherenceRate;
+    final days = reminder.scheduledWeekdays;
+
     return Dismissible(
       key: Key('reminder_${reminder.id}'),
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: 20.w),
-        margin: EdgeInsets.only(bottom: 12.h),
+        margin: EdgeInsets.only(bottom: 10.h),
         decoration: BoxDecoration(
           color: AppColors.error,
           borderRadius: BorderRadius.circular(16.r),
@@ -78,30 +528,30 @@ class MedicationRemindersView extends ConsumerWidget {
       confirmDismiss: (_) async {
         return await showDialog(
           context: context,
-          builder: (ctx) =>
-              AlertDialog(
-                title: Text('حذف التذكير'),
-                content: Text('هل أنت متأكد من حذف هذا التذكير؟'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(ctx, false),
-                    child: Text('إلغاء'),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.pop(ctx, true),
-                    child: Text(
-                        'حذف', style: TextStyle(color: AppColors.error)),
-                  ),
-                ],
+          builder: (ctx) => AlertDialog(
+            title: const Text('حذف التذكير'),
+            content: const Text('هل أنت متأكد من حذف هذا التذكير؟'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('إلغاء'),
               ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: const Text('حذف', style: TextStyle(color: AppColors.error)),
+              ),
+            ],
+          ),
         );
       },
       onDismissed: (_) {
-        ref.read(medicationRemindersProvider.notifier).deleteReminder(
-            reminder.id);
+        ref.read(medicationRemindersProvider.notifier).deleteReminder(reminder.id);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم حذف التذكير'), duration: Duration(seconds: 2)),
+        );
       },
       child: Container(
-        margin: EdgeInsets.only(bottom: 12.h),
+        margin: EdgeInsets.only(bottom: 10.h),
         padding: EdgeInsets.all(14.w),
         decoration: BoxDecoration(
           color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white,
@@ -124,17 +574,13 @@ class MedicationRemindersView extends ConsumerWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.primaryOrange,
-                        AppColors.primaryOrange.withValues(alpha: 0.7),
+                        _medColors[reminder.id % _medColors.length],
+                        _medColors[reminder.id % _medColors.length].withValues(alpha: 0.7),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(12.r),
                   ),
-                  child: Icon(
-                    Icons.medication_rounded,
-                    color: Colors.white,
-                    size: 22.sp,
-                  ),
+                  child: Icon(Icons.medication_rounded, color: Colors.white, size: 20.sp),
                 ),
                 12.horizontalSpace,
                 Expanded(
@@ -149,45 +595,59 @@ class MedicationRemindersView extends ConsumerWidget {
                           color: isDark ? Colors.white : AppColors.textColor,
                         ),
                       ),
-                      Text(
-                        '${reminder.dosage} • ${reminder.frequency}',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: AppColors.textSecondary,
+                      if (reminder.conditionName != null && reminder.conditionName!.isNotEmpty)
+                        3.verticalSpace,
+                      if (reminder.conditionName != null && reminder.conditionName!.isNotEmpty)
+                        Row(
+                          children: [
+                            Icon(Icons.folder_rounded, size: 12.sp, color: AppColors.primaryOrange),
+                            4.horizontalSpace,
+                            Flexible(
+                              child: Text(
+                                reminder.conditionName!,
+                                style: TextStyle(
+                                  fontSize: 11.sp,
+                                  color: AppColors.primaryOrange,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
                     ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                  decoration: BoxDecoration(
-                    color: reminder.isActive
-                        ? AppColors.success.withValues(alpha: 0.1)
-                        : AppColors.textHint.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: Text(
-                    reminder.isActive ? 'نشط' : 'متوقف',
-                    style: TextStyle(
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.bold,
-                      color: reminder.isActive ? AppColors.success : AppColors
-                          .textHint,
-                    ),
-                  ),
+                Switch(
+                  value: reminder.isActive,
+                  onChanged: (_) {
+                    ref.read(medicationRemindersProvider.notifier).toggleActive(reminder.id);
+                  },
+                  activeTrackColor: AppColors.success,
+                  activeThumbColor: Colors.white,
+                  inactiveThumbColor: AppColors.textHint,
+                ),
+                PopupMenuButton<String>(
+                  icon: Icon(Icons.more_vert_rounded, size: 20.sp, color: AppColors.textSecondary),
+                  color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                  onSelected: (value) {
+                    if (value == 'edit') _openPlanSheet(context, existing: reminder);
+                  },
+                  itemBuilder: (_) => const [
+                    PopupMenuItem(value: 'edit', child: Text('تعديل التذكير')),
+                  ],
                 ),
               ],
             ),
             12.verticalSpace,
-            // Schedule Times
+            // أيام الأسبوع المحددة
             Wrap(
-              spacing: 8.w,
+              spacing: 6.w,
               runSpacing: 6.h,
-              children: reminder.times.map((time) {
+              children: days.map((weekday) {
+                final slots = reminder.slotsFor(weekday);
                 return Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 10.w, vertical: 6.h),
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
                   decoration: BoxDecoration(
                     color: AppColors.primaryOrange.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(8.r),
@@ -195,16 +655,12 @@ class MedicationRemindersView extends ConsumerWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        Icons.access_time,
-                        color: AppColors.primaryOrange,
-                        size: 14.sp,
-                      ),
+                      Icon(Icons.access_time, color: AppColors.primaryOrange, size: 12.sp),
                       4.horizontalSpace,
                       Text(
-                        time,
+                        '${PlanDaySchedule.weekdayShortLabel(weekday)} ×${slots.length}',
                         style: TextStyle(
-                          fontSize: 12.sp,
+                          fontSize: 10.sp,
                           fontWeight: FontWeight.w600,
                           color: AppColors.primaryOrange,
                         ),
@@ -214,8 +670,16 @@ class MedicationRemindersView extends ConsumerWidget {
                 );
               }).toList(),
             ),
-            10.verticalSpace,
-            // Adherence Bar & Action Button
+            if (reminder.notes != null && reminder.notes!.isNotEmpty) ...[
+              8.verticalSpace,
+              Text(
+                reminder.notes!,
+                style: TextStyle(fontSize: 11.sp, color: AppColors.textSecondary),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+            12.verticalSpace,
             Row(
               children: [
                 Expanded(
@@ -224,22 +688,19 @@ class MedicationRemindersView extends ConsumerWidget {
                     children: [
                       Text(
                         'نسبة الالتزام',
-                        style: TextStyle(
-                          fontSize: 11.sp,
-                          color: AppColors.textSecondary,
-                        ),
+                        style: TextStyle(fontSize: 11.sp, color: AppColors.textSecondary),
                       ),
                       4.verticalSpace,
                       ClipRRect(
                         borderRadius: BorderRadius.circular(4.r),
                         child: LinearProgressIndicator(
-                          value: reminder.adherenceRate,
+                          value: adherence,
                           backgroundColor: Colors.grey.shade200,
-                          color: reminder.adherenceRate > 0.7
+                          color: adherence > 0.7
                               ? AppColors.success
-                              : reminder.adherenceRate > 0.4
-                              ? AppColors.warning
-                              : AppColors.error,
+                              : adherence > 0.4
+                                  ? AppColors.warning
+                                  : AppColors.error,
                           minHeight: 6.h,
                         ),
                       ),
@@ -248,52 +709,18 @@ class MedicationRemindersView extends ConsumerWidget {
                 ),
                 12.horizontalSpace,
                 Text(
-                  '${(reminder.adherenceRate * 100).toInt()}%',
+                  '${(adherence * 100).toInt()}%',
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.bold,
-                    color: reminder.adherenceRate > 0.7
+                    color: adherence > 0.7
                         ? AppColors.success
-                        : reminder.adherenceRate > 0.4
-                        ? AppColors.warning
-                        : AppColors.error,
+                        : adherence > 0.4
+                            ? AppColors.warning
+                            : AppColors.error,
                   ),
                 ),
               ],
-            ),
-            12.verticalSpace,
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  ref.read(medicationRemindersProvider.notifier).markTaken(reminder.id);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('تم تسجيل الجرعة لـ ${reminder.medicationName} 👏'),
-                      backgroundColor: AppColors.success,
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
-                },
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.success,
-                  side: const BorderSide(color: AppColors.success, width: 1.2),
-                  padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                ),
-                icon: Icon(Icons.check_circle_outline_rounded, size: 18.sp),
-                label: Text(
-                  'تم أخذ الجرعة 💊',
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-              ),
             ),
           ],
         ),
@@ -301,7 +728,9 @@ class MedicationRemindersView extends ConsumerWidget {
     );
   }
 
-  Widget _buildEmptyState(bool isDark, BuildContext context, WidgetRef ref) {
+  // ─── Empty State ─────────────────────────────────────────
+
+  Widget _buildEmptyState(bool isDark, BuildContext context) {
     return Center(
       child: Padding(
         padding: EdgeInsets.all(40.w),
@@ -331,28 +760,22 @@ class MedicationRemindersView extends ConsumerWidget {
             ),
             8.verticalSpace,
             Text(
-              'أضف تذكيرات لأدويتك ومش هتنساها تاني',
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: AppColors.textSecondary,
-              ),
+              'أضف أدويتك مع جدولها الأسبوعي — كل يوم له جرعته وطريقة تناوله',
+              style: TextStyle(fontSize: 14.sp, color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),
             24.verticalSpace,
             ElevatedButton.icon(
-              onPressed: () => _showAddReminderSheet(context, ref),
+              onPressed: () => _openPlanSheet(context),
               icon: Icon(Icons.add, color: Colors.white),
               label: Text(
                 'أضف تذكير',
-                style: TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryOrange,
                 padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
               ),
             ),
           ],
@@ -361,15 +784,22 @@ class MedicationRemindersView extends ConsumerWidget {
     );
   }
 
-  void _showAddReminderSheet(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) => _AddReminderSheet(
-        onAdd: (data) {
-          Navigator.pop(sheetContext);
-          ref.read(medicationRemindersProvider.notifier).addReminder(data);
+  // ─── Add / Edit Sheet ────────────────────────────────────
+
+  void _openPlanSheet(BuildContext context, {MedicationReminderModel? existing}) {
+    final reminders = ref.read(medicationRemindersProvider).value ?? [];
+    final conditions = reminders
+        .map((r) => r.conditionName ?? '')
+        .where((c) => c.isNotEmpty)
+        .toList();
+
+    MedicationPlanSheet.show(
+      context,
+      existing: existing,
+      existingConditions: conditions,
+      onAdd: (data) {
+        ref.read(medicationRemindersProvider.notifier).addReminder(data);
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('✅ تم إضافة تذكير ${data['medication_name']} بنجاح'),
@@ -377,438 +807,20 @@ class MedicationRemindersView extends ConsumerWidget {
               duration: const Duration(seconds: 2),
             ),
           );
-        },
-      ),
-    );
-  }
-}
-
-class _AddReminderSheet extends StatefulWidget {
-  final Function(Map<String, dynamic>) onAdd;
-
-  const _AddReminderSheet({required this.onAdd});
-
-  @override
-  State<_AddReminderSheet> createState() => _AddReminderSheetState();
-}
-
-class _AddReminderSheetState extends State<_AddReminderSheet> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _dosageController = TextEditingController();
-  String _frequency = 'يومياً';
-  List<TimeOfDay> _selectedTimes = [];
-  String? _timeError;
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _dosageController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _pickTime() async {
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: _selectedTimes.isNotEmpty
-          ? _selectedTimes.last
-          : TimeOfDay.now(),
-      builder: (context, child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
-          child: Theme(
-            data: Theme.of(context).copyWith(
-              colorScheme: const ColorScheme.light(
-                primary: AppColors.primaryOrange,
-                onPrimary: Colors.white,
-                onSurface: Colors.black87,
-              ),
-            ),
-            child: child!,
-          ),
-        );
-      },
-    );
-
-    if (picked != null) {
-      setState(() {
-        _timeError = null;
-        if (!_selectedTimes.any((t) => t.hour == picked.hour && t.minute == picked.minute)) {
-          _selectedTimes.add(picked);
         }
-      });
-    }
-  }
-
-  String _formatTimeDisplay(TimeOfDay time) {
-    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
-    final minute = time.minute.toString().padLeft(2, '0');
-    final period = time.period == DayPeriod.am ? 'صباحاً' : 'مساءً';
-    return '$hour:$minute $period';
-  }
-
-  String _formatTimeApi(TimeOfDay time) {
-    final hour = time.hour.toString().padLeft(2, '0');
-    final minute = time.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? theme.scaffoldBackgroundColor : Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
-            blurRadius: 20,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      padding: EdgeInsets.only(
-        left: 20.w,
-        right: 20.w,
-        top: 16.h,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 20.h,
-      ),
-      child: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top Grab Handle Bar
-              Center(
-                child: Container(
-                  width: 44.w,
-                  height: 5.h,
-                  decoration: BoxDecoration(
-                    color: isDark ? Colors.white24 : Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(3.r),
-                  ),
-                ),
-              ),
-              16.verticalSpace,
-
-              // Header Section
-              Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(12.w),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryOrange.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    child: Icon(
-                      Icons.alarm_add_rounded,
-                      color: AppColors.primaryOrange,
-                      size: 26.sp,
-                    ),
-                  ),
-                  14.horizontalSpace,
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'تذكير دواء جديد',
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.bold,
-                            color: isDark ? Colors.white : AppColors.textColor,
-                          ),
-                        ),
-                        4.verticalSpace,
-                        Text(
-                          'أدخل اسم الدواء والجرعة وأوقات التنبيه',
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: Icon(
-                      Icons.close,
-                      color: isDark ? Colors.white60 : Colors.black54,
-                    ),
-                  ),
-                ],
-              ),
-              20.verticalSpace,
-
-              // 1. Medication Name Input
-              Text(
-                'اسم الدواء *',
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : AppColors.textColor,
-                ),
-              ),
-              8.verticalSpace,
-              TextFormField(
-                controller: _nameController,
-                validator: (val) =>
-                    (val == null || val.trim().isEmpty) ? 'برجاء كتابة اسم الدواء' : null,
-                style: TextStyle(fontSize: 14.sp, color: isDark ? Colors.white : Colors.black87),
-                decoration: InputDecoration(
-                  hintText: 'مثال: بنادول إكسترا',
-                  hintStyle: TextStyle(fontSize: 13.sp, color: AppColors.textHint),
-                  prefixIcon: const Icon(Icons.medication_outlined, color: AppColors.primaryOrange),
-                  filled: true,
-                  fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey.shade50,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade300),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade200),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: const BorderSide(color: AppColors.primaryOrange, width: 1.5),
-                  ),
-                ),
-              ),
-              16.verticalSpace,
-
-              // 2. Dosage Input
-              Text(
-                'الجرعة (اختياري)',
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : AppColors.textColor,
-                ),
-              ),
-              8.verticalSpace,
-              TextFormField(
-                controller: _dosageController,
-                style: TextStyle(fontSize: 14.sp, color: isDark ? Colors.white : Colors.black87),
-                decoration: InputDecoration(
-                  hintText: 'مثال: قرص واحد بعد الأكل',
-                  hintStyle: TextStyle(fontSize: 13.sp, color: AppColors.textHint),
-                  prefixIcon: const Icon(Icons.pie_chart_outline_rounded, color: AppColors.primaryOrange),
-                  filled: true,
-                  fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey.shade50,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade300),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade200),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: const BorderSide(color: AppColors.primaryOrange, width: 1.5),
-                  ),
-                ),
-              ),
-              16.verticalSpace,
-
-              // 3. Frequency Dropdown
-              Text(
-                'معدل التكرار',
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : AppColors.textColor,
-                ),
-              ),
-              8.verticalSpace,
-              DropdownButtonFormField<String>(
-                value: _frequency,
-                style: TextStyle(fontSize: 14.sp, color: isDark ? Colors.white : Colors.black87),
-                dropdownColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.repeat_rounded, color: AppColors.primaryOrange),
-                  filled: true,
-                  fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey.shade50,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade300),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade200),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: const BorderSide(color: AppColors.primaryOrange, width: 1.5),
-                  ),
-                ),
-                items: ['يومياً', 'مرتين يومياً', '3 مرات يومياً', 'أسبوعياً', 'عند الحاجة']
-                    .map((f) => DropdownMenuItem(value: f, child: Text(f)))
-                    .toList(),
-                onChanged: (v) => setState(() => _frequency = v ?? _frequency),
-              ),
-              20.verticalSpace,
-
-              // 4. Time Selection Section
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'أوقات التنبيه *',
-                    style: TextStyle(
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.bold,
-                      color: isDark ? Colors.white : AppColors.textColor,
-                    ),
-                  ),
-                  TextButton.icon(
-                    onPressed: _pickTime,
-                    icon: const Icon(Icons.add_alarm_rounded, color: AppColors.primaryOrange, size: 18),
-                    label: Text(
-                      'إضافة وقت',
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primaryOrange,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              8.verticalSpace,
-
-              // Selected Time Chips or Empty Placeholder
-              if (_selectedTimes.isEmpty)
-                GestureDetector(
-                  onTap: _pickTime,
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
-                    decoration: BoxDecoration(
-                      color: _timeError != null
-                          ? AppColors.error.withValues(alpha: 0.05)
-                          : (isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey.shade50),
-                      borderRadius: BorderRadius.circular(14.r),
-                      border: Border.all(
-                        color: _timeError != null
-                            ? AppColors.error
-                            : (isDark ? Colors.white10 : Colors.grey.shade300),
-                        width: 1.2,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.access_time_rounded,
-                          color: _timeError != null ? AppColors.error : AppColors.primaryOrange,
-                          size: 20.sp,
-                        ),
-                        8.horizontalSpace,
-                        Text(
-                          _timeError ?? 'اضغط هنا لاختيار وقت التنبيه',
-                          style: TextStyle(
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w600,
-                            color: _timeError != null ? AppColors.error : AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              else
-                Wrap(
-                  spacing: 8.w,
-                  runSpacing: 8.h,
-                  children: _selectedTimes.map((time) {
-                    return Chip(
-                      avatar: const Icon(Icons.access_time_rounded, color: AppColors.primaryOrange, size: 16),
-                      label: Text(
-                        _formatTimeDisplay(time),
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.primaryOrange,
-                        ),
-                      ),
-                      backgroundColor: AppColors.primaryOrange.withValues(alpha: 0.1),
-                      deleteIcon: const Icon(Icons.cancel_rounded, size: 16),
-                      deleteIconColor: AppColors.primaryOrange,
-                      onDeleted: () {
-                        setState(() {
-                          _selectedTimes.remove(time);
-                        });
-                      },
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                        side: BorderSide(color: AppColors.primaryOrange.withValues(alpha: 0.2)),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              24.verticalSpace,
-
-              // 5. Submit Button
-              SizedBox(
-                width: double.infinity,
-                height: 50.h,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    final isFormValid = _formKey.currentState!.validate();
-                    if (_selectedTimes.isEmpty) {
-                      setState(() {
-                        _timeError = 'يرجى اختيار وقت واحد على الأقل للتذكير';
-                      });
-                    }
-                    if (isFormValid && _selectedTimes.isNotEmpty) {
-                      final timeStrings = _selectedTimes.map(_formatTimeApi).toList();
-                      widget.onAdd({
-                        'medication_name': _nameController.text.trim(),
-                        'dosage': _dosageController.text.trim().isEmpty
-                            ? 'جرعة واحدة'
-                            : _dosageController.text.trim(),
-                        'frequency': _frequency,
-                        'times': timeStrings,
-                        'start_date': DateTime.now().toIso8601String(),
-                        'is_active': true,
-                      });
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryOrange,
-                    foregroundColor: Colors.white,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                  ),
-                  icon: const Icon(Icons.check_circle_outline_rounded, color: Colors.white),
-                  label: Text(
-                    'حفظ التذكير وتفعيل الإشعارات',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      },
+      onUpdate: (updated) {
+        ref.read(medicationRemindersProvider.notifier).updateReminder(updated);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('✅ تم تحديث تذكير ${updated.medicationName}'),
+              backgroundColor: AppColors.success,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        }
+      },
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart' show XFile;
 import 'package:erp/core/network/network_service.dart';
 import 'package:erp/core/network/endpoints/endpoints_registry.dart';
 
@@ -23,25 +24,34 @@ class PrescriptionsRemoteDataSource {
   }
 
   Future<dynamic> createPrescription({
-    required String imagePath,
+    required XFile imageFile,
     required String note,
+    void Function(double)? onProgress,
   }) {
-    return _networkService.post(
+    return _networkService.postMultipart(
       ApiEndpoints.webstore.prescriptions.index,
-      body: {
-        'image': imagePath,
-        'note': note,
-      },
+      fields: {'note': note},
+      files: {'image': imageFile},
+      onProgress: onProgress,
     );
   }
 
   Future<dynamic> updatePrescription(
     int id, {
-    required String imagePath,
+    XFile? imageFile,
+    String? imagePath,
     required String note,
   }) {
+    final endpoint = ApiEndpoints.withId(ApiEndpoints.webstore.prescriptions.detail, id);
+    if (imageFile != null) {
+      return _networkService.putMultipart(
+        endpoint,
+        fields: {'note': note},
+        files: {'image': imageFile},
+      );
+    }
     return _networkService.put(
-      ApiEndpoints.withId(ApiEndpoints.webstore.prescriptions.detail, id),
+      endpoint,
       body: {
         'image': imagePath,
         'note': note,

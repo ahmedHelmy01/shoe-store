@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:image_picker/image_picker.dart' show XFile;
@@ -67,7 +68,7 @@ class UploadCircleZone extends StatelessWidget {
                 if (pickedFile != null)
                   AppAnimation.fadeZoomIn(
                     duration: const Duration(milliseconds: 400),
-                    child: AppImage(imagePath: 'file://${pickedFile!.path}', width: 200.w, height: 200.w, fit: BoxFit.cover),
+                    child: AppImage(imagePath: kIsWeb ? pickedFile!.path : 'file://${pickedFile!.path}', width: 200.w, height: 200.w, fit: BoxFit.cover),
                   )
                 else
                   Column(

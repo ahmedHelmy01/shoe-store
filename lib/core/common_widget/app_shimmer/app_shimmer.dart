@@ -67,26 +67,31 @@ class AppShimmer extends StatelessWidget {
         itemCount: 6,
         separatorBuilder: (_, __) => 16.horizontalSpace,
         itemBuilder: (_, __) => AppShimmer(
-          child: Column(
-            children: [
-              Container(
-                width: 70.w,
-                height: 70.w,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.topCenter,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 70.w,
+                  height: 70.w,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
                 ),
-              ),
-              8.verticalSpace,
-              Container(
-                width: 40.w,
-                height: 10.h,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(4.r),
+                8.verticalSpace,
+                Container(
+                  width: 40.w,
+                  height: 10.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4.r),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

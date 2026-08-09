@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/localization/locale_keys.dart';
+import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
 
 class OnboardingBottomControls extends StatelessWidget {
   final PageController pageController;
   final int currentPage;
   final int totalPages;
+  final bool isLoading;
   final VoidCallback onNext;
   final VoidCallback onStart;
 
@@ -15,6 +17,7 @@ class OnboardingBottomControls extends StatelessWidget {
     required this.pageController,
     required this.currentPage,
     required this.totalPages,
+    this.isLoading = false,
     required this.onNext,
     required this.onStart,
   });
@@ -30,7 +33,7 @@ class OnboardingBottomControls extends StatelessWidget {
             count: totalPages,
             effect: ExpandingDotsEffect(
               activeDotColor: Colors.white,
-              dotColor: Colors.white.withOpacity(0.2),
+              dotColor: Colors.white.withValues(alpha: 0.2),
               dotHeight: 6,
               dotWidth: 6,
               expansionFactor: 4,
@@ -38,25 +41,47 @@ class OnboardingBottomControls extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 48),
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 500),
-            transitionBuilder: (child, animation) {
-              return FadeTransition(
-                opacity: animation,
-                child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0, 0.5),
-                    end: Offset.zero,
-                  ).animate(animation),
-                  child: child,
-                ),
-              );
-            },
-            child: currentPage == totalPages - 1
-                ? _buildStartButton(context)
-                : _buildNextButton(context),
-          ),
+          if (isLoading)
+            _buildLoadingButton()
+          else
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 500),
+              transitionBuilder: (child, animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(0, 0.5),
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: child,
+                  ),
+                );
+              },
+              child: currentPage == totalPages - 1
+                  ? _buildStartButton(context)
+                  : _buildNextButton(context),
+            ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildLoadingButton() {
+    return SizedBox(
+      key: const ValueKey('loading'),
+      width: double.infinity,
+      height: 64,
+      child: AppShimmer(
+        baseColor: Colors.white.withValues(alpha: 0.05),
+        highlightColor: Colors.white.withValues(alpha: 0.15),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+          ),
+        ),
       ),
     );
   }
@@ -71,12 +96,12 @@ class OnboardingBottomControls extends StatelessWidget {
         child: ElevatedButton(
           onPressed: onNext,
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white.withOpacity(0.08),
+            backgroundColor: Colors.white.withValues(alpha: 0.08),
             foregroundColor: Colors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
-              side: BorderSide(color: Colors.white.withOpacity(0.15), width: 1.5),
+              side: BorderSide(color: Colors.white.withValues(alpha: 0.15), width: 1.5),
             ),
           ),
           child: Row(
@@ -108,7 +133,7 @@ class OnboardingBottomControls extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withValues(alpha: 0.3),
             blurRadius: 25,
             spreadRadius: -5,
           ),

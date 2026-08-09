@@ -6,14 +6,11 @@ import 'package:erp/core/router/app_navigator.dart';
 import 'package:erp/modules/webstore/onboarding/presentation/view_model/onboarding_view_model.dart';
 import 'package:erp/modules/webstore/onboarding/presentation/state/onboarding_state.dart';
 import 'package:erp/modules/webstore/onboarding/presentation/widgets/animated_background.dart';
-import 'package:erp/modules/webstore/onboarding/presentation/widgets/floating_particles.dart';
 import 'package:erp/modules/webstore/onboarding/presentation/widgets/skip_button.dart';
 import 'package:erp/modules/webstore/onboarding/presentation/widgets/onboarding_bottom_controls.dart';
 import 'package:erp/modules/webstore/onboarding/presentation/widgets/onboarding_page_content.dart';
 // Session handled via `sessionManagerProvider`
 import 'package:erp/modules/webstore/onboarding/data/models/boarding_model.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/core/providers/core_providers.dart';
 
 class OnBoarding extends ConsumerStatefulWidget {
@@ -30,15 +27,11 @@ class _OnBoardingState extends ConsumerState<OnBoarding>
 
   // ─── Animation Controllers ────────────────────────────────────
   late AnimationController _contentAnimController;
-  late AnimationController _floatingAnimController;
 
   // ─── Content Animations ───────────────────────────────────────
   late Animation<double> _fadeAnim;
   late Animation<Offset> _slideAnim;
   late Animation<double> _scaleAnim;
-
-  // ─── Floating Particles Animation ────────────────────────────
-  late Animation<double> _floatingAnim;
 
   final List<List<Color>> _onboardingGradients = [
     [const Color(0xFF0D1B2A), const Color(0xFF1E3E62)],
@@ -86,23 +79,12 @@ class _OnBoardingState extends ConsumerState<OnBoarding>
       ),
     );
 
-    _floatingAnimController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 5),
-    )
-      ..repeat(reverse: true);
-
-    _floatingAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _floatingAnimController, curve: Curves.easeInOut),
-    );
-
     _contentAnimController.forward();
   }
 
   @override
   void dispose() {
     _contentAnimController.dispose();
-    _floatingAnimController.dispose();
     _pageController.dispose();
     super.dispose();
   }
@@ -130,10 +112,6 @@ class _OnBoardingState extends ConsumerState<OnBoarding>
   Widget build(BuildContext context) {
     final state = ref.watch(onboardingVmProvider);
 
-    if (state is OnboardingError) {
-      return Scaffold(body: _buildErrorState(state.message));
-    }
-
     final bool isLoading = state is OnboardingLoading;
     final List<BoardingModel> boardings = state is OnboardingSuccess 
         ? state.boardings 
@@ -145,41 +123,6 @@ class _OnBoardingState extends ConsumerState<OnBoarding>
     );
   }
 
-  Widget _buildErrorState(String message) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: _onboardingGradients[0],
-        ),
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline, size: 60.sp, color: Colors.white70),
-            20.verticalSpace,
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40.w),
-              child: Text(
-                message,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 16.sp),
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryOrange),
-              onPressed: () =>
-                  ref.read(onboardingVmProvider.notifier).getOnboardingData(),
-              child: Text(LocaleKeys.common.try_again.tr(context: context)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildOnboardingContent(List<BoardingModel> boardings, {bool isLoading = false}) {
     return Stack(
       children: [
@@ -187,7 +130,6 @@ class _OnBoardingState extends ConsumerState<OnBoarding>
           currentPage: _currentPage,
           gradients: _onboardingGradients,
         ),
-        FloatingParticles(floatAnimation: _floatingAnim),
         SafeArea(
           child: Column(
             children: [
@@ -205,38 +147,21 @@ class _OnBoardingState extends ConsumerState<OnBoarding>
                         fadeAnimation: _fadeAnim,
                         slideAnimation: _slideAnim,
                         scaleAnimation: _scaleAnim,
-                        glowAnimation: _floatingAnim,
                         isLoading: true,
                       )
-                    : AnimatedBuilder(
-                        animation: _pageController,
-                        builder: (context, child) {
-                          double pageOffset = 0;
-                          if (_pageController.hasClients) {
-                            pageOffset = _pageController.page ?? 0;
-                          }
-
-                          return PageView.builder(
-                            controller: _pageController,
-                            onPageChanged: _onPageChanged,
-                            itemCount: boardings.length,
-                            itemBuilder: (context, index) {
-                              final page = boardings[index];
-                              final double position = index - pageOffset;
-                              final double translation = position * 100.w;
-                              return Transform.translate(
-                                offset: Offset(translation, 0),
-                                child: OnboardingPageContent(
-                                  imageUrl: page.image,
-                                  title: page.titleAr,
-                                  subtitle: page.contentAr,
-                                  fadeAnimation: _fadeAnim,
-                                  slideAnimation: _slideAnim,
-                                  scaleAnimation: _scaleAnim,
-                                  glowAnimation: _floatingAnim,
-                                ),
-                              );
-                            },
+                    : PageView.builder(
+                        controller: _pageController,
+                        onPageChanged: _onPageChanged,
+                        itemCount: boardings.length,
+                        itemBuilder: (context, index) {
+                          final page = boardings[index];
+                          return OnboardingPageContent(
+                            imageUrl: page.image,
+                            title: page.titleAr,
+                            subtitle: page.contentAr,
+                            fadeAnimation: _fadeAnim,
+                            slideAnimation: _slideAnim,
+                            scaleAnimation: _scaleAnim,
                           );
                         },
                       ),
@@ -245,6 +170,7 @@ class _OnBoardingState extends ConsumerState<OnBoarding>
                 pageController: _pageController,
                 currentPage: _currentPage,
                 totalPages: isLoading ? 1 : boardings.length,
+                isLoading: isLoading,
                 onNext: () {
                   _pageController.nextPage(
                     duration: const Duration(milliseconds: 600),

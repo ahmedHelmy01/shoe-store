@@ -124,36 +124,26 @@ class PrescriptionsViewModel extends Notifier<PrescriptionsState> {
   Future<bool> editPrescription(int id, {required String newNote, required String currentImagePath, XFile? newImageFile}) async {
     final currentItems = state.prescriptions.value ?? [];
 
-    try {
-      String finalImagePath = currentImagePath;
+    final result = await _repository.updatePrescription(
+      id,
+      newImageFile: newImageFile,
+      currentImagePath: currentImagePath,
+      note: newNote,
+    );
 
-      // If a new image file is provided, upload it first
-      if (newImageFile != null) {
-        final uploadService = ref.read(uploadServiceProvider);
-        finalImagePath = await uploadService.uploadSingle(
-          file: newImageFile,
-          uploadFolder: 'prescriptions',
+    return result.when(
+      success: (updated) {
+        state = state.copyWith(
+          prescriptions: AsyncValue.data(
+            currentItems.map((p) => p.id == id ? updated : p).toList(),
+          ),
         );
-      }
-
-      final result = await _repository.updatePrescription(id, imagePath: finalImagePath, note: newNote);
-
-      return result.when(
-        success: (updated) {
-          state = state.copyWith(
-            prescriptions: AsyncValue.data(
-              currentItems.map((p) => p.id == id ? updated : p).toList(),
-            ),
-          );
-          return true;
-        },
-        failure: (error) {
-          return false;
-        },
-      );
-    } catch (e) {
-      return false;
-    }
+        return true;
+      },
+      failure: (error) {
+        return false;
+      },
+    );
   }
 
   void addPrescriptionLocally(PrescriptionModel prescription) {
@@ -223,21 +213,14 @@ class UploadPrescriptionViewModel extends Notifier<UploadPrescriptionState> {
     state = state.copyWith(isUploading: true, uploadProgress: 0.0, success: false);
 
     try {
-      // 1. Upload the image file first to server storage
-      final uploadService = ref.read(uploadServiceProvider);
-      final uploadedPath = await uploadService.uploadSingle(
-        file: file,
-        uploadFolder: 'prescriptions',
+      // Send the image file with the prescription in a single request
+      final repository = ref.read(prescriptionsRepositoryProvider);
+      final result = await repository.createPrescription(
+        imageFile: file,
+        note: note,
         onProgress: (progress) {
           state = state.copyWith(uploadProgress: progress);
         },
-      );
-
-      // 2. Submit the prescription record
-      final repository = ref.read(prescriptionsRepositoryProvider);
-      final result = await repository.createPrescription(
-        imagePath: uploadedPath,
-        note: note,
       );
 
       result.when(

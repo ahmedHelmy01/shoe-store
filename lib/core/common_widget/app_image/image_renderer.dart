@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:erp/core/extension/image_type_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -69,6 +70,24 @@ class ImageRenderer {
           errorBuilder: (context, error, stackTrace) => _buildPlaceholder(height, width, fit),
         );
       case ImageType.file:
+        // Image.file مش مدعوم على الويب؛ المسار بيكون blob URL من image_picker
+        if (kIsWeb) {
+          final webPath = cleanPath.startsWith('file://')
+              ? cleanPath.replaceFirst('file://', '')
+              : cleanPath;
+          if (webPath.startsWith('blob:') || webPath.startsWith('http')) {
+            return Image.network(
+              webPath,
+              height: height,
+              width: width,
+              fit: fit,
+              color: color,
+              errorBuilder: (context, error, stackTrace) =>
+                  _buildPlaceholder(height, width, fit),
+            );
+          }
+          return _buildPlaceholder(height, width, fit);
+        }
         final filePath = cleanPath.startsWith('file://')
             ? cleanPath.replaceFirst('file://', '')
             : cleanPath;

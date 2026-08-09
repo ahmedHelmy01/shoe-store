@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
+import 'package:erp/core/common_widget/app_shimmer/app_shimmer.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/product_card_widget.dart';
+import 'package:erp/modules/webstore/home/presentation/view/widgets/product_list_tile.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -11,6 +13,8 @@ enum ProductSheetType {
   search,
   filter,
 }
+
+enum ProductViewMode { list, grid }
 
 class ProductResultBottomSheet extends ConsumerStatefulWidget {
   final ProductSheetType type;
@@ -28,6 +32,9 @@ class ProductResultBottomSheet extends ConsumerStatefulWidget {
 class _ProductResultBottomSheetState
     extends ConsumerState<ProductResultBottomSheet> {
   final ScrollController _scrollController = ScrollController();
+
+  // Default view mode: LIST
+  ProductViewMode _viewMode = ProductViewMode.list;
 
   @override
   void initState() {
@@ -48,6 +55,14 @@ class _ProductResultBottomSheetState
         ref.read(homeVmProvider.notifier).loadMoreSearch();
       }
     }
+  }
+
+  void _toggleViewMode() {
+    setState(() {
+      _viewMode = _viewMode == ProductViewMode.list
+          ? ProductViewMode.grid
+          : ProductViewMode.list;
+    });
   }
 
   @override
@@ -72,9 +87,6 @@ class _ProductResultBottomSheetState
       child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.85,
         child: Scaffold(
-          // Sheet-local Scaffold + Messenger so snack bars (e.g. "Added to
-          // cart") appear in FRONT of the sheet instead of behind it on the
-          // underlying page scaffold.
           backgroundColor: Colors.transparent,
           resizeToAvoidBottomInset: false,
           body: Container(
@@ -112,53 +124,59 @@ class _ProductResultBottomSheetState
                         color: isDark ? Colors.white : AppColors.textColor,
                       ),
                     ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(
-                        Icons.close,
-                        color: isDark ? Colors.white70 : Colors.black87,
-                      ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Toggle view mode: LIST <-> GRID
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: (isDark
+                                    ? Colors.white.withValues(alpha: 0.08)
+                                    : Colors.grey[200])!
+                                .withValues(alpha: isDark ? 0.6 : 0.7),
+                          ),
+                          child: IconButton(
+                            iconSize: 20,
+                            padding: EdgeInsets.symmetric(horizontal: 8.w),
+                            onPressed: _toggleViewMode,
+                            tooltip: _viewMode == ProductViewMode.list
+                                ? 'عرض شبكي'
+                                : 'عرض قائمة',
+                            icon: Icon(
+                              _viewMode == ProductViewMode.list
+                                  ? Icons.grid_view_rounded
+                                  : Icons.view_list_rounded,
+                              color: isDark ? Colors.white70 : Colors.black87,
+                            ),
+                          ),
+                        ),
+                        4.horizontalSpace,
+                        IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: Icon(
+                            Icons.close,
+                            color: isDark ? Colors.white70 : Colors.black87,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
                 10.verticalSpace,
                 if (isLoading && products.isEmpty)
-                  const Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator.adaptive(),
-                    ),
+                  Expanded(
+                    child: _viewMode == ProductViewMode.grid
+                        ? _buildGridShimmer()
+                        : _buildListShimmer(),
                   )
                 else if (products.isEmpty)
                   Expanded(child: _buildEmptyState(context, widget.type))
                 else
                   Expanded(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: GridView.builder(
-                            controller: _scrollController,
-                            physics: const BouncingScrollPhysics(),
-                            padding: EdgeInsets.only(bottom: 16.h),
-                            itemCount: products.length,
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisExtent: 260.h,
-                              crossAxisSpacing: 12.w,
-                              mainAxisSpacing: 12.h,
-                            ),
-                            itemBuilder: (_, index) {
-                              return ProductGridCard(
-                                product: products[index],
-                              );
-                            },
-                          ),
-                        ),
-                        if (isLoadingMore) ...[
-                          SizedBox(height: 8.h),
-                          const Center(child: CircularProgressIndicator.adaptive()),
-                          SizedBox(height: 8.h),
-                        ],
-                      ],
+                    child: _buildResults(
+                      products,
+                      isLoadingMore,
                     ),
                   ),
               ],
@@ -166,6 +184,257 @@ class _ProductResultBottomSheetState
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildResults(
+    List products,
+    bool isLoadingMore,
+  ) {
+    if (_viewMode == ProductViewMode.grid) {
+      return Column(
+        children: [
+          Expanded(
+            child: GridView.builder(
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(),
+              padding: EdgeInsets.only(bottom: 16.h),
+              itemCount: products.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisExtent: 260.h,
+                crossAxisSpacing: 12.w,
+                mainAxisSpacing: 12.h,
+              ),
+              itemBuilder: (_, index) {
+                return ProductGridCard(
+                  product: products[index],
+                );
+              },
+            ),
+          ),
+          if (isLoadingMore) ...[
+            SizedBox(height: 8.h),
+            const Center(child: CircularProgressIndicator.adaptive()),
+            SizedBox(height: 8.h),
+          ],
+        ],
+      );
+    }
+
+    // LIST mode (default): ListView.builder
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.separated(
+            controller: _scrollController,
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.only(bottom: 16.h),
+            itemCount: products.length,
+            separatorBuilder: (_, index) => const Divider(height: 1),
+            itemBuilder: (_, index) {
+              return ProductListTile(
+                product: products[index],
+              );
+            },
+          ),
+        ),
+        if (isLoadingMore) ...[
+          SizedBox(height: 8.h),
+          const Center(child: CircularProgressIndicator.adaptive()),
+          SizedBox(height: 8.h),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildListShimmer() {
+    return ListView.separated(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.only(bottom: 16.h),
+      itemCount: 8,
+      separatorBuilder: (_, index) => const Divider(height: 1),
+      itemBuilder: (_, index) {
+        return AppShimmer(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 4.w),
+            child: Row(
+              children: [
+                // Image placeholder
+                Container(
+                  width: 70.w,
+                  height: 70.w,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                ),
+                10.horizontalSpace,
+                // Text placeholders
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: 12.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
+                      ),
+                      6.verticalSpace,
+                      Container(
+                        width: 60.w,
+                        height: 8.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
+                      ),
+                      8.verticalSpace,
+                      Container(
+                        width: 50.w,
+                        height: 10.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Icon placeholders
+                Column(
+                  children: [
+                    Container(
+                      width: 30.w,
+                      height: 30.w,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    4.verticalSpace,
+                    Container(
+                      width: 30.w,
+                      height: 30.w,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildGridShimmer() {
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.only(bottom: 16.h),
+      itemCount: 6,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisExtent: 260.h,
+        crossAxisSpacing: 12.w,
+        mainAxisSpacing: 12.h,
+      ),
+      itemBuilder: (_, index) {
+        return AppShimmer(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Image placeholder
+                Expanded(
+                  flex: 6,
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16.r),
+                        topRight: Radius.circular(16.r),
+                      ),
+                    ),
+                  ),
+                ),
+                // Info placeholder
+                Expanded(
+                  flex: 5,
+                  child: Padding(
+                    padding: EdgeInsets.all(10.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              height: 10.h,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(4.r),
+                              ),
+                            ),
+                            4.verticalSpace,
+                            Container(
+                              width: 50.w,
+                              height: 8.h,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(4.r),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: 40.w,
+                              height: 12.h,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(4.r),
+                              ),
+                            ),
+                            Container(
+                              width: 28.w,
+                              height: 28.w,
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

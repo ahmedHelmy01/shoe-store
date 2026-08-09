@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -92,9 +93,21 @@ Future<void> bootstrap(AppFlavor flavor) async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await GoogleSignIn.instance.initialize(
-    serverClientId: '364936943793-6gp5u8ceave53mcmdgvtb87sjv95j62g.apps.googleusercontent.com',
-  );
+  const serverClientId =
+      '364936943793-6gp5u8ceave53mcmdgvtb87sjv95j62g.apps.googleusercontent.com';
+  if (kIsWeb) {
+    // على الويب، تسجيل الدخول بـ Google بيحتاج Web Client ID من الوسم:
+    //   <meta name="google-signin-client_id" content="..." />
+    // في web/index.html. لو مش متظبط، نتخطى التهيئة بدل ما الكود يقع.
+    try {
+      await GoogleSignIn.instance.initialize(serverClientId: serverClientId);
+    } catch (e) {
+      debugPrint('[GoogleSignIn] Web: client ID غير موجود في web/index.html، '
+          'تم تخطي تهيئة تسجيل الدخول بـ Google: $e');
+    }
+  } else {
+    await GoogleSignIn.instance.initialize(serverClientId: serverClientId);
+  }
   final prefs = await AppInitializer.init(flavor);
 
   runApp(

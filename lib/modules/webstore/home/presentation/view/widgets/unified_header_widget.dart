@@ -119,60 +119,146 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
             ),
           ),
 
-          // Row 2: Search Bar
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 48.h,
+          // Search Showcase Card
+          Container(
+            margin: EdgeInsets.only(top: 6.h),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // Card background with decorative circles
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(16.w),
                   decoration: BoxDecoration(
-                    color: isDark ? theme.cardColor : Colors.grey[100],
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(
-                      color: isDark
-                          ? Colors.white.withValues(alpha: 0.1)
-                          : Colors.grey[200]!,
-                    ),
+                    color: isDark ? const Color(0xFF1A2A3A) : Colors.white,
+                    borderRadius: BorderRadius.circular(20.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.06),
+                        blurRadius: 16,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
                   ),
-                  child: TextField(
-                    controller: _searchController,
-                    onSubmitted: (_) => _onSearch(),
-                    textInputAction: TextInputAction.search,
-                    style: TextStyle(color: theme.textTheme.bodyLarge?.color),
-                    decoration: InputDecoration(
-                      hintText: LocaleKeys.webstore.home.search_hint.tr(context: context),
-                      hintStyle: TextStyle(
-                        fontSize: 14.sp,
-                        color: theme.hintColor,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      // Decorative medicine circles
+                      Positioned(
+                        top: -10.h,
+                        right: -6.w,
+                        child: _buildMedicineCircle(
+                          size: 36.w,
+                          icon: Icons.medication_rounded,
+                          color: AppColors.primaryOrange,
+                          opacity: 0.12,
+                        ),
                       ),
-                      prefixIcon: IconButton(
-                        icon: Icon(Icons.search, color: theme.hintColor),
-                        onPressed: _onSearch,
+                      Positioned(
+                        bottom: -8.h,
+                        left: 14.w,
+                        child: _buildMedicineCircle(
+                          size: 30.w,
+                          icon: Icons.local_pharmacy_rounded,
+                          color: AppColors.primaryBlue,
+                          opacity: 0.10,
+                        ),
                       ),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 12.h),
-                    ),
+                      Positioned(
+                        top: 10.h,
+                        left: -10.w,
+                        child: _buildMedicineCircle(
+                          size: 22.w,
+                          icon: Icons.healing_rounded,
+                          color: const Color(0xFF4CAF50),
+                          opacity: 0.10,
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 6.h,
+                        right: 28.w,
+                        child: _buildMedicineCircle(
+                          size: 20.w,
+                          icon: Icons.vaccines_rounded,
+                          color: AppColors.primaryBlue,
+                          opacity: 0.08,
+                        ),
+                      ),
+                      // Search field
+                      Container(
+                        height: 52.h,
+                        padding: EdgeInsets.symmetric(horizontal: 6.w),
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? Colors.white.withValues(alpha: 0.06)
+                              : const Color(0xFFF5F6FA),
+                          borderRadius: BorderRadius.circular(14.r),
+                        ),
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                              onTap: _onSearch,
+                              child: Container(
+                                width: 40.w,
+                                height: 40.w,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      AppColors.primaryOrange,
+                                      AppColors.primaryOrange.withValues(alpha: 0.8),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(10.r),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: const Icon(
+                                  Icons.search_rounded,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                            12.horizontalSpace,
+                            Expanded(
+                              child: TextField(
+                                controller: _searchController,
+                                onSubmitted: (_) => _onSearch(),
+                                textInputAction: TextInputAction.search,
+                                style: TextStyle(
+                                  fontSize: 15.sp,
+                                  color: theme.textTheme.bodyLarge?.color,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: LocaleKeys.webstore.home.search_hint.tr(context: context),
+                                  hintStyle: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: theme.hintColor,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  border: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  filled: false,
+                                  contentPadding: EdgeInsets.symmetric(vertical: 12.h),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              12.horizontalSpace,
-              InkWell(
-                onTap: _onSearch,
-                child: Container(
-                  height: 48.h,
-                  width: 48.h,
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryOrange,
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: const Icon(
-                    Icons.search,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -187,6 +273,27 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
     return InkWell(
       onTap: onTap,
       child: Icon(icon, color: theme.iconTheme.color, size: 24),
+    );
+  }
+
+  Widget _buildMedicineCircle({
+    required double size,
+    required IconData icon,
+    required Color color,
+    required double opacity,
+  }) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color.withValues(alpha: opacity),
+      ),
+      child: Icon(
+        icon,
+        size: size * 0.5,
+        color: color.withValues(alpha: opacity + 0.1),
+      ),
     );
   }
 }
