@@ -183,7 +183,7 @@ class AppShimmer extends StatelessWidget {
     );
   }
 
-  /// Specialized shimmer for the Feature Links Grid (Medical Services)
+  /// Specialized shimmer for the Feature Links Grid
   static Widget featureLinksGrid() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.w),

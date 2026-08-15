@@ -1,6 +1,6 @@
+import 'package:erp/core/mock/mock_data.dart';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/repository/base_repository.dart';
-import 'package:erp/modules/webstore/points/data/datasource/points_remote_datasource.dart';
 import 'package:erp/modules/webstore/points/data/models/points_model.dart';
 
 abstract class IPointsRepository {
@@ -10,40 +10,38 @@ abstract class IPointsRepository {
 }
 
 class PointsRepository extends BaseRepository implements IPointsRepository {
-  final PointsRemoteDataSource _dataSource;
-
-  PointsRepository(this._dataSource);
+  PointsRepository();
 
   @override
   Future<ApiResult<PointsModel>> getPoints() {
     return safeApiCall<PointsModel>(() async {
-      print('=== [PointsRepository] calling GET /api/store/loyalty/summary ===');
-      final response = await _dataSource.getLoyaltySummary();
-      print('=== [PointsRepository] GET /api/store/loyalty/summary response: $response ===');
-      final data = response['data'] ?? response;
-      return PointsModel.fromJson(data as Map<String, dynamic>);
+      await Future.delayed(const Duration(milliseconds: 300));
+      return MockData.mockPoints;
     });
   }
 
   @override
   Future<ApiResult<Map<String, dynamic>>> getLoyaltySummary() {
     return safeApiCall<Map<String, dynamic>>(() async {
-      print('=== [PointsRepository] calling GET /api/store/loyalty/summary (direct) ===');
-      final response = await _dataSource.getLoyaltySummary();
-      print('=== [PointsRepository] GET /api/store/loyalty/summary response: $response ===');
-      final data = response['data'] ?? response;
-      return Map<String, dynamic>.from(data as Map);
+      await Future.delayed(const Duration(milliseconds: 300));
+      return {
+        'balance': MockData.mockPoints.balance,
+        'total_earned': MockData.mockPoints.totalEarned,
+        'total_used': MockData.mockPoints.totalUsed,
+        'monetary_value': MockData.mockPoints.monetaryValue,
+      };
     });
   }
 
   @override
   Future<ApiResult<Map<String, dynamic>>> previewLoyalty(int points) {
     return safeApiCall<Map<String, dynamic>>(() async {
-      print('=== [PointsRepository] calling POST /api/store/loyalty/preview with points: $points ===');
-      final response = await _dataSource.previewLoyalty({'points': points});
-      print('=== [PointsRepository] POST /api/store/loyalty/preview response: $response ===');
-      final data = response['data'] ?? response;
-      return Map<String, dynamic>.from(data as Map);
+      await Future.delayed(const Duration(milliseconds: 300));
+      return {
+        'points': points,
+        'value': points * 0.1,
+        'message': 'يمكنك استبدال $points نقطة بقيمة ${points * 0.1} ج.م',
+      };
     });
   }
 }

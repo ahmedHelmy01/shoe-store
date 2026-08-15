@@ -1,6 +1,6 @@
+import 'package:erp/core/mock/mock_data.dart';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/repository/base_repository.dart';
-import 'package:erp/modules/webstore/checkout/data/datasource/webstore_checkout_remote_datasource.dart';
 import 'package:erp/modules/webstore/checkout/data/models/payment_method_model.dart';
 
 abstract class ICheckoutRepository {
@@ -12,47 +12,63 @@ abstract class ICheckoutRepository {
 }
 
 class CheckoutRepository extends BaseRepository implements ICheckoutRepository {
-  final WebStoreCheckoutRemoteDataSource _remoteDataSource;
-  CheckoutRepository(this._remoteDataSource);
+  CheckoutRepository();
 
   @override
   Future<ApiResult<Map<String, dynamic>>> validateCart() =>
       safeApiCall<Map<String, dynamic>>(() async {
-        final res = await _remoteDataSource.validateCart();
-        return res as Map<String, dynamic>;
+        await Future.delayed(const Duration(milliseconds: 300));
+        return {
+          'valid': true,
+          'items_count': MockData.mockCart.itemCount,
+          'subtotal': MockData.mockCart.subtotal,
+        };
       });
 
   @override
   Future<ApiResult<Map<String, dynamic>>> calculateTotals(Map<String, dynamic> data) =>
       safeApiCall<Map<String, dynamic>>(() async {
-        print('=== [CheckoutRepository] calling POST /api/store/checkout/calculate with payload: $data ===');
-        final res = await _remoteDataSource.calculateTotals(data);
-        print('=== [CheckoutRepository] POST /api/store/checkout/calculate response: $res ===');
-        return res as Map<String, dynamic>;
+        await Future.delayed(const Duration(milliseconds: 300));
+        final subtotal = MockData.mockCart.subtotal;
+        const shipping = 50.0;
+        return {
+          'subtotal': subtotal,
+          'shipping': shipping,
+          'discount': 0,
+          'total': subtotal + shipping,
+        };
       });
 
   @override
   Future<ApiResult<Map<String, dynamic>>> placeOrder(Map<String, dynamic> data) =>
       safeApiCall<Map<String, dynamic>>(() async {
-        print('=== [CheckoutRepository] calling POST /api/store/checkout/place-order with payload: $data ===');
-        final res = await _remoteDataSource.placeOrder(data);
-        print('=== [CheckoutRepository] POST /api/store/checkout/place-order response: $res ===');
-        return res as Map<String, dynamic>;
+        await Future.delayed(const Duration(milliseconds: 500));
+        return {
+          'message': 'تم تأكيد الطلب بنجاح',
+          'order_id': 1004,
+        };
       });
 
   @override
   Future<ApiResult<Map<String, dynamic>>> validateCoupon(String code) =>
       safeApiCall<Map<String, dynamic>>(() async {
-        final res = await _remoteDataSource.validateCoupon(code);
-        return res as Map<String, dynamic>;
+        await Future.delayed(const Duration(milliseconds: 300));
+        final coupon = MockData.mockCoupons.firstWhere(
+          (c) => c.code == code,
+          orElse: () => MockData.mockCoupons.first,
+        );
+        return {
+          'valid': true,
+          'discount_type': coupon.discountType,
+          'discount_value': coupon.discountValue,
+          'description': coupon.description,
+        };
       });
 
   @override
   Future<ApiResult<List<PaymentMethodModel>>> getPaymentMethods() =>
       safeApiCall<List<PaymentMethodModel>>(() async {
-        final res = await _remoteDataSource.getPaymentMethods();
-        final dataMap = res as Map<String, dynamic>;
-        final list = dataMap['data'] as List;
-        return list.map((item) => PaymentMethodModel.fromJson(item as Map<String, dynamic>)).toList();
+        await Future.delayed(const Duration(milliseconds: 300));
+        return MockData.mockPaymentMethods;
       });
 }

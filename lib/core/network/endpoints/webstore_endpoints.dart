@@ -14,7 +14,6 @@ class WebStoreEndpoints {
   final orders = const _WebStoreOrders();
   final profile = const _WebStoreProfile();
   final cms = const _WebStoreCms();
-  final prescriptions = const _WebStorePrescriptions();
   final String points = '/api/store/points';
   final String loyaltySummary = '/api/store/loyalty/summary';
   final String loyaltyPreview = '/api/store/loyalty/preview';
@@ -114,12 +113,7 @@ class _WebStoreWishlist {
 
 
 
-class _WebStorePrescriptions {
-  const _WebStorePrescriptions();
 
-  final String index = '/api/store/prescriptions';
-  final String detail = '/api/store/prescriptions/{id}';
-}
 
 class _WebStoreUpload {
   const _WebStoreUpload();

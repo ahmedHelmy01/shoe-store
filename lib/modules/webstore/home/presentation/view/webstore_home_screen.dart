@@ -116,13 +116,13 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                   ),
                   24.verticalSpace,
 
-                  // 4. Categories Row (أقسام الصيدلية)
+                  // 4. Categories Row
                   AppAnimation.fadeInUp(
                     delay: const Duration(milliseconds: 300),
                     child: Column(
                       children: [
                         AppSectionHeader(
-                          title: LocaleKeys.webstore.home.pharmacy_sections
+                          title: LocaleKeys.webstore.home.categories_title
                               .tr(context: context),
                         ),
                         const HomeCategoriesRow(),
@@ -131,19 +131,19 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                   ),
                   16.verticalSpace,
 
-                  // 💥 Offer Slot 1: Hero Offer (With Timer & Products Reel) - Right after Pharmacy Sections
+                  // 💥 Offer Slot 1: Hero Offer (With Timer & Products Reel) - Right after Categories Row
                   AppAnimation.fadeInUp(
                     delay: const Duration(milliseconds: 320),
                     child: const OfferSlot1HeroWidget(),
                   ),
 
-                  // 5. Feature Links (جميع الخدمات)
+                  // 5. Feature Links (Quick Links)
                   AppAnimation.fadeInUp(
                     delay: const Duration(milliseconds: 350),
                     child: Column(
                       children: [
                         AppSectionHeader(
-                          title: LocaleKeys.webstore.home.all_services.tr(context: context),
+                          title: LocaleKeys.webstore.home.quick_links.tr(context: context),
                         ),
                         isLoading
                             ? AppShimmer.featureLinksGrid()

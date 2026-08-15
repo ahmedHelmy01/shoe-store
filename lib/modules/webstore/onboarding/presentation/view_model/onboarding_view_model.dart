@@ -13,22 +13,22 @@ class OnboardingVm extends Notifier<OnboardingState> {
   static final List<BoardingModel> _fallbackBoardings = [
     BoardingModel(
       id: -1,
-      title: 'Welcome to El Tarshouby',
-      titleAr: 'أهلاً بك في صيدلية الطرشوبي',
+      title: 'Welcome to Tarshooby Shoes',
+      titleAr: 'أهلاً بك في طرشوبي للأحذية',
       content:
-          'We take care of your health with the best products and services.',
+          'Step into style with our exclusive collection.',
       contentAr:
-          'نحن هنا لنعتني بصحتك وصحة عائلتك بأفضل المنتجات والخدمات الطبية',
+          'خطواتك للأناقة تبدأ من هنا مع مجموعتنا الحصرية من الأحذية',
       image: AssetManager.logoElTarshopy,
       position: 0,
     ),
     BoardingModel(
       id: -2,
-      title: 'Everything you need',
-      titleAr: 'كل احتياجاتك في مكان واحد',
+      title: 'High Quality Shoes',
+      titleAr: 'أجود أنواع الأحذية',
       content:
-          'Medicines, cosmetics, and medical equipment are always available.',
-      contentAr: 'أدوية، منتجات تجميل، ومستلزمات طبية متوفرة دائمًا بضغطة زر',
+          'Discover the latest trends in fashion and comfortable footwear.',
+      contentAr: 'اكتشف أحدث صيحات الموضة والأحذية المريحة لكل المناسبات',
       image: AssetManager.logoElTarshopy,
       position: 1,
     ),

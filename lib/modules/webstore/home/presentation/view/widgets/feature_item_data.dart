@@ -7,8 +7,6 @@ enum FeatureType {
   exclusiveOffers,
   bestSellers,
   shopNow,
-  prescription,
-  medicalServices,
   ourBranches,
 }
 
@@ -32,10 +30,6 @@ class FeatureItemData {
       FeatureType.bestSellers =>
         keys.most_ordered.tr(context: context),
       FeatureType.shopNow => keys.shop_now.tr(context: context),
-      FeatureType.prescription =>
-        keys.feature_prescription.tr(context: context),
-      FeatureType.medicalServices =>
-        keys.medical_services.tr(context: context),
       FeatureType.ourBranches => keys.our_branches.tr(context: context),
     };
   }
@@ -56,16 +50,6 @@ class FeatureItemData {
       type: FeatureType.shopNow,
       icon: '🛒',
       iconPath: AssetManager.shopping,
-    ),
-    FeatureItemData(
-      type: FeatureType.prescription,
-      icon: '📝',
-      iconPath: AssetManager.medicine,
-    ),
-    FeatureItemData(
-      type: FeatureType.medicalServices,
-      icon: '👨‍⚕️',
-      iconPath: AssetManager.medicalServices,
     ),
     FeatureItemData(
       type: FeatureType.ourBranches,

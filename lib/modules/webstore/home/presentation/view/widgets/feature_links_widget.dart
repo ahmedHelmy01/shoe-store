@@ -40,20 +40,8 @@ class FeatureLinksWidget extends ConsumerWidget {
   void _handleFeatureTap(BuildContext context, FeatureItemData feature) {
     switch (feature.type) {
       case FeatureType.ourBranches:
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (_) => const BranchesMapView()));
-        break;
-      case FeatureType.prescription:
-        AppNavigator.push(
-          context,
-          AppRouteNames.webstorePrescriptions,
-        );
-        break;
-      case FeatureType.medicalServices:
-        AppNavigator.push(
-          context,
-          AppRouteNames.medicalServicesMain,
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const BranchesMapView()),
         );
         break;
       case FeatureType.exclusiveOffers:

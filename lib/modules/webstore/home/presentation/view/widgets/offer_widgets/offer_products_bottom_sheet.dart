@@ -271,7 +271,7 @@ Widget buildNiceOneProductCard(
                     )
                   : Center(
                       child: Icon(
-                        Icons.medical_services_outlined,
+                        Icons.shopping_bag_outlined,
                         size: 40.sp,
                         color: AppColors.primaryOrange.withValues(alpha: 0.5),
                       ),

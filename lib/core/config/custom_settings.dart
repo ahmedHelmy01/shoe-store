@@ -12,7 +12,6 @@ class CustomSettings {
   final double contentPadding;
   final List<String>? primaryGradient;
   final List<String>? secondaryGradient;
-  final bool? showPrescriptionTab;
   final bool? enableOrderTracking;
 
   const CustomSettings({
@@ -29,7 +28,6 @@ class CustomSettings {
     this.contentPadding = 16.0,
     this.primaryGradient,
     this.secondaryGradient,
-    this.showPrescriptionTab,
     this.enableOrderTracking,
   });
 
@@ -49,7 +47,6 @@ class CustomSettings {
     (json['primaryGradient'] as List?)?.map((e) => e.toString()).toList(),
     secondaryGradient:
     (json['secondaryGradient'] as List?)?.map((e) => e.toString()).toList(),
-    showPrescriptionTab: json['showPrescriptionTab'],
     enableOrderTracking: json['enableOrderTracking'],
   );
 }

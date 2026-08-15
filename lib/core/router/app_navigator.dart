@@ -18,17 +18,9 @@ class AppRouteNames {
   static const String webstorePage = '/webstore/page';
   static const String webstoreCatalogProducts = '/webstore/catalog/products';
   static const String webstoreCategoryDrillDown = '/webstore/categories/drill';
-  static const String webstorePrescriptions = '/webstore/prescriptions';
-  static const String webstoreUploadPrescription = '/webstore/prescriptions/upload';
-  static const String webstorePrescriptionDetails = '/webstore/prescriptions/details';
   static const String webstoreAddresses = '/webstore/addresses';
   static const String webstoreAddEditAddress = '/webstore/addresses/add-edit';
   static const String webstoreNotifications = '/webstore/notifications';
-
-
-  // ─── Medical Services ────────────────────────
-  static const String medicalServicesMain = '/medical/services';
-  static const String medicalReminders = '/medical/reminders';
 }
 
 class AppNavigator {

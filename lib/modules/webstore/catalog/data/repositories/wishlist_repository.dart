@@ -1,6 +1,6 @@
+import 'package:erp/core/mock/mock_data.dart';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/repository/base_repository.dart';
-import 'package:erp/modules/webstore/catalog/data/datasource/webstore_catalog_remote_datasource.dart';
 
 abstract class IWishlistRepository {
   Future<ApiResult<Map<String, dynamic>>> getWishlist();
@@ -9,18 +9,28 @@ abstract class IWishlistRepository {
 }
 
 class WishlistRepository extends BaseRepository implements IWishlistRepository {
-  final WebStoreCatalogRemoteDataSource _remoteDataSource;
-  WishlistRepository(this._remoteDataSource);
+  WishlistRepository();
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> getWishlist() => 
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.getWishlist());
+  Future<ApiResult<Map<String, dynamic>>> getWishlist() =>
+      safeApiCall<Map<String, dynamic>>(() async {
+        await Future.delayed(const Duration(milliseconds: 300));
+        return {
+          'data': MockData.mockProducts.take(3).map((e) => e.toJson()).toList(),
+        };
+      });
 
   @override
   Future<ApiResult<Map<String, dynamic>>> addToWishlist(int productId) =>
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.addToWishlist(productId));
+      safeApiCall<Map<String, dynamic>>(() async {
+        await Future.delayed(const Duration(milliseconds: 300));
+        return {'message': 'تمت الإضافة بنجاح'};
+      });
 
   @override
   Future<ApiResult<Map<String, dynamic>>> removeFromWishlist(int productId) =>
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.removeFromWishlist(productId));
+      safeApiCall<Map<String, dynamic>>(() async {
+        await Future.delayed(const Duration(milliseconds: 300));
+        return {'message': 'تمت الإزالة بنجاح'};
+      });
 }

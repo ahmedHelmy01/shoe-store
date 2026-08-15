@@ -1,19 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:erp/core/providers/core_providers.dart';
-import 'package:erp/modules/webstore/orders/data/datasource/webstore_orders_remote_datasource.dart';
 import 'package:erp/modules/webstore/orders/data/repositories/orders_repository.dart';
 
 // ─── DI Providers ───────────────────────────────────────
 
-final webstoreOrdersRemoteDataSourceProvider = Provider<WebStoreOrdersRemoteDataSource>((ref) {
-  return WebStoreOrdersRemoteDataSource(ref.watch(networkServiceProvider));
-});
-
 final webstoreOrdersRepositoryProvider = Provider<IOrdersRepository>((ref) {
-  return OrdersRepository(ref.watch(webstoreOrdersRemoteDataSourceProvider));
+  return OrdersRepository();
 });
 
-// ─── 1) GET /api/store/orders — Orders List ─────────────
+// ─── 1) Orders List ─────────────────────────────────────
 
 final ordersListProvider = FutureProvider<Map<String, dynamic>>((ref) async {
   final repo = ref.watch(webstoreOrdersRepositoryProvider);
@@ -27,7 +21,7 @@ final ordersListProvider = FutureProvider<Map<String, dynamic>>((ref) async {
   );
 });
 
-// ─── 2) GET /api/store/orders/{id} — Order Detail ──────
+// ─── 2) Order Detail ────────────────────────────────────
 
 final orderDetailProvider = FutureProvider.family<Map<String, dynamic>, int>((ref, orderId) async {
   final repo = ref.watch(webstoreOrdersRepositoryProvider);
@@ -38,7 +32,7 @@ final orderDetailProvider = FutureProvider.family<Map<String, dynamic>, int>((re
   );
 });
 
-// ─── 3) POST /api/store/orders/{id}/cancel — Cancel Order ──
+// ─── 3) Cancel Order ────────────────────────────────────
 
 final cancelOrderProvider = FutureProvider.family<Map<String, dynamic>, ({int orderId, String? reason})>((ref, params) async {
   final repo = ref.watch(webstoreOrdersRepositoryProvider);
@@ -49,7 +43,7 @@ final cancelOrderProvider = FutureProvider.family<Map<String, dynamic>, ({int or
   );
 });
 
-// ─── 4) POST /api/store/orders/{id}/rate — Rate Order ──
+// ─── 4) Rate Order ──────────────────────────────────────
 
 final rateOrderProvider = FutureProvider.family<Map<String, dynamic>, ({int orderId, int rating, String? ratingText})>((ref, params) async {
   final repo = ref.watch(webstoreOrdersRepositoryProvider);
@@ -60,7 +54,7 @@ final rateOrderProvider = FutureProvider.family<Map<String, dynamic>, ({int orde
   );
 });
 
-// ─── 5) GET /api/store/orders/{id}/rating — Get Rating ──
+// ─── 5) Get Rating ──────────────────────────────────────
 
 final orderRatingProvider = FutureProvider.family<Map<String, dynamic>, int>((ref, orderId) async {
   final repo = ref.watch(webstoreOrdersRepositoryProvider);
@@ -71,7 +65,7 @@ final orderRatingProvider = FutureProvider.family<Map<String, dynamic>, int>((re
   );
 });
 
-// ─── Track Order (existing) ─────────────────────────────
+// ─── Track Order ────────────────────────────────────────
 
 final orderTrackingProvider = FutureProvider.family<dynamic, int>((ref, orderId) async {
   final repo = ref.watch(webstoreOrdersRepositoryProvider);
@@ -82,7 +76,7 @@ final orderTrackingProvider = FutureProvider.family<dynamic, int>((ref, orderId)
   );
 });
 
-// ─── POST /api/store/cart/reorder/{order} — Reorder ───
+// ─── Reorder ────────────────────────────────────────────
 
 final reorderProvider = FutureProvider.family<dynamic, int>((ref, orderId) async {
   final repo = ref.watch(webstoreOrdersRepositoryProvider);
@@ -101,4 +95,3 @@ class WebStoreReorderLoadingNotifier extends Notifier<bool> {
 }
 
 final webstoreReorderLoadingProvider = NotifierProvider.autoDispose<WebStoreReorderLoadingNotifier, bool>(WebStoreReorderLoadingNotifier.new);
-

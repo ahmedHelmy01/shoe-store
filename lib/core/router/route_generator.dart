@@ -19,16 +19,10 @@ import 'package:erp/modules/webstore/wishlist/presentation/view/webstore_wishlis
 import 'package:erp/modules/webstore/points/presentation/view/webstore_points_view.dart';
 import 'package:erp/modules/webstore/pages/presentation/view/webstore_page_view.dart';
 import 'package:erp/modules/webstore/catalog/presentation/view/products/catalog_products_view.dart';
-import 'package:erp/modules/webstore/prescriptions/presentation/view/prescriptions_list_view.dart';
-import 'package:erp/modules/webstore/prescriptions/presentation/view/upload_prescription_view.dart';
-import 'package:erp/modules/webstore/prescriptions/presentation/view/prescription_detail_view.dart';
-import 'package:erp/modules/webstore/prescriptions/data/models/prescription_model.dart';
 import 'package:erp/modules/webstore/addresses/data/models/address_model.dart';
 import 'package:erp/modules/webstore/addresses/presentation/view/webstore_addresses_view.dart';
 import 'package:erp/modules/webstore/addresses/presentation/view/webstore_add_edit_address_view.dart';
 import 'package:erp/modules/webstore/notifications/presentation/view/webstore_notifications_view.dart';
-import 'package:erp/modules/webstore/medical_services/presentation/view/medical_services_main_view.dart';
-import 'package:erp/modules/webstore/medical_services/presentation/view/medication_reminders_view.dart';
 
 // Models for type casting in arguments
 
@@ -101,13 +95,6 @@ class RouteGenerator {
         return _guarded(const WebStoreWishlistView());
       case AppRouteNames.webstorePoints:
         return _guarded(const WebStorePointsView());
-      case AppRouteNames.webstorePrescriptions:
-        return _guarded(const PrescriptionsListView());
-      case AppRouteNames.webstoreUploadPrescription:
-        return _guarded(const UploadPrescriptionView());
-      case AppRouteNames.webstorePrescriptionDetails:
-        final prescription = settings.arguments as PrescriptionModel;
-        return _guarded(PrescriptionDetailView(prescription: prescription));
       case AppRouteNames.webstoreAddresses:
         return _guarded(const WebStoreAddressesView());
       case AppRouteNames.webstoreAddEditAddress:
@@ -155,12 +142,6 @@ class RouteGenerator {
             initialScreenTitle: categoryTitle,
           ),
         );
-
-      // ─── Medical Services ─────────────────────────
-      case AppRouteNames.medicalServicesMain:
-        return _guarded(const MedicalServicesMainView());
-      case AppRouteNames.medicalReminders:
-        return _guarded(const MedicationRemindersView());
 
       default:
         return _errorRoute();

@@ -1,15 +1,7 @@
-/// WebStore Auth Repository
-///
-/// Provides a clean interface for all WebStore authentication operations.
-/// Uses BaseRepository.safeApiCall for consistent error handling.
-library;
-
+import 'package:erp/core/mock/mock_data.dart';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/repository/base_repository.dart';
-import 'package:erp/modules/webstore/auth/data/datasource/webstore_auth_remote_datasource.dart';
 import 'package:erp/modules/webstore/auth/data/models/webstore_auth_response.dart';
-
-// ─── Interface ────────────────────────────────────────
 
 abstract class IWebStoreAuthRepository {
   Future<ApiResult<WebStoreAuthResponse>> register({
@@ -71,13 +63,9 @@ abstract class IWebStoreAuthRepository {
   Future<ApiResult<Map<String, dynamic>>> deleteAccount();
 }
 
-// ─── Implementation ──────────────────────────────────
-
 class WebStoreAuthRepository extends BaseRepository
     implements IWebStoreAuthRepository {
-  final WebStoreAuthRemoteDataSource _dataSource;
-
-  WebStoreAuthRepository(this._dataSource);
+  WebStoreAuthRepository();
 
   @override
   Future<ApiResult<WebStoreAuthResponse>> register({
@@ -89,15 +77,8 @@ class WebStoreAuthRepository extends BaseRepository
     int? branchId,
   }) {
     return safeApiCall<WebStoreAuthResponse>(() async {
-      final response = await _dataSource.register(
-        name: name,
-        email: email,
-        mobile: mobile,
-        password: password,
-        passwordConfirmation: passwordConfirmation,
-        branchId: branchId,
-      );
-      return WebStoreAuthResponse.fromJson(response as Map<String, dynamic>);
+      await Future.delayed(const Duration(milliseconds: 500));
+      return MockData.mockAuthResponse;
     });
   }
 
@@ -107,11 +88,8 @@ class WebStoreAuthRepository extends BaseRepository
     required String password,
   }) {
     return safeApiCall<WebStoreAuthResponse>(() async {
-      final response = await _dataSource.login(
-        loginName: loginName,
-        password: password,
-      );
-      return WebStoreAuthResponse.fromJson(response as Map<String, dynamic>);
+      await Future.delayed(const Duration(milliseconds: 500));
+      return MockData.mockAuthResponse;
     });
   }
 
@@ -125,15 +103,8 @@ class WebStoreAuthRepository extends BaseRepository
     int? branchId,
   }) {
     return safeApiCall<WebStoreAuthResponse>(() async {
-      final response = await _dataSource.socialLogin(
-        providerType: providerType,
-        providerIdentifier: providerIdentifier,
-        name: name,
-        email: email,
-        mobile: mobile,
-        branchId: branchId,
-      );
-      return WebStoreAuthResponse.fromJson(response as Map<String, dynamic>);
+      await Future.delayed(const Duration(milliseconds: 500));
+      return MockData.mockAuthResponse;
     });
   }
 
@@ -141,12 +112,10 @@ class WebStoreAuthRepository extends BaseRepository
   Future<ApiResult<Map<String, dynamic>>> forgotPassword({
     required String username,
   }) {
-    return safeApiCall<Map<String, dynamic>>(
-      () async {
-        final response = await _dataSource.forgotPassword(username: username);
-        return response as Map<String, dynamic>;
-      },
-    );
+    return safeApiCall<Map<String, dynamic>>(() async {
+      await Future.delayed(const Duration(milliseconds: 500));
+      return {'message': 'تم إرسال رمز التحقق'};
+    });
   }
 
   @override
@@ -155,16 +124,10 @@ class WebStoreAuthRepository extends BaseRepository
     required String code,
     required String type,
   }) {
-    return safeApiCall<Map<String, dynamic>>(
-      () async {
-        final response = await _dataSource.verifyCode(
-          identifier: identifier,
-          code: code,
-          type: type,
-        );
-        return response as Map<String, dynamic>;
-      },
-    );
+    return safeApiCall<Map<String, dynamic>>(() async {
+      await Future.delayed(const Duration(milliseconds: 500));
+      return {'message': 'تم التحقق بنجاح', 'verified': true};
+    });
   }
 
   @override
@@ -172,15 +135,10 @@ class WebStoreAuthRepository extends BaseRepository
     required String identifier,
     required String type,
   }) {
-    return safeApiCall<Map<String, dynamic>>(
-      () async {
-        final response = await _dataSource.resendCode(
-          identifier: identifier,
-          type: type,
-        );
-        return response as Map<String, dynamic>;
-      },
-    );
+    return safeApiCall<Map<String, dynamic>>(() async {
+      await Future.delayed(const Duration(milliseconds: 500));
+      return {'message': 'تم إرسال الرمز مرة أخرى'};
+    });
   }
 
   @override
@@ -190,37 +148,26 @@ class WebStoreAuthRepository extends BaseRepository
     required String password,
     required String passwordConfirmation,
   }) {
-    return safeApiCall<Map<String, dynamic>>(
-      () async {
-        final response = await _dataSource.resetPassword(
-          identifier: identifier,
-          code: code,
-          password: password,
-          passwordConfirmation: passwordConfirmation,
-        );
-        return response as Map<String, dynamic>;
-      },
-    );
+    return safeApiCall<Map<String, dynamic>>(() async {
+      await Future.delayed(const Duration(milliseconds: 500));
+      return {'message': 'تم إعادة تعيين كلمة المرور بنجاح'};
+    });
   }
 
   @override
   Future<ApiResult<WebStoreAuthResponse>> refreshToken() {
-    return safeApiCall<WebStoreAuthResponse>(
-      () async {
-        final response = await _dataSource.refreshToken();
-        return WebStoreAuthResponse.fromJson(response as Map<String, dynamic>);
-      },
-    );
+    return safeApiCall<WebStoreAuthResponse>(() async {
+      await Future.delayed(const Duration(milliseconds: 300));
+      return MockData.mockAuthResponse;
+    });
   }
 
   @override
   Future<ApiResult<Map<String, dynamic>>> getProfile() {
-    return safeApiCall<Map<String, dynamic>>(
-      () async {
-        final response = await _dataSource.getProfile();
-        return response as Map<String, dynamic>;
-      },
-    );
+    return safeApiCall<Map<String, dynamic>>(() async {
+      await Future.delayed(const Duration(milliseconds: 300));
+      return {'data': MockData.mockUser.toJson()};
+    });
   }
 
   @override
@@ -230,26 +177,17 @@ class WebStoreAuthRepository extends BaseRepository
     String? mobile,
     String? password,
   }) {
-    return safeApiCall<Map<String, dynamic>>(
-      () async {
-        final response = await _dataSource.updateProfile(
-          name: name,
-          email: email,
-          mobile: mobile,
-          password: password,
-        );
-        return response as Map<String, dynamic>;
-      },
-    );
+    return safeApiCall<Map<String, dynamic>>(() async {
+      await Future.delayed(const Duration(milliseconds: 300));
+      return {'data': MockData.mockUser.toJson()};
+    });
   }
 
   @override
   Future<ApiResult<Map<String, dynamic>>> deleteAccount() {
-    return safeApiCall<Map<String, dynamic>>(
-      () async {
-        final response = await _dataSource.deleteAccount();
-        return response as Map<String, dynamic>;
-      },
-    );
+    return safeApiCall<Map<String, dynamic>>(() async {
+      await Future.delayed(const Duration(milliseconds: 300));
+      return {'message': 'تم حذف الحساب بنجاح'};
+    });
   }
 }

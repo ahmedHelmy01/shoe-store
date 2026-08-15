@@ -21,8 +21,8 @@ class AssetManager {
   static String get onboardingStudy => "${_images}onboarding_study.png";
   static String get homeBanner => "${_images}home_banner.png";
 
-  // ---------------- WebStore Pharmacy Images ----------------
-  static String get pharmacyLogo => "${_webstoreImages}logo.png";
+  // ---------------- WebStore Retail Images ----------------
+  static String get webstoreLogo => "${_webstoreImages}logo.png";
   static String get logoElTarshopy => "${_webstoreImages}logo2.png";
   static String get logoElTarshopy2 => "${_webstoreImages}WhatsApp_Image_2025-12-25_at_17.23.37-removebg-preview.png";
   static String get drugs => "${_webstoreImages}drugs.png";
@@ -34,8 +34,6 @@ class AssetManager {
   static String get done => "${_webstoreImages}done.png";
   static String get face => "${_webstoreImages}face.png";
   static String get car => "${_webstoreImages}car.png";
-  static String get medicine => "${_webstoreImages}medicine.png";
-  static String get medicalServices => "${_webstoreImages}medical-services.png";
   static String get information => "${_images}information.png";
 
   // Icons/Labels

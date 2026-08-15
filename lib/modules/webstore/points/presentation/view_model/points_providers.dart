@@ -1,15 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/providers/core_providers.dart';
-import 'package:erp/modules/webstore/points/data/datasource/points_remote_datasource.dart';
 import 'package:erp/modules/webstore/points/data/repositories/points_repository.dart';
 import 'package:erp/modules/webstore/points/data/models/points_model.dart';
 
-final pointsRemoteDataSourceProvider = Provider<PointsRemoteDataSource>((ref) {
-  return PointsRemoteDataSource(ref.watch(networkServiceProvider));
-});
-
 final pointsRepositoryProvider = Provider<IPointsRepository>((ref) {
-  return PointsRepository(ref.watch(pointsRemoteDataSourceProvider));
+  return PointsRepository();
 });
 
 final pointsProvider = AsyncNotifierProvider<PointsNotifier, PointsModel>(() {

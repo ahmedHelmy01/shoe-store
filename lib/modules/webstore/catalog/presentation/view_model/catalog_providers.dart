@@ -193,13 +193,8 @@ class _PaginatedProductsController {
 // 📦 DATA PROVIDERS
 // ═══════════════════════════════════════════════════════════════
 
-final catalogRemoteDataSourceProvider =
-    Provider<WebStoreCatalogRemoteDataSource>((ref) {
-      return WebStoreCatalogRemoteDataSource(ref.watch(networkServiceProvider));
-    });
-
 final catalogRepositoryProvider = Provider<ICatalogRepository>((ref) {
-  return CatalogRepository(ref.watch(catalogRemoteDataSourceProvider));
+  return CatalogRepository();
 });
 
 final catalogManufacturersProvider = FutureProvider<List<ManufacturerModel>>((

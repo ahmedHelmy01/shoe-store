@@ -2,10 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:erp/core/providers/core_providers.dart';
 import 'package:erp/modules/webstore/catalog/data/models/product_model.dart';
 import 'package:erp/modules/webstore/catalog/data/repositories/wishlist_repository.dart';
-import 'package:erp/modules/webstore/catalog/presentation/view_model/catalog_providers.dart';
 
 final wishlistRepositoryProvider = Provider<IWishlistRepository>((ref) {
-  return WishlistRepository(ref.watch(catalogRemoteDataSourceProvider));
+  return WishlistRepository();
 });
 
 final wishlistProvider =
@@ -49,7 +48,6 @@ class WishlistNotifier extends AsyncNotifier<List<WebStoreProduct>> {
     final currentList = state.value ?? [];
     final isFav = currentList.any((p) => p.id == product.id);
 
-    // Optimistic UI update
     final updatedList = List<WebStoreProduct>.from(currentList);
     if (isFav) {
       updatedList.removeWhere((p) => p.id == product.id);
@@ -66,7 +64,6 @@ class WishlistNotifier extends AsyncNotifier<List<WebStoreProduct>> {
     return result.when(
       success: (_) => true,
       failure: (failure) {
-        // Revert optimistic update on failure
         state = AsyncValue.data(currentList);
         return false;
       },

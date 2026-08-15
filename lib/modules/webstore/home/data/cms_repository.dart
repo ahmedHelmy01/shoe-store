@@ -1,6 +1,6 @@
+import 'package:erp/core/mock/mock_data.dart';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/repository/base_repository.dart';
-import 'package:erp/modules/webstore/home/data/webstore_cms_remote_datasource.dart';
 import 'package:erp/modules/webstore/branches/data/branch_model.dart';
 import 'package:erp/modules/webstore/home/data/models/store_settings_model.dart';
 import 'package:erp/modules/webstore/support/data/models/contact_request_model.dart';
@@ -14,74 +14,83 @@ abstract class ICMSRepository {
   Future<ApiResult<List<StoreOfferModel>>> getOffers();
   Future<ApiResult<Map<String, dynamic>>> getPages();
   Future<ApiResult<Map<String, dynamic>>> getPageBySlug(String slug);
-  
-  // ─── New Standardized Services ───────────────────────
   Future<ApiResult<List<BranchModel>>> getBranches();
   Future<ApiResult<StoreSettingsModel>> getSettings();
   Future<ApiResult<void>> submitContact(ContactRequestModel request);
 }
 
 class CMSRepository extends BaseRepository implements ICMSRepository {
-  final WebStoreCmsRemoteDataSource _remoteDataSource;
-  CMSRepository(this._remoteDataSource);
+  CMSRepository();
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> getSliders() => 
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.getSliders());
+  Future<ApiResult<Map<String, dynamic>>> getSliders() =>
+      safeApiCall<Map<String, dynamic>>(() async {
+        await Future.delayed(const Duration(milliseconds: 300));
+        return {
+          'data': MockData.mockSliders.map((e) => e.toJson()).toList(),
+        };
+      });
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> getAds() => 
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.getAds());
+  Future<ApiResult<Map<String, dynamic>>> getAds() =>
+      safeApiCall<Map<String, dynamic>>(() async {
+        await Future.delayed(const Duration(milliseconds: 300));
+        return {
+          'data': MockData.mockAds.map((e) => e.toJson()).toList(),
+        };
+      });
 
   @override
   Future<ApiResult<List<StoreCouponModel>>> getCoupons() =>
       safeApiCall<List<StoreCouponModel>>(() async {
-        final response = await _remoteDataSource.getCoupons();
-        final List<dynamic> data = response['data'] ?? [];
-        return data.map((e) => StoreCouponModel.fromJson(e as Map<String, dynamic>)).toList();
+        await Future.delayed(const Duration(milliseconds: 300));
+        return MockData.mockCoupons;
       });
 
   @override
   Future<ApiResult<List<StoreOfferModel>>> getOffers() =>
       safeApiCall<List<StoreOfferModel>>(() async {
-        final response = await _remoteDataSource.getOffers();
-        final List<dynamic> data = response['data'] ?? [];
-        return data.map((e) => StoreOfferModel.fromJson(e as Map<String, dynamic>)).toList();
+        await Future.delayed(const Duration(milliseconds: 300));
+        return MockData.mockOffers;
       });
 
   @override
-  Future<ApiResult<Map<String, dynamic>>> getPages() => 
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.getPages());
+  Future<ApiResult<Map<String, dynamic>>> getPages() =>
+      safeApiCall<Map<String, dynamic>>(() async {
+        await Future.delayed(const Duration(milliseconds: 300));
+        return {
+          'data': MockData.mockPages.map((e) => e.toJson()).toList(),
+        };
+      });
 
   @override
   Future<ApiResult<Map<String, dynamic>>> getPageBySlug(String slug) =>
-      safeApiCall<Map<String, dynamic>>(() => _remoteDataSource.getPageBySlug(slug));
+      safeApiCall<Map<String, dynamic>>(() async {
+        await Future.delayed(const Duration(milliseconds: 300));
+        final page = MockData.mockPages.firstWhere(
+          (p) => p.slug == slug,
+          orElse: () => MockData.mockPages.first,
+        );
+        return {'data': page.toJson()};
+      });
 
   @override
   Future<ApiResult<List<BranchModel>>> getBranches() =>
       safeApiCall<List<BranchModel>>(() async {
-        final response = await _remoteDataSource.getBranches();
-        final rawData = response['data'];
-        List<dynamic> dataList;
-        if (rawData is Map) {
-          dataList = rawData['data'] as List? ?? [];
-        } else if (rawData is List) {
-          dataList = rawData;
-        } else {
-          dataList = [];
-        }
-        return dataList.map((e) => BranchModel.fromJson(e as Map<String, dynamic>)).toList();
+        await Future.delayed(const Duration(milliseconds: 300));
+        return MockData.mockBranches;
       });
 
   @override
   Future<ApiResult<StoreSettingsModel>> getSettings() =>
       safeApiCall<StoreSettingsModel>(() async {
-        final response = await _remoteDataSource.getSettings();
-        final Map<String, dynamic> data = response['data'] ?? {};
-        return StoreSettingsModel.fromJson(data);
+        await Future.delayed(const Duration(milliseconds: 300));
+        return MockData.mockSettings;
       });
 
   @override
   Future<ApiResult<void>> submitContact(ContactRequestModel request) =>
-      safeApiCall<void>(() => _remoteDataSource.submitContact(request.toJson()));
+      safeApiCall<void>(() async {
+        await Future.delayed(const Duration(milliseconds: 500));
+      });
 }

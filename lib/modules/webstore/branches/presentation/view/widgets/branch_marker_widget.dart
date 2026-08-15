@@ -30,7 +30,7 @@ class BranchMarkerWidget extends StatelessWidget {
             ],
           ),
           child: const Icon(
-            Icons.local_pharmacy_rounded,
+            Icons.store_rounded,
             size: 18,
             color: Colors.white,
           ),

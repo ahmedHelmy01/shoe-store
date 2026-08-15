@@ -1,6 +1,6 @@
+import 'package:erp/core/mock/mock_data.dart';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/repository/base_repository.dart';
-import 'package:erp/modules/webstore/profile/data/datasource/profile_remote_datasource.dart';
 import 'package:erp/modules/webstore/auth/data/models/webstore_user_model.dart';
 
 abstract class IProfileRepository {
@@ -16,16 +16,13 @@ abstract class IProfileRepository {
 }
 
 class ProfileRepository extends BaseRepository implements IProfileRepository {
-  final ProfileRemoteDataSource _dataSource;
-
-  ProfileRepository(this._dataSource);
+  ProfileRepository();
 
   @override
   Future<ApiResult<WebStoreUser>> getProfile() {
     return safeApiCall<WebStoreUser>(() async {
-      final response = await _dataSource.getProfile();
-      final data = response['data'] ?? response;
-      return WebStoreUser.fromJson(data as Map<String, dynamic>);
+      await Future.delayed(const Duration(milliseconds: 300));
+      return MockData.mockUser;
     });
   }
 
@@ -38,22 +35,15 @@ class ProfileRepository extends BaseRepository implements IProfileRepository {
     int? branchId,
   }) {
     return safeApiCall<WebStoreUser>(() async {
-      final response = await _dataSource.updateProfile(
-        name: name,
-        email: email,
-        mobile: mobile,
-        password: password,
-        branchId: branchId,
-      );
-      final data = response['data'] ?? response;
-      return WebStoreUser.fromJson(data as Map<String, dynamic>);
+      await Future.delayed(const Duration(milliseconds: 300));
+      return MockData.mockUser;
     });
   }
 
   @override
   Future<ApiResult<void>> deleteAccount() {
     return safeApiCall<void>(() async {
-      await _dataSource.deleteAccount();
+      await Future.delayed(const Duration(milliseconds: 300));
     });
   }
 }

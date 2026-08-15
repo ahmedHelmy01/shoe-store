@@ -143,47 +143,47 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      // Decorative medicine circles
-                      Positioned(
-                        top: -10.h,
-                        right: -6.w,
-                        child: _buildMedicineCircle(
-                          size: 36.w,
-                          icon: Icons.medication_rounded,
-                          color: AppColors.primaryOrange,
-                          opacity: 0.12,
-                        ),
+                    // Decorative retail circles
+                    Positioned(
+                      top: -10.h,
+                      right: -6.w,
+                      child: _buildDecorCircle(
+                        size: 36.w,
+                        icon: Icons.shopping_bag_rounded,
+                        color: AppColors.primaryOrange,
+                        opacity: 0.12,
                       ),
-                      Positioned(
-                        bottom: -8.h,
-                        left: 14.w,
-                        child: _buildMedicineCircle(
-                          size: 30.w,
-                          icon: Icons.local_pharmacy_rounded,
-                          color: AppColors.primaryBlue,
-                          opacity: 0.10,
-                        ),
+                    ),
+                    Positioned(
+                      bottom: -8.h,
+                      left: 14.w,
+                      child: _buildDecorCircle(
+                        size: 30.w,
+                        icon: Icons.store_rounded,
+                        color: AppColors.primaryBlue,
+                        opacity: 0.10,
                       ),
-                      Positioned(
-                        top: 10.h,
-                        left: -10.w,
-                        child: _buildMedicineCircle(
-                          size: 22.w,
-                          icon: Icons.healing_rounded,
-                          color: const Color(0xFF4CAF50),
-                          opacity: 0.10,
-                        ),
+                    ),
+                    Positioned(
+                      top: 10.h,
+                      left: -10.w,
+                      child: _buildDecorCircle(
+                        size: 22.w,
+                        icon: Icons.loyalty_rounded,
+                        color: const Color(0xFF4CAF50),
+                        opacity: 0.10,
                       ),
-                      Positioned(
-                        bottom: 6.h,
-                        right: 28.w,
-                        child: _buildMedicineCircle(
-                          size: 20.w,
-                          icon: Icons.vaccines_rounded,
-                          color: AppColors.primaryBlue,
-                          opacity: 0.08,
-                        ),
+                    ),
+                    Positioned(
+                      bottom: 6.h,
+                      right: 28.w,
+                      child: _buildDecorCircle(
+                        size: 20.w,
+                        icon: Icons.local_offer_rounded,
+                        color: AppColors.primaryBlue,
+                        opacity: 0.08,
                       ),
+                    ),
                       // Search field
                       Container(
                         height: 52.h,
@@ -276,7 +276,7 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
     );
   }
 
-  Widget _buildMedicineCircle({
+  Widget _buildDecorCircle({
     required double size,
     required IconData icon,
     required Color color,

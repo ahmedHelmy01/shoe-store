@@ -1,16 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:erp/core/providers/core_providers.dart';
-import 'package:erp/modules/webstore/addresses/data/datasource/address_remote_datasource.dart';
 import 'package:erp/modules/webstore/addresses/data/repositories/address_repository.dart';
 import 'package:erp/modules/webstore/addresses/data/models/address_model.dart';
 import 'package:erp/modules/webstore/addresses/data/models/lookup_models.dart';
 
-final addressRemoteDataSourceProvider = Provider<AddressRemoteDataSource>((ref) {
-  return AddressRemoteDataSource(ref.watch(networkServiceProvider));
-});
-
 final addressRepositoryProvider = Provider<IAddressRepository>((ref) {
-  return AddressRepository(ref.watch(addressRemoteDataSourceProvider));
+  return AddressRepository();
 });
 
 // Cache Governorates list
@@ -23,7 +17,7 @@ final governoratesProvider = FutureProvider<List<GovernorateModel>>((ref) async 
   );
 });
 
-// Cities for a selected governorate (API requires governorate_id)
+// Cities for a selected governorate
 final citiesProvider =
     FutureProvider.family<List<CityModel>, int>((ref, governorateId) async {
   final repo = ref.watch(addressRepositoryProvider);
@@ -59,7 +53,6 @@ class AddressesNotifier extends AsyncNotifier<List<AddressModel>> {
     state = await AsyncValue.guard(() => _fetchAddresses());
   }
 
-  /// Returns `null` on success, or an error message from the API.
   Future<String?> createAddress(AddressModel address) async {
     final repo = ref.read(addressRepositoryProvider);
     final result = await repo.createAddress(address);
@@ -83,7 +76,6 @@ class AddressesNotifier extends AsyncNotifier<List<AddressModel>> {
     );
   }
 
-  /// Returns `null` on success, or an error message from the API.
   Future<String?> updateAddress(int id, AddressModel address) async {
     final repo = ref.read(addressRepositoryProvider);
     final result = await repo.updateAddress(id, address);
@@ -110,7 +102,6 @@ class AddressesNotifier extends AsyncNotifier<List<AddressModel>> {
     );
   }
 
-  /// Returns `null` on success, or an error message from the API.
   Future<String?> deleteAddress(int id) async {
     final repo = ref.read(addressRepositoryProvider);
     final result = await repo.deleteAddress(id);

@@ -4,13 +4,8 @@ import 'package:erp/modules/webstore/catalog/data/datasource/webstore_reviews_re
 import 'package:erp/modules/webstore/catalog/data/repositories/reviews_repository.dart';
 import 'package:erp/modules/webstore/catalog/data/models/review_model.dart';
 
-final reviewsRemoteDataSourceProvider =
-    Provider<WebStoreReviewsRemoteDataSource>((ref) {
-      return WebStoreReviewsRemoteDataSource(ref.watch(networkServiceProvider));
-    });
-
 final reviewsRepositoryProvider = Provider<IReviewsRepository>((ref) {
-  return ReviewsRepository(ref.watch(reviewsRemoteDataSourceProvider));
+  return ReviewsRepository();
 });
 
 class ReviewsNotifier extends Notifier<AsyncValue<ReviewModel?>> {

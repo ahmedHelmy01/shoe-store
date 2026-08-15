@@ -1,6 +1,6 @@
+import 'package:erp/core/mock/mock_data.dart';
 import 'package:erp/core/network/api_result.dart';
 import 'package:erp/core/repository/base_repository.dart';
-import 'package:erp/modules/webstore/cart/data/datasource/webstore_cart_remote_datasource.dart';
 import 'package:erp/modules/webstore/cart/data/models/cart_model.dart';
 
 abstract class ICartRepository {
@@ -13,45 +13,45 @@ abstract class ICartRepository {
 }
 
 class CartRepository extends BaseRepository implements ICartRepository {
-  final WebStoreCartRemoteDataSource _remoteDataSource;
-  CartRepository(this._remoteDataSource);
+  CartRepository();
 
   @override
-  Future<ApiResult<CartModel>> getCart() => 
+  Future<ApiResult<CartModel>> getCart() =>
       safeApiCall<CartModel>(() async {
-        final res = await _remoteDataSource.getCart();
-        return CartModel.fromJson(res as Map<String, dynamic>);
+        await Future.delayed(const Duration(milliseconds: 300));
+        return MockData.mockCart;
       });
 
   @override
   Future<ApiResult<CartModel>> addItem(Map<String, dynamic> data) =>
       safeApiCall<CartModel>(() async {
-        await _remoteDataSource.addItem(data);
-        // Some servers return just a success message, so re-fetch the full cart
-        final cart = await _remoteDataSource.getCart();
-        return CartModel.fromJson(cart as Map<String, dynamic>);
+        await Future.delayed(const Duration(milliseconds: 300));
+        return MockData.mockCart;
       });
 
   @override
   Future<ApiResult<CartModel>> updateItem(int itemId, {required int quantity}) =>
       safeApiCall<CartModel>(() async {
-        await _remoteDataSource.updateItem(itemId, quantity: quantity);
-        final cart = await _remoteDataSource.getCart();
-        return CartModel.fromJson(cart as Map<String, dynamic>);
+        await Future.delayed(const Duration(milliseconds: 300));
+        return MockData.mockCart;
       });
 
   @override
   Future<ApiResult<dynamic>> removeItem(int itemId) =>
-      safeApiCall<dynamic>(() => _remoteDataSource.removeItem(itemId));
+      safeApiCall<dynamic>(() async {
+        await Future.delayed(const Duration(milliseconds: 300));
+      });
 
   @override
-  Future<ApiResult<dynamic>> clearCart() => 
-      safeApiCall<dynamic>(() => _remoteDataSource.clearCart());
+  Future<ApiResult<dynamic>> clearCart() =>
+      safeApiCall<dynamic>(() async {
+        await Future.delayed(const Duration(milliseconds: 300));
+      });
 
   @override
   Future<ApiResult<CartModel>> reorder(int orderId) =>
       safeApiCall<CartModel>(() async {
-        final res = await _remoteDataSource.reorder(orderId);
-        return CartModel.fromJson(res as Map<String, dynamic>);
+        await Future.delayed(const Duration(milliseconds: 300));
+        return MockData.mockCart;
       });
 }

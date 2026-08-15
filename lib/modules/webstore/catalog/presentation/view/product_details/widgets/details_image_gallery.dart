@@ -276,7 +276,7 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
-                  LocaleKeys.webstore.prescriptions.pinch_to_zoom
+                  LocaleKeys.common.pinch_to_zoom
                       .tr(context: context),
                   style: TextStyle(color: Colors.white70, fontSize: 12.sp),
                 ),

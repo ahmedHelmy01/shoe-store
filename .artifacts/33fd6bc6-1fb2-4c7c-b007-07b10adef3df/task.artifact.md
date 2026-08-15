@@ -1,0 +1,8 @@
+- `[x]` Delete medical and prescription modules
+- `[x]` Clean up routing and navigation
+- `[x]` Remove medical features from Home screen
+- `[x]` Clean up localization keys and translations
+- `[x]` Remove medical endpoints and config settings
+- `[x]` Remove related assets and UI components
+- `[x]` Update onboarding content
+- `[x]` Verify changes (analyze and compile)
