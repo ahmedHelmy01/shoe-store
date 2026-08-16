@@ -255,7 +255,11 @@ class PaymentMethodSection extends ConsumerWidget {
 
   String _getPaymentAsset(String? code) {
     final c = code?.toLowerCase() ?? '';
-    if (c.contains('visa') || c.contains('master') || c.contains('card')) {
+    if (c.contains('tabby')) {
+      return AssetManager.tabby;
+    } else if (c.contains('tamara')) {
+      return AssetManager.tamara;
+    } else if (c.contains('visa') || c.contains('master') || c.contains('card')) {
       return AssetManager.visa;
     } else if (c.contains('insta')) {
       return AssetManager.instapay;

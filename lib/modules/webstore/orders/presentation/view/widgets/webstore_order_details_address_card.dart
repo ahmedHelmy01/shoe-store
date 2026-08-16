@@ -61,18 +61,27 @@ class WebStoreOrderDetailsAddressCard extends StatelessWidget {
   String _buildAddressText(BuildContext context, Map<String, dynamic> address) {
     final isAr = Localizations.localeOf(context).languageCode == 'ar';
     final parts = <String>[];
-    final city = address['city'] as Map<String, dynamic>?;
-    final governorate = address['governorate'] as Map<String, dynamic>?;
 
-    if (city != null) {
-      parts.add(isAr
-          ? (city['name_ar']?.toString() ?? city['name']?.toString() ?? '')
-          : (city['name']?.toString() ?? city['name_ar']?.toString() ?? ''));
+    String? extractName(dynamic value) {
+      if (value == null) return null;
+      if (value is String) return value;
+      if (value is Map) {
+        return (isAr
+                ? (value['name_ar']?.toString() ?? value['name']?.toString())
+                : (value['name']?.toString() ?? value['name_ar']?.toString()))
+            ?.trim();
+      }
+      return null;
     }
-    if (governorate != null) {
-      parts.add(isAr
-          ? (governorate['name_ar']?.toString() ?? governorate['name']?.toString() ?? '')
-          : (governorate['name']?.toString() ?? governorate['name_ar']?.toString() ?? ''));
+
+    final city = extractName(address['city']);
+    final governorate = extractName(address['governorate']);
+
+    if (city != null && city.isNotEmpty) {
+      parts.add(city);
+    }
+    if (governorate != null && governorate.isNotEmpty) {
+      parts.add(governorate);
     }
     final details = address['address_details']?.toString();
     if (details != null && details.isNotEmpty) {

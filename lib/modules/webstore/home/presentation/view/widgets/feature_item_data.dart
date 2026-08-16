@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 enum FeatureType {
   exclusiveOffers,
-  bestSellers,
   shopNow,
   ourBranches,
 }
@@ -27,8 +26,6 @@ class FeatureItemData {
     return switch (type) {
       FeatureType.exclusiveOffers =>
         keys.exclusive_offers.tr(context: context),
-      FeatureType.bestSellers =>
-        keys.most_ordered.tr(context: context),
       FeatureType.shopNow => keys.shop_now.tr(context: context),
       FeatureType.ourBranches => keys.our_branches.tr(context: context),
     };
@@ -40,11 +37,6 @@ class FeatureItemData {
       type: FeatureType.exclusiveOffers,
       icon: '🎁',
       iconPath: AssetManager.specialTag,
-    ),
-    FeatureItemData(
-      type: FeatureType.bestSellers,
-      icon: '🔥',
-      iconPath: AssetManager.bestSeller,
     ),
     FeatureItemData(
       type: FeatureType.shopNow,

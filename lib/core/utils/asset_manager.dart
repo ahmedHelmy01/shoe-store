@@ -46,4 +46,6 @@ class AssetManager {
   static String get visa => "${_webstoreImages}visa.png";
   static String get instapay => "${_webstoreImages}instapay.png";
   static String get vodafoneCash => "${_webstoreImages}vodafoneCash.png";
+  static String get tabby => "${_webstoreImages}tabby.png";
+  static String get tamara => "${_webstoreImages}tamara.png";
 }

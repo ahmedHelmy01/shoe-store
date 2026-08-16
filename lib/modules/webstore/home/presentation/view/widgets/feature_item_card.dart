@@ -22,52 +22,58 @@ class FeatureItemCard extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(15.r),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 72.w,
-            height: 72.w,
-            decoration: BoxDecoration(
-              color: isDark ? theme.cardColor : Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: isDark
-                      ? Colors.black.withValues(alpha: 0.2)
-                      : Colors.black.withValues(alpha: 0.06),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Center(
-              child: feature.iconPath != null
-                  ? AppImage(
-                      imagePath: feature.iconPath!,
-                      width: 48.w,
-                      height: 48.w,
-                      fit: BoxFit.contain,
-                    )
-                  : Text(
-                      feature.icon,
-                      style: TextStyle(fontSize: 32.sp),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 72.w,
+                height: 72.w,
+                decoration: BoxDecoration(
+                  color: isDark ? theme.cardColor : Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: isDark
+                          ? Colors.black.withValues(alpha: 0.2)
+                          : Colors.black.withValues(alpha: 0.06),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
                     ),
-            ),
+                  ],
+                ),
+                child: Center(
+                  child: feature.iconPath != null
+                      ? AppImage(
+                          imagePath: feature.iconPath!,
+                          width: 48.w,
+                          height: 48.w,
+                          fit: BoxFit.contain,
+                        )
+                      : Text(
+                          feature.icon,
+                          style: TextStyle(fontSize: 32.sp),
+                        ),
+                ),
+              ),
+              8.verticalSpace,
+              Text(
+                feature.title(context),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w700,
+                  color: theme.textTheme.bodyMedium?.color,
+                ),
+              ),
+            ],
           ),
-          8.verticalSpace,
-          Text(
-            feature.title(context),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 13.sp,
-              fontWeight: FontWeight.w700,
-              color: theme.textTheme.bodyMedium?.color,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

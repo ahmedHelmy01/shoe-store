@@ -21,9 +21,9 @@ class FeatureLinksWidget extends ConsumerWidget {
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
-          mainAxisSpacing: 4.h,
+          mainAxisSpacing: 0,
           crossAxisSpacing: 0.w,
-          childAspectRatio: 0.92,
+          childAspectRatio: 1.25,
         ),
         itemCount: features.length,
         itemBuilder: (context, index) {
@@ -45,11 +45,9 @@ class FeatureLinksWidget extends ConsumerWidget {
         );
         break;
       case FeatureType.exclusiveOffers:
-      case FeatureType.bestSellers:
       case FeatureType.shopNow:
         final preset = switch (feature.type) {
           FeatureType.exclusiveOffers => 'exclusive',
-          FeatureType.bestSellers => 'best_seller',
           _ => 'shop_now',
         };
         AppNavigator.push(

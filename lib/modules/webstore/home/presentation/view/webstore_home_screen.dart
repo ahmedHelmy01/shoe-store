@@ -144,6 +144,7 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
                       children: [
                         AppSectionHeader(
                           title: LocaleKeys.webstore.home.quick_links.tr(context: context),
+                          padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
                         ),
                         isLoading
                             ? AppShimmer.featureLinksGrid()

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:erp/core/constants/app_constants.dart';
-import 'package:erp/core/common_widget/app_image/app_image.dart';
-import 'package:erp/core/utils/asset_manager.dart';
 import 'package:erp/core/common_widget/app_bottom_sheet/branch_selection_sheet.dart';
 import 'package:erp/modules/webstore/home/presentation/view_model/home_view_models.dart';
 import 'package:erp/modules/webstore/home/presentation/view/widgets/search_result_widget.dart';
@@ -110,15 +108,6 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
             ],
           ),
           10.verticalSpace,
-          // Tarshooby Logo
-          Center(
-            child: AppImage(
-              imagePath: AssetManager.logoElTarshopy2,
-              height: 100.h,
-              fit: BoxFit.contain,
-            ),
-          ),
-
           // Search Showcase Card
           Container(
             margin: EdgeInsets.only(top: 6.h),
