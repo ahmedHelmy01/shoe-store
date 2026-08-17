@@ -84,7 +84,7 @@ class _ContactUsViewState extends ConsumerState<ContactUsView> {
                 height: 300.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primaryOrange.withValues(alpha: 0.05),
+                  color: AppColors.primaryWine.withValues(alpha: 0.05),
                 ),
               ),
             ),
@@ -155,7 +155,7 @@ class _ContactUsViewState extends ConsumerState<ContactUsView> {
               child: ElevatedButton(
                 onPressed: state.status == ContactUsStatus.loading ? null : _submit,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryOrange,
+                  backgroundColor: AppColors.primaryWine,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
                   elevation: 0,
@@ -203,7 +203,7 @@ class _ContactUsViewState extends ConsumerState<ContactUsView> {
       style: TextStyle(color: theme.textTheme.bodyLarge?.color),
       validator: (v) => v == null || v.isEmpty ? LocaleKeys.common.field_required.tr(context: context) : null,
       decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: AppColors.primaryOrange.withValues(alpha: 0.7), size: 20),
+        prefixIcon: Icon(icon, color: AppColors.primaryWine.withValues(alpha: 0.7), size: 20),
         filled: true,
         fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white,
         enabledBorder: OutlineInputBorder(
@@ -214,7 +214,7 @@ class _ContactUsViewState extends ConsumerState<ContactUsView> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.r),
-          borderSide: const BorderSide(color: AppColors.primaryOrange),
+          borderSide: const BorderSide(color: AppColors.primaryWine),
         ),
       ),
     );
@@ -273,7 +273,7 @@ class _ContactUsViewState extends ConsumerState<ContactUsView> {
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryOrange,
+                        backgroundColor: AppColors.primaryWine,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
                       ),

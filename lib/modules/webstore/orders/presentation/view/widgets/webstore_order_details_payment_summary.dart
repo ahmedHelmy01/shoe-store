@@ -108,7 +108,7 @@ class WebStoreOrderDetailsPaymentSummary extends StatelessWidget {
                     ),
                     Text(
                       '$total ${AppConstants.currency}',
-                      style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w900, color: AppColors.primaryOrange),
+                      style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w900, color: AppColors.primaryWine),
                     ),
                   ],
                 ),

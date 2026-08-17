@@ -94,7 +94,7 @@ class _OfferSlot1HeroWidgetState extends ConsumerState<OfferSlot1HeroWidget> {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryOrange.withValues(alpha: 0.25),
+                  color: AppColors.primaryWine.withValues(alpha: 0.25),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),
@@ -234,7 +234,7 @@ class _OfferSlot1HeroWidgetState extends ConsumerState<OfferSlot1HeroWidget> {
         color: Colors.black.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
-          color: AppColors.primaryOrange.withValues(alpha: 0.5),
+          color: AppColors.primaryWine.withValues(alpha: 0.5),
           width: 1,
         ),
       ),
@@ -242,7 +242,7 @@ class _OfferSlot1HeroWidgetState extends ConsumerState<OfferSlot1HeroWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.timer_outlined,
-              color: AppColors.primaryOrange, size: 14.sp),
+              color: AppColors.primaryWine, size: 14.sp),
           6.horizontalSpace,
           _timerChip(hours),
           _timerColon(),
@@ -276,7 +276,7 @@ class _OfferSlot1HeroWidgetState extends ConsumerState<OfferSlot1HeroWidget> {
         child: Text(
           ':',
           style: TextStyle(
-            color: AppColors.primaryOrange,
+            color: AppColors.primaryWine,
             fontWeight: FontWeight.bold,
             fontSize: 12.sp,
           ),

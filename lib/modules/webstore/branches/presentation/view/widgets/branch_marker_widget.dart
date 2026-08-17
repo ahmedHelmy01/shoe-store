@@ -18,12 +18,12 @@ class BranchMarkerWidget extends StatelessWidget {
           height: isSelected ? 34.w : 30.w,
           decoration: BoxDecoration(
             color: isSelected
-                ? AppColors.primaryOrange
+                ? AppColors.primaryWine
                 : const Color(0xFFFF8A3D),
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: AppColors.primaryOrange.withValues(alpha: 0.35),
+                color: AppColors.primaryWine.withValues(alpha: 0.35),
                 blurRadius: 8,
                 offset: const Offset(0, 3),
               ),
@@ -37,7 +37,7 @@ class BranchMarkerWidget extends StatelessWidget {
         ),
         const Icon(
           Icons.arrow_drop_down,
-          color: AppColors.primaryOrange,
+          color: AppColors.primaryWine,
           size: 24,
         ),
       ],

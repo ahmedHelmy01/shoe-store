@@ -22,12 +22,12 @@ class DistancePill extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark
             ? Colors.white.withValues(alpha: 0.08)
-            : AppColors.primaryOrange.withValues(alpha: 0.10),
+            : AppColors.primaryWine.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(999),
         border: Border.all(
           color: isDark
               ? Colors.white.withValues(alpha: 0.10)
-              : AppColors.primaryOrange.withValues(alpha: 0.18),
+              : AppColors.primaryWine.withValues(alpha: 0.18),
         ),
       ),
       child: Text(
@@ -35,7 +35,7 @@ class DistancePill extends StatelessWidget {
         style: TextStyle(
           fontSize: dense ? 11.sp : 12.sp,
           fontWeight: FontWeight.w900,
-          color: isDark ? Colors.white : AppColors.primaryOrange,
+          color: isDark ? Colors.white : AppColors.primaryWine,
         ),
       ),
     );

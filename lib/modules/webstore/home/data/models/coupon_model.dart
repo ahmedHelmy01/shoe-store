@@ -96,7 +96,7 @@ class StoreCouponModel {
 
   String get description {
     if (discountType == 'fixed') {
-      return 'خصم بقيمة ${discountValue.toStringAsFixed(0)} ج.م';
+      return 'خصم بقيمة ${discountValue.toStringAsFixed(0)} د.أ';
     } else {
       return 'خصم بقيمة ${discountValue.toStringAsFixed(0)}%';
     }

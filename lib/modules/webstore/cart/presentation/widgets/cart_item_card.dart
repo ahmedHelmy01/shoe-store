@@ -185,7 +185,7 @@ class CartItemCard extends ConsumerWidget {
         width: 38.w,
         height: 38.w,
         decoration: BoxDecoration(
-          color: AppColors.primaryOrange,
+          color: AppColors.primaryWine,
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Icon(icon, size: 20.sp, color: Colors.white),

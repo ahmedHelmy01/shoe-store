@@ -239,7 +239,7 @@ class _WebStoreRegisterScreenState extends ConsumerState<WebStoreRegisterScreen>
             ),
             child: Row(
               children: [
-                Icon(Icons.storefront_rounded, size: 20, color: AppColors.primaryOrange.withOpacity(0.8)),
+                Icon(Icons.storefront_rounded, size: 20, color: AppColors.primaryWine.withOpacity(0.8)),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(

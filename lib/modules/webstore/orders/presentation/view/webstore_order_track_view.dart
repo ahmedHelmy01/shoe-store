@@ -106,8 +106,8 @@ class WebStoreOrderTrackView extends ConsumerWidget {
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
                                 colors: [
-                                  AppColors.primaryOrange,
-                                  AppColors.orange,
+                                  AppColors.primaryWine,
+                                  AppColors.wine,
                                 ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
@@ -115,7 +115,7 @@ class WebStoreOrderTrackView extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(20.r),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                                  color: AppColors.primaryWine.withValues(alpha: 0.3),
                                   blurRadius: 15,
                                   offset: const Offset(0, 8),
                                 ),
@@ -355,7 +355,7 @@ class WebStoreOrderTrackView extends ConsumerWidget {
                             Icon(
                               Icons.home_outlined,
                               size: 20.sp,
-                              color: AppColors.primaryOrange,
+                              color: AppColors.primaryWine,
                             ),
                             8.horizontalSpace,
                             Text(
@@ -365,7 +365,7 @@ class WebStoreOrderTrackView extends ConsumerWidget {
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.primaryOrange,
+                                color: AppColors.primaryWine,
                               ),
                             ),
                           ],

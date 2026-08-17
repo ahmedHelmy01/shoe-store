@@ -56,10 +56,46 @@ class OrdersRepository extends BaseRepository implements IOrdersRepository {
   Future<ApiResult<dynamic>> trackOrder(int id) =>
       safeApiCall<dynamic>(() async {
         await Future.delayed(const Duration(milliseconds: 300));
+        final now = DateTime.now();
+        String iso(DateTime d) => d.toIso8601String();
         return {
-          'status': 'shipped',
-          'status_label': 'قيد الشحن',
-          'estimated_delivery': '2026-08-20',
+          'data': {
+            'status': 'shipped',
+            'status_label': 'قيد الشحن',
+            'estimated_delivery': '2026-08-20',
+            'tracking': [
+              {
+                'status': 'تم تأكيد الطلب',
+                'notes': 'تم استلام طلبك بنجاح من المتجر',
+                'date': iso(now.subtract(const Duration(hours: 26))),
+                'color': '#5C1629',
+              },
+              {
+                'status': 'جاري تجهيز الطلب',
+                'notes': 'يتم تجهيز منتجاتك في الفرع',
+                'date': iso(now.subtract(const Duration(hours: 20))),
+                'color': '#7B1E3B',
+              },
+              {
+                'status': 'تم الشحن',
+                'notes': 'تم تسليم الطلب لشركة التوصيل',
+                'date': iso(now.subtract(const Duration(hours: 8))),
+                'color': '#9C3353',
+              },
+              {
+                'status': 'قيد التوصيل',
+                'notes': 'سائق التوصيل في الطريق إليك',
+                'date': iso(now.subtract(const Duration(minutes: 30))),
+                'color': '#B04A6C',
+              },
+              {
+                'status': 'التسليم المتوقع',
+                'notes': 'من المتوقع وصول طلبك اليوم',
+                'date': iso(now.add(const Duration(hours: 4))),
+                'color': '#7B1E3B',
+              },
+            ],
+          },
         };
       });
 

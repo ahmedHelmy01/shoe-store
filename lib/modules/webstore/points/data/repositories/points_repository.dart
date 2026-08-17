@@ -37,10 +37,12 @@ class PointsRepository extends BaseRepository implements IPointsRepository {
   Future<ApiResult<Map<String, dynamic>>> previewLoyalty(int points) {
     return safeApiCall<Map<String, dynamic>>(() async {
       await Future.delayed(const Duration(milliseconds: 300));
+      final discount = points * 0.1;
       return {
         'points': points,
-        'value': points * 0.1,
-        'message': 'يمكنك استبدال $points نقطة بقيمة ${points * 0.1} ج.م',
+        'discount': discount,
+        'value': discount,
+        'message': 'يمكنك استبدال $points نقطة بقيمة $discount د.أ',
       };
     });
   }

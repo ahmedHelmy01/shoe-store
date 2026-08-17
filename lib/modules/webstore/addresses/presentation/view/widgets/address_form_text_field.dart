@@ -39,9 +39,9 @@ class AddressFormTextField extends StatelessWidget {
         maxLines: maxLines,
         validator: validator,
         borderRadius: AddressFormConstants.fieldRadius,
-        prefixIcon: Icon(icon, color: AppColors.primaryOrange, size: 20.sp),
+        prefixIcon: Icon(icon, color: AppColors.primaryWine, size: 20.sp),
         prefixIconPadding: EdgeInsets.all(14.w),
-        shadowColor: AppColors.primaryOrange,
+        shadowColor: AppColors.primaryWine,
       ),
     );
   }

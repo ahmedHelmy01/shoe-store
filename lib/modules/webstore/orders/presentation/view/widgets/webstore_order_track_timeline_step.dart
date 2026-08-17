@@ -25,7 +25,7 @@ class WebStoreOrderTrackTimelineStepWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = indicatorColor ?? AppColors.primaryOrange;
+    final color = indicatorColor ?? AppColors.primaryWine;
 
     return IntrinsicHeight(
       child: Row(

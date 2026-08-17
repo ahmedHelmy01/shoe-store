@@ -49,10 +49,10 @@ class AddressFormSection extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryOrange.withValues(alpha: 0.12),
+                  color: AppColors.primaryWine.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: AppColors.primaryOrange, size: 20.sp),
+                child: Icon(icon, color: AppColors.primaryWine, size: 20.sp),
               ),
               12.horizontalSpace,
               Text(

@@ -109,12 +109,12 @@ class _SideCategoryListState extends ConsumerState<SideCategoryList> {
                   decoration: BoxDecoration(
                     color: isParentActive
                         ? (isDark
-                            ? AppColors.primaryOrange.withValues(alpha: 0.1)
+                            ? AppColors.primaryWine.withValues(alpha: 0.1)
                             : Colors.white)
                         : Colors.transparent,
                     border: BorderDirectional(
                       start: BorderSide(
-                        color: isParentActive ? AppColors.primaryOrange : Colors.transparent,
+                        color: isParentActive ? AppColors.primaryWine : Colors.transparent,
                         width: 3,
                       ),
                     ),
@@ -127,7 +127,7 @@ class _SideCategoryListState extends ConsumerState<SideCategoryList> {
                         padding: EdgeInsets.all(8.w),
                         decoration: BoxDecoration(
                           color: isParentActive
-                              ? AppColors.primaryOrange.withValues(alpha: 0.1)
+                              ? AppColors.primaryWine.withValues(alpha: 0.1)
                               : Colors.transparent,
                           shape: BoxShape.circle,
                         ),
@@ -148,7 +148,7 @@ class _SideCategoryListState extends ConsumerState<SideCategoryList> {
                           fontWeight:
                               isParentActive ? FontWeight.bold : FontWeight.w500,
                           color: isParentActive
-                              ? AppColors.primaryOrange
+                              ? AppColors.primaryWine
                               : theme.hintColor,
                         ),
                       ),
@@ -163,7 +163,7 @@ class _SideCategoryListState extends ConsumerState<SideCategoryList> {
                   padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                   decoration: BoxDecoration(
                     color: isParentActive
-                        ? AppColors.primaryOrange.withValues(alpha: 0.15)
+                        ? AppColors.primaryWine.withValues(alpha: 0.15)
                         : Colors.grey.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8.r),
                   ),
@@ -172,7 +172,7 @@ class _SideCategoryListState extends ConsumerState<SideCategoryList> {
                     style: TextStyle(
                       fontSize: 8.sp,
                       color: isParentActive
-                          ? AppColors.primaryOrange
+                          ? AppColors.primaryWine
                           : theme.hintColor,
                     ),
                   ),

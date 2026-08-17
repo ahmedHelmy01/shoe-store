@@ -60,7 +60,7 @@ class WebStoreNotificationsView extends StatelessWidget {
             child: Text(
               'تحديد الكل كمقروء',
               style: TextStyle(
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryWine,
                 fontSize: 12.sp,
                 fontWeight: FontWeight.bold,
               ),
@@ -96,13 +96,13 @@ class WebStoreNotificationsView extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(24.w),
             decoration: BoxDecoration(
-              color: AppColors.primaryOrange.withValues(alpha: 0.1),
+              color: AppColors.primaryWine.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.notifications_off_outlined,
               size: 64.sp,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryWine,
             ),
           ),
           24.verticalSpace,
@@ -153,7 +153,7 @@ class _NotificationCard extends StatelessWidget {
         break;
       case 'discount':
         iconData = Icons.local_offer_outlined;
-        iconColor = Colors.orange;
+        iconColor = AppColors.primaryWine;
         break;
       case 'points':
         iconData = Icons.stars_rounded;
@@ -161,7 +161,7 @@ class _NotificationCard extends StatelessWidget {
         break;
       default:
         iconData = Icons.info_outline_rounded;
-        iconColor = AppColors.primaryOrange;
+        iconColor = AppColors.primaryWine;
     }
 
     return Container(
@@ -174,7 +174,7 @@ class _NotificationCard extends StatelessWidget {
         border: Border.all(
           color: isRead 
             ? Colors.transparent 
-            : AppColors.primaryOrange.withValues(alpha: 0.2),
+            : AppColors.primaryWine.withValues(alpha: 0.2),
           width: 1,
         ),
         boxShadow: isRead ? [] : [
@@ -224,7 +224,7 @@ class _NotificationCard extends StatelessWidget {
                             width: 8.w,
                             height: 8.w,
                             decoration: const BoxDecoration(
-                              color: AppColors.primaryOrange,
+                              color: AppColors.primaryWine,
                               shape: BoxShape.circle,
                             ),
                           ),

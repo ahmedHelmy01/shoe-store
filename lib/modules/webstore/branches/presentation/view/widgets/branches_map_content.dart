@@ -130,14 +130,14 @@ class BranchesMapContent extends StatelessWidget {
                       child: const CircularProgressIndicator(
                         strokeWidth: 2.4,
                         valueColor: AlwaysStoppedAnimation(
-                          AppColors.primaryOrange,
+                          AppColors.primaryWine,
                         ),
                       ),
                     )
                   : const Icon(
                       Icons.near_me_rounded,
                       key: ValueKey('icon'),
-                      color: AppColors.primaryOrange,
+                      color: AppColors.primaryWine,
                     ),
             ),
           ),
@@ -225,7 +225,7 @@ class BranchesMapContent extends StatelessWidget {
         Polyline(
           points: [start, end],
           strokeWidth: stroke,
-          color: AppColors.primaryOrange,
+          color: AppColors.primaryWine,
         ),
       );
       traveled += dashMeters + gapMeters;

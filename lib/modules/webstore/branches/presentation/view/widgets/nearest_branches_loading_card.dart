@@ -22,7 +22,7 @@ class NearestBranchesLoadingCard extends StatelessWidget {
               height: 18.w,
               child: const CircularProgressIndicator(
                 strokeWidth: 2.4,
-                valueColor: AlwaysStoppedAnimation(AppColors.primaryOrange),
+                valueColor: AlwaysStoppedAnimation(AppColors.primaryWine),
               ),
             ),
             10.horizontalSpace,

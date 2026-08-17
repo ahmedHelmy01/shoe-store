@@ -151,7 +151,7 @@ class ProductGridCard extends ConsumerWidget {
                               height: 28.h,
                               width: 28.h,
                               decoration: const BoxDecoration(
-                                color: AppColors.primaryOrange,
+                                color: AppColors.primaryWine,
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(Icons.add_shopping_cart,
@@ -195,7 +195,7 @@ class ProductGridCard extends ConsumerWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryWine,
                   borderRadius: BorderRadius.circular(4.r),
                 ),
                 child: Text(

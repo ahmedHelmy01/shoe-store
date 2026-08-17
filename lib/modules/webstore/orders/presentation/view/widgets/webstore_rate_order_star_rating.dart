@@ -47,7 +47,7 @@ class WebStoreRateOrderStarRatingWidget extends StatelessWidget {
                 : (rating == 0
                     ? LocaleKeys.webstore.orders.tap_to_rate.tr(context: context)
                     : LocaleKeys.webstore.orders.could_be_better.tr(context: context)),
-            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: AppColors.primaryOrange),
+            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: AppColors.primaryWine),
           ),
         ],
       ),

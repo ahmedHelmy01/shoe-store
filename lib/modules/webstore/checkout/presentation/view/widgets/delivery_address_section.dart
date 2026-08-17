@@ -43,14 +43,14 @@ class DeliveryAddressSection extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryOrange.withValues(
+                  color: AppColors.primaryWine.withValues(
                     alpha: 0.1,
                   ),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.location_on_rounded,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryWine,
                   size: 24.sp,
                 ),
               ),
@@ -83,7 +83,7 @@ class DeliveryAddressSection extends StatelessWidget {
               ),
               Icon(
                 Icons.check_circle_rounded,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryWine,
                 size: 22.sp,
               ),
             ],
@@ -111,7 +111,7 @@ class DeliveryAddressSection extends StatelessWidget {
             child: Text(
               LocaleKeys.common.edit.tr(context: context),
               style: const TextStyle(
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryWine,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -197,7 +197,7 @@ class DeliveryAddressSection extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12.r),
                           side: BorderSide(
                             color: isSelected
-                                ? AppColors.primaryOrange
+                                ? AppColors.primaryWine
                                 : Colors.transparent,
                             width: 2,
                           ),
@@ -209,7 +209,7 @@ class DeliveryAddressSection extends StatelessWidget {
                           },
                           leading: Icon(
                             Icons.location_on_outlined,
-                            color: isSelected ? AppColors.primaryOrange : null,
+                            color: isSelected ? AppColors.primaryWine : null,
                           ),
                           title: Text(
                             addr.localizedDisplayTitle(context),
@@ -219,7 +219,7 @@ class DeliveryAddressSection extends StatelessWidget {
                           trailing: isSelected
                               ? const Icon(
                                   Icons.check_circle,
-                                  color: AppColors.primaryOrange,
+                                  color: AppColors.primaryWine,
                                 )
                               : null,
                         ),
@@ -236,7 +236,7 @@ class DeliveryAddressSection extends StatelessWidget {
                   },
                   leading: const Icon(
                     Icons.settings_suggest_rounded,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryWine,
                   ),
                   title: Text(LocaleKeys.webstore.checkout.manage_registered_addresses.tr(context: context)),
                   trailing:

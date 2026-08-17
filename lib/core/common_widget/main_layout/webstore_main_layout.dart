@@ -179,7 +179,7 @@ class _WebStoreMainLayoutState extends ConsumerState<WebStoreMainLayout> {
                           duration: const Duration(milliseconds: 250),
                           child: Badge(
                             isLabelVisible: index == 2 && cartCount > 0,
-                            backgroundColor: AppColors.primaryOrange,
+                            backgroundColor: AppColors.primaryWine,
                             textColor: Colors.white,
                             label: Text(
                               cartCount > 99 ? '99+' : '$cartCount',

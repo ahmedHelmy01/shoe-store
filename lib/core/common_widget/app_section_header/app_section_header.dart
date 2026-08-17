@@ -65,14 +65,14 @@ class AppSectionHeader extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.primaryOrange,
+                      color: AppColors.primaryWine,
                     ),
                   ),
                   4.horizontalSpace,
                   Icon(
                     Icons.arrow_forward_ios,
                     size: 12.sp,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryWine,
                   ),
                 ],
               ),

@@ -37,7 +37,7 @@ class _OnBoardingState extends ConsumerState<OnBoarding>
     [const Color(0xFF0D1B2A), const Color(0xFF1E3E62)],
     [const Color(0xFF1A2A6C), const Color(0xFF112240)],
     [const Color(0xFF2E7D32), const Color(0xFF4CAF50)],
-    [AppColors.primaryBlue, AppColors.primaryOrange],
+    [AppColors.primaryBlue, AppColors.primaryWine],
   ];
 
   @override

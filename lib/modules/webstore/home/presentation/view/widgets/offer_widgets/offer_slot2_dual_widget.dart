@@ -86,7 +86,7 @@ Widget buildDualCard({
         border: Border.all(
           color: isDark
               ? Colors.white.withValues(alpha: 0.12)
-              : AppColors.primaryOrange.withValues(alpha: 0.2),
+              : AppColors.primaryWine.withValues(alpha: 0.2),
           width: 1.5,
         ),
         boxShadow: [
@@ -122,7 +122,7 @@ Widget buildDualCard({
                           child: Icon(
                             Icons.local_offer_outlined,
                             size: 40.sp,
-                            color: AppColors.primaryOrange
+                            color: AppColors.primaryWine
                                 .withValues(alpha: 0.4),
                           ),
                         ),
@@ -190,13 +190,13 @@ Widget buildDualCard({
                           style: TextStyle(
                             fontSize: 11.sp,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.primaryOrange,
+                            color: AppColors.primaryWine,
                           ),
                         ),
                         Icon(
                           Icons.arrow_forward_ios_rounded,
                           size: 11.sp,
-                          color: AppColors.primaryOrange,
+                          color: AppColors.primaryWine,
                         ),
                       ],
                     ),

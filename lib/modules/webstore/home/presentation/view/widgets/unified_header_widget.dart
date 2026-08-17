@@ -71,7 +71,7 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
                   children: [
                     const Icon(
                       Icons.location_on_rounded,
-                      color: AppColors.primaryOrange,
+                      color: AppColors.primaryWine,
                       size: 20,
                     ),
                     6.horizontalSpace,
@@ -139,7 +139,7 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
                       child: _buildDecorCircle(
                         size: 36.w,
                         icon: Icons.shopping_bag_rounded,
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryWine,
                         opacity: 0.12,
                       ),
                     ),
@@ -195,14 +195,14 @@ class _UnifiedHomeHeaderState extends ConsumerState<UnifiedHomeHeader> {
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                     colors: [
-                                      AppColors.primaryOrange,
-                                      AppColors.primaryOrange.withValues(alpha: 0.8),
+                                      AppColors.primaryWine,
+                                      AppColors.primaryWine.withValues(alpha: 0.8),
                                     ],
                                   ),
                                   borderRadius: BorderRadius.circular(10.r),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                                      color: AppColors.primaryWine.withValues(alpha: 0.3),
                                       blurRadius: 8,
                                       offset: const Offset(0, 4),
                                     ),

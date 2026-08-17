@@ -98,7 +98,7 @@ class CompanyProduceWidget extends ConsumerWidget {
             border: Border.all(
               color: isDark
                   ? Colors.white.withValues(alpha: 0.1)
-                  : AppColors.primaryOrange.withValues(alpha: 0.15),
+                  : AppColors.primaryWine.withValues(alpha: 0.15),
               width: 1.2,
             ),
             boxShadow: [
@@ -139,7 +139,7 @@ class CompanyProduceWidget extends ConsumerWidget {
                           child: Text(
                             name.isNotEmpty ? name[0].toUpperCase() : 'B',
                             style: TextStyle(
-                              color: AppColors.primaryOrange,
+                              color: AppColors.primaryWine,
                               fontWeight: FontWeight.w900,
                               fontSize: 24.sp,
                               fontFamily: 'store',
@@ -190,12 +190,12 @@ class CompanyProduceWidget extends ConsumerWidget {
                 padding: EdgeInsets.all(7.w),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primaryOrange.withValues(alpha: 0.08),
+                  color: AppColors.primaryWine.withValues(alpha: 0.08),
                 ),
                 child: Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 13.sp,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryWine,
                 ),
               ),
             ],

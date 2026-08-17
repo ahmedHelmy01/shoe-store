@@ -22,10 +22,10 @@ class UserLoyaltyWidget extends ConsumerWidget {
     return AppCard(
       margin: EdgeInsets.symmetric(horizontal: 16.w),
       padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-      backgroundColor: isDark ? theme.cardColor : AppColors.lightOrange,
+      backgroundColor: isDark ? theme.cardColor : AppColors.lightWine,
       borderRadius: 16.r,
       border: Border.all(
-        color: isDark ? Colors.white.withValues(alpha: 0.1) : AppColors.primaryOrange.withValues(alpha: 0.2),
+        color: isDark ? Colors.white.withValues(alpha: 0.1) : AppColors.primaryWine.withValues(alpha: 0.2),
       ),
       child: Row(
         children: [
@@ -72,7 +72,7 @@ class UserLoyaltyWidget extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 16.sp, color: AppColors.primaryOrange),
+            Icon(icon, size: 16.sp, color: AppColors.primaryWine),
             4.horizontalSpace,
             Flexible(
               child: Text(
@@ -81,7 +81,7 @@ class UserLoyaltyWidget extends ConsumerWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 11.sp,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryWine,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -104,7 +104,7 @@ class UserLoyaltyWidget extends ConsumerWidget {
     return Container(
       height: 24.h,
       width: 1.w,
-      color: isDark ? Colors.white.withValues(alpha: 0.1) : AppColors.primaryOrange.withValues(alpha: 0.1),
+      color: isDark ? Colors.white.withValues(alpha: 0.1) : AppColors.primaryWine.withValues(alpha: 0.1),
     );
   }
 }

@@ -105,7 +105,7 @@ class ProductListTile extends ConsumerWidget {
                           padding: EdgeInsets.symmetric(
                               horizontal: 4.w, vertical: 1.h),
                           decoration: BoxDecoration(
-                            color: AppColors.primaryOrange,
+                            color: AppColors.primaryWine,
                             borderRadius: BorderRadius.circular(3.r),
                           ),
                           child: Text(
@@ -172,7 +172,7 @@ class ProductListTile extends ConsumerWidget {
                       }
                     },
                     icon: const Icon(Icons.add_shopping_cart,
-                        color: AppColors.primaryOrange, size: 16),
+                        color: AppColors.primaryWine, size: 16),
                   ),
                 ),
               ],

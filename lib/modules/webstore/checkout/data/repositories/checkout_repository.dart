@@ -31,11 +31,35 @@ class CheckoutRepository extends BaseRepository implements ICheckoutRepository {
         await Future.delayed(const Duration(milliseconds: 300));
         final subtotal = MockData.mockCart.subtotal;
         const shipping = 50.0;
+
+        final pts = (data['points_to_redeem'] as num?)?.toInt() ?? 0;
+        final pointsDiscount = pts * 0.1;
+
+        final couponCode = data['coupon_code']?.toString();
+        double couponDiscount = 0;
+        if (couponCode != null && couponCode.isNotEmpty) {
+          final coupon = MockData.mockCoupons.firstWhere(
+            (c) => c.code == couponCode,
+            orElse: () => MockData.mockCoupons.first,
+          );
+          if (coupon.discountType == 'percentage') {
+            couponDiscount = subtotal * coupon.discountValue / 100;
+          } else {
+            couponDiscount = coupon.discountValue.toDouble();
+          }
+        }
+
+        final total = (subtotal + shipping - pointsDiscount - couponDiscount)
+            .clamp(0.0, double.infinity)
+            .toDouble();
+
         return {
           'subtotal': subtotal,
           'shipping': shipping,
-          'discount': 0,
-          'total': subtotal + shipping,
+          'discount': couponDiscount,
+          'points_discount': pointsDiscount,
+          'points_used': pts,
+          'total': total,
         };
       });
 
@@ -45,7 +69,9 @@ class CheckoutRepository extends BaseRepository implements ICheckoutRepository {
         await Future.delayed(const Duration(milliseconds: 500));
         return {
           'message': 'تم تأكيد الطلب بنجاح',
+          'id': 1004,
           'order_id': 1004,
+          'order_number': '#1004',
         };
       });
 

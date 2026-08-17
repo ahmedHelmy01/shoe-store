@@ -77,12 +77,12 @@ class _PhoneInputSheetState extends State<PhoneInputSheet> {
                 Container(
                   padding: EdgeInsets.all(10.w),
                   decoration: BoxDecoration(
-                    color: AppColors.primaryOrange.withOpacity(0.1),
+                    color: AppColors.primaryWine.withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.phone_iphone_rounded,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryWine,
                     size: 26.sp,
                   ),
                 ),

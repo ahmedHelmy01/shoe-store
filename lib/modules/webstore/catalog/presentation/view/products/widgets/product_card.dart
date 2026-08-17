@@ -189,7 +189,7 @@ class ProductCard extends ConsumerWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: AppColors.primaryOrange,
+                              color: AppColors.primaryWine,
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
@@ -208,7 +208,7 @@ class ProductCard extends ConsumerWidget {
                             ),
                             style: IconButton.styleFrom(
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              backgroundColor: AppColors.primaryOrange,
+                              backgroundColor: AppColors.primaryWine,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),

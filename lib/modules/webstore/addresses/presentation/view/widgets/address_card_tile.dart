@@ -27,7 +27,7 @@ class AddressCardTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final keys = LocaleKeys.webstore.addresses;
     final theme = Theme.of(context);
-    final primaryColor = address.isDefault ? AppColors.primaryOrange : theme.primaryColor;
+    final primaryColor = address.isDefault ? AppColors.primaryWine : theme.primaryColor;
     
     // الألوان الهادئة جداً للدوائر (calm and soothing colors)
     final circleColor1 = isDark ? Colors.white.withOpacity(0.02) : primaryColor.withOpacity(0.03);
@@ -256,14 +256,14 @@ class AddressCardTile extends StatelessWidget {
                       
                       Container(
                         decoration: BoxDecoration(
-                          color: isDark ? Colors.white.withOpacity(0.05) : AppColors.primaryOrange.withOpacity(0.05),
+                          color: isDark ? Colors.white.withOpacity(0.05) : AppColors.primaryWine.withOpacity(0.05),
                           shape: BoxShape.circle,
                         ),
                         child: IconButton(
                           onPressed: onEdit,
                           icon: Icon(
                             Icons.edit_outlined, 
-                            color: isDark ? Colors.orangeAccent : AppColors.primaryOrange, 
+                            color: isDark ? AppColors.primaryWine : AppColors.primaryWine, 
                             size: 18.sp
                           ),
                           tooltip: LocaleKeys.common.edit.tr(context: context),

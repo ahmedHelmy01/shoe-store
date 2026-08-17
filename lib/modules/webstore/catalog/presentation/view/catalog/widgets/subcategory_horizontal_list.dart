@@ -77,19 +77,19 @@ class SubcategoryHorizontalList extends ConsumerWidget {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColors.primaryOrange
+                    ? AppColors.primaryWine
                     : (isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey[100]),
                 borderRadius: BorderRadius.circular(20.r),
                 border: Border.all(
                   color: isSelected
-                      ? AppColors.primaryOrange
+                      ? AppColors.primaryWine
                       : (isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey[200]!),
                   width: 1,
                 ),
                 boxShadow: isSelected
                     ? [
                         BoxShadow(
-                          color: AppColors.primaryOrange.withValues(alpha: 0.2),
+                          color: AppColors.primaryWine.withValues(alpha: 0.2),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         )

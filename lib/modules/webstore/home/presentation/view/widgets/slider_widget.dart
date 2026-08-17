@@ -201,7 +201,7 @@ class _SliderSectionState extends ConsumerState<SliderSection> {
       width: _currentPage == index ? 20.w : 6.w,
       decoration: BoxDecoration(
         color: _currentPage == index
-            ? AppColors.primaryOrange
+            ? AppColors.primaryWine
             : Colors.grey[300],
         borderRadius: BorderRadius.circular(3.r),
       ),

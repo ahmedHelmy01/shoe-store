@@ -55,13 +55,13 @@ class NearestBranchesPanel extends StatelessWidget {
                   width: 34.w,
                   height: 34.w,
                   decoration: BoxDecoration(
-                    color: AppColors.primaryOrange.withValues(alpha: 0.12),
+                    color: AppColors.primaryWine.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: const Icon(
                     Icons.near_me_rounded,
                     size: 18,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryWine,
                   ),
                 ),
                 10.horizontalSpace,
@@ -116,7 +116,7 @@ class NearestBranchesPanel extends StatelessWidget {
                         width: 8.w,
                         height: 8.w,
                         decoration: const BoxDecoration(
-                          color: AppColors.primaryOrange,
+                          color: AppColors.primaryWine,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -179,7 +179,7 @@ class NearestBranchesPanel extends StatelessWidget {
                               size: 18,
                               color: isDark
                                   ? Colors.white
-                                  : AppColors.primaryOrange,
+                                  : AppColors.primaryWine,
                             ),
                           ),
                         ),
@@ -193,12 +193,12 @@ class NearestBranchesPanel extends StatelessWidget {
                             width: 34.w,
                             height: 34.w,
                             decoration: BoxDecoration(
-                              color: AppColors.primaryOrange.withValues(
+                              color: AppColors.primaryWine.withValues(
                                 alpha: 0.12,
                               ),
                               borderRadius: BorderRadius.circular(12.r),
                               border: Border.all(
-                                color: AppColors.primaryOrange.withValues(
+                                color: AppColors.primaryWine.withValues(
                                   alpha: 0.18,
                                 ),
                               ),
@@ -206,7 +206,7 @@ class NearestBranchesPanel extends StatelessWidget {
                             child: const Icon(
                               Icons.directions_rounded,
                               size: 18,
-                              color: AppColors.primaryOrange,
+                              color: AppColors.primaryWine,
                             ),
                           ),
                         )

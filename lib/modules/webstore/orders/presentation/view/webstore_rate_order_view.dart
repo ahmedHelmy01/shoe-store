@@ -94,10 +94,10 @@ class _WebStoreRateOrderViewState extends ConsumerState<WebStoreRateOrderView> {
                       width: 80.w,
                       height: 80.w,
                       decoration: BoxDecoration(
-                        color: AppColors.primaryOrange.withValues(alpha: 0.1),
+                        color: AppColors.primaryWine.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(Icons.star_rounded, color: AppColors.primaryOrange, size: 48.sp),
+                      child: Icon(Icons.star_rounded, color: AppColors.primaryWine, size: 48.sp),
                     ),
                     20.verticalSpace,
                     Text(

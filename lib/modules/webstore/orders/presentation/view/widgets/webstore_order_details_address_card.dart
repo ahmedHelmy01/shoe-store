@@ -32,7 +32,7 @@ class WebStoreOrderDetailsAddressCard extends StatelessWidget {
             padding: EdgeInsets.all(16.w),
             child: Row(
               children: [
-                Icon(Icons.location_on_outlined, color: AppColors.primaryOrange, size: 20.sp),
+                Icon(Icons.location_on_outlined, color: AppColors.primaryWine, size: 20.sp),
                 12.horizontalSpace,
                 Expanded(
                   child: Column(

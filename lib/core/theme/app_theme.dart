@@ -149,7 +149,7 @@ class AppTheme {
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: Colors.white,
-        selectedItemColor: AppColors.primaryOrange,
+        selectedItemColor: AppColors.primaryWine,
         unselectedItemColor: AppColors.textHint,
         showUnselectedLabels: true,
         selectedLabelStyle: TextStyle(
@@ -306,7 +306,7 @@ class AppTheme {
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: darkBackground,
-        selectedItemColor: AppColors.primaryOrange,
+        selectedItemColor: AppColors.primaryWine,
         unselectedItemColor: Colors.white.withValues(alpha: 0.65),
         showUnselectedLabels: true,
         selectedLabelStyle: const TextStyle(

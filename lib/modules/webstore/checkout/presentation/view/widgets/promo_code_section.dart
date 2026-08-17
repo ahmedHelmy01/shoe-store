@@ -72,7 +72,7 @@ class _PromoCodeSectionState extends ConsumerState<PromoCodeSection> {
             color: isDark ? theme.cardColor : Colors.white,
             borderRadius: BorderRadius.circular(16.r),
             border: Border.all(
-              color: AppColors.primaryOrange.withValues(alpha: 0.3),
+              color: AppColors.primaryWine.withValues(alpha: 0.3),
               width: 1.5,
               style: BorderStyle.solid,
             ),
@@ -88,7 +88,7 @@ class _PromoCodeSectionState extends ConsumerState<PromoCodeSection> {
             children: [
               Icon(
                 Icons.confirmation_num_outlined,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryWine,
                 size: 24.sp,
               ),
               12.horizontalSpace,
@@ -173,7 +173,7 @@ class _PromoCodeSectionState extends ConsumerState<PromoCodeSection> {
                         );
                       },
                 style: TextButton.styleFrom(
-                  backgroundColor: AppColors.primaryOrange.withValues(
+                  backgroundColor: AppColors.primaryWine.withValues(
                     alpha: 0.1,
                   ),
                   padding: EdgeInsets.symmetric(
@@ -190,7 +190,7 @@ class _PromoCodeSectionState extends ConsumerState<PromoCodeSection> {
                         height: 20.w,
                         child: const CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: AppColors.primaryOrange,
+                          color: AppColors.primaryWine,
                         ),
                       )
                     : Text(
@@ -198,7 +198,7 @@ class _PromoCodeSectionState extends ConsumerState<PromoCodeSection> {
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w900,
-                          color: AppColors.primaryOrange,
+                          color: AppColors.primaryWine,
                           letterSpacing: 0.5,
                         ),
                       ),

@@ -155,7 +155,7 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.primaryOrange.withOpacity(
+                                color: AppColors.primaryWine.withOpacity(
                                   _glowAnimation.value * 0.3,
                                 ),
                                 blurRadius: 60,
@@ -233,7 +233,7 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w400,
-                                color: AppColors.primaryOrange.withOpacity(0.9),
+                                color: AppColors.primaryWine.withOpacity(0.9),
                                 letterSpacing: 1,
                               ),
                             ),
@@ -283,7 +283,7 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
               height: 200.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.primaryOrange.withOpacity(
+                color: AppColors.primaryWine.withOpacity(
                   _glowAnimation.value * 0.08,
                 ),
               ),

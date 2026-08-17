@@ -73,12 +73,12 @@ class CatalogHeader extends ConsumerWidget {
             width: 45.h,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [AppColors.primaryOrange, Color(0xFFFF8C00)],
+                colors: [AppColors.primaryWine, AppColors.highlightWine],
               ),
               borderRadius: BorderRadius.circular(12.r),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                  color: AppColors.primaryWine.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 3),
                 ),

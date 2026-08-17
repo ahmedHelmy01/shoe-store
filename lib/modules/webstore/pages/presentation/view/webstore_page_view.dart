@@ -142,10 +142,10 @@ class _WebStorePageViewState extends ConsumerState<WebStorePageView> {
                       ),
                       "strong": Style(
                         fontWeight: FontWeight.bold,
-                        color: isDark ? AppColors.primaryOrange : AppColors.primaryBlue,
+                        color: isDark ? AppColors.primaryWine : AppColors.primaryBlue,
                       ),
                       "a": Style(
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryWine,
                         textDecoration: TextDecoration.underline,
                       ),
                     },
@@ -186,7 +186,7 @@ class _WebStorePageViewState extends ConsumerState<WebStorePageView> {
                     ElevatedButton(
                       onPressed: _fetchPage,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryOrange,
+                        backgroundColor: AppColors.primaryWine,
                       ),
                       child: Text(
                         LocaleKeys.common.try_again.tr(context: context),

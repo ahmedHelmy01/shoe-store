@@ -35,7 +35,7 @@ class ProfileDataField extends StatelessWidget {
             child: AppTextField(
               controller: controller,
               label: label,
-              prefixIcon: Icon(icon, color: AppColors.primaryOrange, size: 20.sp),
+              prefixIcon: Icon(icon, color: AppColors.primaryWine, size: 20.sp),
               borderRadius: 12.r,
             ),
           )
@@ -50,10 +50,10 @@ class ProfileDataField extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.all(8.w),
                     decoration: BoxDecoration(
-                      color: AppColors.primaryOrange.withValues(alpha: 0.1),
+                      color: AppColors.primaryWine.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8.r),
                     ),
-                    child: Icon(icon, color: AppColors.primaryOrange, size: 18.sp),
+                    child: Icon(icon, color: AppColors.primaryWine, size: 18.sp),
                   ),
                   16.horizontalSpace,
                   Expanded(

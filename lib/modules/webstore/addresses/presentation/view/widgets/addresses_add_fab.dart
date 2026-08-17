@@ -13,7 +13,7 @@ class AddressesAddFab extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       onPressed: onPressed,
-      backgroundColor: AppColors.primaryOrange,
+      backgroundColor: AppColors.primaryWine,
       icon: const Icon(Icons.add_location_alt_rounded, color: Colors.white),
       label: Text(
         LocaleKeys.webstore.addresses.add_new.tr(context: context),

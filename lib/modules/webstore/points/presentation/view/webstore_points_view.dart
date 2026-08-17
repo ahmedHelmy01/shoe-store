@@ -72,7 +72,7 @@ class _WebStorePointsViewState extends ConsumerState<WebStorePointsView> {
                         borderRadius: BorderRadius.circular(24.r),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                            color: AppColors.primaryWine.withValues(alpha: 0.3),
                             blurRadius: 16,
                             offset: const Offset(0, 8),
                           )
@@ -197,7 +197,7 @@ class _WebStorePointsViewState extends ConsumerState<WebStorePointsView> {
                                           2.verticalSpace,
                                           Text(
                                             'تنتهي: ${t.expiryDate}',
-                                            style: TextStyle(fontSize: 10.sp, color: Colors.orange),
+                                            style: TextStyle(fontSize: 10.sp, color: AppColors.primaryWine),
                                           ),
                                         ],
                                       ],

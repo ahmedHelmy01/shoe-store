@@ -113,7 +113,7 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
               hint: 'اختر الشركة',
               value: selectedManufacturerId,
               borderColor: isDark ? Colors.white10 : const Color(0xFFE8E8E8),
-              focusedBorderColor: AppColors.primaryOrange,
+              focusedBorderColor: AppColors.primaryWine,
               fieldHeight: 48.h,
               menuMaxHeight: 320.h,
               contentPadding: const EdgeInsets.symmetric(
@@ -140,7 +140,7 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
               hint: 'اختر التاج',
               value: selectedTagId,
               borderColor: isDark ? Colors.white10 : const Color(0xFFE8E8E8),
-              focusedBorderColor: AppColors.primaryOrange,
+              focusedBorderColor: AppColors.primaryWine,
               fieldHeight: 48.h,
               menuMaxHeight: 320.h,
               contentPadding: const EdgeInsets.symmetric(
@@ -223,8 +223,8 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
                     values: priceValues,
                     min: 0,
                     max: 1000,
-                    activeColor: AppColors.primaryOrange,
-                    inactiveColor: AppColors.primaryOrange.withOpacity(0.2),
+                    activeColor: AppColors.primaryWine,
+                    inactiveColor: AppColors.primaryWine.withOpacity(0.2),
                     divisions: 20,
                     labels: RangeLabels(
                       priceValues.start.toStringAsFixed(0),
@@ -241,7 +241,7 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
               ),
-              activeThumbColor: AppColors.primaryOrange,
+              activeThumbColor: AppColors.primaryWine,
               value: onlyInStock,
               title: Text('المتاح فقط', style: theme.textTheme.bodyMedium),
               onChanged: onOnlyInStockChanged,
@@ -259,7 +259,7 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
                           borderRadius: BorderRadius.circular(14.r),
                         ),
                         side: BorderSide(
-                          color: AppColors.primaryOrange.withOpacity(0.35),
+                          color: AppColors.primaryWine.withOpacity(0.35),
                         ),
                       ),
                       onPressed: onReset,
@@ -276,7 +276,7 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
                     height: 48.h,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryOrange,
+                        backgroundColor: AppColors.primaryWine,
                         foregroundColor: Colors.white,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
@@ -312,15 +312,15 @@ class CatalogProductsFilterDrawer extends StatelessWidget {
       label: Text(label),
       selected: selected,
       onSelected: (_) => onSelected(),
-      selectedColor: AppColors.primaryOrange.withOpacity(isDark ? 0.2 : 0.05),
+      selectedColor: AppColors.primaryWine.withOpacity(isDark ? 0.2 : 0.05),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
       side: BorderSide(
         color: selected
-            ? AppColors.primaryOrange.withOpacity(0.6)
+            ? AppColors.primaryWine.withOpacity(0.6)
             : (isDark ? Colors.white10 : const Color(0xFFE5E5E5)),
       ),
       labelStyle: TextStyle(
-        color: selected ? AppColors.primaryOrange : theme.textTheme.bodyMedium?.color,
+        color: selected ? AppColors.primaryWine : theme.textTheme.bodyMedium?.color,
         fontWeight: FontWeight.w600,
         fontSize: 12.sp,
       ),

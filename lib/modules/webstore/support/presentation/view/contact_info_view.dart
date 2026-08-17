@@ -119,7 +119,7 @@ class ContactInfoView extends ConsumerWidget {
               icon: const Icon(Icons.refresh_rounded, size: 18),
               label: Text(LocaleKeys.common.retry.tr(context: context)),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryOrange,
+                backgroundColor: AppColors.primaryWine,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
               ),
@@ -159,7 +159,7 @@ class ContactInfoView extends ConsumerWidget {
                     imagePath: settings.logo!,
                     fit: BoxFit.cover,
                   )
-                : Icon(Icons.store_rounded, size: 44.sp, color: AppColors.primaryOrange),
+                : Icon(Icons.store_rounded, size: 44.sp, color: AppColors.primaryWine),
           ),
           SizedBox(height: 24.h),
           Text(LocaleKeys.common.contact_us.tr(context: context),
@@ -201,7 +201,7 @@ class ContactInfoView extends ConsumerWidget {
                       theme: theme,
                       isDark: isDark,
                       icon: Icons.location_on_rounded,
-                      iconColor: Colors.orange,
+                      iconColor: AppColors.primaryWine,
                       label: LocaleKeys.webstore.more.contact_address.tr(context: context),
                       value: address,
                       onTap: () => openUrl('https://maps.google.com/?q=${Uri.encodeComponent(address)}'),

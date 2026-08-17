@@ -45,7 +45,7 @@ class AddressAddEditFooter extends StatelessWidget {
             title: Text(keys.set_default_title.tr(context: context)),
             subtitle: Text(keys.set_default_subtitle.tr(context: context)),
             value: isDefault,
-            activeThumbColor: AppColors.primaryOrange,
+            activeThumbColor: AppColors.primaryWine,
             contentPadding: EdgeInsets.symmetric(horizontal: 8.w),
             onChanged: onDefaultChanged,
           ),

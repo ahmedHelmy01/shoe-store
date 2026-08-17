@@ -57,7 +57,7 @@ class _WebStoreHomeScreenState extends ConsumerState<WebStoreHomeScreen> {
       body: RefreshIndicator(
         onRefresh: _refreshHomeData,
         backgroundColor: theme.cardColor,
-        color: AppColors.primaryOrange,
+        color: AppColors.primaryWine,
         child: NotificationListener<ScrollNotification>(
           onNotification: (notification) {
             if (notification is ScrollStartNotification) {

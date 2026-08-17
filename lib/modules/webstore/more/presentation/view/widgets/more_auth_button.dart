@@ -23,11 +23,11 @@ class MoreAuthButton extends ConsumerWidget {
         gradient: LinearGradient(
           colors: isAuthed
               ? [const Color(0xFFFF5252), const Color(0xFFFF1744)]
-              : [AppColors.primaryOrange, const Color(0xFFFF8C00)],
+              : [AppColors.primaryWine, AppColors.highlightWine],
         ),
         boxShadow: [
           BoxShadow(
-            color: (isAuthed ? Colors.red : AppColors.primaryOrange)
+            color: (isAuthed ? Colors.red : AppColors.primaryWine)
                 .withValues(alpha: 0.3),
             blurRadius: 15,
             offset: const Offset(0, 8),

@@ -121,7 +121,7 @@ class _DetailsImageGalleryState extends State<DetailsImageGallery> {
                       borderRadius: BorderRadius.circular(8.r),
                       border: Border.all(
                         color: isSelected
-                            ? AppColors.primaryOrange
+                            ? AppColors.primaryWine
                             : Colors.grey.shade300,
                         width: isSelected ? 2 : 1,
                       ),

@@ -271,7 +271,7 @@ class DetailsInfoSection extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.bold,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryWine,
               ),
             ),
           ),

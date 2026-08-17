@@ -153,7 +153,7 @@ class _WebStoreProfileViewState extends ConsumerState<WebStoreProfileView> {
             },
             icon: Icon(
               isEditing ? Icons.close_rounded : Icons.edit_note_rounded,
-              color: isEditing ? Colors.red : AppColors.primaryOrange,
+              color: isEditing ? Colors.red : AppColors.primaryWine,
               size: 28.sp,
             ),
           ),

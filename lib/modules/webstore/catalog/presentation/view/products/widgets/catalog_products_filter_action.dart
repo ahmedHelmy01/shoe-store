@@ -29,7 +29,7 @@ class CatalogProductsFilterAction extends StatelessWidget {
                 width: 18.h,
                 alignment: Alignment.center,
                 decoration: const BoxDecoration(
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryWine,
                   shape: BoxShape.circle,
                 ),
                 child: Text(

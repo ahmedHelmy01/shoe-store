@@ -27,13 +27,13 @@ class AppErrorWidget extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(20.w),
                 decoration: BoxDecoration(
-                  color: AppColors.boldOrange.withOpacity(isDark ? 0.15 : 0.08),
+                  color: AppColors.boldWine.withOpacity(isDark ? 0.15 : 0.08),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   icon ?? Icons.cloud_off_rounded,
                   size: 64.sp,
-                  color: AppColors.boldOrange,
+                  color: AppColors.boldWine,
                 ),
               ),
               24.verticalSpace,
@@ -63,7 +63,7 @@ class AppErrorWidget extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: onRetry,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryOrange,
+                      backgroundColor: AppColors.primaryWine,
                       foregroundColor: Colors.white,
                       padding: EdgeInsets.symmetric(vertical: 14.h),
                       shape: RoundedRectangleBorder(

@@ -17,18 +17,18 @@ class ProfilePointsCard extends StatelessWidget {
       margin: EdgeInsets.only(top: 12.h),
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       decoration: BoxDecoration(
-        color: AppColors.primaryOrange.withValues(alpha: 0.1),
+        color: AppColors.primaryWine.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.stars_rounded, color: AppColors.primaryOrange, size: 18.sp),
+          Icon(Icons.stars_rounded, color: AppColors.primaryWine, size: 18.sp),
           8.horizontalSpace,
           Text(
             '$points ${LocaleKeys.webstore.profile.points.tr(context: context)}',
             style: TextStyle(
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryWine,
               fontWeight: FontWeight.bold,
               fontSize: 14.sp,
             ),

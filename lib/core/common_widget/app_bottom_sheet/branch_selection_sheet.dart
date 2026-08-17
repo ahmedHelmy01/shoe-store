@@ -67,12 +67,12 @@ class BranchSelectionSheet extends ConsumerWidget {
               Container(
                 padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryOrange.withOpacity(0.1),
+                  color: AppColors.primaryWine.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.storefront_rounded,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryWine,
                   size: 26.sp,
                 ),
               ),
@@ -133,7 +133,7 @@ class BranchSelectionSheet extends ConsumerWidget {
                         children: [
                           Icon(
                             Icons.location_on_rounded,
-                            color: AppColors.primaryOrange,
+                            color: AppColors.primaryWine,
                             size: 20.sp,
                           ),
                           16.horizontalSpace,

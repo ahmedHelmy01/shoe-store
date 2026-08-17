@@ -46,7 +46,7 @@ class DetailsBottomBar extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: onAddToCart,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryOrange,
+                    backgroundColor: AppColors.primaryWine,
                     disabledBackgroundColor: Colors.grey.withOpacity(0.2),
                     foregroundColor: Colors.white,
                     elevation: 0,

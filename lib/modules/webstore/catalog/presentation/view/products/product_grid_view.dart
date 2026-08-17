@@ -55,7 +55,7 @@ class ProductGridView extends ConsumerWidget {
                 ),
                 Text(
                   LocaleKeys.webstore.home.latest_products.tr(context: context),
-                  style: TextStyle(color: AppColors.primaryOrange, fontSize: 12.sp, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: AppColors.primaryWine, fontSize: 12.sp, fontWeight: FontWeight.bold),
                 ),
               ],
             ),

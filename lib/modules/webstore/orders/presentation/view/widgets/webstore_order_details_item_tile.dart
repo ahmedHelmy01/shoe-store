@@ -33,10 +33,10 @@ class WebStoreOrderDetailsItemTile extends StatelessWidget {
             width: 48.w,
             height: 48.w,
             decoration: BoxDecoration(
-              color: AppColors.primaryOrange.withValues(alpha: 0.1),
+              color: AppColors.primaryWine.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: Icon(Icons.inventory_2_outlined, color: AppColors.primaryOrange, size: 24.sp),
+            child: Icon(Icons.inventory_2_outlined, color: AppColors.primaryWine, size: 24.sp),
           ),
           16.horizontalSpace,
           Expanded(

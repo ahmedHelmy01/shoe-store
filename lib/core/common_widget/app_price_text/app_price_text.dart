@@ -44,7 +44,7 @@ class AppPriceText extends StatelessWidget {
           style: priceStyle ?? TextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w800,
-            color: AppColors.primaryOrange,
+            color: AppColors.primaryWine,
           ),
         ),
       ],

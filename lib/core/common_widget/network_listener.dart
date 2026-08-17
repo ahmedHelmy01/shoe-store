@@ -62,7 +62,7 @@ class _NoInternetBanner extends StatelessWidget {
           margin: EdgeInsets.all(16.w),
           padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
           decoration: BoxDecoration(
-            color: AppColors.boldOrange.withValues(alpha: 0.95),
+            color: AppColors.boldWine.withValues(alpha: 0.95),
             borderRadius: BorderRadius.circular(16.r),
             boxShadow: [
               BoxShadow(

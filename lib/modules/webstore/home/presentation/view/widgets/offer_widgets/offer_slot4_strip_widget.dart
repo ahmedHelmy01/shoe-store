@@ -123,7 +123,7 @@ class OfferSlot4StripWidget extends ConsumerWidget {
                           Text(
                             discountLabel,
                             style: TextStyle(
-                              color: AppColors.primaryOrange,
+                              color: AppColors.primaryWine,
                               fontSize: 13.sp,
                               fontWeight: FontWeight.w900,
                             ),
@@ -142,7 +142,7 @@ class OfferSlot4StripWidget extends ConsumerWidget {
                         child: Text(
                           isAr ? 'عرض المنتجات' : 'View Products',
                           style: TextStyle(
-                            color: AppColors.primaryOrange,
+                            color: AppColors.primaryWine,
                             fontSize: 11.sp,
                             fontWeight: FontWeight.bold,
                           ),

@@ -85,7 +85,7 @@ Widget buildReelCard(
           ),
         ],
         border: Border.all(
-          color: AppColors.primaryOrange.withValues(alpha: 0.15),
+          color: AppColors.primaryWine.withValues(alpha: 0.15),
         ),
       ),
       child: ClipRRect(
@@ -127,7 +127,7 @@ Widget buildReelCard(
                       padding: EdgeInsets.symmetric(
                           horizontal: 8.w, vertical: 4.h),
                       decoration: BoxDecoration(
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryWine,
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: Text(

@@ -140,7 +140,7 @@ class PaymentMethodSection extends ConsumerWidget {
     return AppCard(
       onTap: () => onPaymentSelected(null, id),
       border: isSelected
-          ? Border.all(color: AppColors.primaryOrange, width: 2)
+          ? Border.all(color: AppColors.primaryWine, width: 2)
           : Border.all(
               color: isDark
                   ? Colors.white.withValues(alpha: 0.1)
@@ -173,7 +173,7 @@ class PaymentMethodSection extends ConsumerWidget {
           if (isSelected)
             Icon(
               Icons.radio_button_checked_rounded,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryWine,
               size: 22.sp,
             )
           else
@@ -199,7 +199,7 @@ class PaymentMethodSection extends ConsumerWidget {
     return AppCard(
       onTap: () => onPaymentSelected(method.id, method.code ?? 'cash'),
       border: isSelected
-          ? Border.all(color: AppColors.primaryOrange, width: 2)
+          ? Border.all(color: AppColors.primaryWine, width: 2)
           : Border.all(
               color: isDark
                   ? Colors.white.withValues(alpha: 0.1)
@@ -235,7 +235,7 @@ class PaymentMethodSection extends ConsumerWidget {
           if (isSelected)
             Icon(
               Icons.radio_button_checked_rounded,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryWine,
               size: 22.sp,
             )
           else

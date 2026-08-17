@@ -113,7 +113,7 @@ class OfferProductsBottomSheet extends ConsumerWidget {
                             style: TextStyle(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.primaryOrange,
+                              color: AppColors.primaryWine,
                             ),
                           ),
                         ],
@@ -251,7 +251,7 @@ Widget buildNiceOneProductCard(
         border: Border.all(
           color: isDark
               ? Colors.white.withValues(alpha: 0.08)
-              : AppColors.primaryOrange.withValues(alpha: 0.08),
+              : AppColors.primaryWine.withValues(alpha: 0.08),
           width: 1,
         ),
       ),
@@ -273,7 +273,7 @@ Widget buildNiceOneProductCard(
                       child: Icon(
                         Icons.shopping_bag_outlined,
                         size: 40.sp,
-                        color: AppColors.primaryOrange.withValues(alpha: 0.5),
+                        color: AppColors.primaryWine.withValues(alpha: 0.5),
                       ),
                     ),
             ),
@@ -315,7 +315,7 @@ Widget buildNiceOneProductCard(
                     style: TextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w900,
-                      color: AppColors.primaryOrange,
+                      color: AppColors.primaryWine,
                     ),
                   ),
                 ],
@@ -346,11 +346,11 @@ Widget buildNiceOneProductCard(
                 child: Container(
                   padding: EdgeInsets.all(6.w),
                   decoration: BoxDecoration(
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryWine,
                     borderRadius: BorderRadius.circular(12.r),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                        color: AppColors.primaryWine.withValues(alpha: 0.3),
                         blurRadius: 6,
                         offset: const Offset(0, 2),
                       ),

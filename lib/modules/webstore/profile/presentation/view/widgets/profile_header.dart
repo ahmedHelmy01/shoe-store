@@ -26,13 +26,13 @@ class ProfileHeader extends StatelessWidget {
           height: 80.w,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: AppColors.primaryOrange.withValues(alpha: 0.1),
-            border: Border.all(color: AppColors.primaryOrange.withValues(alpha: 0.2), width: 2),
+            color: AppColors.primaryWine.withValues(alpha: 0.1),
+            border: Border.all(color: AppColors.primaryWine.withValues(alpha: 0.2), width: 2),
           ),
           child: Icon(
             Icons.person_rounded,
             size: 45.sp,
-            color: AppColors.primaryOrange,
+            color: AppColors.primaryWine,
           ),
         ),
         16.verticalSpace,

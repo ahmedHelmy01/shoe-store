@@ -103,7 +103,7 @@ class WebStoreOrderCardWidget extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w900,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryWine,
                   ),
                 ),
               ],
