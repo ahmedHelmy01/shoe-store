@@ -387,6 +387,9 @@ class _WebStoreCheckout {
   final points_applied_discount = 'webstore.checkout.points_applied_discount';
   final cancel_points_discount = 'webstore.checkout.cancel_points_discount';
   final apply_points_btn = 'webstore.checkout.apply_points_btn';
+  final payment_rejected = 'webstore.checkout.payment_rejected';
+  final payment_cancelled = 'webstore.checkout.payment_cancelled';
+  final payment_failed = 'webstore.checkout.payment_failed';
 }
 
 class _WebStoreCatalog {

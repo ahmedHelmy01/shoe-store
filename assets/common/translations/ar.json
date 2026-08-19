@@ -327,7 +327,10 @@
       "all_points": "الكل",
       "points_applied_discount": "تم تطبيق خصم {} نقطة",
       "cancel_points_discount": "إلغاء خصم النقاط",
-      "apply_points_btn": "تطبيق {} نقطة"
+      "apply_points_btn": "تطبيق {} نقطة",
+      "payment_rejected": "تم رفض طلب الدفع. يرجى تجربة وسيلة دفع أخرى.",
+      "payment_cancelled": "تم إلغاء عملية الدفع.",
+      "payment_failed": "تعذر إتمام عملية الدفع. يرجى المحاولة مرة أخرى."
     },
     "catalog": {
       "product_sku": "رمز المنتج (SKU)",

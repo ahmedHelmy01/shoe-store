@@ -5,12 +5,17 @@ import 'package:erp/core/common_widget/app_bar/common_app_bar.dart';
 import 'package:erp/core/common_widget/app_button/app_button.dart';
 import 'package:erp/core/common_widget/app_snack_bar/app_snack_bar.dart';
 import 'package:erp/core/router/app_navigator.dart';
+import 'package:erp/core/config/payment_gateway_config.dart';
+import 'package:erp/core/services/payment/payment_gateway_models.dart';
+import 'package:erp/core/services/payment/payment_gateway_service.dart';
 import 'package:erp/modules/webstore/cart/presentation/view_model/cart_view_model.dart';
 import 'package:erp/modules/webstore/checkout/presentation/view_model/checkout_view_model.dart';
 import 'package:erp/modules/webstore/checkout/presentation/state/checkout_state.dart';
 import 'package:erp/modules/webstore/addresses/data/models/address_model.dart';
 import 'package:erp/modules/webstore/addresses/presentation/view_model/address_providers.dart';
 import 'package:erp/modules/webstore/addresses/presentation/utils/address_localization.dart';
+import 'package:erp/modules/webstore/profile/presentation/state/profile_state.dart';
+import 'package:erp/modules/webstore/profile/presentation/view_model/profile_providers.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp/core/localization/locale_keys.dart';
 import 'package:erp/modules/webstore/points/presentation/view_model/points_providers.dart';
@@ -48,6 +53,113 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
   void dispose() {
     promoController.dispose();
     super.dispose();
+  }
+
+  Future<void> _placeOrder() async {
+    final cartItems = ref.read(cartProvider);
+    final cartNotifier = ref.read(cartProvider.notifier);
+
+    if (!PaymentGatewayService.isGatewayPayment(selectedPayment)) {
+      ref.read(checkoutVmProvider.notifier).confirmOrder(
+            paymentMethod: selectedPayment,
+            address:
+                selectedAddress!.localizedPrintableAddress(context),
+            addressId: selectedAddress!.id,
+            paymentMethodId: selectedPaymentId,
+            totalAmount: cartNotifier.total,
+            couponCode: promoController.text,
+          );
+      return;
+    }
+
+    final checkoutState = ref.read(checkoutVmProvider);
+    double total = cartNotifier.total;
+    double shipping = cartNotifier.shipping;
+    double discount = 0;
+    if (checkoutState is CheckoutCalculated) {
+      final calc = checkoutState.calculations;
+      total = (calc['total'] as num?)?.toDouble() ?? total;
+      shipping = (calc['shipping'] as num?)?.toDouble() ?? shipping;
+      discount = ((calc['discount'] as num?)?.toDouble() ?? 0) +
+          ((calc['points_discount'] as num?)?.toDouble() ?? 0);
+    }
+
+    String buyerName = '';
+    String buyerEmail = '';
+    String buyerPhone = '';
+    final profileState = ref.read(profileViewModelProvider);
+    if (profileState is ProfileLoaded) {
+      buyerName = profileState.user.name;
+      buyerEmail = profileState.user.email ?? '';
+      buyerPhone = profileState.user.mobile ?? '';
+    } else if (profileState is ProfileUpdateSuccess) {
+      buyerName = profileState.user.name;
+      buyerEmail = profileState.user.email ?? '';
+      buyerPhone = profileState.user.mobile ?? '';
+    }
+    if (buyerPhone.isEmpty) {
+      buyerPhone = selectedAddress?.phone ?? '';
+    }
+
+    final request = PaymentGatewayRequest(
+      gateway: selectedPayment,
+      totalAmount: total,
+      shippingAmount: shipping,
+      discountAmount: discount,
+      currency: PaymentGatewayConfig.currencyCode,
+      country: PaymentGatewayConfig.countryCode,
+      orderReference: PaymentGatewayService.buildOrderReference(),
+      buyerName: buyerName,
+      buyerEmail: buyerEmail,
+      buyerPhone: buyerPhone,
+      city: selectedAddress?.cityName ?? selectedAddress?.governorateName,
+      address: selectedAddress?.printableAddress,
+      region: selectedAddress?.governorateName,
+      items: cartItems
+          .map(
+            (item) => PaymentGatewayItem(
+              name: item.product.name,
+              sku: item.product.sku ?? item.product.code,
+              imageUrl: item.product.image,
+              unitPrice: item.unitPrice,
+              discount: item.discount,
+              quantity: item.quantity,
+            ),
+          )
+          .toList(),
+    );
+
+    ref.read(checkoutVmProvider.notifier).setSubmitting();
+    final result =
+        await PaymentGatewayService.startCheckout(context, request);
+
+    if (!mounted) return;
+
+    switch (result.status) {
+      case PaymentGatewayStatus.authorized:
+        ref.read(checkoutVmProvider.notifier).confirmOrder(
+              paymentMethod: selectedPayment,
+              address: selectedAddress!.localizedPrintableAddress(context),
+              addressId: selectedAddress!.id,
+              paymentMethodId: selectedPaymentId,
+              totalAmount: total,
+              couponCode: promoController.text,
+              gatewayReference: result.gatewayPaymentId,
+              gatewayOrderId: result.gatewayOrderId,
+            );
+      case PaymentGatewayStatus.rejected:
+        ref.read(checkoutVmProvider.notifier).resetFromGatewayError(
+              LocaleKeys.webstore.checkout.payment_rejected.tr(context: context),
+            );
+      case PaymentGatewayStatus.cancelled:
+        ref.read(checkoutVmProvider.notifier).resetFromGatewayError(
+              LocaleKeys.webstore.checkout.payment_cancelled.tr(context: context),
+            );
+      case PaymentGatewayStatus.failed:
+        ref.read(checkoutVmProvider.notifier).resetFromGatewayError(
+              LocaleKeys.webstore.checkout.payment_failed.tr(context: context),
+            );
+    }
   }
 
   void _showOrderSuccessDialog(BuildContext context, Map<String, dynamic> data) {
@@ -158,8 +270,6 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
 
     // Watch cart to read notifier properties
     ref.watch(cartProvider);
-    final cartNotifier = ref.read(cartProvider.notifier);
-
 
     final addressesAsync = ref.watch(addressesProvider);
     final addresses = addressesAsync.value ?? [];
@@ -292,16 +402,11 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
               ),
               child: SafeArea(
                 child: AppButton(
-                  onPressed: selectedAddress == null ? null : () {
-                    ref.read(checkoutVmProvider.notifier).confirmOrder(
-                          paymentMethod: selectedPayment,
-                          address: selectedAddress!.localizedPrintableAddress(context),
-                          addressId: selectedAddress!.id,
-                          paymentMethodId: selectedPaymentId,
-                          totalAmount: cartNotifier.total,
-                          couponCode: promoController.text,
-                        );
-                  },
+                  onPressed: selectedAddress == null
+                      ? null
+                      : () {
+                          _placeOrder();
+                        },
                   isGradient: true,
                   child: Text(
                     LocaleKeys.webstore.checkout.place_order.tr(context: context,),

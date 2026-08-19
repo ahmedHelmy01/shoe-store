@@ -70,6 +70,12 @@ class CheckoutVm extends Notifier<CheckoutState> {
 
   void setPointsToRedeem(int pts) => _pointsToRedeem = pts > 0 ? pts : null;
 
+  void setSubmitting() => state = const CheckoutSubmitting();
+
+  void resetFromGatewayError(String message) {
+    state = CheckoutError(message);
+  }
+
   Future<void> confirmOrder({
     required String paymentMethod,
     required String address,
@@ -79,6 +85,8 @@ class CheckoutVm extends Notifier<CheckoutState> {
     String? couponCode,
     String? notes,
     int? pointsToRedeem,
+    String? gatewayReference,
+    String? gatewayOrderId,
   }) async {
     state = const CheckoutSubmitting();
     
@@ -107,6 +115,10 @@ class CheckoutVm extends Notifier<CheckoutState> {
       if (couponCode != null && couponCode.isNotEmpty) 'coupon_code': couponCode,
       if (notes != null && notes.isNotEmpty) 'notes': notes,
       if (redeemPts != null && redeemPts > 0) 'points_to_redeem': redeemPts,
+      if (gatewayReference != null && gatewayReference.isNotEmpty)
+        'payment_reference': gatewayReference,
+      if (gatewayOrderId != null && gatewayOrderId.isNotEmpty)
+        'gateway_order_id': gatewayOrderId,
     };
 
     final repository = ref.read(checkoutRepositoryProvider);

@@ -299,7 +299,10 @@
       "all_points": "All",
       "points_applied_discount": "Applied {} points discount",
       "cancel_points_discount": "Cancel Points Discount",
-      "apply_points_btn": "Apply {} points"
+      "apply_points_btn": "Apply {} points",
+      "payment_rejected": "The payment request was rejected. Please try another payment method.",
+      "payment_cancelled": "The payment was cancelled.",
+      "payment_failed": "Payment could not be completed. Please try again."
     },
     "catalog": {
       "product_sku": "Product SKU",
