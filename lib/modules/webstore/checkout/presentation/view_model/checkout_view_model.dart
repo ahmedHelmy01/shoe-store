@@ -76,6 +76,10 @@ class CheckoutVm extends Notifier<CheckoutState> {
     state = CheckoutError(message);
   }
 
+  /// Restores the idle state (e.g. when the view was unmounted while a
+  /// gateway payment was in flight) so the UI is never stuck submitting.
+  void clearGatewayState() => state = const CheckoutInitial();
+
   Future<void> confirmOrder({
     required String paymentMethod,
     required String address,

@@ -130,10 +130,20 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
     );
 
     ref.read(checkoutVmProvider.notifier).setSubmitting();
+    debugPrint('[Checkout] Gateway flow started: '
+        'gateway=$selectedPayment total=$total shipping=$shipping '
+        'discount=$discount items=${request.items.length}');
     final result =
         await PaymentGatewayService.startCheckout(context, request);
+    debugPrint('[Checkout] Gateway flow finished: '
+        'status=${result.status} ref=${result.gatewayPaymentId} '
+        'orderId=${result.gatewayOrderId} error=${result.errorMessage}');
 
-    if (!mounted) return;
+    if (!mounted) {
+      // Never leave the checkout stuck in the submitting state
+      ref.read(checkoutVmProvider.notifier).clearGatewayState();
+      return;
+    }
 
     switch (result.status) {
       case PaymentGatewayStatus.authorized:
@@ -156,8 +166,11 @@ class _WebStoreCheckoutViewState extends ConsumerState<WebStoreCheckoutView> {
               LocaleKeys.webstore.checkout.payment_cancelled.tr(context: context),
             );
       case PaymentGatewayStatus.failed:
+        final error = result.errorMessage;
         ref.read(checkoutVmProvider.notifier).resetFromGatewayError(
-              LocaleKeys.webstore.checkout.payment_failed.tr(context: context),
+              (error != null && error.isNotEmpty)
+                  ? error
+                  : LocaleKeys.webstore.checkout.payment_failed.tr(context: context),
             );
     }
   }
