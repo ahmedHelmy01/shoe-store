@@ -13,13 +13,13 @@ class OnboardingVm extends Notifier<OnboardingState> {
   static final List<BoardingModel> _fallbackBoardings = [
     BoardingModel(
       id: -1,
-      title: 'Welcome to Tarshooby Shoes',
-      titleAr: 'أهلاً بك في طرشوبي للأحذية',
+      title: 'Welcome to Shoe Store',
+      titleAr: 'أهلاً بك في متجر الأحذية',
       content:
           'Step into style with our exclusive collection.',
       contentAr:
           'خطواتك للأناقة تبدأ من هنا مع مجموعتنا الحصرية من الأحذية',
-      image: AssetManager.logoElTarshopy,
+      image: AssetManager.storeLogo2,
       position: 0,
     ),
     BoardingModel(
@@ -29,7 +29,7 @@ class OnboardingVm extends Notifier<OnboardingState> {
       content:
           'Discover the latest trends in fashion and comfortable footwear.',
       contentAr: 'اكتشف أحدث صيحات الموضة والأحذية المريحة لكل المناسبات',
-      image: AssetManager.logoElTarshopy,
+      image: AssetManager.storeLogo2,
       position: 1,
     ),
     BoardingModel(
@@ -38,7 +38,7 @@ class OnboardingVm extends Notifier<OnboardingState> {
       titleAr: 'توصيل سريع لباب المنزل',
       content: 'Order now and receive your products in the shortest time.',
       contentAr: 'اطلب كل ما تحتاجه الآن واستلمه في أسرع وقت ممكن في أي مكان',
-      image: AssetManager.logoElTarshopy,
+      image: AssetManager.storeLogo2,
       position: 2,
     ),
   ];

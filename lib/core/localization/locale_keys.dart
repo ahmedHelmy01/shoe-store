@@ -174,7 +174,7 @@ class _WebStoreHome {
   final most_ordered = 'webstore.home.most_ordered';
   final exclusive_offers = 'webstore.home.exclusive_offers';
   final trusted_brands = 'webstore.home.trusted_brands';
-  final tarshooby_offers = 'webstore.home.tarshooby_offers';
+  final store_offers = 'webstore.home.store_offers';
   final vouchers_title = 'webstore.home.vouchers_title';
   final voucher_first_order = 'webstore.home.voucher_first_order';
   final voucher_skincare = 'webstore.home.voucher_skincare';

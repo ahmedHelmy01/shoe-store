@@ -25,7 +25,7 @@ class SecurityService {
         bundleIds: ['com.example.erp.webstore'],
         teamId: 'YOUR_TEAM_ID',
       ),
-      watcherMail: 'security@tarshouby.com',
+      watcherMail: 'security@shoestore.example.com',
     );
 
     final callback = ThreatCallback(

@@ -23,14 +23,14 @@ class AssetManager {
 
   // ---------------- WebStore Retail Images ----------------
   static String get webstoreLogo => "${_webstoreImages}logo.png";
-  static String get logoElTarshopy => "${_webstoreImages}logo2.png";
-  static String get logoElTarshopy2 => "${_webstoreImages}WhatsApp_Image_2025-12-25_at_17.23.37-removebg-preview.png";
+  static String get storeLogo2 => "${_webstoreImages}logo2.png";
+  static String get storeBrandImage => "${_webstoreImages}WhatsApp_Image_2025-12-25_at_17.23.37-removebg-preview.png";
   static String get drugs => "${_webstoreImages}drugs.png";
   static String get syringe => "${_webstoreImages}syringe.png";
   static String get discount => "${_webstoreImages}discount.png";
   static String get bestSeller => "${_webstoreImages}best-seller.png";
   static String get bestSale => "${_webstoreImages}bestsale.png";
-  static String get splashTarshouby => "${_webstoreImages}splash_tarshouby.png";
+  static String get splashStore => "${_webstoreImages}splash_store.png";
   static String get appIcons => "${_webstoreImages}appicons.png";
   static String get done => "${_webstoreImages}done.png";
   static String get face => "${_webstoreImages}face.png";

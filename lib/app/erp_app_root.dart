@@ -96,9 +96,7 @@ Future<void> bootstrap(AppFlavor flavor) async {
   const serverClientId =
       '364936943793-6gp5u8ceave53mcmdgvtb87sjv95j62g.apps.googleusercontent.com';
   if (kIsWeb) {
-    // على الويب، تسجيل الدخول بـ Google بيحتاج Web Client ID من الوسم:
-    //   <meta name="google-signin-client_id" content="..." />
-    // في web/index.html. لو مش متظبط، نتخطى التهيئة بدل ما الكود يقع.
+
     try {
       await GoogleSignIn.instance.initialize(serverClientId: serverClientId);
     } catch (e) {

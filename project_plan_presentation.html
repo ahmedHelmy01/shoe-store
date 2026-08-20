@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متجر الأحذية | الرؤية وخطة المشروع</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1e2c;
+    --surface2: #232838;
+    --surface3: #2a3048;
+    --border: #2c3350;
+    --text: #e8eaf2;
+    --muted: #9aa3bd;
+    --accent: #e11d48;
+    --accent2: #f43f5e;
+    --gold: #f59e0b;
+    --green: #22c55e;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --teal: #14b8a6;
+    --radius: 16px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", Tahoma, "Noto Kufi Arabic", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+  a { color: var(--accent2); }
+
+  /* ===== Hero ===== */
+  .hero {
+    text-align: center;
+    padding: 76px 24px 62px;
+    background:
+      radial-gradient(1000px 520px at 50% -8%, rgba(225,29,72,.22), transparent),
+      radial-gradient(800px 420px at 80% 12%, rgba(139,92,246,.14), transparent),
+      radial-gradient(700px 360px at 15% 30%, rgba(20,184,166,.10), transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  .hero .badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .8px;
+    margin-bottom: 22px;
+  }
+  .hero h1 { font-size: 44px; font-weight: 900; margin-bottom: 14px; line-height: 1.2; }
+  .hero h1 span { background: linear-gradient(90deg, var(--accent2), var(--gold)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p.sub { color: var(--muted); font-size: 18px; max-width: 760px; margin: 0 auto; }
+  .hero .meta { margin-top: 26px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .hero .chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+  .hero .cta-note {
+    margin-top: 18px;
+    display: inline-block;
+    background: rgba(245,158,11,.12);
+    border: 1px solid rgba(245,158,11,.35);
+    color: var(--gold);
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+
+  /* ===== Sections ===== */
+  section { padding: 56px 0; border-bottom: 1px solid var(--border); }
+  h2.section-title { font-size: 28px; font-weight: 900; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  h2.section-title .num {
+    background: var(--accent);
+    color: #fff;
+    min-width: 44px; height: 44px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 12px; font-size: 20px; flex-shrink: 0;
+  }
+  .section-desc { color: var(--muted); margin-bottom: 28px; font-size: 16px; max-width: 860px; }
+  .section-desc strong { color: var(--text); }
+
+  /* ===== Cards ===== */
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(272px, 1fr)); gap: 18px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    transition: transform .2s, border-color .2s, box-shadow .2s;
+    display: flex; flex-direction: column;
+  }
+  .card:hover { transform: translateY(-4px); border-color: rgba(225,29,72,.45); box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+  .card .icon { font-size: 32px; margin-bottom: 12px; }
+  .card h3 { font-size: 17.5px; margin-bottom: 8px; font-weight: 800; }
+  .card p { color: var(--muted); font-size: 14.3px; }
+  .card ul { list-style: none; margin-top: 10px; }
+  .card li { color: var(--muted); font-size: 13.8px; padding: 4px 0 4px 18px; position: relative; }
+  .card li::before { content: "•"; color: var(--accent2); position: absolute; right: 0; font-weight: 900; }
+  .card .benefit {
+    margin-top: 14px;
+    background: rgba(34,197,94,.08);
+    border: 1px solid rgba(34,197,94,.22);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 13px;
+    color: #86efac;
+  }
+  .card .benefit strong { color: var(--green); }
+  .card .tech-tag {
+    margin-top: 12px;
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(225,29,72,.10);
+    border: 1px solid rgba(225,29,72,.28);
+    color: var(--accent2);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12.5px; font-weight: 800;
+    align-self: flex-start;
+  }
+
+  /* ===== Timeline ===== */
+  .timeline { position: relative; padding-right: 32px; }
+  .timeline::before {
+    content: ""; position: absolute; right: 8px; top: 4px; bottom: 4px;
+    width: 3px; border-radius: 3px;
+    background: linear-gradient(180deg, var(--accent), var(--purple), var(--gold));
+  }
+  .tl-item { position: relative; margin-bottom: 32px; }
+  .tl-item::before {
+    content: ""; position: absolute; right: -29px; top: 6px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--surface); border: 3px solid var(--accent);
+  }
+  .tl-item.current::before { background: var(--accent); box-shadow: 0 0 0 6px rgba(225,29,72,.18); }
+  .tl-item .tag {
+    display: inline-block; font-size: 12px; font-weight: 800; padding: 4px 12px;
+    border-radius: 999px; margin-bottom: 8px; letter-spacing: .4px;
+  }
+  .tag.now { background: rgba(225,29,72,.14); color: var(--accent2); border: 1px solid var(--accent); }
+  .tag.next { background: rgba(59,130,246,.13); color: var(--blue); border: 1px solid var(--blue); }
+  .tag.later { background: rgba(245,158,11,.13); color: var(--gold); border: 1px solid var(--gold); }
+  .tag.future { background: rgba(139,92,246,.13); color: var(--purple); border: 1px solid var(--purple); }
+  .tl-item h3 { font-size: 19px; font-weight: 800; margin-bottom: 6px; }
+  .tl-item p { color: var(--muted); font-size: 14.5px; }
+  .tl-item ul { margin-top: 10px; list-style: none; }
+  .tl-item li { color: var(--muted); font-size: 13.8px; padding: 3px 0 3px 18px; position: relative; }
+  .tl-item li::before { content: "▸"; color: var(--accent2); position: absolute; right: 0; }
+  .tl-item .tl-benefit {
+    margin-top: 10px;
+    background: var(--surface2);
+    border-right: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+  .tl-item .tl-benefit strong { color: var(--accent2); }
+
+  /* ===== AR feature ===== */
+  .ar-box {
+    background: linear-gradient(135deg, rgba(225,29,72,.11), rgba(139,92,246,.11));
+    border: 1px solid rgba(225,29,72,.55);
+    border-radius: var(--radius);
+    padding: 26px;
+    margin-bottom: 22px;
+  }
+  .ar-box h3 { font-size: 21px; font-weight: 900; margin-bottom: 8px; color: #fff; }
+  .ar-box p { color: var(--muted); font-size: 14.5px; }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 18px; }
+  .step {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center;
+  }
+  .step .snum {
+    width: 34px; height: 34px; margin: 0 auto 10px; border-radius: 50%;
+    background: var(--accent); color: #fff; font-weight: 900; display: flex; align-items: center; justify-content: center;
+  }
+  .step h4 { font-size: 14.5px; margin-bottom: 6px; }
+  .step p { font-size: 13px; color: var(--muted); }
+
+  /* ===== Idea cards extra ===== */
+  .idea-footer {
+    margin-top: 12px;
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .pill {
+    font-size: 11.5px; font-weight: 800; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border);
+    background: var(--surface2); color: var(--muted);
+  }
+  .pill.pick { background: rgba(34,197,94,.10); border-color: rgba(34,197,94,.30); color: #86efac; }
+  .pill.cost-mid { background: rgba(245,158,11,.10); border-color: rgba(245,158,11,.28); color: var(--gold); }
+  .pill.cost-high { background: rgba(225,29,72,.10); border-color: rgba(225,29,72,.28); color: var(--accent2); }
+  .pill.cost-vhigh { background: rgba(139,92,246,.10); border-color: rgba(139,92,246,.28); color: var(--purple); }
+
+  /* ===== Cost table ===== */
+  .cost-table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+  .cost-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 640px; }
+  .cost-table th {
+    background: var(--surface2); text-align: right; padding: 13px 14px;
+    border-bottom: 2px solid var(--accent); font-weight: 800; white-space: nowrap;
+  }
+  .cost-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); color: var(--muted); }
+  .cost-table tr:hover td { background: var(--surface2); }
+  .cost-table .lvl { font-weight: 700; white-space: nowrap; }
+  .lvl.low { color: var(--green); }
+  .lvl.mid { color: var(--gold); }
+  .lvl.high { color: var(--accent2); }
+  .lvl.vhigh { color: var(--purple); }
+
+  /* ===== Notes / Callouts ===== */
+  .note {
+    background: var(--surface); border-right: 4px solid var(--gold); border-radius: 10px;
+    padding: 16px 20px; margin-top: 22px; color: var(--muted); font-size: 14px;
+  }
+  .note strong { color: var(--gold); }
+  .callout {
+    background: linear-gradient(135deg, rgba(34,197,94,.10), rgba(20,184,166,.08));
+    border: 1px solid rgba(34,197,94,.28);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-top: 20px;
+    color: var(--muted); font-size: 14px;
+  }
+  .callout strong { color: #86efac; }
+
+  /* ===== Footer ===== */
+  footer { text-align: center; padding: 36px 24px; color: var(--muted); font-size: 13.5px; }
+  footer .line { color: var(--accent2); font-weight: 700; }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 30px; }
+    h2.section-title { font-size: 22px; }
+    .container { padding: 24px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HERO ================= -->
+<div class="hero">
+  <span class="badge">عرض تقديمي للعميل</span>
+  <h1>متجر الأحذية<br><span>الرؤية الكاملة وخطة المشروع</span></h1>
+  <p class="sub">من متجر إلكتروني يعمل اليوم بكفاءة، إلى تجربة تسوق تختارها أنت — نبدأ بما يحقق لك أعلى عائد، ونترك لك حرية اختيار الخطوة التالية.</p>
+  <div class="meta">
+    <span class="chip">🛍️ متجر أحذية إلكتروني</span>
+    <span class="chip">🧠 بنية ERP متعددة الإصدارات</span>
+    <span class="chip">📱 Flutter + Riverpod</span>
+    <span class="chip">⚙️ لوحة تحكم Laravel</span>
+  </div>
+  <div class="cta-note">📌 الاسم النهائي للمتجر قيد اختيارك — كل التصميم والبنية جاهزة لتطبيق أي اسم تختاره فورًا</div>
+</div>
+
+<div class="container">
+
+  <!-- ================= 1. الفكرة الحالية ================= -->
+  <section id="idea">
+    <h2 class="section-title"><span class="num">1</span> الفكرة الحالية — ما الذي تم بناؤه لك</h2>
+    <p class="section-desc">مشروع «متجر الأحذية» ليس متجرًا إلكترونيًا فقط؛ إنه <strong>نظام متكامل</strong> مبني ليخدمك اليوم ويكبر معك غدًا دون إعادة بناء. كود واحد يتحول لأكثر من تطبيق، ولوحة تحكم قوية تدير كل شيء من مكان واحد.</p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="icon">🏗️</div>
+        <h3>بنية مستقبلية قابلة للتوسع</h3>
+        <p>نظام <strong>Flavors</strong>: كود واحد ينتج تطبيقات متعددة. كل فرع أو علامة تجارية جديدة يحصل على تطبيقه بهويته الخاصة من ملف إعدادات فقط — دون إعادة برمجة.</p>
+        <div class="benefit"><strong>قيمتها لك:</strong> تفتح فروعًا أو أسواقًا جديدة بتكلفة أقل ووقت أسرع، وتحافظ على هوية كل متجر منفصلة تمامًا.</div>
+      </div>
+      <div class="card">
+        <div class="icon">🛒</div>
+        <h3>متجر إلكتروني متكامل</h3>
+        <ul>
+          <li>كتالوج منتجات وتصنيفات وفلترة ذكية</li>
+          <li>سلة شراء وتحديد مقاسات وألوان</li>
+          <li>دفع متعدد: Tabby / Tamara / InstaPay / Visa / Vodafone Cash</li>
+          <li>تتبع طلبات لحظي + تقييم بعد الاستلام</li>
+          <li>مفضلة، نقاط مكافآت، إشعارات، عناوين متعددة</li>
+        </ul>
+        <div class="benefit"><strong>قيمتها لك:</strong> عميل يجد كل ما يحتاجه في مكان واحد، فيشتري أكثر ويعود أكثر.</div>
+      </div>
+      <div class="card" style="border-color: rgba(225,29,72,.35);">
+        <div class="icon">📊</div>
+        <h3>لوحة تحكم إدارية كاملة — Laravel</h3>
+        <p>نظام إدارة <strong>مبني بـ Laravel</strong> — الإطار الأكثر ثباتًا وأمانًا في التجارة الإلكترونية.</p>
+        <ul>
+          <li>إدارة المنتجات والتصنيفات والماركات</li>
+          <li>إدارة الطلبات والعملاء والكوبونات</li>
+          <li>فروع ومخازن ومدن ومحافظات</li>
+          <li>إعلانات وسلايدرز وصفحات محتوى</li>
+        </ul>
+        <span class="tech-tag">🔴 Laravel — آمن، سريع، قابل للتوسع</span>
+        <div class="benefit"><strong>قيمتها لك:</strong> تتحكم في متجرك بالكامل بنفسك دون الحاجة لمبرمج لكل تعديل — منتجات، أسعار، عروض، وفروع في ثوانٍ.</div>
+      </div>
+      <div class="card">
+        <div class="icon">🌍</div>
+        <h3>جاهز للسوق المحلي والعالمي</h3>
+        <ul>
+          <li>دعم كامل للغة العربية والإنجليزية</li>
+          <li>بوابات دفع محلية وعالمية</li>
+          <li>تسجيل دخول اجتماعي (Google / Facebook / Apple)</li>
+          <li>تشفير وحماية بيانات على مستوى احترافي</li>
+        </ul>
+        <div class="benefit"><strong>قيمتها لك:</strong> تصل لجمهور أوسع بثقة أعلى — العميل يشعر أن متجرك بمستوى المتاجر العالمية.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 2. المراحل ================= -->
+  <section id="stages">
+    <h2 class="section-title"><span class="num">2</span> خارطة المراحل — أين نحن وإلى أين نذهب معًا</h2>
+    <p class="section-desc">قسّمنا المشروع لمراحل واضحة. كل مرحلة تبني على سابقتها وتضيف قيمة ملموسة. <strong>أنت تختار وتيرة التقدم</strong> — نحن نرشح، وأنت تقرر.</p>
+
+    <div class="timeline">
+      <div class="tl-item current">
+        <span class="tag now">المرحلة الحالية — نحن هنا</span>
+        <h3>الأساس الذكي — المتجر الإلكتروني + تجربة AR</h3>
+        <p>الأساس مكتمل ويعمل. نضيف الآن الميزة التي تميزك فورًا في السوق: تجربة الحذاء بالواقع المعزز.</p>
+        <ul>
+          <li>متجر إلكتروني كامل + لوحة تحكم Laravel</li>
+          <li>ميزة AR Try-On: تجربة الحذاء على قدم العميل بالكاميرا</li>
+        </ul>
+        <div class="tl-benefit"><strong>لماذا الآن؟</strong> تحسّن تجربة الشراء مباشرة، تقلل المرتجعات، وتخلق حديثًا إيجابيًا عن متجرك من أول يوم.</div>
+      </div>
+
+      <div class="tl-item">
+        <span class="tag next">المرحلة التالية — مقترحة</span>
+        <h3>الذكاء والتفاعل — متجر يعرف عميله</h3>
+        <p>نحول المتجر من «سوق رقمي» إلى «مساعد شخصي» يفهم ذوق كل عميل.</p>
+        <ul>
+          <li>قياس القدم بالذكاء الاصطناعي (تحديد المقاس بالكاميرا)</li>
+          <li>توصيات شخصية مبنية على الذوق والمقاس وسجل الشراء</li>
+          <li>بحث بالصورة: صوّر حذاءً واعثر على مثيله لدينا</li>
+          <li>مساعد ذكي للدردشة والتسوق</li>
+        </ul>
+        <div class="tl-benefit"><strong>قيمتها لك:</strong> ترفع متوسط قيمة السلة وتزيد تكرار الشراء — العميل يشعر أن المتجر صُمم له وحده.</div>
+      </div>
+
+      <div class="tl-item">
+        <span class="tag later">مرحلة التوسع — عندما تكون جاهزًا</span>
+        <h3>من متجر إلى منصة — كل فروعك في نظام واحد</h3>
+        <p>نربط البيع الإلكتروني بالبيع داخل الفروع والمخازن.</p>
+        <ul>
+          <li>تطبيق نقطة البيع (POS) للفروع</li>
+          <li>إدارة المخزون والتوريد لحظيًا</li>
+          <li>تقارير مبيعات فورية لكل فرع ولكل منتج</li>
+          <li>إدارة الحسابات والفواتير</li>
+        </ul>
+        <div class="tl-benefit"><strong>قيمتها لك:</strong> ترى كل فروعك من شاشة واحدة، وتعرف ماذا يباع وأين ومتى — قرارات أسرع وأرباح أدق.</div>
+      </div>
+
+      <div class="tl-item">
+        <span class="tag future">أفكار مستقبلية — اختر منها ما يناسبك</span>
+        <h3>خيارات من المستقبل — أنت تختار أولوياتك</h3>
+        <p>مجموعة أفكار متقدمة جاهزة للتنفيذ عندما تقرر. ليست خطة مفروضة، بل <strong>قائمة تختار منها</strong> ما يحقق لك أعلى تميّز.</p>
+        <ul>
+          <li>تسوق بأفاتار في واقع معزز / افتراضي</li>
+          <li>أحذية ذكية متصلة تتابع صحة العميل</li>
+          <li>عرض ثلاثي الأبعاد ومجسمات رقمية كاملة</li>
+          <li>مجتمعات وتجارب تفاعلية داخل التطبيق</li>
+        </ul>
+        <div class="tl-benefit"><strong>كيف نتعامل معها؟</strong> نعرضها لك بتكلفتها وأثرها، وأنت تختار أي فكرة نبدأ بها أولًا — لا نلزمك بخطة زمنية صارمة.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 3. ميزة AR ================= -->
+  <section id="ar">
+    <h2 class="section-title"><span class="num">3</span> الميزة الحالية — جرّب الحذاء قبل الشراء (AR Try-On)</h2>
+    <p class="section-desc">الميزة التي ستجعل عميلك يقول «واو» — يفتح الكاميرا، يصوّر قدمه، ويظهر الحذاء فوق قدمه مباشرة. يرى الشكل الحقيقي قبل أن يدفع.</p>
+
+    <div class="ar-box">
+      <h3>📷 كيف ستعمل ببساطة؟</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="snum">1</div>
+          <h4>يضغط «جرّب الحذاء»</h4>
+          <p>زر واضح في صفحة المنتج يفتح الكاميرا فورًا دون تعقيد.</p>
+        </div>
+        <div class="step">
+          <div class="snum">2</div>
+          <h4>يصوّر قدمه</h4>
+          <p>يوجّه الكاميرا نحو قدمه — يلتقط النظام القياس التقريبي تلقائيًا.</p>
+        </div>
+        <div class="step">
+          <div class="snum">3</div>
+          <h4>يظهر الحذاء على قدمه</h4>
+          <p>نموذج الحذاء يُركّب بتقنية الواقع المعزز بدقة عالية فوق القدم.</p>
+        </div>
+        <div class="step">
+          <div class="snum">4</div>
+          <h4>يختار ويشتري بثقة</h4>
+          <p>يغيّر اللون والمقاس، يشاهد من كل زاوية، ثم يضيف للسلة.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="icon">📉</div>
+        <h3>تقلل المرتجعات بشكل كبير</h3>
+        <p>السبب الأول لإرجاع الأحذية هو مفاجأة المقاس أو الشكل. هذه الميزة تحل المشكلة قبل الدفع.</p>
+        <div class="benefit"><strong>قيمتها لك:</strong> توفر تكاليف الشحن العكسي وتقلل الإحباط لدى العملاء — كل عملية إرجاع أقل هي ربح مباشر.</div>
+      </div>
+      <div class="card">
+        <div class="icon">📈</div>
+        <h3>ترفع الثقة ونسبة إتمام الشراء</h3>
+        <p>العميل الذي «جرّب» الحذاء على قدمه يكون أكثر اطمئنانًا وأكثر استعدادًا لإتمام الطلب.</p>
+        <div class="benefit"><strong>قيمتها لك:</strong> نسبة تحويل أعلى — زوار أكثر يتحولون لمشترين فعليين.</div>
+      </div>
+      <div class="card">
+        <div class="icon">✨</div>
+        <h3>تميّز يجعل الناس تتحدث عنك</h3>
+        <p>تجربة تفاعلية ممتعة يشاركها العملاء مع أصدقائهم — تسويق مجاني ينتشر وحده.</p>
+        <div class="benefit"><strong>قيمتها لك:</strong> انتشار طبيعي على وسائل التواصل دون إنفاق إعلاني إضافي.</div>
+      </div>
+    </div>
+
+    <div class="note"><strong>التكلفة التقديرية:</strong> متوسطة (مكتبات جاهزة مثل ARCore / ARKit + معالجة مقاس ذكية). <strong>العائد المتوقع</strong> يغطي التكلفة عدة مرات عبر تقليل المرتجعات وزيادة المبيعات. نبدأ بنسخة أولية بسيطة ثم نطورها حسب تفاعل عملائك.</div>
+  </section>
+
+  <!-- ================= 4. أفكار من المستقبل ================= -->
+  <section id="vision">
+    <h2 class="section-title"><span class="num">4</span> أفكار من المستقبل — اختر منها نقطة انطلاقك القادمة</h2>
+    <p class="section-desc">هذه ليست خطة مفروضة عليك، بل <strong>قائمة أفكار مُختبرة عالميًا</strong> — كل فكرة موضحة بقيمتها وتكلفتها. <strong>أنت تختار</strong> ما يناسب أولوياتك وميزانيتك، ونحن ننفذ. بعضها بتكلفة منخفضة ويحقق أثرًا سريعًا، وبعضها استثمار طويل المدى.</p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="icon">👤</div>
+        <h3>تسوق بأفاتار في عالم افتراضي</h3>
+        <p>العميل يبني نسخته الرقمية (أفاتار) ويجرب الأحذية في متجر افتراضي كامل داخل الواقع المعزز/الافتراضي — كأنه يمشي في متجر حقيقي من بيته.</p>
+        <div class="benefit"><strong>قيمتها لك:</strong> تجربة لا يقدمها أي منافس محلي — تضعك في مصاف المتاجر العالمية وتجذب جيل الشباب الباحث عن التقنية.</div>
+        <div class="idea-footer"><span class="pill cost-vhigh">تكلفة عالية جدًا</span><span class="pill">خيار مستقبلي</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">🦶</div>
+        <h3>قياس القدم الذكي (AI Foot Scan)</h3>
+        <p>ماسح بالكاميرا يقيس طول وعرض القدم بدقة ويقترح المقاس المثالي تلقائيًا — وينشئ «بنك مقاسات» لكل عميل.</p>
+        <div class="benefit"><strong>قيمتها لك:</strong> تنهي مشكلة «طلبت مقاسًا وجاء ضيقًا» نهائيًا — رضا أعلى ومرتجعات أقل بشكل دائم.</div>
+        <div class="idea-footer"><span class="pill cost-mid">تكلفة متوسطة</span><span class="pill pick">أثر سريع ✓</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">🤖</div>
+        <h3>مساعد تسوق شخصي بالذكاء الاصطناعي</h3>
+        <p>ذكاء اصطناعي يتعلم ذوق العميل (ألوانه، مقاساته، مشترياته السابقة) ويقترح عليه ما يناسبه — بل يصمم له تركيبات ألوان خاصة.</p>
+        <div class="benefit"><strong>قيمتها لك:</strong> كل عميل يشعر أن المتجر صُمم له وحده — فيشتري أكثر ويعود أكثر.</div>
+        <div class="idea-footer"><span class="pill cost-mid">منخفضة – متوسطة</span><span class="pill pick">أثر سريع ✓</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">🖼️</div>
+        <h3>البحث بالصورة</h3>
+        <p>العميل يصوّر حذاءً أعجبه في الشارع أو على الإنترنت، والتطبيق يجد له أقرب مثيل لدينا فورًا.</p>
+        <div class="benefit"><strong>قيمتها لك:</strong> تسهّل البحث وتحوّل أي إلهام خارجي إلى عملية شراء عندك.</div>
+        <div class="idea-footer"><span class="pill">تكلفة منخفضة</span><span class="pill pick">أثر سريع ✓</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">🔗</div>
+        <h3>توثيق الأصالة (Blockchain)</h3>
+        <p>شهادة رقمية لكل حذاء توثق أصالته وسلسلة توريده — العميل يتأكد أن ما يشتريه أصلي 100%.</p>
+        <div class="benefit"><strong>قيمتها لك:</strong> تحمي علامتك من التقليد وتبني ثقة لا تُقدّر بثمن — خاصة للأحذية الماركات.</div>
+        <div class="idea-footer"><span class="pill cost-mid">تكلفة متوسطة</span><span class="pill">تميّز ماركة</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">🔄</div>
+        <h3>سوق إعادة البيع الموثوقة</h3>
+        <p>منصة داخل التطبيق لبيع وشراء الأحذية المستعملة المفحوصة بضمان المتجر — نموذج دخل إضافي بالكامل.</p>
+        <div class="benefit"><strong>قيمتها لك:</strong> مصدر دخل جديد دون مخزون جديد، وولاء عملاء يربطهم بك حتى بعد البيع الأول.</div>
+        <div class="idea-footer"><span class="pill cost-mid">تكلفة متوسطة</span><span class="pill">نموذج دخل جديد</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">🧠</div>
+        <h3>حذاء ذكي متصل (Shoes as a Service)</h3>
+        <p>أحذية مزودة بمستشعرات تتابع الخطوات والصحة وترتبط بالتطبيق — تتحول لاشتراك شهري أو سنوي.</p>
+        <div class="benefit"><strong>قيمتها لك:</strong> تحوّل منتجًا يُباع مرة واحدة إلى اشتراك دائم — دخل متكرر ومستقر.</div>
+        <div class="idea-footer"><span class="pill cost-high">تكلفة عالية</span><span class="pill">استثمار طويل المدى</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">🖨️</div>
+        <h3>تصنيع مخصص بالطباعة ثلاثية الأبعاد</h3>
+        <p>تصميم خاص لكل عميل بمقاسه وذوقه ثم إنتاج فردي مخصص في المصنع — حذاء لا يملكه أحد غيره.</p>
+        <div class="benefit"><strong>قيمتها لك:</strong> تفرد مطلق — عميل يدفع أكثر مقابل حذاء صُمم له وحده.</div>
+        <div class="idea-footer"><span class="pill cost-high">تكلفة عالية</span><span class="pill">تفرد مطلق</span></div>
+      </div>
+    </div>
+
+    <div class="callout"><strong>🤝 كيف نعمل معك؟</strong> لا نفرض خطة زمنية صارمة. نعرض عليك كل فكرة بتكلفتها وأثرها، وأنت تختار أولوية البداية. يمكننا البدء بفكرة واحدة منخفضة التكلفة ذات أثر فوري (مثل البحث بالصورة أو المساعد الذكي)، ثم التدرج نحو الأفكار الأكبر — أنت تقود القرار، ونحن ننفذ باحتراف.</div>
+  </section>
+
+  <!-- ================= 5. الجدول ================= -->
+  <section id="costs">
+    <h2 class="section-title"><span class="num">5</span> مصفوفة القرار — التكلفة، الأثر، والجاهزية</h2>
+    <p class="section-desc">جدول واحد يلخص كل شيء بوضوح — لتختار بثقة ما تبدأ به أولًا.</p>
+
+    <div class="cost-table-wrap">
+    <table class="cost-table">
+      <thead>
+        <tr>
+          <th>الفكرة</th>
+          <th>التكلفة</th>
+          <th>الأثر المتوقع</th>
+          <th>متى يمكن البدء</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>📷 تركيب الحذاء بالكاميرا (AR Try-On)</td>
+          <td class="lvl mid">متوسطة</td>
+          <td>تقليل المرتجعات + زيادة التحويل</td>
+          <td>الآن — المرحلة الحالية</td>
+        </tr>
+        <tr>
+          <td>🦶 قياس القدم بالذكاء الاصطناعي</td>
+          <td class="lvl mid">متوسطة</td>
+          <td>حل نهائي لمشكلة المقاسات</td>
+          <td>المرحلة التالية</td>
+        </tr>
+        <tr>
+          <td>🤖 توصيات ومساعد تسوق ذكي</td>
+          <td class="lvl low">منخفضة – متوسطة</td>
+          <td>رفع متوسط قيمة السلة</td>
+          <td>المرحلة التالية</td>
+        </tr>
+        <tr>
+          <td>🖼️ البحث بالصورة</td>
+          <td class="lvl low">منخفضة</td>
+          <td>تجربة بحث أسهل وأسرع</td>
+          <td>المرحلة التالية</td>
+        </tr>
+        <tr>
+          <td>🏪 نقطة البيع (POS) وإدارة المخزون</td>
+          <td class="lvl mid">متوسطة</td>
+          <td>ربط الفروع ولوحة تحكم موحدة</td>
+          <td>مرحلة التوسع</td>
+        </tr>
+        <tr>
+          <td>🔗 توثيق الأصالة (Blockchain)</td>
+          <td class="lvl mid">متوسطة</td>
+          <td>تميّز ماركة + حماية من التقليد</td>
+          <td>مرحلة التوسع</td>
+        </tr>
+        <tr>
+          <td>🔄 سوق إعادة البيع الموثوقة</td>
+          <td class="lvl mid">متوسطة</td>
+          <td>نموذج دخل إضافي + ولاء</td>
+          <td>مرحلة التوسع</td>
+        </tr>
+        <tr>
+          <td>👤 تسوق بأفاتار في واقع افتراضي</td>
+          <td class="lvl vhigh">عالية جدًا</td>
+          <td>قفزة نوعية — سابق للسوق</td>
+          <td>خيار مستقبلي (تحدده أنت)</td>
+        </tr>
+        <tr>
+          <td>🧠 حذاء ذكي متصل (اشتراك)</td>
+          <td class="lvl high">عالية (تشمل تصنيع)</td>
+          <td>تحويل منتج لاشتراك دائم</td>
+          <td>خيار مستقبلي (تحدده أنت)</td>
+        </tr>
+        <tr>
+          <td>🖨️ تصنيع مخصص ثلاثي الأبعاد</td>
+          <td class="lvl high">عالية (تشمل مصنع)</td>
+          <td>تفرد مطلق لكل عميل</td>
+          <td>خيار مستقبلي (تحدده أنت)</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="note">
+      <strong>ملاحظة حول «التسوق بأفاتار في واقع افتراضي»:</strong>
+      فكرة ضخمة ومستقلة بذاتها عن التطبيق الحالي، تكلفتها عالية جدًا وتحتاج فريقًا متخصصًا وأجهزة متقدمة. نضعها كـ«بوصلة» نسير نحوها، بينما نبدأ الآن بالأفكار متوسطة التكلفة ذات الأثر السريع — حتى نصل إليها ونحن نملك الجمهور والبنية الجاهزة. <strong>القرار لك</strong> في توقيت الانطلاق بها.
+    </div>
+  </section>
+
+  <!-- ================= 6. الخلاصة ================= -->
+  <section id="summary">
+    <h2 class="section-title"><span class="num">6</span> الخلاصة — لماذا هذا المشروع معك ولأجلك</h2>
+    <p class="section-desc">نحن لا نبني تطبيقًا ونسلّمه؛ نبني معك رحلة نمو. كل مرحلة لها قيمتها، وكل فكرة لها مكانها — وأنت تختار.</p>
+    <div class="grid">
+      <div class="card">
+        <div class="icon">🎯</div>
+        <h3>نربح اليوم — معًا</h3>
+        <p>متجر إلكتروني يعمل الآن بكفاءة، مع لوحة تحكم Laravel تديره بنفسك، وميزة AR تميزك فورًا وتقلل المرتجعات.</p>
+        <div class="benefit"><strong>ما يعنيه لك:</strong> تبدأ البيع وتحقق عائدًا من اليوم الأول دون انتظار.</div>
+      </div>
+      <div class="card">
+        <div class="icon">📈</div>
+        <h3>نتفوق غدًا — بخطواتك</h3>
+        <p>ذكاء اصطناعي وتوصيات ونقطة بيع — كلها خيارات جاهزة تختار منها ما يناسب أولوياتك.</p>
+        <div class="benefit"><strong>ما يعنيه لك:</strong> تنمو بثقة وبميزانية تتحكم بها أنت — لا مفاجآت ولا التزامات مفروضة.</div>
+      </div>
+      <div class="card">
+        <div class="icon">🚀</div>
+        <h3>نسبق المستقبل — برؤيتك</h3>
+        <p>أفاتار، واقع افتراضي، أحذية ذكية — أفكار تضعك في مصاف المتاجر العالمية عندما تقرر الانطلاق بها.</p>
+        <div class="benefit"><strong>ما يعنيه لك:</strong> تملك خارطة طريق لا يملكها منافس — وتعرف بالضبط أين ستكون بعد كل خطوة.</div>
+      </div>
+    </div>
+    <div class="callout" style="text-align:center; margin-top: 28px;">
+      <strong style="font-size:16px;">🤝 نحن معك في كل خطوة</strong><br>
+      من اختيار الاسم النهائي للمتجر، إلى إطلاق أول طلب، إلى التوسع لفروع جديدة — فريق واحد، رؤية واحدة، ونجاح مشترك.
+    </div>
+  </section>
+
+  <footer>
+    <p>مُعدّ لتقديمه للعميل — «متجر الأحذية» (الاسم النهائي باختيارك)</p>
+    <p>تطبيق Flutter &nbsp;•&nbsp; لوحة تحكم Laravel &nbsp;•&nbsp; بنية ERP متعددة الإصدارات &nbsp;•&nbsp; جاهز للمستقبل</p>
+    <p class="line" style="margin-top:10px;">كل فكرة في هذا العرض قابلة للاختيار — أخبرنا بما يهمك أكثر، ونبدأ به أولًا</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
