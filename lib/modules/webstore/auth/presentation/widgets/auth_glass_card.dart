@@ -59,7 +59,7 @@ class AuthGlassCard extends StatelessWidget {
                         height: 60,
                         padding: const EdgeInsets.all(8),
                         child: AppImage(
-                          imagePath: AssetManager.logoElTarshopy,
+                          imagePath: AssetManager.appIcons,
                           fit: BoxFit.contain,
                         ),
                       ),

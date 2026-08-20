@@ -201,7 +201,7 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
                           padding: EdgeInsets.all(20.w),
                           child: ClipOval(
                             child: AppImage(
-                              imagePath: AssetManager.logoElTarshopy,
+                              imagePath: AssetManager.appIcons,
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -219,7 +219,7 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
                         child: Column(
                           children: [
                             Text(
-                              'الطرشوبي',
+                              'متجر الأحذية',
                               style: TextStyle(
                                 fontSize: 32.sp,
                                 fontWeight: FontWeight.w900,
@@ -229,7 +229,7 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
                             ),
                             8.verticalSpace,
                             Text(
-                              'صيدليتك أونلاين',
+                              'متجر إلكتروني لبيع الأحذية',
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w400,

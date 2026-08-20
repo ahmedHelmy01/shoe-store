@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 class AppConstants {
-  // App Info
-  static const String appName = 'Engineers Syndicate';
 
   // Design Tokens
   static const double borderRadius = 16.0;
